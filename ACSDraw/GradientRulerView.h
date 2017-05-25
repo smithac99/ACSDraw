@@ -1,0 +1,17 @@
+//
+//  GradientRulerView.h
+//  ACSDraw
+//
+//  Created by alan on 08/04/06.
+//  Copyright 2006 Alan C Smith. All rights reserved.
+//
+
+#import <Cocoa/Cocoa.h>
+
+
+@interface GradientRulerView : NSRulerView
+   {
+
+   }
+
+@end

@@ -1,0 +1,11 @@
+kernel vec4 OverlayFilter(sampler image, __color color)
+{
+	vec4 px = unpremultiply(sample(image, samplerCoord(image)));
+	vec4 res;
+	res.a = px.a;
+	float inva = 1.0 - color.a;
+	res.r = (color.r *color.a) + (px.r * inva);
+	res.g = (color.g * color.a) + (px.g * inva);
+	res.b = (color.b * color.a) + (px.b * inva);
+	return premultiply(res);
+}

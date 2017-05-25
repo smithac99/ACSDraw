@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment version="1050" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="PatternWindowController">
+            <connections>
+                <outlet property="backgroundColourWell" destination="127" id="128"/>
+                <outlet property="graphicView" destination="7" id="9"/>
+                <outlet property="offsetSlider" destination="55" id="59"/>
+                <outlet property="offsetText" destination="18" id="22"/>
+                <outlet property="offsetTypeRBMatrix" destination="32" id="36"/>
+                <outlet property="opacitySlider" destination="78" id="84"/>
+                <outlet property="opacityText" destination="80" id="85"/>
+                <outlet property="patternModeRBMatrix" destination="43" id="60"/>
+                <outlet property="patternPreview" destination="19" id="38"/>
+                <outlet property="scaleSlider" destination="53" id="57"/>
+                <outlet property="scaleText" destination="14" id="20"/>
+                <outlet property="spacingSlider" destination="54" id="58"/>
+                <outlet property="spacingText" destination="16" id="21"/>
+                <outlet property="window" destination="5" id="10"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application"/>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="317" y="490" width="857" height="555"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="213" height="107"/>
+            <view key="contentView" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="857" height="555"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="8">
+                        <rect key="frame" x="0.0" y="20" width="497" height="535"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" autoresizesSubviews="NO" id="7Lr-eJ-KhA">
+                            <rect key="frame" x="1" y="1" width="480" height="518"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <customView id="7" customClass="GraphicView">
+                                    <rect key="frame" x="0.0" y="0.0" width="480" height="530"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <customView id="105" customClass="MarkerView">
+                                            <rect key="frame" x="0.0" y="0.0" width="480" height="530"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <connections>
+                                                <outlet property="graphicView" destination="7" id="106"/>
+                                            </connections>
+                                        </customView>
+                                    </subviews>
+                                    <connections>
+                                        <outlet property="markerView" destination="105" id="107"/>
+                                    </connections>
+                                </customView>
+                            </subviews>
+                        </clipView>
+                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="126">
+                            <rect key="frame" x="1" y="519" width="480" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="125">
+                            <rect key="frame" x="481" y="1" width="15" height="518"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                    <textField verticalHuggingPriority="750" id="13">
+                        <rect key="frame" x="502" y="519" width="36" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Scale" id="109">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="14">
+                        <rect key="frame" x="549" y="517" width="78" height="19"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="110">
+                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0.000" negativeFormat="-0.000" hasThousandSeparators="NO" thousandSeparator="," id="27">
+                                <attributedString key="attributedStringForZero">
+                                    <fragment content="0.00"/>
+                                </attributedString>
+                                <decimal key="minimum" value="NaN"/>
+                                <decimal key="maximum" value="NaN"/>
+                            </numberFormatter>
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <action selector="scaleTextHit:" target="-2" id="24"/>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="15">
+                        <rect key="frame" x="502" y="492" width="49" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Spacing" id="111">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="16">
+                        <rect key="frame" x="549" y="490" width="78" height="19"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="112">
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="0.000" negativeFormat="-0.000" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" minimumFractionDigits="3" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," id="28">
+                                <nil key="negativeInfinitySymbol"/>
+                                <nil key="positiveInfinitySymbol"/>
+                                <real key="minimum" value="-2"/>
+                            </numberFormatter>
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <action selector="spacingTextHit:" target="-2" id="25"/>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="17">
+                        <rect key="frame" x="502" y="467" width="42" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Offset" id="113">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="18">
+                        <rect key="frame" x="549" y="463" width="78" height="19"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="114">
+                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0.00" negativeFormat="-0.00" hasThousandSeparators="NO" thousandSeparator="," id="29">
+                                <attributedString key="attributedStringForZero">
+                                    <fragment content="0.00"/>
+                                </attributedString>
+                                <decimal key="minimum" value="NaN"/>
+                                <decimal key="maximum" value="NaN"/>
+                            </numberFormatter>
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <action selector="offsetTextHit:" target="-2" id="26"/>
+                        </connections>
+                    </textField>
+                    <customView id="19" customClass="PatternPreview">
+                        <rect key="frame" x="521" y="46" width="316" height="258"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </customView>
+                    <button verticalHuggingPriority="750" id="30">
+                        <rect key="frame" x="762" y="14" width="80" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Update" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="115">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="updateHit:" target="-2" id="31"/>
+                        </connections>
+                    </button>
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="32">
+                        <rect key="frame" x="547" y="437" width="160" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="51" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="123">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="None" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" state="on" inset="2" id="40">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="miniSystem"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="radio" title="X" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="41">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="miniSystem"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="radio" title="Y" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="42">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="miniSystem"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                        <connections>
+                            <action selector="offsetTypeRBMatrixHit:" target="-2" id="37"/>
+                        </connections>
+                    </matrix>
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="43">
+                        <rect key="frame" x="559" y="328" width="196" height="37"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" red="0.78623544999999995" green="0.80754566000000005" blue="0.93388431999999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <size key="cellSize" width="28" height="37"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="only" alignment="left" inset="2" id="124">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="square" bezelStyle="shadowlessSquare" image="pat1" imagePosition="overlaps" alignment="left" alternateImage="pat1a" state="on" borderStyle="border" inset="2" id="71">
+                                    <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="square" bezelStyle="shadowlessSquare" image="pat2" imagePosition="only" alignment="left" alternateImage="pat2a" borderStyle="border" inset="2" id="72">
+                                    <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="square" title="Radio" bezelStyle="shadowlessSquare" image="pat5" imagePosition="only" alignment="left" alternateImage="pat5a" borderStyle="border" inset="2" id="73">
+                                    <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="square" title="Radio" bezelStyle="shadowlessSquare" image="pat3" imagePosition="only" alignment="left" alternateImage="pat3a" borderStyle="border" inset="2" id="74">
+                                    <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="square" title="Radio" bezelStyle="shadowlessSquare" image="pat6" imagePosition="only" alignment="left" alternateImage="pat6a" borderStyle="border" inset="2" id="75">
+                                    <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="square" title="Radio" bezelStyle="shadowlessSquare" image="pat4" imagePosition="only" alignment="left" alternateImage="pat4a" borderStyle="border" inset="2" id="76">
+                                    <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="square" title="Radio" bezelStyle="shadowlessSquare" image="pat7" imagePosition="only" alignment="left" alternateImage="pat7a" borderStyle="border" inset="2" id="77">
+                                    <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                        <connections>
+                            <action selector="patternModeRBMatrixHit:" target="-2" id="64"/>
+                        </connections>
+                    </matrix>
+                    <slider verticalHuggingPriority="750" id="53">
+                        <rect key="frame" x="635" y="518" width="192" height="12"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="-2" maxValue="2" tickMarkPosition="above" sliderType="linear" id="116">
+                            <font key="font" size="12" name="Helvetica"/>
+                        </sliderCell>
+                        <connections>
+                            <action selector="scaleSliderHit:" target="-2" id="61"/>
+                        </connections>
+                    </slider>
+                    <slider verticalHuggingPriority="750" id="54">
+                        <rect key="frame" x="635" y="491" width="192" height="12"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="-2" maxValue="2" tickMarkPosition="above" sliderType="linear" id="117">
+                            <font key="font" size="12" name="Helvetica"/>
+                        </sliderCell>
+                        <connections>
+                            <action selector="spacingSliderHit:" target="-2" id="62"/>
+                        </connections>
+                    </slider>
+                    <slider verticalHuggingPriority="750" id="55">
+                        <rect key="frame" x="635" y="464" width="192" height="12"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="1" tickMarkPosition="above" sliderType="linear" id="118">
+                            <font key="font" size="12" name="Helvetica"/>
+                        </sliderCell>
+                        <connections>
+                            <action selector="offsetSliderHit:" target="-2" id="63"/>
+                        </connections>
+                    </slider>
+                    <textField verticalHuggingPriority="750" id="56">
+                        <rect key="frame" x="512" y="349" width="36" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Mode" id="119">
+                            <font key="font" metaFont="cellTitle"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <slider verticalHuggingPriority="750" id="78">
+                        <rect key="frame" x="558" y="416" width="201" height="12"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="120">
+                            <font key="font" size="12" name="Helvetica"/>
+                        </sliderCell>
+                        <connections>
+                            <action selector="opacitySliderHit:" target="-2" id="82"/>
+                        </connections>
+                    </slider>
+                    <textField verticalHuggingPriority="750" id="79">
+                        <rect key="frame" x="505" y="417" width="46" height="13"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Opacity" id="121">
+                            <font key="font" metaFont="label"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="80">
+                        <rect key="frame" x="767" y="416" width="70" height="15"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="122">
+                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="#,##0.00" negativeFormat="-#,##0.00" localizesFormat="NO" thousandSeparator="," id="81">
+                                <attributedString key="attributedStringForZero">
+                                    <fragment content="0.00"/>
+                                </attributedString>
+                                <decimal key="minimum" value="0"/>
+                                <decimal key="maximum" value="1"/>
+                            </numberFormatter>
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <action selector="opacityTextHit:" target="-2" id="83"/>
+                        </connections>
+                    </textField>
+                    <colorWell id="127">
+                        <rect key="frame" x="793" y="328" width="44" height="37"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <connections>
+                            <action selector="backgroundColourWellHit:" target="-2" id="129"/>
+                        </connections>
+                    </colorWell>
+                    <textField verticalHuggingPriority="750" id="W1j-MF-nJp">
+                        <rect key="frame" x="696" y="387" width="59" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="SOp-Ge-9ek">
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="2" id="AAu-Fi-pkp">
+                                <real key="minimum" value="0.0"/>
+                                <real key="maximum" value="360"/>
+                            </numberFormatter>
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.displayRotation" id="BHq-AG-aVU"/>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="D9h-B2-ejO">
+                        <rect key="frame" x="505" y="387" width="46" height="13"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Angle" id="c9h-hg-UXu">
+                            <font key="font" metaFont="label"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <slider verticalHuggingPriority="750" id="tnA-Gd-mLK">
+                        <rect key="frame" x="558" y="387" width="115" height="15"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" maxValue="360" tickMarkPosition="above" sliderType="linear" id="NBQ-CO-eyC"/>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.displayRotation" id="CD3-C1-aub"/>
+                        </connections>
+                    </slider>
+                    <button id="ahl-FF-iFJ">
+                        <rect key="frame" x="792" y="383" width="45" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Clip" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="RjK-iB-bMZ">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.displayClip" id="8E3-1Z-GJP"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="11"/>
+                <outlet property="initialFirstResponder" destination="7" id="12"/>
+            </connections>
+            <point key="canvasLocation" x="635.5" y="360.5"/>
+        </window>
+        <userDefaultsController representsSharedInstance="YES" id="DwU-b0-reP"/>
+    </objects>
+    <resources>
+        <image name="pat1" width="24" height="32"/>
+        <image name="pat1a" width="24" height="32"/>
+        <image name="pat2" width="24" height="32"/>
+        <image name="pat2a" width="24" height="32"/>
+        <image name="pat3" width="24" height="32"/>
+        <image name="pat3a" width="24" height="32"/>
+        <image name="pat4" width="24" height="32"/>
+        <image name="pat4a" width="24" height="32"/>
+        <image name="pat5" width="24" height="32"/>
+        <image name="pat5a" width="24" height="32"/>
+        <image name="pat6" width="24" height="32"/>
+        <image name="pat6a" width="24" height="32"/>
+        <image name="pat7" width="24" height="32"/>
+        <image name="pat7a" width="24" height="32"/>
+    </resources>
+</document>

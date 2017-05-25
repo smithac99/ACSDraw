@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment version="1050" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="MainWindowController">
+            <connections>
+                <outlet property="graphicView" destination="21" id="23"/>
+                <outlet property="window" destination="5" id="18"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="379" y="565" width="547" height="432"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="94" height="86"/>
+            <view key="contentView" id="6" customClass="BackingView">
+                <rect key="frame" x="0.0" y="0.0" width="547" height="432"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="22">
+                        <rect key="frame" x="0.0" y="-1" width="548" height="433"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="AkK-iy-jQp">
+                            <rect key="frame" x="1" y="1" width="531" height="416"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <customView id="21" customClass="GraphicView">
+                                    <rect key="frame" x="0.0" y="0.0" width="531" height="416"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <customView id="39" customClass="MarkerView">
+                                            <rect key="frame" x="0.0" y="0.0" width="531" height="416"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <connections>
+                                                <outlet property="graphicView" destination="21" id="41"/>
+                                                <outlet property="menu" destination="25" id="46"/>
+                                            </connections>
+                                        </customView>
+                                    </subviews>
+                                    <connections>
+                                        <outlet property="markerView" destination="39" id="40"/>
+                                        <outlet property="menu" destination="25" id="28"/>
+                                    </connections>
+                                </customView>
+                            </subviews>
+                        </clipView>
+                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="49">
+                            <rect key="frame" x="1" y="417" width="531" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="48">
+                            <rect key="frame" x="532" y="1" width="15" height="416"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="17"/>
+                <outlet property="initialFirstResponder" destination="21" id="24"/>
+            </connections>
+        </window>
+        <menu title="Menu" id="25" userLabel="ViewMenu">
+            <items>
+                <menuItem title="Link To…" id="26">
+                    <connections>
+                        <action selector="linkTo:" target="21" id="29"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Absolute Link…" id="27">
+                    <connections>
+                        <action selector="absoluteLink:" target="-2" id="31"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Show Link" id="32">
+                    <connections>
+                        <action selector="showLink:" target="-1" id="34"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Remove Link" id="33">
+                    <connections>
+                        <action selector="removeLink:" target="-1" id="35"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="50">
+                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                </menuItem>
+                <menuItem title="Align Left Edges" tag="405" id="51">
+                    <connections>
+                        <action selector="alignLeftEdges:" target="-1" id="67"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Align Right Edges" tag="406" id="52">
+                    <connections>
+                        <action selector="alignRightEdges:" target="-1" id="61"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Align Top Edges" tag="407" id="53">
+                    <connections>
+                        <action selector="alignTopEdges:" target="-1" id="65"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Align Bottom Edges" tag="408" id="54">
+                    <connections>
+                        <action selector="alignBottomEdges:" target="-1" id="62"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Align Vertical Centres" tag="409" id="55">
+                    <connections>
+                        <action selector="alignVerticalCentres:" target="-1" id="60"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Align Horizontal Centres" tag="410" id="56">
+                    <connections>
+                        <action selector="alignHorizontalCentres:" target="-1" id="64"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="57">
+                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                </menuItem>
+                <menuItem title="Distribute Horizontally" tag="409" id="58">
+                    <connections>
+                        <action selector="distributeHorizontally:" target="-1" id="66"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Distribute Vertically" tag="409" id="59">
+                    <connections>
+                        <action selector="distributeVertically:" target="-1" id="63"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="516.5" y="460.5"/>
+        </menu>
+    </objects>
+</document>

@@ -1,0 +1,19 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {closePolygonSheet = id; }; 
+            CLASS = GraphicView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {polygonSheet = id; polygonTextField = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            CLASS = RotateSheetController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {rotationAngleText = id; window = id; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
