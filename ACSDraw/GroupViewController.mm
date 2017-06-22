@@ -67,7 +67,7 @@ enum
 		SCNVector3Make(-ow2, oh2, 0),
 		SCNVector3Make(-ow2, -oh2, 0),
 	};
-	int indices[] = {
+	NSInteger indices[] = {
 		0,1,2,
 		0,2,3
 	};
@@ -84,7 +84,7 @@ enum
 	SCNGeometrySource *normalSource = [SCNGeometrySource geometrySourceWithNormals:normals count:4];
 	SCNGeometrySource *textureSource = [SCNGeometrySource geometrySourceWithTextureCoordinates:uvs count:4];
 	NSData *indexData = [NSData dataWithBytes:indices length:sizeof(indices)];
-	SCNGeometryElement *element = [SCNGeometryElement geometryElementWithData:indexData primitiveType:SCNGeometryPrimitiveTypeTriangles primitiveCount:6 bytesPerIndex:sizeof(int)];
+	SCNGeometryElement *element = [SCNGeometryElement geometryElementWithData:indexData primitiveType:SCNGeometryPrimitiveTypeTriangles primitiveCount:6 bytesPerIndex:sizeof(NSInteger)];
 	SCNGeometry *geometry = [SCNGeometry geometryWithSources:@[vertexSource,normalSource,textureSource] elements:@[element]];
 	geometry.firstMaterial.diffuse.contents = image;
 	geometry.firstMaterial.specular.contents = [NSColor whiteColor];

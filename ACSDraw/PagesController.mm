@@ -150,6 +150,12 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
 	    NSInteger row = [pageTableView selectedRow];
 		if (row >= 0)
 		{
+			NSUInteger modifierFlags = [[[pagePlus window]currentEvent]modifierFlags];
+			if (modifierFlags & NSAlternateKeyMask)
+			{
+				[self duplicatePageAtRow:row];
+				return;
+			}
 			row++;
 			[[self inspectingGraphicView] addNewPageAtIndex:row];
 			[pageTableView reloadData];

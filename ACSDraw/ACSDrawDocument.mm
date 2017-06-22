@@ -1292,7 +1292,7 @@ NSString *xHTMLString2 = @"<html>\n";
 			 SVGWriter *svgWriter = [[[SVGWriter alloc]initWithSize:documentSize document:self page:[[[self frontmostMainWindowController] graphicView]currentPageInd]]autorelease];
 			 [svgWriter createData];
 			 NSError *err = nil;
-			 if (!([[svgWriter fullString] writeToURL:[(NSSavePanel*)sp URL] atomically:YES encoding:NSUnicodeStringEncoding error:&err]))
+			 if (!([[svgWriter fullString] writeToURL:[(NSSavePanel*)sp URL] atomically:YES encoding:NSUTF8StringEncoding error:&err]))
 				 NSBeep();
 		 }
 	 }
