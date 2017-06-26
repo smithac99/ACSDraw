@@ -1584,7 +1584,7 @@ NSString *xHTMLString2 = @"<html>\n";
 	if (reply < 2)
 	   {
 		if (reply == 0)				//OK
-			[self sizeToObjectsHPad:[hPaddingField intValue] vPad:[vPaddingField intValue]];
+			[self sizeToObjectsHPad:(int)[[NSUserDefaults standardUserDefaults]integerForKey:@"hPadding"] vPad:(int)[[NSUserDefaults standardUserDefaults]integerForKey:@"vPadding"]];
 	   }
 	[NSApp endSheet:_paddingSheet];
    }
@@ -1615,8 +1615,6 @@ NSString *xHTMLString2 = @"<html>\n";
 	if (!_selectNameSheet)
 	{
 		[[NSBundle mainBundle]loadNibNamed:@"DocPadding" owner:self topLevelObjects:nil];
-		[vPaddingField setIntValue:20];
-		[hPaddingField setIntValue:20];
 	}
     [NSApp beginSheet: _selectNameSheet
 	   modalForWindow: [[self frontmostMainWindowController] window]
@@ -1630,8 +1628,6 @@ NSString *xHTMLString2 = @"<html>\n";
 	if (!_paddingSheet)
 	   {
 		[[NSBundle mainBundle] loadNibNamed:@"DocPadding" owner:self topLevelObjects:nil];
-		[vPaddingField setIntValue:20];
-		[hPaddingField setIntValue:20];
 	   }
     [NSApp beginSheet: _paddingSheet
 	   modalForWindow: [[self frontmostMainWindowController] window]

@@ -1631,6 +1631,39 @@ float normalisedAngle(float ang)
 	return (NSInteger)[p elementCount];
 }
 
+-(ACSDFill*)chosenFillOptions:(NSMutableDictionary*)options
+{
+	ACSDFill *thisfill = fill;
+	if (parent && [self.name hasPrefix:@"col"])
+	{
+		ACSDGroup *primoGenitor = [self primogenitor];
+		if (primoGenitor && [primoGenitor fill] && primoGenitor.colourMode == COLOUR_MODE_SUB)
+			thisfill = [primoGenitor fill];
+	}
+	ACSDFill *subfill = options[@"subfill"];
+	if (subfill && [self.name hasPrefix:@"col"])
+	{
+		if ([options[@"subfill"] isKindOfClass:[ACSDGradient class]])
+		{
+			ACSDGradient *gr = (ACSDGradient*)options[@"subfill"];
+			NSArray<GradientElement*> *grels = [gr gradientElements];
+			NSString *nm = [self.name substringFromIndex:3];
+			NSInteger i = [nm integerValue];
+			if (i > 0 && i <= [grels count])
+			{
+				NSColor *c = [grels[i-1] colour];
+				thisfill = [[ACSDFill alloc]initWithColour:c];
+			}
+		}
+		else
+		{
+			if ([subfill colour])
+				thisfill = options[@"subfill"];
+		}
+	}
+	return thisfill;
+}
+
 - (void)drawObject:(NSRect)aRect view:(GraphicView*)gView options:(NSMutableDictionary*)options
 {
     NSBezierPath *path;
@@ -1640,18 +1673,7 @@ float normalisedAngle(float ang)
         path = [self outlinePath];
     if ([self totalElementCount:path] < 2)
         return;
-    ACSDFill *thisfill = fill;
-    if (parent && [self.name hasPrefix:@"col"])
-    {
-        ACSDGroup *primoGenitor = [self primogenitor];
-        if (primoGenitor && [primoGenitor fill] && primoGenitor.colourMode == COLOUR_MODE_SUB)
-            thisfill = [primoGenitor fill];
-    }
-    ACSDFill *subfill = options[@"subfill"];
-    if (subfill && [subfill colour] && [self.name hasPrefix:@"col"])
-    {
-        thisfill = options[@"subfill"];
-    }
+    ACSDFill *thisfill = [self chosenFillOptions:options];
     if (thisfill)
         [thisfill fillPath:path];
     if ([stroke colour])
