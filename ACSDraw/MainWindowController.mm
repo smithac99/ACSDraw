@@ -143,8 +143,8 @@ NSRect CentreRectInRect(NSRect movableRect,NSRect fixedRect)
 	[graphicView setPostsFrameChangedNotifications:YES];
 	[graphicView setFrameSize:[[self document] documentSize]];
 	[graphicView setBoundsSize:[[self document] documentSize]];
-	if ([[self document]fileName])
-		[[self window] setFrameUsingName:[[self document]fileName]];
+	if ([[[self document]fileURL]path])
+		[[self window] setFrameUsingName:[[[self document]fileURL]path]];
 	[self adjustWindowSize];
 	[graphicView setNeedsDisplay:YES];
 	[[self window]setAcceptsMouseMovedEvents:YES];
@@ -203,7 +203,7 @@ NSRect CentreRectInRect(NSRect movableRect,NSRect fixedRect)
 {
     if ([aNotification object]!= [self window])
         return;
-    NSString *fname = [[self document]fileName];
+    NSString *fname = [[[self document]fileURL]path];
     if (fname == nil)
         fname = @"__unsaved";
     [[self window] saveFrameUsingName:fname];
@@ -213,7 +213,7 @@ NSRect CentreRectInRect(NSRect movableRect,NSRect fixedRect)
 {
     if ([aNotification object]!= [self window])
         return;
-    NSString *fname = [[self document]fileName];
+    NSString *fname = [[[self document]fileURL]path];
     if (fname == nil)
         fname = @"__unsaved";
     [[self window] saveFrameUsingName:fname];
