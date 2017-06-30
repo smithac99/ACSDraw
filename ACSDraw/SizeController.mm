@@ -247,7 +247,7 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 	if ([self inspectingGraphicView])
 	{
 		for (ACSDGraphic *g in [[[self inspectingGraphicView] selectedGraphics]allObjects])
-			if ([g link]!=nil)
+			//if ([g link]!=nil)
 			{
 				self.alignButton.hidden = NO;
 				int val = g.linkAlignmentFlags;
