@@ -556,16 +556,21 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
 		NSString *attrkey=@"",*attr=@"";
 		for (NSString *str in strs)
 		{
-			NSRange r = [str rangeOfString:@"\t"];
-			if (r.location == NSNotFound)
-				attrkey = str;
-			else
+			NSArray *comps = [str componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\t="]];
+			if ([comps count] > 0)
 			{
-				attrkey = [str substringToIndex:r.location];
-				if (r.location + 1 < [str length])
-					attr = [str substringFromIndex:r.location + 1];
-			}
+				if ([comps count] > 1)
+				{
+					attrkey = comps[0];
+					attr = comps[1];
+					attr = [attr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+				}
+				else
+				{
+					attrkey = comps[0];
+				}
 				[page uSetAttributeValue:attr forName:attrkey notify:NO];
+			}
 		}
 		[self.attributeTableView reloadData];
 		[[[self inspectingGraphicView] undoManager] setActionName:@"Paste Attributes"];
