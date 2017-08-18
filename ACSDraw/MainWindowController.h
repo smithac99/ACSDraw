@@ -27,6 +27,7 @@ CGColorSpaceRef getRGBColorSpace();
 	IBOutlet NSTextField *genTextField,*genTextTitle;
 	IBOutlet NSTextField *renameTextField,*renameStartFromTextField;
 	IBOutlet NSTextField *regexpPattern,*regexpTemplate,*regexpMsg;
+    IBOutlet NSPopUpButton *regexpScope;
     IBOutlet NSMatrix *renameOrderByMatrix;
     IBOutlet NSButton *renameRowDescendingCB,*renameColDescendingCB;
 	

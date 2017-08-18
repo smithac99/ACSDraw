@@ -854,7 +854,32 @@ static NSMutableArray *parseRenameString(NSString* str)
 }
 
 #pragma mark
+#define SCOPE_SELECTION 0
+#define SCOPE_LAYER 1
+#define SCOPE_PAGE 2
+#define SCOPE_GLOBAL 3
 
+-(NSArray<ACSDGraphic*>*)graphicsForScope:(int)scope
+{
+    if (scope == SCOPE_SELECTION)
+        return [[[self graphicView] selectedGraphics]allObjects];
+    if (scope == SCOPE_LAYER)
+        return [[[self graphicView]currentEditableLayer]graphics];
+    NSMutableArray<ACSDPage*>* pges = [NSMutableArray array];
+    NSMutableArray<ACSDGraphic*>* graphics = [NSMutableArray array];
+    if (scope == SCOPE_PAGE)
+        [pges addObject:[[self graphicView]currentPage]];
+    else
+        [pges addObjectsFromArray:pages];
+    for (ACSDPage *p in pges)
+    {
+        for (ACSDLayer *l in [p layers])
+        {
+            [graphics addObjectsFromArray:[l graphics]];
+        }
+    }
+    return graphics;
+}
 -(IBAction)previewRename:(id)sender
 {
     [self.renameRegexpSheet makeFirstResponder:nil];
@@ -872,7 +897,8 @@ static NSMutableArray *parseRenameString(NSString* str)
     }
     if (regexp)
     {
-        NSArray<ACSDGraphic*> *selGraphics = [[[self graphicView] selectedGraphics]allObjects];
+        int scopeIdx = (int)[regexpScope indexOfSelectedItem];
+        NSArray<ACSDGraphic*> *selGraphics = [self graphicsForScope:scopeIdx];
         int noChanged = 0;
         NSMutableString *ms = [[NSMutableString alloc]init];
         for (ACSDGraphic *g in selGraphics)
@@ -908,7 +934,8 @@ static NSMutableArray *parseRenameString(NSString* str)
 		}
 		if (regexp)
 		{
-			int ct = [[self graphicView]renameSelectedGraphicsUsingRegularExpression:regexp template:[regexpTemplate stringValue]];
+            int scopeIdx = (int)[regexpScope indexOfSelectedItem];
+            int ct = [[self graphicView]renameGraphics:[self graphicsForScope:scopeIdx] usingRegularExpression:regexp template:[regexpTemplate stringValue]];
 			[regexpMsg setStringValue:[NSString stringWithFormat:@"%d objects renamed",ct]];
 		}
 	}

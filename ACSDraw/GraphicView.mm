@@ -3559,6 +3559,21 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[self undoManager] setActionName:@"Link"];
    }
 
+-(IBAction)sizeToWidth:(id)sender
+{
+    float viewwidth = [self bounds].size.width;
+    BOOL changed = NO;
+    for (ACSDGraphic *g in [self selectedGraphics])
+    {
+        float w = [g bounds].size.width;
+        float sc = viewwidth / w;
+        changed = [g setGraphicXScale:sc notify:YES] || changed;
+        changed = [g setGraphicYScale:sc notify:YES] || changed;
+    }
+    if (changed)
+        [[self undoManager]setActionName:@"Scale to Width"];
+}
+
 - (IBAction)closePolygonSheet: (id)sender
    {
     int reply = (int)[sender tag];
@@ -6788,11 +6803,10 @@ NSString *IncrementString(NSString *str)
     return str;
 }
 
--(int)renameSelectedGraphicsUsingRegularExpression:(NSRegularExpression*)regexp template:(NSString*)templateString
+-(int)renameGraphics:(NSArray*)grphs usingRegularExpression:(NSRegularExpression*)regexp template:(NSString*)templateString
 {
-	NSArray<ACSDGraphic*> *selGraphics = [[self selectedGraphics]allObjects];
 	int numberDone = 0;
-	for (ACSDGraphic *g in selGraphics)
+	for (ACSDGraphic *g in grphs)
 	{
 		NSString *nm = [g name];
 		if ([regexp numberOfMatchesInString:nm options:0 range:NSMakeRange(0, [nm length])])
@@ -6807,6 +6821,13 @@ NSString *IncrementString(NSString *str)
 		[[self undoManager]setActionName:@"Rename"];
 	return numberDone;
 }
+
+-(int)renameSelectedGraphicsUsingRegularExpression:(NSRegularExpression*)regexp template:(NSString*)templateString
+{
+    NSArray<ACSDGraphic*> *selGraphics = [[self selectedGraphics]allObjects];
+    return [self renameGraphics:selGraphics usingRegularExpression:regexp template:templateString];
+}
+
 -(void)renameSelectedGraphicsUsingParams:(NSMutableArray*)params startA:(NSString*)starta startN:(int)startN orderBy:(int)orderBy rowAscending:(BOOL)rowAscending colAscending:(BOOL)colAscending
 {
     NSArray *selGraphics;
