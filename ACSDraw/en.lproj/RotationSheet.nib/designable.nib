@@ -1055,6 +1055,23 @@ Gw
                             <binding destination="LH9-hf-3dm" name="selectedIndex" keyPath="values.regexpscope" id="T6n-1E-rrw"/>
                         </connections>
                     </popUpButton>
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" id="hrL-Kv-nnJ">
+                        <rect key="frame" x="442" y="311" width="59" height="26"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="/" bezelStyle="rounded" alignment="right" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="3nP-6Z-C4a">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" title="/" id="BsR-Ob-z5z">
+                                <items>
+                                    <menuItem title="/" state="on" hidden="YES" id="lKi-hk-Qip"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <action selector="regexpHistoryPopUpHit:" target="-2" id="1a4-nM-Hyw"/>
+                            <binding destination="LH9-hf-3dm" name="contentValues" keyPath="values.regexppopup" id="b1Y-hN-oyw"/>
+                        </connections>
+                    </popUpButton>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="wXX-JR-Anf">
                         <rect key="frame" x="18" y="277" width="108" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>

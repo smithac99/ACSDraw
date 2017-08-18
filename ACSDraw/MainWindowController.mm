@@ -924,9 +924,9 @@ static NSMutableArray *parseRenameString(NSString* str)
 		NSString *pattern = [regexpPattern stringValue];
 		[[NSUserDefaults standardUserDefaults] setObject:pattern forKey:prefsRegexpPattern];
 		[[NSUserDefaults standardUserDefaults] setObject:[regexpTemplate stringValue] forKey:prefsRegexpTemplate];
-		pattern = [NSString stringWithFormat:@"^%@$",pattern];
+		NSString *patternx = [NSString stringWithFormat:@"^%@$",pattern];
 		NSError *err = nil;
-		NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:&err];
+		NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:patternx options:0 error:&err];
 		if (err)
 		{
 			[regexpMsg setStringValue:[err localizedDescription]];
@@ -936,6 +936,23 @@ static NSMutableArray *parseRenameString(NSString* str)
 		{
             int scopeIdx = (int)[regexpScope indexOfSelectedItem];
             int ct = [[self graphicView]renameGraphics:[self graphicsForScope:scopeIdx] usingRegularExpression:regexp template:[regexpTemplate stringValue]];
+            NSArray *a = [[NSUserDefaults standardUserDefaults]arrayForKey:@"regexppopup"];
+            NSLog(@"%@",a);
+            if (a == nil)
+            {
+                a = [NSMutableArray arrayWithObject:@"/"];
+            }
+            NSMutableArray *marr = [a mutableCopy];
+            NSString *newstr = [NSString stringWithFormat:@"%@ --> %@",pattern,[regexpTemplate stringValue]];
+            if ([marr containsObject:newstr])
+                [marr removeObject:newstr];
+            if ([marr count] == 1)
+                [marr addObject:newstr];
+            else
+                [marr insertObject:newstr atIndex:1];
+            while ([marr count] > 10)
+                [marr removeLastObject];
+            [[NSUserDefaults standardUserDefaults]setObject:marr forKey:@"regexppopup"];
 			[regexpMsg setStringValue:[NSString stringWithFormat:@"%d objects renamed",ct]];
 		}
 	}
@@ -943,6 +960,19 @@ static NSMutableArray *parseRenameString(NSString* str)
 		[NSApp endSheet:_renameRegexpSheet];
 }
 
+-(IBAction)regexpHistoryPopUpHit:(id)sender
+{
+    int idx = (int)[sender indexOfSelectedItem];
+    NSArray *a = [[NSUserDefaults standardUserDefaults]arrayForKey:@"regexppopup"];
+    if (a == nil || idx >= [a count])
+        return;
+    NSString *s = a[idx];
+    NSRange r = [s rangeOfString:@" --> "];
+    if (r.location == NSNotFound)
+        return;
+    [regexpPattern setStringValue:[s substringToIndex:r.location]];
+    [regexpTemplate setStringValue:[s substringFromIndex:r.location + r.length]];
+}
 - (void)regexpSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
 {
 	[_renameRegexpSheet orderOut:self];
