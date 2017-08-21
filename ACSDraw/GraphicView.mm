@@ -5863,6 +5863,32 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	[[self undoManager] setActionName:@"Reopen Path"];
 }
 
+-(void)uSetSubPathClosed:(ACSDSubPath*)sp path:(ACSDPath*)path closed:(BOOL)closed
+{
+    [[[self undoManager] prepareWithInvocationTarget:self] uSetSubPathClosed:sp path:path closed:[sp isClosed]];
+    [sp setIsClosed:closed];
+    [path generatePath];
+    [path completeRebuild];
+
+}
+
+-(void)closeCreatingPath:(ACSDPath*)path
+{
+    if (path)
+    {
+        ACSDSubPath *sp = [path subPaths][0];
+        ACSDPathElement *pe = [sp pathElements][0];
+        if ([pe hasPostControlPoint])
+        {
+            ACSDPathElement *newpe = [pe copy];
+            [newpe setPreCPFromPostCP];
+            
+            [path uChangeElement:pe point:[pe point] preControlPoint:[newpe preControlPoint] postControlPoint:[newpe postControlPoint] hasPreControlPoint:YES hasPostControlPoint:YES isLineToPoint:YES controlPointsContinuous:YES];
+        }
+        [self uSetSubPathClosed:sp path:path closed:YES];
+        [[self undoManager]setActionName:@"Close Path"];
+    }
+}
 - (void)closePath:(id)sender
    {
 	if([[[self selectedGraphics]allObjects]orMakeAllObjectsPerformSelector:@selector(uSetSubPathsIsClosedTo:) withObject:[NSNumber numberWithBool:YES]])
@@ -6544,6 +6570,17 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         [self toggleShowPathDirection:self];
     else if ([str isEqualToString:@"§"])
         [[ToolWindowController sharedToolWindowController:nil] selectLastTool];
+    else if ([str isEqualToString:@"c"])
+    {
+        if (creatingPath)
+        {
+            ACSDPath *p = (ACSDPath*)creatingPath;
+            [self cancelOp:self];
+            [self closeCreatingPath:p];
+        }
+        else
+            [self interpretKeyEvents:[NSArray arrayWithObject:event]];
+    }
 	else
 		[self interpretKeyEvents:[NSArray arrayWithObject:event]];
 }

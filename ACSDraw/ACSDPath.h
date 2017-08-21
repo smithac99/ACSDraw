@@ -119,6 +119,10 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath);
 -(KnobDescriptor)elementAfter:(KnobDescriptor)kd;
 -(BOOL)selectNextElement;
 -(BOOL)selectPrevElement;
+- (void)uChangeElement:(ACSDPathElement*)el point:(NSPoint)pt preControlPoint:(NSPoint)preCP postControlPoint:(NSPoint)postCP
+    hasPreControlPoint:(BOOL) hasPreCP hasPostControlPoint:(BOOL)hasPostCP isLineToPoint:(BOOL)iltp
+controlPointsContinuous:(BOOL) cpc;
+
 
 
 @end
