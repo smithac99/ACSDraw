@@ -5866,10 +5866,11 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 -(void)uSetSubPathClosed:(ACSDSubPath*)sp path:(ACSDPath*)path closed:(BOOL)closed
 {
     [[[self undoManager] prepareWithInvocationTarget:self] uSetSubPathClosed:sp path:path closed:[sp isClosed]];
+    [self invalidateGraphic:path];
     [sp setIsClosed:closed];
     [path generatePath];
     [path completeRebuild];
-
+    [self invalidateGraphic:path];
 }
 
 -(void)closeCreatingPath:(ACSDPath*)path
