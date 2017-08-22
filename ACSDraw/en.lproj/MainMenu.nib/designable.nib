@@ -1229,7 +1229,7 @@ CA
                             <menuItem title="Previous Page" keyEquivalent="b" id="Kcn-39-qK3">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="nextPage:" target="-1" id="TJi-el-GJF"/>
+                                    <action selector="prevPage:" target="-1" id="Vmi-6u-5o0"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="oeJ-nq-L5j"/>
@@ -1677,7 +1677,7 @@ CA
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <color key="backgroundColor" red="0.32005053999999999" green="0.91925579000000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <size key="cellSize" width="32" height="32"/>
-                        <buttonCell key="prototype" type="square" bezelStyle="shadowlessSquare" image="556C91E0-2777-4B15-9D1E-D3E4D963B0D1" imagePosition="only" alignment="left" tag="-1" id="989">
+                        <buttonCell key="prototype" type="square" bezelStyle="shadowlessSquare" image="ECAB7EF0-D892-43BF-979D-DFB3490196EA" imagePosition="only" alignment="left" tag="-1" id="989">
                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                             <font key="font" metaFont="label"/>
                         </buttonCell>
@@ -1737,7 +1737,7 @@ CA
                                     <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="label"/>
                                 </buttonCell>
-                                <buttonCell type="square" bezelStyle="shadowlessSquare" image="556C91E0-2777-4B15-9D1E-D3E4D963B0D1" imagePosition="only" alignment="left" tag="-1" id="742">
+                                <buttonCell type="square" bezelStyle="shadowlessSquare" image="ECAB7EF0-D892-43BF-979D-DFB3490196EA" imagePosition="only" alignment="left" tag="-1" id="742">
                                     <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="label"/>
                                 </buttonCell>
@@ -1822,7 +1822,7 @@ CA
         <userDefaultsController representsSharedInstance="YES" id="1098"/>
     </objects>
     <resources>
-        <image name="556C91E0-2777-4B15-9D1E-D3E4D963B0D1" width="1" height="1">
+        <image name="ECAB7EF0-D892-43BF-979D-DFB3490196EA" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPT5YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQrLjE3OlUkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw

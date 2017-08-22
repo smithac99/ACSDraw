@@ -209,6 +209,7 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
 - (IBAction)pageTitleHit:(id)sender
 {
 	[[self inspectingGraphicView] changePageTitle:[pageTitle stringValue]];
+    [[pageTableView window]makeFirstResponder:pageTableView];
     [pageTableView reloadData];
 }
 
@@ -543,6 +544,20 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
 	return 0;
 }
 
+- (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    if (tableView == pageTableView)
+    {
+        __weak NSWindow *w = [pageTableView window];
+        __weak id pt = pageTitle;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [w makeFirstResponder:pt];
+        });
+        return NO;
+    }
+    return YES;
+}
 #pragma mark -
 
 -(IBAction)pasteAttributes:(id)sender

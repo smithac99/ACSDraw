@@ -92,35 +92,42 @@
                 <menuItem isSeparatorItem="YES" id="50">
                     <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                 </menuItem>
-                <menuItem title="Align Left Edges" tag="405" id="51">
-                    <connections>
-                        <action selector="alignLeftEdges:" target="-1" id="67"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Align Right Edges" tag="406" id="52">
-                    <connections>
-                        <action selector="alignRightEdges:" target="-1" id="61"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Align Top Edges" tag="407" id="53">
-                    <connections>
-                        <action selector="alignTopEdges:" target="-1" id="65"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Align Bottom Edges" tag="408" id="54">
-                    <connections>
-                        <action selector="alignBottomEdges:" target="-1" id="62"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Align Vertical Centres" tag="409" id="55">
-                    <connections>
-                        <action selector="alignVerticalCentres:" target="-1" id="60"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Align Horizontal Centres" tag="410" id="56">
-                    <connections>
-                        <action selector="alignHorizontalCentres:" target="-1" id="64"/>
-                    </connections>
+                <menuItem title="Align" id="ii3-7X-UO8">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Align" id="LQB-Vf-qnP">
+                        <items>
+                            <menuItem title="Align Left Edges" tag="405" id="Nse-3v-qvA">
+                                <connections>
+                                    <action selector="alignLeftEdges:" target="-1" id="N45-M4-08P"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Align Right Edges" tag="406" id="52">
+                                <connections>
+                                    <action selector="alignRightEdges:" target="-1" id="61"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Align Top Edges" tag="407" id="53">
+                                <connections>
+                                    <action selector="alignTopEdges:" target="-1" id="65"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Align Bottom Edges" tag="408" id="54">
+                                <connections>
+                                    <action selector="alignBottomEdges:" target="-1" id="62"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Align Vertical Centres" tag="409" id="55">
+                                <connections>
+                                    <action selector="alignVerticalCentres:" target="-1" id="60"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Align Horizontal Centres" tag="410" id="56">
+                                <connections>
+                                    <action selector="alignHorizontalCentres:" target="-1" id="64"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="57">
                     <modifierMask key="keyEquivalentModifierMask" command="YES"/>
