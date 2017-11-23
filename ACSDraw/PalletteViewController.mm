@@ -51,6 +51,12 @@
 	return c;
 }
 
+-(float)checkY:(float)y
+{
+    if (y > 40)
+        return y;
+    return 40;
+}
 -(void)createPanels
 {
 	NSRect  screenFrame = [[NSScreen mainScreen]visibleFrame];
@@ -65,7 +71,7 @@
 	[[c window]setFrameTopRightPoint:nextTopRight];
 	[[c window] orderFront:self];
 	[self.sizeController adjustKeyLoop];
-	nextTopRight.y -= [[c window]frame].size.height;
+	nextTopRight.y = [self checkY:nextTopRight.y -[[c window]frame].size.height];
 	c = [self createPanel];
 	[c registerViewController:self.strokeController];
 	[controllerDict setObject:c forKey:[self.strokeController title]];
@@ -75,7 +81,7 @@
 	[controllerDict setObject:c forKey:[self.shadowController title]];
 	[[c window]setFrameTopRightPoint:nextTopRight];
 	[[c window] orderFront:self];
-	nextTopRight.y -= [[c window]frame].size.height;
+    nextTopRight.y = [self checkY:nextTopRight.y -[[c window]frame].size.height];
 	c = [self createPanel];
 	[c registerViewController:self.triggerController];
 	[controllerDict setObject:c forKey:[self.triggerController title]];
@@ -85,7 +91,7 @@
 	[controllerDict setObject:c forKey:[self.textController title]];
 	[[c window]setFrameTopRightPoint:nextTopRight];
 	[[c window] orderFront:self];
-	nextTopRight.y -= [[c window]frame].size.height;
+    nextTopRight.y = [self checkY:nextTopRight.y -[[c window]frame].size.height];
 	c = [self createPanel];
 	[c registerViewController:self.animationsController];
 	[controllerDict setObject:c forKey:[self.animationsController title]];
@@ -95,7 +101,7 @@
     [controllerDict setObject:c forKey:[self.graphicOtherController title]];
     [[c window]setFrameTopRightPoint:nextTopRight];
     [[c window] orderFront:self];
-	nextTopRight.y -= [[c window]frame].size.height;
+    nextTopRight.y = [self checkY:nextTopRight.y -[[c window]frame].size.height];
 }
 
 -(void)activateController:(ViewController*)v

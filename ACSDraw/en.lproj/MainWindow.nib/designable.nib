@@ -145,23 +145,32 @@
                 <menuItem isSeparatorItem="YES" id="2py-0a-oXi">
                     <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                 </menuItem>
-                <menuItem title="Centre Vertically" tag="409" id="63f-Wi-53a">
+                <menuItem title="Centre Vertically" tag="409" keyEquivalent="v" id="63f-Wi-53a">
+                    <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="centreVertically:" target="-1" id="VAI-HD-Bdw"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Centre Horizontally" tag="409" id="n2b-ud-qrG">
+                <menuItem title="Centre Horizontally" tag="409" keyEquivalent="h" id="n2b-ud-qrG">
+                    <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="centreHorizontally:" target="-1" id="hck-gE-98y"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Size to Width" tag="409" id="34H-SX-AI5">
+                <menuItem title="Size to Width" tag="409" keyEquivalent="w" id="34H-SX-AI5">
+                    <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="sizeToWidth:" target="-1" id="JDU-8I-Ilj"/>
                     </connections>
                 </menuItem>
+                <menuItem title="Create Bounding Box" id="kAA-fi-6eh">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="createBoundingBox:" target="21" id="0AV-bz-Q2f"/>
+                    </connections>
+                </menuItem>
             </items>
-            <point key="canvasLocation" x="513" y="432"/>
+            <point key="canvasLocation" x="513" y="441.5"/>
         </menu>
     </objects>
 </document>

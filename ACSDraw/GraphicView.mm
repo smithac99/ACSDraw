@@ -6303,7 +6303,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 			return NO;
 		return YES;
 	}
-	if (action == @selector(cropToRectangle:))
+	if (action == @selector(cropToRectangle:) || action == @selector(createBoundingBox:) || action == @selector(sizeToWidth:))
 	{
 		return [[self selectedGraphics]count] > 0;
 	}
@@ -6917,5 +6917,29 @@ NSString *IncrementString(NSString *str)
         [g setGraphicName:currentName];
      }
 }
+
+-(IBAction)createBoundingBox:(id)sender
+{
+    NSArray *elementArray = [[self selectedGraphics] allObjects];
+    if ([elementArray count] == 0)
+        return;
+    CGRect r = CGRectNull;
+    for (ACSDGraphic *g in elementArray)
+        r = CGRectUnion(r, [g transformedBounds]);
+    creatingGraphic = [[ACSDRect alloc] initWithName:[ACSDRect nextNameForDocument:[self document]]
+                                                fill:[self defaultFill] stroke:[self defaultStroke] rect:r layer:[self currentEditableLayer]];
+    [creatingGraphic setShadowType:[self defaultShadow]];
+    [[[self currentEditableLayer] graphics] addObject:[[self document]registerObject:creatingGraphic]];
+    [self selectGraphic:creatingGraphic];
+    [[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
+    [[self undoManager] setActionName:@"Create Bounding Box"];
+    [[self window] invalidateCursorRectsForView:self];
+    [self reCalcHandleBitsIgnoreSelected:NO];
+    [creatingGraphic release];
+    creatingGraphic = nil;
+    [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
+
+}
+
 
 @end
