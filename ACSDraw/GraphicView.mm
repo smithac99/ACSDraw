@@ -1528,6 +1528,11 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
    }
 
 - (ACSDGraphic*)graphicUnderPoint:(NSPoint)point extending:(BOOL)extending
+{
+    return [self graphicUnderPoint:point extending:extending nonEditableLayers:NO];
+}
+
+- (ACSDGraphic*)graphicUnderPoint:(NSPoint)point extending:(BOOL)extending nonEditableLayers:(BOOL)nonEditableLayers
    {
 	if (extending)
 	   {
@@ -1548,7 +1553,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	   {
 		for (ACSDLayer *layer in [[self currentPage] layers])
 		   {
-			if ([layer visible] && [layer editable] && (layer == [self currentEditableLayer] || ![layer isGuideLayer]))
+			if ([layer visible] && (nonEditableLayers ||[layer editable]) && (layer == [self currentEditableLayer] || ![layer isGuideLayer]))
 			   {
 				for (ACSDGraphic *curGraphic in [[layer graphics]reverseObjectEnumerator])
 					if ([self mouse:point inRect:[curGraphic displayBounds]] && [curGraphic hitTest:point isSelected:[self graphicIsSelected:curGraphic]view:self])
@@ -2251,7 +2256,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	   {
 		if (NSPointInRect(coord,[self visibleRect]))
 		   {
-			ACSDGraphic *g = [self graphicUnderPoint:coord extending:NO];
+			ACSDGraphic *g = [self graphicUnderPoint:coord extending:NO nonEditableLayers:YES];
 			   if (g == nil)
 				   g = [self masterGraphicUnderPoint:coord];
 			if (g &&  ([g isKindOfClass:[ACSDText class]] || (![[[self document]linkGraphics] containsObject:g])))
