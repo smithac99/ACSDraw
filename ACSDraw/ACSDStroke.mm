@@ -304,7 +304,7 @@
 		if (self.lineCap == 1)
 			lcString = @"round";
 		else 
-			lcString = @"bevel";
+			lcString = @"square";
 		[[svgWriter contents]appendFormat:@"stroke-linecap=\"%@\" ",lcString];
 	   }
 	   if (self.lineJoin > 0)
