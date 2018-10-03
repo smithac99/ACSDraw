@@ -8,7 +8,11 @@
 
 #import "ContainerTabSubview.h"
 #import "ContainerPalletteController.h"
-
+@interface ContainerTabSubview()
+{
+    ContainerPalletteController *createdcpc;
+}
+@end
 
 @implementation ContainerTabSubview
 
@@ -99,8 +103,19 @@
 	[string release];
 }
 
+-(void)mouseUp:(NSEvent *)event
+{
+    createdcpc = nil;
+}
+
 - (void)mouseDragged:(NSEvent *)theEvent
 {
+    if (createdcpc)
+    {
+        ContainerTabSubview *tsv = [createdcpc tabSubviews][0];
+        [tsv mouseDragged:theEvent];
+        return;
+    }
 	NSRect r;
 	r.size.width = r.size.height = 1.0;
 	r.origin = [theEvent locationInWindow];
@@ -131,8 +146,16 @@
 	r.origin = dragOffset;
 	dragOffset = [[self window]convertRectFromScreen:r].origin;
 	//dragOffset = [[self window]convertScreenToBase:dragOffset];
-	if (([theEvent modifierFlags] & NSCommandKeyMask)!=0)
-		[cpController detachTab:self];
+	if (([theEvent modifierFlags] & NSCommandKeyMask)!=0 && [theEvent window] == [self window])
+    {
+		createdcpc = [cpController detachTab:self];
+        //ContainerTabSubview *tsv = [createdcpc tabSubviews][0];
+        //[tsv mouseDown:theEvent];
+        CGPoint pt = NSPointToCGPoint(NSEvent.mouseLocation);
+        CGEventRef ev = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDown, pt, kCGMouseButtonLeft);
+        CGEventPost(kCGAnnotatedSessionEventTap, ev);
+        CFRelease(ev);
+    }
 }
 
 

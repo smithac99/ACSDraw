@@ -739,6 +739,8 @@ static int MasterLayerCount(ACSDPage *p)
         g *= 255;
         b *= 255;
         [pageString appendFormat:@"colour=\"%d,%d,%d\" ",(int)r,(int)g,(int)b];
+        if (a != 1.0)
+            [pageString appendFormat:@"bgalpha=\"%g\" ",a];
     }
 	[pageString appendString:@">\n"];
 	[options setObject:[indent stringByAppendingString:@"\t"] forKey:xmlIndent];

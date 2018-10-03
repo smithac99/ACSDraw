@@ -152,17 +152,17 @@
 		[pallette orderOut:self];
 }
 
--(void)detachTab:(ContainerTabSubview*)tsv
+-(ContainerPalletteController*)detachTab:(ContainerTabSubview*)tsv
 {
 	NSUInteger i = [tabSubviews indexOfObjectIdenticalTo:tsv];
 	if (i == NSNotFound)
-		return;
+		return nil;
 	ViewController *vc = [viewControllers objectAtIndex:i];
 	[self removeTab:tsv];
 	NSRect f = [pallette frame];
 	NSPoint topLeft = f.origin;
 	topLeft.y = NSMaxY(f);
-	[[PalletteViewController sharedPalletteViewController]newPanelWithController:vc atTopLeft:topLeft];
+	return [[PalletteViewController sharedPalletteViewController]newPanelWithController:vc atTopLeft:topLeft];
 }
 
 -(void)tabHit:(ContainerTabSubview*)tsv
@@ -211,4 +211,8 @@
 	return nil;
 }
 
+-(NSArray*)tabSubviews
+{
+    return tabSubviews;
+}
 @end
