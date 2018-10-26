@@ -597,4 +597,11 @@
 	return YES;
 }
 
+-(IBAction)showStrokeUsers:(id)sender
+{
+    NSArray *strokeList = [self strokeList];
+    ACSDStroke *stroke = [strokeList objectAtIndex:rowForContextualMenu];
+    [[self inspectingGraphicView]selectGraphicsInCurrentLayerFromSet:[stroke graphics]];
+}
+
 @end
