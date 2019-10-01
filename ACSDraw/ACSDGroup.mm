@@ -14,6 +14,7 @@
 #import "ACSDText.h"
 #import "ACSDGroup.h"
 #import "CanvasWriter.h"
+#import "AffineTransformAdditions.h"
 
 @implementation ACSDGroup
 
@@ -290,10 +291,210 @@
 	objectPdfData = [[ObjectPDFData alloc]initWithObject:self];
    }
 
+- (KnobDescriptor)resizeFrameByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain
+{
+    NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
+    [aff appendTransform:[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale]];
+    [aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:rotation]];
+    [aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
+    [aff invert];
+    point = [aff transformPoint:point];
+    BOOL altDown = (([theEvent modifierFlags] & NSAlternateKeyMask)!=0);
+    point.x -= [self bounds].origin.x;
+    point.y -= [self bounds].origin.y;
+    if (point.x < 0.0)
+        point.x = 0;
+    if (point.x > [self bounds].size.width)
+        point.x = [self bounds].size.width;
+    if (point.y < 0.0)
+        point.y = 0;
+    if (point.y > [self bounds].size.height)
+        point.y = [self bounds].size.height;
+    if (leftKnob(kd.knob))
+    {
+        if (point.x >= 0.0 && point.x < [self bounds].size.width)
+        {
+            float widthChange = point.x - NSMinX(frame);
+            frame.origin.x = point.x;
+            frame.size.width -= widthChange;
+            if (altDown)
+                frame.size.width -= widthChange;
+        }
+    }
+    else if (rightKnob(kd.knob))
+    {
+        if (point.x >= 0.0 && point.x < [self bounds].size.width)
+        {
+            float widthChange = NSMaxX(frame) - point.x;
+            frame.size.width = point.x - frame.origin.x;
+            if (altDown)
+                frame.size.width -= widthChange;
+        }
+    }
+    if (upperKnob(kd.knob))
+    {
+        if (point.y >= 0.0 && point.y < [self bounds].size.height)
+        {
+            float heightChange = NSMaxY(frame) - point.y;
+            frame.size.height = point.y - frame.origin.y;
+            if (altDown)
+                frame.size.height -= heightChange;
+        }
+    }
+    else if (lowerKnob(kd.knob))
+    {
+        if (point.y >= 0.0 && point.y < [self bounds].size.height)
+        {
+            float heightChange = point.y - NSMinY(frame);
+            frame.origin.y = point.y;
+            frame.size.height -= heightChange;
+            if (altDown)
+                frame.size.height -= heightChange;
+        }
+    }
+    if (constrain)
+        frame = [self constrainFrame:frame usingKnob:kd.knob];
+    return kd;
+}
+
 - (KnobDescriptor)resizeByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain aroundCentre:(BOOL)aroundCentre
    {
 	return kd;
    }
+
+#define MAGPROP(a) ((a) < 1.0)?(1.0/(a)):(a)
+
+-(NSRect)constrainFrame:(NSRect)newFrame usingKnob:(NSInteger)knob
+{
+    if (originalFrame.size.height == 0.0 || originalFrame.size.width == 0.0)
+        return newFrame;
+    float newX = newFrame.origin.x,
+    newY = newFrame.origin.y,
+    newWidth = newFrame.size.width,
+    newHeight = newFrame.size.height;
+    float xProportion = newWidth / originalFrame.size.width;
+    float yProportion = newHeight / originalFrame.size.height;
+    float xx = MAGPROP(xProportion);
+    float yy = MAGPROP(yProportion);
+    //    if (MAGPROP(yProportion) > MAGPROP(xProportion))
+    if ((knob == UpperMiddleKnob) || (knob == LowerMiddleKnob))
+    {
+        newWidth = originalFrame.size.width * yProportion;
+        if (lowerKnob(knob))
+            newY -=(newHeight - newFrame.size.height);
+    }
+    else if ((knob == MiddleLeftKnob) || (knob == MiddleRightKnob))
+    {
+        newHeight = originalFrame.size.height * xProportion;
+        if (leftKnob(knob))
+            newX -=(newWidth - newFrame.size.width);
+    }
+    else if (yy > xx)
+    {
+        newWidth = originalFrame.size.width * yProportion;
+        if (leftKnob(knob))
+            newX -=(newWidth - newFrame.size.width);
+    }
+    else
+    {
+        newHeight = originalFrame.size.height * xProportion;
+        if (lowerKnob(knob))
+            newY -=(newHeight - newFrame.size.height);
+    }
+    return NSMakeRect(newX,newY,newWidth,newHeight);
+}
+
+- (KnobDescriptor)resizeByMovingKnobn:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain aroundCentre:(BOOL)aroundCentre
+{
+    if ([theEvent type] == NSFlagsChanged)
+    {
+        bounds = originalBounds;
+        frame = originalFrame;
+        [self setGraphicXScale:originalXScale yScale:originalYScale undo:NO];
+    }
+    BOOL commandDown = (([theEvent modifierFlags] & NSCommandKeyMask)!=0);
+    if (commandDown)
+        return [self resizeFrameByMovingKnob:kd toPoint:point event:theEvent constrain:(BOOL)constrain];
+    if (rotation != 0.0)
+    {
+        NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
+        [aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:rotation]];
+        [aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
+        [aff invert];
+        point = [aff transformPoint:point];
+    }
+    BOOL altDown = (([theEvent modifierFlags] & NSAlternateKeyMask)!=0);
+    NSRect tBounds = [self bounds],tFrame = frame;
+    tFrame.origin.x += tBounds.origin.x;
+    tFrame.origin.y += tBounds.origin.y;
+    float xRatio = (NSMidX(tBounds) - NSMinX(tFrame)) / tFrame.size.width;
+    float yRatio = (NSMidY(tBounds) - NSMinY(tFrame)) / tFrame.size.height;
+    if (transform)
+    {
+        NSPoint cp = [self centrePoint];
+        tBounds = [[NSAffineTransform transformWithTranslateXBy:-cp.x yBy:-cp.y] transformRect:tBounds];
+        tBounds = [[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale] transformRect:tBounds];
+        tBounds = [[NSAffineTransform transformWithTranslateXBy:cp.x yBy:cp.y] transformRect:tBounds];
+        //        tFrame = [[NSAffineTransform transformWithTranslateXBy:-(cp.x - NSMinX(bounds)) yBy:-(cp.y - NSMinY(bounds))] transformRect:tFrame];
+        tFrame = [[NSAffineTransform transformWithTranslateXBy:-cp.x yBy:-cp.y] transformRect:tFrame];
+        tFrame = [[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale] transformRect:tFrame];
+        tFrame = [[NSAffineTransform transformWithTranslateXBy:cp.x yBy:cp.y] transformRect:tFrame];
+    }
+    if (leftKnob(kd.knob))
+    {
+        float widthChange = point.x - NSMinX(tFrame);
+        tFrame.origin.x = point.x;
+        tFrame.size.width -= widthChange;
+        if (altDown)
+            tFrame.size.width -= widthChange;
+    }
+    else if (rightKnob(kd.knob))
+    {
+        float widthChange = NSMaxX(tFrame) - point.x;
+        tFrame.size.width = point.x - tFrame.origin.x;
+        if (altDown)
+            tFrame.size.width -= widthChange;
+    }
+    if (tFrame.size.width < 0.0)
+    {
+        kd.knob = [ACSDGraphic flipKnob:kd.knob horizontal:YES];
+        tFrame.size.width = -tFrame.size.width;
+        tFrame.origin.x -= tFrame.size.width;
+        [self flipHorizontally];
+    }
+    if (upperKnob(kd.knob))
+    {
+        float heightChange = NSMaxY(tFrame) - point.y;
+        tFrame.size.height = point.y - tFrame.origin.y;
+        if (altDown)
+            tFrame.size.height -= heightChange;
+    }
+    else if (lowerKnob(kd.knob))
+    {
+        float heightChange = point.y - NSMinY(tFrame);
+        tFrame.origin.y = point.y;
+        tFrame.size.height -= heightChange;
+        if (altDown)
+            tFrame.size.height -= heightChange;
+    }
+    if (tFrame.size.height < 0.0)
+    {
+        kd.knob = [ACSDGraphic flipKnob:kd.knob horizontal:NO];
+        tFrame.size.height = -tFrame.size.height;
+        tFrame.origin.y -= tFrame.size.height;
+        [self flipVertically];
+    }
+    if (constrain)
+        tFrame = [self constrainFrame:tFrame usingKnob:kd.knob];
+    float newX = (xRatio * tFrame.size.width) + NSMinX(tFrame);
+    float newY = (yRatio * tFrame.size.height) + NSMinY(tFrame);
+    float dx = newX - NSMidX(bounds);
+    float dy = newY - NSMidY(bounds);
+    bounds.origin.x += dx;
+    bounds.origin.y += dy;
+    [self setGraphicXScale:tFrame.size.width/frame.size.width yScale:tFrame.size.height/frame.size.height undo:YES];
+    return kd;
+}
 
 -(CGImageRef)createMaskImage:(NSRect)aRect object:(ACSDGraphic*)g
 {

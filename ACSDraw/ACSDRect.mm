@@ -7,10 +7,12 @@
 //
 
 #import "ACSDRect.h"
+#import "ACSDPath.h"
 #import "ACSDShadow.h"
 #import "GraphicView.h"
 #import "SelectionSet.h"
 #import "geometry.h"
+#import "XMLNode.h"
 
 @implementation ACSDRect
 
@@ -40,6 +42,27 @@
 	}
 }
 
++(id)rectangleWithXMLNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack
+{
+    NSDictionary *settings = [settingsStack lastObject];
+    NSRect parentRect = [settings[@"parentrect"]rectValue];
+
+    float x = [xmlnode attributeFloatValue:@"x"];
+    float y = [xmlnode attributeFloatValue:@"y"];
+    float width = [xmlnode attributeFloatValue:@"width"];
+    float height = [xmlnode attributeFloatValue:@"height"];
+    float cornerrad = [xmlnode attributeFloatValue:@"cornerradius"];
+
+    //parentRect = InvertedRect(parentRect, docHeight);
+    width = width * parentRect.size.width;
+    height = height * parentRect.size.height;
+    NSPoint pos = LocationForRect(x, 1 - y, parentRect);
+    ACSDGraphic *r = [[ACSDRect alloc]initWithName:@"" fill:nil stroke:nil rect:NSMakeRect(pos.x, pos.y - height, width, height) layer:nil];
+    if (cornerrad != 0)
+        [((ACSDRect*)r) setCornerRadius:cornerrad * height];
+    //[r setPosition:pos];
+    return r;
+}
 
 -(id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l
    {

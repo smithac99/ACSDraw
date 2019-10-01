@@ -3,6 +3,7 @@
 #import <Cocoa/Cocoa.h>
 #import "GroupViewController.h"
 NSImage *ImageFromFile(NSString* str);
+NSImage *ImageFromFileCG(NSString* str);
 
 @class TOCController;
 @class GraphicView;

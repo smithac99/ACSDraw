@@ -234,7 +234,7 @@ enum GV_Cursor_Mode
 -(void)uGroupGraphicsFromIndexSet:(NSIndexSet*)ixs intoGroup:(ACSDGroup*)gp atIndex:(NSInteger)ind;
 
 - (void)cropToRectangle:(id)sender;
--(void)selectGraphicsInCurrentLayerFromSet:(NSSet*)gset;
+-(void)selectGraphicsInCurrentLayerFromSet:(NSSet*)gset extend:(BOOL)extend;
 -(void)selectGraphicWithName:(NSString*)nm;
 - (void)scaleDocumentBy:(float)f;
 - (void)cancelOp:(id)sender;

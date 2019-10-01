@@ -1659,13 +1659,14 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	[self reCalcHandleBitsIgnoreSelected:NO];
    }
 
--(void)selectGraphicsInCurrentLayerFromSet:(NSSet*)gset
+-(void)selectGraphicsInCurrentLayerFromSet:(NSSet*)gset extend:(BOOL)extend
 {
-	[self clearSelection];
+    if (!extend)
+        [self clearSelection];
 	NSMutableArray *arr = [NSMutableArray arrayWithCapacity:[gset count] + 1];
 	ACSDLayer *l = [self currentEditableLayer];
 	for (ACSDGraphic *g in gset)
-		if ([g layer] == l)
+		if ([g layer] == l && ![g deleted])
 			[arr addObject:g];
 	if ([arr count] > 0)
 	{
@@ -3986,7 +3987,9 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 {
 	NSSize currentsize = [self bounds].size;
 	currentsize.width *= f;
+    currentsize.width = ceilf(currentsize.width);
 	currentsize.height *=f;
+    currentsize.height = ceilf(currentsize.height);
 	[self changeDocumentSize:currentsize];
     for (ACSDStroke *st in [[self document]strokes])
     {
@@ -5067,12 +5070,12 @@ NSInteger findSame(id obj,NSArray *arr)
 	[[self undoManager] setActionName:[sender title]];
 }
 
--(IBAction)outlineStrokeBuiltIn:(id)sender
+-(IBAction)outlineStrokeBuiltInCopy:(id)sender
 {
     NSArray *arr = [self sortedSelectedGraphics];
     if ([arr count] < 1)
         return;
-	[self clearSelection];
+    [self clearSelection];
     for (ACSDGraphic *g in arr)
     {
         NSBezierPath *p = [g bezierPath];
@@ -5084,6 +5087,30 @@ NSInteger findSame(id obj,NSArray *arr)
         [self uInsertGraphic:newPath intoLayer:[self currentEditableLayer] atIndex:[[[self currentEditableLayer]graphics]count]];
         [newPath completeRebuild];
         [self selectGraphic:newPath];
+    }
+    [[self undoManager] setActionName:[sender title]];
+}
+
+-(IBAction)outlineStrokeBuiltIn:(id)sender
+{
+    NSArray *arr = [self sortedSelectedGraphics];
+    if ([arr count] < 1)
+        return;
+    [self clearSelection];
+    for (ACSDGraphic *g in arr)
+    {
+        NSBezierPath *p = [g bezierPath];
+        [p setLineWidth:[[g stroke]lineWidth]];
+        [p setLineCapStyle:[[g stroke]lineCap]];
+        [p setLineJoinStyle:[[g stroke]lineJoin]];
+        NSBezierPath *outp = outlinedStrokePath(p);
+        ACSDPath *newPath = [[[ACSDPath alloc]initWithName:[g name] fill:nil stroke:nil rect:[g bounds] layer:nil bezierPath:outp]autorelease];
+        NSInteger idx = [[[self currentEditableLayer]graphics]indexOfObject:g];
+        //[self uInsertGraphic:newPath intoLayer:[self currentEditableLayer] atIndex:[[[self currentEditableLayer]graphics]count]];
+        [self uInsertGraphic:newPath intoLayer:[self currentEditableLayer] atIndex:idx];
+        [newPath completeRebuild];
+        [self selectGraphic:newPath];
+        [self deleteGraphic:g];
     }
     [[self undoManager] setActionName:[sender title]];
 }
@@ -5369,6 +5396,20 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 {
     [[self window] invalidateCursorRectsForView:self];
     [self reCalcHandleBitsIgnoreSelected:NO];
+}
+
+- (void)copySource:(id)sender
+{
+    NSArray *objs = [[self selectedGraphics]allObjects];
+    if ([objs count] != 1)
+        return;
+    ACSDGraphic *g = objs[0];
+    NSString *s = [g sourcePath];
+    if (s == nil)
+        s = @"";
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+    [pb clearContents];
+    [pb writeObjects:@[s]];
 }
 
 - (void)centreHorizontally:(id)sender
@@ -6299,15 +6340,19 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         return [[self selectedGraphics] count] == 1 && ([[[[self selectedGraphics]allObjects]objectAtIndex:0]link]!=nil);
     if (action == @selector(removeLink:))
         return [[self selectedGraphics] count] > 0 && ([[[[self selectedGraphics]allObjects]objectAtIndex:0]link]!=nil);
+    if (action == @selector(copySource:))
+    {
+        return ([[self selectedGraphics] count] == 1);
+    }
     if (action == @selector(reflectAndJoin:) || action == @selector(reflect:))
-	{
-		if ([[self selectedGraphics] count] != 1)
-			return NO;
-		ACSDGraphic *g = [[[self selectedGraphics]allObjects]objectAtIndex:0];
-		if (![g isKindOfClass:[ACSDPath class]])
-			return NO;
-		return YES;
-	}
+    {
+        if ([[self selectedGraphics] count] != 1)
+            return NO;
+        ACSDGraphic *g = [[[self selectedGraphics]allObjects]objectAtIndex:0];
+        if (![g isKindOfClass:[ACSDPath class]])
+            return NO;
+        return YES;
+    }
 	if (action == @selector(cropToRectangle:) || action == @selector(createBoundingBox:) || action == @selector(sizeToWidth:))
 	{
 		return [[self selectedGraphics]count] > 0;

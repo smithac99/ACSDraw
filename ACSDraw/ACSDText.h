@@ -43,6 +43,7 @@ enum
 
 + (ACSDText*)dupAndFlowText:(ACSDText*)graphic;
 +(void)sortOutLinkedTextGraphics:(ACSDText*)startText;
++(id)textWithXMLNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack;
 - (void)setContents:(id)contents;
 - (NSTextStorage *)contents;
 - (float)flowPad;

@@ -16,6 +16,7 @@ enum
 @interface ACSDGroup : ACSDGraphic
    {
 	NSMutableArray *graphics;
+       NSRect frame,originalFrame;
    }
 
 @property int colourMode;

@@ -32,6 +32,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath);
 
 +(id)pathWithSubPaths:(NSArray*)subPaths;
 +(id)pathWithPath:(NSBezierPath*)p;
++(id)pathWithSVGPath:(NSBezierPath*)p settings:(NSMutableDictionary*)settings;
 +(id)pathWithSVGNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack;
 +(id)polylineWithSVGNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack;
 +(id)polygonWithSVGNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack;

@@ -679,6 +679,24 @@ NSString *ACSDrawDocumentKey = @"documentKey";
         float alpha = [o floatValue];
         settings[@"opacity"] = @(alpha);
     }
+    NSString *r = child.attributes[@"rotation"];
+    if (r != nil)
+    {
+        float rotation = [r floatValue];
+        settings[@"rotation"] = @(rotation);
+    }
+    NSString *sx = child.attributes[@"scalex"];
+    if (sx != nil)
+    {
+        float sxf = [sx floatValue];
+        settings[@"scalex"] = @(sxf);
+    }
+    NSString *sy = child.attributes[@"scaley"];
+    if (sy != nil)
+    {
+        float syf = [sy floatValue];
+        settings[@"scaley"] = @(syf);
+    }
 }
 
 -(NSArray*)svgFunction:(NSString*)str index:(int*)index
@@ -869,6 +887,37 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     }
 }
 
+-(BOOL)loadLayoutXMLData:(NSData*)data
+{
+    XMLManager *xmlman = [[[XMLManager alloc]init]autorelease];
+    XMLNode *root = [xmlman parseData:data];
+    if (![root.nodeName isEqualToString:@"events"])
+        return NO;
+    documentSize.width = 1024;
+    documentSize.height = 768;
+    
+    NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
+    NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithCapacity:10];
+    //ACSDFill *blackFill = [[[ACSDFill alloc]initWithColour:[NSColor blackColor]]autorelease];
+    //[settings setObject:[self fillLikeFill:blackFill] forKey:@"fill"];
+    [settings setObject:[NSMutableDictionary dictionaryWithCapacity:10] forKey:@"defs"];
+    settings[@"docheight"] = @(documentSize.height);
+    NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:0 yBy:documentSize.height];
+    [t scaleXBy:1.0 yBy:-1.0];
+    settings[@"transform"] = t;
+    settings[@"parentrect"] = [NSValue valueWithRect:NSMakeRect(0, 0, documentSize.width, documentSize.height)];
+    [settingsStack addObject:settings];
+
+    NSMutableDictionary *objectDict = [NSMutableDictionary dictionary];
+    [[self pages]removeObjectAtIndex:0];
+    for (XMLNode *eventNode in root.children)
+        [[self pages]addObject:[[ACSDPage alloc]initWithXMLNode:eventNode document:self settingsStack:settingsStack objectDict:objectDict]];
+    [self setFileType:@"acsd"];
+    if ([self fileURL] != nil)
+        [self setFileURL:[NSURL fileURLWithPath:[[[[self fileURL] path]stringByDeletingPathExtension]stringByAppendingPathExtension:@"acsd"]]];
+    return YES;
+}
+
 -(BOOL)loadSVGData:(NSData*)data
 {
     XMLManager *xmlman = [[[XMLManager alloc]init]autorelease];
@@ -897,10 +946,10 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 		}
 	}
     documentSize.width = ceilf([root attributeFloatValue:@"width"]);
-	if (documentSize.width == 0)
+	if (documentSize.width < vbw)
 		documentSize.width = vbw;
     documentSize.height = ceilf([root attributeFloatValue:@"height"]);
-	if (documentSize.height == 0)
+	if (documentSize.height < vbh)
 		documentSize.height = vbh;
     NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
     NSMutableDictionary *svgSettings = [NSMutableDictionary dictionaryWithCapacity:10];
@@ -923,8 +972,10 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 
 -(BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-	if ([[typeName lowercaseString]isEqualToString:@"svg"])
-		return [self loadSVGData:data];
+    if ([[typeName lowercaseString]isEqualToString:@"svg"])
+        return [self loadSVGData:data];
+    if ([[typeName lowercaseString]isEqualToString:@"xml"])
+        return [self loadLayoutXMLData:data];
 	NSKeyedUnarchiver *unarchiver = [[[NSKeyedUnarchiver alloc] initForReadingWithData:data]autorelease];
 	[unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
 	id d = [unarchiver decodeObjectForKey:@"root"];
@@ -958,8 +1009,8 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 		docTitle = [[d objectForKey:docTitleKey]retain];
 		scriptURL = [[d objectForKey:scriptURLKey]retain];
 		additionalCSS = [[d objectForKey:additionalCSSKey]retain];
-		if ((obj = [d objectForKey:ACSDrawDocumentKey]))
-			[self setDocumentKey:obj];
+		//if ((obj = [d objectForKey:ACSDrawDocumentKey]))
+			//[self setDocumentKey:obj];
 		if ((obj = [d objectForKey:pagesKey]))
 			[self setPages:obj];
 		if ((obj = [d objectForKey:nameCountsKey]))

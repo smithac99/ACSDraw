@@ -227,7 +227,10 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
 	ACSDPage *currentPage = [[self inspectingGraphicView] currentPage];
 	if (!currentPage)
 		return;
-	[currentPage uSetBackgroundColour:[sender color]];
+    NSColor *col = [sender color];
+    if ([col alphaComponent] == 0.0)
+        col = nil;
+	[currentPage uSetBackgroundColour:col];
 	[[[self inspectingGraphicView] undoManager] setActionName:@"Set Background Colour"];	
 }
 

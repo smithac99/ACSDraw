@@ -209,6 +209,9 @@
 		[_sourcePath release];
 		_sourcePath = [sourcePath retain];
 		[self updateObjects:[[[self inspectingGraphicView] selectedGraphics]allObjects] withValue:sourcePath forKey:@"sourcePath" changeid:TC_SOURCE_CHANGE	invalidateFlags:0 actionName:@"Change Source"];
+        if ([NSEvent modifierFlags] & NSCommandKeyMask)
+            [[self inspectingGraphicView] reloadImages:[[[self inspectingGraphicView] selectedGraphics]allObjects]];
+
 	}
 }
 

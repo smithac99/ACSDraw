@@ -524,6 +524,20 @@ int orientationOfSource(NSDictionary *properties)
 	return orientation;
 }
 
+NSImage *ImageFromFileCG(NSString* str)
+{
+    CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)[NSURL fileURLWithPath:str],NULL);
+    if (!source)
+        return nil;
+    CGImageRef originalImage = CGImageSourceCreateImageAtIndex(source,0,NULL);
+    size_t originalWidth,originalHeight,newWidth,newHeight;
+    newWidth = originalWidth = CGImageGetWidth(originalImage);
+    newHeight = originalHeight = CGImageGetHeight(originalImage);
+    NSImage *im = [[[NSImage alloc]initWithCGImage:originalImage size:NSMakeSize(newWidth, newHeight)]autorelease];
+    CGImageRelease(originalImage);
+    CFRelease(source);
+    return im;
+}
 NSImage *ImageFromFile(NSString* str)
 {
 	CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)[NSURL fileURLWithPath:str],NULL);

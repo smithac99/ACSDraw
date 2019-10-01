@@ -7,7 +7,7 @@
 //
 
 #import "ACSDGraphic.h"
-
+@class XMLNode;
 
 @interface ACSDRect : ACSDGraphic<ACSDGraphicCornerRadius>
 
@@ -15,5 +15,6 @@
 
 +(id)rectWithRect:(NSRect)r;
 -(id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l;
++(id)rectangleWithXMLNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack;
 
 @end

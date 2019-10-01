@@ -26,7 +26,9 @@ NSString *prefsRenameString = @"ACSDrawRenameString";
 NSString *prefsRenameStartFromString = @"ACSDrawRenameStringStart";
 NSString *prefsRegexpPattern = @"ACSDrawprefsRegexpPattern";
 NSString *prefsRegexpTemplate = @"ACSDrawprefsRegexpTemplate";
+NSString *prefsImageLibs = @"ACSDrawprefsImageLibs";
 
+NSString *ixPBType = @"indexpbtype";
 NSArray *arrayFromColour(NSColor *col);
 NSColor *colourFromArray(NSArray* arr);
 
@@ -56,7 +58,8 @@ NSColor *colourFromArray(NSArray* arr);
                         [NSArchiver archivedDataWithRootObject:[[NSColor redColor]colorWithAlphaComponent:0.25]],prefsPDFLinkColourKey,
                         [NSNumber numberWithInt:BACKGROUND_DRAW_COLOUR],prefsBackgroundType,
                         [NSArchiver archivedDataWithRootObject:[NSColor whiteColor]],prefsBackgroundColour,
-                        [NSNumber numberWithBool:NO],prefsShowPathDirection,
+                       [NSNumber numberWithBool:NO],prefsShowPathDirection,
+                       @[@"/"],prefsImageLibs,
                         nil];
     }
 	return appDefaults;
@@ -280,13 +283,130 @@ NSColor *colourFromArray(NSArray* arr)
 }
 
 -(void)awakeFromNib
-   {
-	[ACSDPrefsController sharedACSDPrefsController:self];
-	[self setValuesFromGuidePrefsUndo:NO];
-	[self setValuesFromSnapPrefsUndo:NO];
-	[self setValuesFromPDFPrefsUndo:NO];
-	[self setOtherValues];
-   }
+{
+    [ACSDPrefsController sharedACSDPrefsController:self];
+    [self setValuesFromGuidePrefsUndo:NO];
+    [self setValuesFromSnapPrefsUndo:NO];
+    [self setValuesFromPDFPrefsUndo:NO];
+    [self setOtherValues];
+    [imageLibTableView registerForDraggedTypes:@[ixPBType]];
+}
 
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    NSArray *libs = [[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs];
+    return [libs count];
+}
+
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    NSArray *libs = [[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs];
+    if (row < [libs count])
+        return libs[row];
+    return nil;
+}
+
+- (BOOL)tablexView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self selectDir:row];
+    });
+    
+    return YES;
+}
+
+- (void)selectDir:(NSInteger)row
+{
+    NSMutableArray *libs = [[[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs]mutableCopy];
+    NSString *path = libs[row];
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setCanChooseDirectories:YES];
+    [panel setCanChooseFiles:NO];
+    NSURL *u = [NSURL fileURLWithPath:path];
+    if (u)
+        [panel setDirectoryURL:u];
+    [panel beginSheetModalForWindow:[self.openAfterExportCB window]
+                  completionHandler:^(NSInteger result)
+     {
+         if (result == NSFileHandlingPanelOKButton)
+         {
+             for (NSURL *url in [panel URLs])
+                 libs[row] = [url path];
+         }
+         [[NSUserDefaults standardUserDefaults]setObject:libs forKey:prefsImageLibs];
+     }];
+}
+- (IBAction)imagePlusHit:(id)sender
+{
+    NSInteger row = [imageLibTableView selectedRow];
+    NSMutableArray *libs = [[[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs]mutableCopy];
+    [libs insertObject:@"/" atIndex:row + 1];
+    [[NSUserDefaults standardUserDefaults]setObject:libs forKey:prefsImageLibs];
+    [imageLibTableView reloadData];
+}
+- (IBAction)imageMinusHit:(id)sender
+{
+    NSInteger row = [imageLibTableView selectedRow];
+    NSMutableArray *libs = [[[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs]mutableCopy];
+    if (row > -1 && row < [libs count])
+    {
+        [libs removeObjectAtIndex:row];
+        [[NSUserDefaults standardUserDefaults]setObject:libs forKey:prefsImageLibs];
+        [imageLibTableView reloadData];
+    }
+}
+
+- (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self selectDir:row];
+    });
+    
+    return NO;
+
+}
+
+- (BOOL)tableView:(NSTableView *)tableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
+{
+    return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes] forType:ixPBType];
+}
+
+- (NSDragOperation)tableView:(NSTableView*)tabView validateDrop:(id <NSDraggingInfo>)info
+                 proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation
+{
+    if (operation == NSTableViewDropOn)
+        return  NSDragOperationNone;
+    else
+        return NSDragOperationMove;
+}
+
+static void MoveRowsFromIndexSetToPosition(NSMutableArray* arr,NSIndexSet *ixs,NSInteger pos)
+{
+    NSArray *temparr = [arr objectsAtIndexes:ixs];
+    NSUInteger ind = [ixs lastIndex];
+    while (ind != NSNotFound && ind >= pos)
+    {
+        [arr removeObjectAtIndex:ind];
+        ind = [ixs indexLessThanIndex:ind];
+    }
+    [arr insertObjects:temparr atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(pos, [temparr count])]];
+    while (ind != NSNotFound)
+    {
+        [arr removeObjectAtIndex:ind];
+        ind = [ixs indexLessThanIndex:ind];
+    }
+}
+
+- (BOOL)tableView:(NSTableView*)aTableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
+{
+    NSPasteboard* pboard = [info draggingPasteboard];
+    NSData* rowData = [pboard dataForType:ixPBType];
+    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+    NSMutableArray *libs = [[[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs]mutableCopy];
+    MoveRowsFromIndexSetToPosition(libs,rowIndexes,row);
+    [[NSUserDefaults standardUserDefaults]setObject:libs forKey:prefsImageLibs];
+    [imageLibTableView reloadData];
+    return YES;
+}
 
 @end

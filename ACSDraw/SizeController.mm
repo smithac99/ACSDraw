@@ -122,6 +122,7 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 			[[self.contentView window]update];
 		}
 	}
+    [self adjustKeyLoop];
 }
 
 -(bool)rebuildRequiredSelectedGraphics:(NSArray*)graphics
@@ -161,7 +162,8 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 	[[sizeHeight cell]setPlaceholderString:s];
 	[[sizeWidth cell]setPlaceholderString:s];
 	[[scaleX cell]setPlaceholderString:s];
-	[[scaleY cell]setPlaceholderString:s];
+    [[scaleY cell]setPlaceholderString:s];
+    [[rotationText cell]setPlaceholderString:s];
 	[[graphicOpacityText cell]setPlaceholderString:s];
 }
 
@@ -334,11 +336,15 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 
 -(IBAction)rotationHit:(id)sender
 {
+    if ([[sender stringValue]isEqual:@""] || [self actionsDisabled])
+        return;
 	self.rotation = [sender floatValue];
 }
 
 -(IBAction)opacityHit:(id)sender
 {
+    if ([[sender stringValue]isEqual:@""] || [self actionsDisabled])
+        return;
 	self.opacity = [sender floatValue];
 }
 
@@ -361,9 +367,20 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 	[positionX setNextKeyView:positionY];
 	[positionY setNextKeyView:sizeWidth];
 	[sizeWidth setNextKeyView:sizeHeight];
+    if ([cornerRadiusView superview] == nil)
+    {
+        [sizeHeight setNextKeyView:rotationText];
+    }
+    else
+    {
+        [sizeHeight setNextKeyView:cornerRadiusText];
+        [cornerRadiusText setNextKeyView:rotationText];
+    }
 	[rotationText setNextKeyView:scaleX];
-	[scaleX setNextKeyView:scaleY];
-	
+    [scaleX setNextKeyView:scaleY];
+    [scaleY setNextKeyView:graphicOpacityText];
+    [graphicOpacityText setNextKeyView:positionX];
+
 }
 - (void)coordinatesChanged:(NSNotification *)notification
 {

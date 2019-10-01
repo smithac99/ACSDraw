@@ -590,7 +590,23 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	float xx = MAGPROP(xProportion);
 	float yy = MAGPROP(yProportion);
 	//	if (MAGPROP(yProportion) > MAGPROP(xProportion))
-	if (yy > xx)
+    if ((knob == UpperMiddleKnob) || (knob == LowerMiddleKnob))
+    {
+        newWidth = originalFrame.size.width * yProportion;
+        float cx = CGRectGetMidX(newFrame);
+        newX = cx - newWidth / 2;
+        if (lowerKnob(knob))
+            newY -=(newHeight - newFrame.size.height);
+    }
+    else if ((knob == MiddleLeftKnob) || (knob == MiddleRightKnob))
+    {
+        newHeight = originalFrame.size.height * xProportion;
+        float cy = CGRectGetMidY(newFrame);
+        newY = cy - newHeight / 2;
+        if (leftKnob(knob))
+            newX -=(newWidth - newFrame.size.width);
+    }
+	else if (yy > xx)
 	{
 		newWidth = originalFrame.size.width * yProportion;
 		if (leftKnob(knob))

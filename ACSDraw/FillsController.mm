@@ -776,9 +776,11 @@ enum
 
 -(IBAction)showFillUsers:(id)sender
 {
+    NSUInteger modifierFlags = [[[staticView window]currentEvent]modifierFlags];
+    BOOL extend = (modifierFlags & NSShiftKeyMask) != 0;
 	NSArray *fillList = [self fillList];
 	ACSDFill *fill = [fillList objectAtIndex:rowForContextualMenu];
-	[[self inspectingGraphicView]selectGraphicsInCurrentLayerFromSet:[fill graphics]];
+	[[self inspectingGraphicView]selectGraphicsInCurrentLayerFromSet:[fill graphics]extend:extend];
 }
 
 
