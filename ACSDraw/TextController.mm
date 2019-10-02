@@ -204,6 +204,8 @@
 
 -(void)setSourcePath:(NSString *)sourcePath
 {
+    if ([sourcePath length] == 0 && [_sourcePath length] == 0)
+        return;
 	if (![sourcePath isEqualToString:_sourcePath])
 	{
 		[_sourcePath release];
