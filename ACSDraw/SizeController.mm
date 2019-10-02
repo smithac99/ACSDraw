@@ -21,7 +21,8 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 {
 	if ((self = [super initWithTitle:@"Size"]))
 	{
-		showsWidth = showsHeight = YES;
+        showsWidth = showsHeight = YES;
+        showsLeft = showsBottom = YES;
 	}
 	return self;
 }
@@ -201,8 +202,8 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 		NSRect r = [g bounds];
 		if ([g moving])
 			r = NSOffsetRect(r,[g moveOffset].x,[g moveOffset].y);
-		[positionX setFloatValue:r.origin.x];
-		[positionY setFloatValue:r.origin.y];
+		//[positionX setFloatValue:r.origin.x];
+		//[positionY setFloatValue:r.origin.y];
 		if (showsHeight)
 			[sizeHeight setFloatValue:r.size.height];
 		else
@@ -211,6 +212,15 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 			[sizeWidth setFloatValue:r.size.width];
 		else
 			[sizeWidth setFloatValue:NSMaxX(r)];
+        if (showsLeft)
+            [positionX setFloatValue:r.origin.x];
+        else
+            [positionX setFloatValue:NSMidX(r)];
+        if (showsBottom)
+            [positionY setFloatValue:r.origin.y];
+        else
+            [positionY setFloatValue:NSMidY(r)];
+
 	}
 }
 
@@ -669,7 +679,10 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
         float f = [sender floatValue];
 		BOOL changed = NO;
 		for (ACSDGraphic *g in selectedGraphics)
-            changed = [g setX:f] || changed;
+            if (showsLeft)
+                changed = [g setX:f] || changed;
+            else
+                changed = [g setCentreX:f] || changed;
 		if (changed)
 			[[[self inspectingGraphicView] undoManager] setActionName:@"Set X"];
 	}
@@ -685,7 +698,10 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
         float f = [sender floatValue];
 		BOOL changed = NO;
 		   for (ACSDGraphic *g in selectedGraphics)
-            changed = [g setY:f] || changed;
+               if (showsBottom)
+                   changed = [g setY:f] || changed;
+               else
+                   changed = [g setCentreY:f] || changed;
 		if (changed)
 			[[[self inspectingGraphicView] undoManager] setActionName:@"Set Y"];
        }
@@ -710,6 +726,26 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 		[heightTop setTitle:@"Top"];
 	[self setGraphicControls];
 }
+- (IBAction)leftXHit:(id)sender
+{
+    showsLeft = !showsLeft;
+    if (showsLeft)
+        [leftX setTitle:@"Left"];
+    else
+        [leftX setTitle:@"X"];
+    [self setGraphicControls];
+}
+
+- (IBAction)bottomYHit:(id)sender
+{
+    showsBottom = !showsBottom;
+    if (showsBottom)
+        [bottomY setTitle:@"Bottom"];
+    else
+        [bottomY setTitle:@"Y"];
+    [self setGraphicControls];
+}
+
 
 -(IBAction)showHideAlignMatrix:(id)sender
 {

@@ -458,6 +458,8 @@ selectedGraphics:(NSSet*)selectedGraphics;
 -(NSMutableSet*)linkedObjects;
 -(int)zDepth;
 -(NSArray*)indexPathFromAncestor:(ACSDGroup*)anc;
+- (BOOL)setCentreX:(float)f;
+- (BOOL)setCentreY:(float)f;
 
 @end
 
