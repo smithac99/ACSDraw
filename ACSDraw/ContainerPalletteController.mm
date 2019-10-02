@@ -148,6 +148,7 @@
 		currentItem--;
 	[self setActiveItem:currentItem];
 	[tsv removeFromSuperview];
+    [self sortOutTabViews];
 	if ([tabSubviews count] < 1)
 		[pallette orderOut:self];
 }

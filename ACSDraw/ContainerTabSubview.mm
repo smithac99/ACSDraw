@@ -70,6 +70,7 @@
 -(void)setActive:(BOOL)b
 {
 	active = b;
+    [self setNeedsDisplay:YES];
 }
 
 -(NSBezierPath*)path
