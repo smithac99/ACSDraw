@@ -549,6 +549,37 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 #pragma mark -
 #pragma mark svg
 
+-(void)setAttributesFromCSSForNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
+{
+    if (child.attributes[@"class"] == nil)
+        return;
+    NSString *currStyles = child.attributes[@"styles"];
+    NSMutableString *styles = [[NSMutableString alloc]initWithString:currStyles?currStyles:@""];
+    NSMutableDictionary *mdict = nil;
+    NSDictionary *definedStyles = settings[@"css"];
+    NSArray *cssclasses = [child.attributes[@"class"] componentsSeparatedByString:@" "];
+    BOOL changed = NO;
+    for (NSString *cssclass in cssclasses)
+    {
+        if (cssclass != nil && [cssclass length] > 0)
+        {
+            NSString *css = definedStyles[cssclass];
+            if (css)
+            {
+                if ([styles length]>0)
+                    [styles appendString:@";"];
+                [styles appendString:css];
+                changed = YES;
+            }
+        }
+    }
+    if (changed)
+    {
+        NSMutableDictionary *mdict = [NSMutableDictionary dictionaryWithDictionary:child.attributes];
+        mdict[@"style"] = styles;
+        child.attributes = mdict;
+    }
+}
 -(void)setAttributesFromStylesForNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
 {
     if (child.attributes[@"style"] == nil)
@@ -644,6 +675,7 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 }
 -(void)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
 {
+    [self setAttributesFromCSSForNode:child settings:settings];
     [self setAttributesFromStylesForNode:child settings:settings];
     ACSDStroke *stroke = strokeFromNodeAttributes(child.attributes);
     if (stroke)
@@ -782,6 +814,63 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     return nil;
 }
 
+static BOOL isWhiteSp(unichar ch)
+{
+    static NSCharacterSet *whitesp = nil;
+    if (whitesp == nil)
+    {
+        whitesp = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    }
+    return [whitesp characterIsMember:ch];
+}
+
+static BOOL isCSSIdent(unichar ch)
+{
+    return ch != '{' && ! isWhiteSp(ch);
+}
+
+
+-(NSDictionary*)cssClassesFromString:(NSString*)contents
+{
+    NSMutableDictionary *d = [NSMutableDictionary dictionary];
+    NSInteger idx = 0;
+    NSInteger len = [contents length];
+    while (idx < len)
+    {
+        unichar uc;
+        while (idx < len && isWhiteSp(uc = [contents characterAtIndex:idx]))
+            idx++;
+        if (idx < len)
+        {
+            NSInteger st = idx;
+            while (idx < len && isCSSIdent(uc = [contents characterAtIndex:idx]))
+                idx++;
+            if (st < idx)
+            {
+                if ([contents characterAtIndex:st] == '.')
+                    st++;
+                NSString *ident = [contents substringWithRange:NSMakeRange(st, idx - st)];
+                while (idx < len && isWhiteSp(uc = [contents characterAtIndex:idx]))
+                    idx++;
+                if (uc != '{')
+                    return nil;
+                idx++;
+                while (idx < len && isWhiteSp(uc = [contents characterAtIndex:idx]))
+                    idx++;
+                st = idx;
+                while (idx < len && '}' != (uc = [contents characterAtIndex:idx]))
+                    idx++;
+                if (st < idx)
+                {
+                    NSString *css = [contents substringWithRange:NSMakeRange(st, idx - st)];;
+                    idx++;
+                    d[ident] = css;
+                }
+            }
+        }
+    }
+    return d;
+}
 -(id)graphicFromSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
 {
 	NSMutableDictionary *currentSettings = [[[settingsStack lastObject]mutableCopy]autorelease];
@@ -808,11 +897,18 @@ NSString *ACSDrawDocumentKey = @"documentKey";
         for (XMLNode *ch in child.children)
             [self processSVGNode:ch settingsStack:settingsStack];
     }
-	else if ([nodeName isEqualToString:@"lineargradient"])
-	{
+    else if ([nodeName isEqualToString:@"style"])
+    {
         [settingsStack removeLastObject];
-		return [self gradientFromSVGNode:child settingsStack:settingsStack isLinear:YES];
-	}
+        NSMutableDictionary *settings = [settingsStack lastObject];
+        settings[@"css"] = [self cssClassesFromString:[child contents]];
+        return nil;
+    }
+    else if ([nodeName isEqualToString:@"lineargradient"])
+    {
+        [settingsStack removeLastObject];
+        return [self gradientFromSVGNode:child settingsStack:settingsStack isLinear:YES];
+    }
 	else if ([nodeName isEqualToString:@"radialgradient"])
 	{
         [settingsStack removeLastObject];

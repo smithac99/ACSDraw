@@ -106,7 +106,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
         NSRect f;
         if (parent)
         {
-            f = [parent bounds];
+            f = [parent transformedBounds];
             settings[@"parentrect"] = [NSValue valueWithRect:f];
         }
         else
