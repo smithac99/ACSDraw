@@ -127,7 +127,7 @@ extern NSString *xmlIndent;
 
 - (IBAction)cropToOpaque:(id)sender;
 -(NSArray*)svgBodyString;
--(void)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings;
+-(NSSet*)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings;
 
 @end
 

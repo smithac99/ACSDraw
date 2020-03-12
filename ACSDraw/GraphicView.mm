@@ -6837,6 +6837,37 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	return im;
 }
 
+-(NSImage*)iconImageFromCurrentPageOfSize:(NSInteger)s
+{
+    NSSize sz = [self bounds].size;
+    NSInteger w,h;
+    float sc;
+    if (sz.width > sz.height)
+    {
+        sc = s / sz.width;
+        w = s;
+        h = sz.height * sc;
+    }
+    else
+    {
+        sc = s / sz.height;
+        h = s;
+        w = sz.width * sc;
+    }
+    NSBitmapImageRep *bm = newBitmap(w,h);
+    NSImage *im = [[[NSImage alloc]initWithSize:NSMakeSize(w,h)]autorelease];
+    [im addRepresentation:bm];
+    [im lockFocusFlipped:YES];
+    [[NSAffineTransform transformWithScaleXBy:sc yBy:sc]concat];
+    [[NSAffineTransform transformWithTranslateXBy:0 yBy:sz.height]concat];
+    [[NSAffineTransform transformWithScaleXBy:1.0 yBy:-1.0]concat];
+    [self drawPage:[self currentPage] rect:[self bounds] drawingToScreen:NO drawMarkers:NO
+      drawingToPDF:nil substitutions:[NSMutableDictionary dictionaryWithCapacity:5]
+           options:@{@"overrideScale":@(sc)}];
+    [im unlockFocus];
+    return im;
+}
+
 -(IBAction)copyScreen:(id)sender
 {
     NSImage *im = [self imageFromCurrentPageOfSize:[self bounds].size];

@@ -117,7 +117,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
         [t translateXBy:f.origin.x yBy:f.origin.y];
         settings[@"transform"] = t;
         [settingsStack addObject:settings];
-        [doc getAttributesFromSVGNode:objNode settings:settings];
+        NSSet *unusedAttrs = [doc getAttributesFromSVGNode:objNode settings:settings];
         
         ACSDGraphic *g = nil;
         if ([[objNode nodeName]isEqualToString:@"path"])
@@ -195,6 +195,14 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
             NSArray *graphics = [ACSDPage childrenFromXMLParent:objNode document:doc settingsStack:settingsStack objectDict:od];
             ACSDGroup *gp = [[ACSDGroup alloc]initWithName:@"" graphics:graphics layer:nil];
             g = gp;
+        }
+        
+        if (g.attributes == nil)
+            g.attributes = [NSMutableArray array];
+        for (NSString *k in [unusedAttrs allObjects])
+        {
+            if ([objNode attributeStringValue:k])
+                [[g attributes]addObject:@[k,[objNode attributeStringValue:k]]];
         }
         
         [kids addObject:g];

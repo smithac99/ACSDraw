@@ -257,5 +257,6 @@ NSString *IncrementString(NSString *s);
 -(void)repeatSelectedGraphicsRows:(NSInteger)rows cols:(NSInteger)cols xinc:(CGFloat)xinc yinc:(CGFloat)yinc rowOffset:(CGFloat)rowOffset;
 -(void)updateSelectedPointFromDictionary:(NSDictionary*)dict;
 -(IBAction)sizeToWidth:(id)sender;
+-(NSImage*)iconImageFromCurrentPageOfSize:(NSInteger)sz;
 
 @end

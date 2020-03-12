@@ -490,6 +490,14 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	return [NSKeyedArchiver archivedDataWithRootObject:dict];
 }
 
+-(BOOL)writeToURL:(NSURL *)url ofType:(NSString *)typeName error:(NSError * _Nullable *)outError
+{
+    NSError *err = nil;
+    [super writeToURL:url ofType:typeName error:&err];
+    NSImage *im = [[mainWindowController graphicView]iconImageFromCurrentPageOfSize:512];
+    [[NSWorkspace sharedWorkspace]setIcon:im forFile:[url path] options:0];
+    return err == nil;
+}
 - (NSData *)dataRepresentationWithSubstitutedClasses 
 {
 	NSDictionary *dict = [self setupDictionaryFromMemory];
@@ -673,7 +681,11 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	}
 	return transform;
 }
--(void)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
+
+NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-opacity",@"fillopacity",@"height",@"hidden",@"id",@"inherit",@"linecap",@"miter",@"mitre-limit",@"none",@"opacity",@"pos",@"pxheight",@"pxwidth",@"rotation",@"round",@"scalex",@"scaley",@"square",@"src",@"stroke",@"stroke-dasharray",@"stroke-dashoffset",@"stroke-linecap",@"stroke-linejoin",@"stroke-opacity",@"stroke-width",@"strokewidth",@"transform",@"url",@"visibility",@"width",@"x",@"y",@"zpos"];
+
+
+-(NSSet*)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
 {
     [self setAttributesFromCSSForNode:child settings:settings];
     [self setAttributesFromStylesForNode:child settings:settings];
@@ -705,6 +717,12 @@ NSString *ACSDrawDocumentKey = @"documentKey";
         if ([v isEqual:@"none"])
             settings[@"hidden"] = @YES;
     }
+    v = [child.attributes objectForKey:@"hidden"];
+    if (v != nil)
+    {
+        if ([v isEqual:@"true"])
+            settings[@"hidden"] = @YES;
+    }
     NSString *o = [child.attributes objectForKey:@"opacity"];
     if (o != nil)
     {
@@ -729,6 +747,14 @@ NSString *ACSDrawDocumentKey = @"documentKey";
         float syf = [sy floatValue];
         settings[@"scaley"] = @(syf);
     }
+    NSSet *usedKeys = [NSSet setWithArray:usedAttrs];
+    NSMutableSet *unused = [NSMutableSet set];
+    for (NSString *k in child.attributes)
+    {
+        if (![usedKeys containsObject:k])
+            [unused addObject:k];
+    }
+    return unused;
 }
 
 -(NSArray*)svgFunction:(NSString*)str index:(int*)index
@@ -871,6 +897,7 @@ static BOOL isCSSIdent(unichar ch)
     }
     return d;
 }
+
 -(id)graphicFromSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
 {
 	NSMutableDictionary *currentSettings = [[[settingsStack lastObject]mutableCopy]autorelease];
@@ -958,6 +985,7 @@ static BOOL isCSSIdent(unichar ch)
         [g setName:idstr];
         if ([currentSettings[@"hidden"]boolValue])
             g.hidden = YES;
+        
     }
     [settingsStack removeLastObject];
     return g;
