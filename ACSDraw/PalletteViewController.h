@@ -35,6 +35,6 @@
 + (PalletteViewController*)sharedPalletteViewController;
 -(void)createPanels;
 -(void)showPanel:(int)i;
--(void)newPanelWithController:(ViewController*)v atTopLeft:(NSPoint)topLeft;
+-(NSWindow*)newPanelWithController:(ViewController*)v atTopLeft:(NSPoint)topLeft;
 
 @end

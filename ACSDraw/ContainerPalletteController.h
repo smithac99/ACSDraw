@@ -34,6 +34,6 @@
 -(void)tabHit:(ContainerTabSubview*)tsv;
 -(void)removeTab:(ContainerTabSubview*)tsv;
 -(int)identifier;
--(void)detachTab:(ContainerTabSubview*)tsv;
+-(NSWindow*)detachTab:(ContainerTabSubview*)tsv;
 
 @end
