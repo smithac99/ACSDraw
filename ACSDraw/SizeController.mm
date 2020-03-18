@@ -21,7 +21,8 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 {
 	if ((self = [super initWithTitle:@"Size"]))
 	{
-		showsWidth = showsHeight = YES;
+        showsWidth = showsHeight = YES;
+        showsLeft = showsBottom = YES;
 	}
 	return self;
 }
@@ -122,6 +123,7 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 			[[self.contentView window]update];
 		}
 	}
+    [self adjustKeyLoop];
 }
 
 -(bool)rebuildRequiredSelectedGraphics:(NSArray*)graphics
@@ -161,7 +163,8 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 	[[sizeHeight cell]setPlaceholderString:s];
 	[[sizeWidth cell]setPlaceholderString:s];
 	[[scaleX cell]setPlaceholderString:s];
-	[[scaleY cell]setPlaceholderString:s];
+    [[scaleY cell]setPlaceholderString:s];
+    [[rotationText cell]setPlaceholderString:s];
 	[[graphicOpacityText cell]setPlaceholderString:s];
 }
 
@@ -199,8 +202,8 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 		NSRect r = [g bounds];
 		if ([g moving])
 			r = NSOffsetRect(r,[g moveOffset].x,[g moveOffset].y);
-		[positionX setFloatValue:r.origin.x];
-		[positionY setFloatValue:r.origin.y];
+		//[positionX setFloatValue:r.origin.x];
+		//[positionY setFloatValue:r.origin.y];
 		if (showsHeight)
 			[sizeHeight setFloatValue:r.size.height];
 		else
@@ -209,6 +212,15 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 			[sizeWidth setFloatValue:r.size.width];
 		else
 			[sizeWidth setFloatValue:NSMaxX(r)];
+        if (showsLeft)
+            [positionX setFloatValue:r.origin.x];
+        else
+            [positionX setFloatValue:NSMidX(r)];
+        if (showsBottom)
+            [positionY setFloatValue:r.origin.y];
+        else
+            [positionY setFloatValue:NSMidY(r)];
+
 	}
 }
 
@@ -334,11 +346,15 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 
 -(IBAction)rotationHit:(id)sender
 {
+    if ([[sender stringValue]isEqual:@""] || [self actionsDisabled])
+        return;
 	self.rotation = [sender floatValue];
 }
 
 -(IBAction)opacityHit:(id)sender
 {
+    if ([[sender stringValue]isEqual:@""] || [self actionsDisabled])
+        return;
 	self.opacity = [sender floatValue];
 }
 
@@ -361,9 +377,20 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 	[positionX setNextKeyView:positionY];
 	[positionY setNextKeyView:sizeWidth];
 	[sizeWidth setNextKeyView:sizeHeight];
+    if ([cornerRadiusView superview] == nil)
+    {
+        [sizeHeight setNextKeyView:rotationText];
+    }
+    else
+    {
+        [sizeHeight setNextKeyView:cornerRadiusText];
+        [cornerRadiusText setNextKeyView:rotationText];
+    }
 	[rotationText setNextKeyView:scaleX];
-	[scaleX setNextKeyView:scaleY];
-	
+    [scaleX setNextKeyView:scaleY];
+    [scaleY setNextKeyView:graphicOpacityText];
+    [graphicOpacityText setNextKeyView:positionX];
+
 }
 - (void)coordinatesChanged:(NSNotification *)notification
 {
@@ -652,7 +679,10 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
         float f = [sender floatValue];
 		BOOL changed = NO;
 		for (ACSDGraphic *g in selectedGraphics)
-            changed = [g setX:f] || changed;
+            if (showsLeft)
+                changed = [g setX:f] || changed;
+            else
+                changed = [g setCentreX:f] || changed;
 		if (changed)
 			[[[self inspectingGraphicView] undoManager] setActionName:@"Set X"];
 	}
@@ -668,7 +698,10 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
         float f = [sender floatValue];
 		BOOL changed = NO;
 		   for (ACSDGraphic *g in selectedGraphics)
-            changed = [g setY:f] || changed;
+               if (showsBottom)
+                   changed = [g setY:f] || changed;
+               else
+                   changed = [g setCentreY:f] || changed;
 		if (changed)
 			[[[self inspectingGraphicView] undoManager] setActionName:@"Set Y"];
        }
@@ -693,6 +726,26 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 		[heightTop setTitle:@"Top"];
 	[self setGraphicControls];
 }
+- (IBAction)leftXHit:(id)sender
+{
+    showsLeft = !showsLeft;
+    if (showsLeft)
+        [leftX setTitle:@"Left"];
+    else
+        [leftX setTitle:@"X"];
+    [self setGraphicControls];
+}
+
+- (IBAction)bottomYHit:(id)sender
+{
+    showsBottom = !showsBottom;
+    if (showsBottom)
+        [bottomY setTitle:@"Bottom"];
+    else
+        [bottomY setTitle:@"Y"];
+    [self setGraphicControls];
+}
+
 
 -(IBAction)showHideAlignMatrix:(id)sender
 {

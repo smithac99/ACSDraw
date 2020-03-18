@@ -15,6 +15,7 @@
 @class ImageExportController;
 @class KeyedObject;
 @class ACSDImage;
+@class XMLNode;
 
 struct saveContextInfo
    {
@@ -126,6 +127,7 @@ extern NSString *xmlIndent;
 
 - (IBAction)cropToOpaque:(id)sender;
 -(NSArray*)svgBodyString;
+-(NSSet*)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings;
 
 @end
 

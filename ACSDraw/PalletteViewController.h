@@ -12,6 +12,7 @@
 @class FillsController;
 @class ShadowsController;
 @class AnimationsController;
+@class ContainerPalletteController;
 
 @interface PalletteViewController : NSObject 
 {
@@ -35,6 +36,6 @@
 + (PalletteViewController*)sharedPalletteViewController;
 -(void)createPanels;
 -(void)showPanel:(int)i;
--(NSWindow*)newPanelWithController:(ViewController*)v atTopLeft:(NSPoint)topLeft;
+-(ContainerPalletteController*)newPanelWithController:(ViewController*)v atTopLeft:(NSPoint)topLeft;
 
 @end

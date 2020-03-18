@@ -12,7 +12,8 @@
 
 - (void)moveDown:(id)sender
 {
-	NSCell *cell = [(NSTextField*)[self delegate]cell];
+    NSTextField *tf = (NSTextField*)[self delegate];
+	NSCell *cell = [tf cell];
 	float n = [cell floatValue];
 	float n2 = [cell intValue];
 	if (n2 == n)
@@ -21,11 +22,13 @@
 	}
 	else
 		[cell setIntValue:n2];
+    [tf sendAction:[tf action] to:[tf target]];
 }
 
 - (void)moveUp:(id)sender
 {
-	NSCell *cell = [(NSTextField*)[self delegate]cell];
+    NSTextField *tf = (NSTextField*)[self delegate];
+    NSCell *cell = [tf cell];
 	float n = [cell floatValue];
 	float n2 = ceilf([cell floatValue]);
 	if (n2 == n)
@@ -34,5 +37,6 @@
 	}
 	else
 		[cell setIntValue:n2];
+    [tf sendAction:[tf action] to:[tf target]];
 }
 @end

@@ -148,11 +148,12 @@
 		currentItem--;
 	[self setActiveItem:currentItem];
 	[tsv removeFromSuperview];
+    [self sortOutTabViews];
 	if ([tabSubviews count] < 1)
 		[pallette orderOut:self];
 }
 
--(NSWindow*)detachTab:(ContainerTabSubview*)tsv
+-(ContainerPalletteController*)detachTab:(ContainerTabSubview*)tsv
 {
 	NSUInteger i = [tabSubviews indexOfObjectIdenticalTo:tsv];
 	if (i == NSNotFound)
@@ -211,4 +212,8 @@
 	return nil;
 }
 
+-(NSArray*)tabSubviews
+{
+    return tabSubviews;
+}
 @end

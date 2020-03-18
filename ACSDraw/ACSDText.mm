@@ -27,6 +27,7 @@
 #import "CanvasWriter.h"
 #import "ACSDLineEnding.h"
 #import "geometry.h"
+#import "XMLNode.h"
 
 NSString *ACSDAnchorAttributeName = @"ACSDAnchor";
 NSString *ACSDrawTextPBoardType = @"ACSDrawTextPBoardType";
@@ -82,6 +83,60 @@ NSString *substitute_characters(NSString* string)
 	[gCopy linkToText:graphic];
 	return gCopy;
    }
+
++(id)textWithXMLNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack
+{
+    NSDictionary *settings = [settingsStack lastObject];
+    NSRect parentRect = [settings[@"parentrect"]rectValue];
+    
+    float x = [xmlnode attributeFloatValue:@"x"];
+    float y = [xmlnode attributeFloatValue:@"y"];
+    float width = [xmlnode attributeFloatValue:@"width"];
+    float height = [xmlnode attributeFloatValue:@"height"];
+    
+    //parentRect = InvertedRect(parentRect, docHeight);
+    width = width * parentRect.size.width;
+    height = height * parentRect.size.height;
+    NSPoint pos = LocationForRect(x, 1 - y, parentRect);
+    ACSDText *t = [[ACSDText alloc]initWithName:@"" fill:nil stroke:nil rect:NSMakeRect(pos.x, pos.y - height, width, height) layer:nil];
+    NSString *fontFamily = @"Helvetica";
+    float fontSize = 12;
+    NSColor *textFill = [NSColor blackColor];
+    NSFont *f = [NSFont fontWithName:fontFamily size:fontSize];
+    NSMutableAttributedString *mas = [[[NSMutableAttributedString alloc]initWithString:@"" attributes:@{NSFontAttributeName:f,
+                                                                                                        NSForegroundColorAttributeName:textFill
+                                                                                                        }]autorelease];
+    for (XMLNode *xspan in [xmlnode childrenOfType:@"tspan"])
+    {
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
+        NSString *c = [xspan contents];
+        NSColor *fill = [fillFromNodeAttributes(xspan.attributes) colour];
+        NSString *fo = [xspan attributeStringValue:@"font-family"];
+        if (fo == nil)
+            fo = fontFamily;
+        float fs;
+        NSString *fss = [xspan attributeStringValue:@"font-size"];
+        if (fss)
+            fs = [fss floatValue];
+        else
+            fs = fontSize;
+        fontFamily = fo;
+        fontSize = fs;
+        options[NSFontAttributeName] = [NSFont fontWithName:fontFamily size:fontSize];
+        if (fill)
+        {
+            textFill = fill;
+            options[NSForegroundColorAttributeName] = fill;
+        }
+        [mas appendAttributedString:[[[NSAttributedString alloc]initWithString:c attributes:options]autorelease]];
+    }
+        NSTextStorage *contents = [[NSTextStorage allocWithZone:[self zone]] initWithAttributedString:mas];
+        //        contents = [[ACSDTextStorage allocWithZone:[self zone]] initWithAttributedString:astr];
+        [contents addLayoutManager:[t layoutManager]];
+
+    [t setContents:contents];
+    return t;
+}
 
 - (id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l
    {

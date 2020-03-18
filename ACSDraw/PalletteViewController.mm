@@ -114,14 +114,14 @@
 	}
 }
 
--(NSWindow*)newPanelWithController:(ViewController*)v atTopLeft:(NSPoint)topLeft
+-(ContainerPalletteController*)newPanelWithController:(ViewController*)v atTopLeft:(NSPoint)topLeft
 {
 	ContainerPalletteController* c = [self createPanel];
 	[c registerViewController:v];
 	[controllerDict setObject:c forKey:[v title]];
 	[[c window]setFrameTopLeftPoint:topLeft];
 	[[c window] orderFront:self];
-    return [c window];
+    return c;
 }
 
 -(void)showPanel:(int)i

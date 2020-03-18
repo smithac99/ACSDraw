@@ -1942,10 +1942,18 @@ float normalisedAngle(float ang)
 
 - (BOOL)setX:(float)f
 {
-	if (f == bounds.origin.x)
-		return NO;
-	[self uMoveBy:NSMakePoint(f-[self bounds].origin.x,0.0)];
-	return YES;
+    if (f == bounds.origin.x)
+        return NO;
+    [self uMoveBy:NSMakePoint(f-[self bounds].origin.x,0.0)];
+    return YES;
+}
+
+- (BOOL)setCentreX:(float)f
+{
+    if (f == NSMidX(bounds))
+        return NO;
+    [self uMoveBy:NSMakePoint(f-NSMidX([self bounds]),0.0)];
+    return YES;
 }
 
 - (BOOL)setY:(float)f
@@ -1956,6 +1964,13 @@ float normalisedAngle(float ang)
 	return YES;
 }
 
+- (BOOL)setCentreY:(float)f
+{
+    if (f == NSMidY(bounds))
+        return NO;
+    [self uMoveBy:NSMakePoint(0.0,f-NSMidY([self bounds]))];
+    return YES;
+}
 
 - (void)flipHorizontally {
     // Some subclasses need to know.

@@ -59,7 +59,9 @@ enum
     IBOutlet id heightTop;
 	IBOutlet id rotationText;
     IBOutlet NSView *gridView;
-	BOOL showsWidth,showsHeight;
+    IBOutlet id leftX;
+    IBOutlet id bottomY;
+    BOOL showsWidth,showsHeight,showsLeft,showsBottom;
 
 }
 

@@ -14,5 +14,6 @@
    }
 
 +(id)circleWithSVGNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack;
++(id)circleWithXMLNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack;
 
 @end

@@ -490,6 +490,14 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	return [NSKeyedArchiver archivedDataWithRootObject:dict];
 }
 
+-(BOOL)writeToURL:(NSURL *)url ofType:(NSString *)typeName error:(NSError * _Nullable *)outError
+{
+    NSError *err = nil;
+    [super writeToURL:url ofType:typeName error:&err];
+    NSImage *im = [[mainWindowController graphicView]iconImageFromCurrentPageOfSize:512];
+    [[NSWorkspace sharedWorkspace]setIcon:im forFile:[url path] options:0];
+    return err == nil;
+}
 - (NSData *)dataRepresentationWithSubstitutedClasses 
 {
 	NSDictionary *dict = [self setupDictionaryFromMemory];
@@ -549,6 +557,37 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 #pragma mark -
 #pragma mark svg
 
+-(void)setAttributesFromCSSForNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
+{
+    if (child.attributes[@"class"] == nil)
+        return;
+    NSString *currStyles = child.attributes[@"styles"];
+    NSMutableString *styles = [[NSMutableString alloc]initWithString:currStyles?currStyles:@""];
+    NSMutableDictionary *mdict = nil;
+    NSDictionary *definedStyles = settings[@"css"];
+    NSArray *cssclasses = [child.attributes[@"class"] componentsSeparatedByString:@" "];
+    BOOL changed = NO;
+    for (NSString *cssclass in cssclasses)
+    {
+        if (cssclass != nil && [cssclass length] > 0)
+        {
+            NSString *css = definedStyles[cssclass];
+            if (css)
+            {
+                if ([styles length]>0)
+                    [styles appendString:@";"];
+                [styles appendString:css];
+                changed = YES;
+            }
+        }
+    }
+    if (changed)
+    {
+        NSMutableDictionary *mdict = [NSMutableDictionary dictionaryWithDictionary:child.attributes];
+        mdict[@"style"] = styles;
+        child.attributes = mdict;
+    }
+}
 -(void)setAttributesFromStylesForNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
 {
     if (child.attributes[@"style"] == nil)
@@ -642,8 +681,13 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	}
 	return transform;
 }
--(void)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
+
+NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-opacity",@"fillopacity",@"height",@"hidden",@"id",@"inherit",@"linecap",@"miter",@"mitre-limit",@"none",@"opacity",@"pos",@"pxheight",@"pxwidth",@"rotation",@"round",@"scalex",@"scaley",@"square",@"src",@"stroke",@"stroke-dasharray",@"stroke-dashoffset",@"stroke-linecap",@"stroke-linejoin",@"stroke-opacity",@"stroke-width",@"strokewidth",@"transform",@"url",@"visibility",@"width",@"x",@"y",@"zpos"];
+
+
+-(NSSet*)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
 {
+    [self setAttributesFromCSSForNode:child settings:settings];
     [self setAttributesFromStylesForNode:child settings:settings];
     ACSDStroke *stroke = strokeFromNodeAttributes(child.attributes);
     if (stroke)
@@ -673,12 +717,44 @@ NSString *ACSDrawDocumentKey = @"documentKey";
         if ([v isEqual:@"none"])
             settings[@"hidden"] = @YES;
     }
+    v = [child.attributes objectForKey:@"hidden"];
+    if (v != nil)
+    {
+        if ([v isEqual:@"true"])
+            settings[@"hidden"] = @YES;
+    }
     NSString *o = [child.attributes objectForKey:@"opacity"];
     if (o != nil)
     {
         float alpha = [o floatValue];
         settings[@"opacity"] = @(alpha);
     }
+    NSString *r = child.attributes[@"rotation"];
+    if (r != nil)
+    {
+        float rotation = [r floatValue];
+        settings[@"rotation"] = @(rotation);
+    }
+    NSString *sx = child.attributes[@"scalex"];
+    if (sx != nil)
+    {
+        float sxf = [sx floatValue];
+        settings[@"scalex"] = @(sxf);
+    }
+    NSString *sy = child.attributes[@"scaley"];
+    if (sy != nil)
+    {
+        float syf = [sy floatValue];
+        settings[@"scaley"] = @(syf);
+    }
+    NSSet *usedKeys = [NSSet setWithArray:usedAttrs];
+    NSMutableSet *unused = [NSMutableSet set];
+    for (NSString *k in child.attributes)
+    {
+        if (![usedKeys containsObject:k])
+            [unused addObject:k];
+    }
+    return unused;
 }
 
 -(NSArray*)svgFunction:(NSString*)str index:(int*)index
@@ -764,6 +840,64 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     return nil;
 }
 
+static BOOL isWhiteSp(unichar ch)
+{
+    static NSCharacterSet *whitesp = nil;
+    if (whitesp == nil)
+    {
+        whitesp = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    }
+    return [whitesp characterIsMember:ch];
+}
+
+static BOOL isCSSIdent(unichar ch)
+{
+    return ch != '{' && ! isWhiteSp(ch);
+}
+
+
+-(NSDictionary*)cssClassesFromString:(NSString*)contents
+{
+    NSMutableDictionary *d = [NSMutableDictionary dictionary];
+    NSInteger idx = 0;
+    NSInteger len = [contents length];
+    while (idx < len)
+    {
+        unichar uc;
+        while (idx < len && isWhiteSp(uc = [contents characterAtIndex:idx]))
+            idx++;
+        if (idx < len)
+        {
+            NSInteger st = idx;
+            while (idx < len && isCSSIdent(uc = [contents characterAtIndex:idx]))
+                idx++;
+            if (st < idx)
+            {
+                if ([contents characterAtIndex:st] == '.')
+                    st++;
+                NSString *ident = [contents substringWithRange:NSMakeRange(st, idx - st)];
+                while (idx < len && isWhiteSp(uc = [contents characterAtIndex:idx]))
+                    idx++;
+                if (uc != '{')
+                    return nil;
+                idx++;
+                while (idx < len && isWhiteSp(uc = [contents characterAtIndex:idx]))
+                    idx++;
+                st = idx;
+                while (idx < len && '}' != (uc = [contents characterAtIndex:idx]))
+                    idx++;
+                if (st < idx)
+                {
+                    NSString *css = [contents substringWithRange:NSMakeRange(st, idx - st)];;
+                    idx++;
+                    d[ident] = css;
+                }
+            }
+        }
+    }
+    return d;
+}
+
 -(id)graphicFromSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
 {
 	NSMutableDictionary *currentSettings = [[[settingsStack lastObject]mutableCopy]autorelease];
@@ -790,11 +924,18 @@ NSString *ACSDrawDocumentKey = @"documentKey";
         for (XMLNode *ch in child.children)
             [self processSVGNode:ch settingsStack:settingsStack];
     }
-	else if ([nodeName isEqualToString:@"lineargradient"])
-	{
+    else if ([nodeName isEqualToString:@"style"])
+    {
         [settingsStack removeLastObject];
-		return [self gradientFromSVGNode:child settingsStack:settingsStack isLinear:YES];
-	}
+        NSMutableDictionary *settings = [settingsStack lastObject];
+        settings[@"css"] = [self cssClassesFromString:[child contents]];
+        return nil;
+    }
+    else if ([nodeName isEqualToString:@"lineargradient"])
+    {
+        [settingsStack removeLastObject];
+        return [self gradientFromSVGNode:child settingsStack:settingsStack isLinear:YES];
+    }
 	else if ([nodeName isEqualToString:@"radialgradient"])
 	{
         [settingsStack removeLastObject];
@@ -844,6 +985,7 @@ NSString *ACSDrawDocumentKey = @"documentKey";
         [g setName:idstr];
         if ([currentSettings[@"hidden"]boolValue])
             g.hidden = YES;
+        
     }
     [settingsStack removeLastObject];
     return g;
@@ -867,6 +1009,37 @@ NSString *ACSDrawDocumentKey = @"documentKey";
             }
         }
     }
+}
+
+-(BOOL)loadLayoutXMLData:(NSData*)data
+{
+    XMLManager *xmlman = [[[XMLManager alloc]init]autorelease];
+    XMLNode *root = [xmlman parseData:data];
+    if (![root.nodeName isEqualToString:@"events"])
+        return NO;
+    documentSize.width = 1024;
+    documentSize.height = 768;
+    
+    NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
+    NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithCapacity:10];
+    //ACSDFill *blackFill = [[[ACSDFill alloc]initWithColour:[NSColor blackColor]]autorelease];
+    //[settings setObject:[self fillLikeFill:blackFill] forKey:@"fill"];
+    [settings setObject:[NSMutableDictionary dictionaryWithCapacity:10] forKey:@"defs"];
+    settings[@"docheight"] = @(documentSize.height);
+    NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:0 yBy:documentSize.height];
+    [t scaleXBy:1.0 yBy:-1.0];
+    settings[@"transform"] = t;
+    settings[@"parentrect"] = [NSValue valueWithRect:NSMakeRect(0, 0, documentSize.width, documentSize.height)];
+    [settingsStack addObject:settings];
+
+    NSMutableDictionary *objectDict = [NSMutableDictionary dictionary];
+    [[self pages]removeObjectAtIndex:0];
+    for (XMLNode *eventNode in root.children)
+        [[self pages]addObject:[[ACSDPage alloc]initWithXMLNode:eventNode document:self settingsStack:settingsStack objectDict:objectDict]];
+    [self setFileType:@"acsd"];
+    if ([self fileURL] != nil)
+        [self setFileURL:[NSURL fileURLWithPath:[[[[self fileURL] path]stringByDeletingPathExtension]stringByAppendingPathExtension:@"acsd"]]];
+    return YES;
 }
 
 -(BOOL)loadSVGData:(NSData*)data
@@ -897,10 +1070,10 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 		}
 	}
     documentSize.width = ceilf([root attributeFloatValue:@"width"]);
-	if (documentSize.width == 0)
+	if (documentSize.width < vbw)
 		documentSize.width = vbw;
     documentSize.height = ceilf([root attributeFloatValue:@"height"]);
-	if (documentSize.height == 0)
+	if (documentSize.height < vbh)
 		documentSize.height = vbh;
     NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
     NSMutableDictionary *svgSettings = [NSMutableDictionary dictionaryWithCapacity:10];
@@ -923,8 +1096,10 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 
 -(BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-	if ([[typeName lowercaseString]isEqualToString:@"svg"])
-		return [self loadSVGData:data];
+    if ([[typeName lowercaseString]isEqualToString:@"svg"])
+        return [self loadSVGData:data];
+    if ([[typeName lowercaseString]isEqualToString:@"xml"])
+        return [self loadLayoutXMLData:data];
 	NSKeyedUnarchiver *unarchiver = [[[NSKeyedUnarchiver alloc] initForReadingWithData:data]autorelease];
 	[unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
 	id d = [unarchiver decodeObjectForKey:@"root"];
@@ -958,8 +1133,8 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 		docTitle = [[d objectForKey:docTitleKey]retain];
 		scriptURL = [[d objectForKey:scriptURLKey]retain];
 		additionalCSS = [[d objectForKey:additionalCSSKey]retain];
-		if ((obj = [d objectForKey:ACSDrawDocumentKey]))
-			[self setDocumentKey:obj];
+		//if ((obj = [d objectForKey:ACSDrawDocumentKey]))
+			//[self setDocumentKey:obj];
 		if ((obj = [d objectForKey:pagesKey]))
 			[self setPages:obj];
 		if ((obj = [d objectForKey:nameCountsKey]))

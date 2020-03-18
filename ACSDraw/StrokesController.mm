@@ -597,4 +597,13 @@
 	return YES;
 }
 
+-(IBAction)showStrokeUsers:(id)sender
+{
+    NSUInteger modifierFlags = [[[arrowTableView window]currentEvent]modifierFlags];
+    BOOL extend = (modifierFlags & NSShiftKeyMask) != 0;
+    NSArray *strokeList = [self strokeList];
+    ACSDStroke *stroke = [strokeList objectAtIndex:rowForContextualMenu];
+    [[self inspectingGraphicView]selectGraphicsInCurrentLayerFromSet:[stroke graphics]extend:extend];
+}
+
 @end

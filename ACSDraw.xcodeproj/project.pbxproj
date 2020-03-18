@@ -266,6 +266,8 @@
 		E74A50451C6228A000A83A52 /* GroupWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74A50441C6228A000A83A52 /* GroupWindow.xib */; };
 		E74A50471C62583200A83A52 /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E74A50461C62583200A83A52 /* SceneKit.framework */; };
 		E74CC8BF1AB1D78B00430A8A /* SVGGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74CC8BE1AB1D78B00430A8A /* SVGGradient.mm */; };
+		E751D30E230E990500D35BE2 /* noimagecross64.png in Resources */ = {isa = PBXBuildFile; fileRef = E751D30C230E990500D35BE2 /* noimagecross64.png */; };
+		E751D30F230E990500D35BE2 /* noimagecross.svg in Resources */ = {isa = PBXBuildFile; fileRef = E751D30D230E990500D35BE2 /* noimagecross.svg */; };
 		E767B7291A3890F20048C6BA /* GraphicOtherController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E767B7281A3890F20048C6BA /* GraphicOtherController.mm */; };
 		E77A36DD196841FB0050264B /* OverlayFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = E77A36DC196841FB0050264B /* OverlayFilter.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E77A36DF196844E20050264B /* OverlayFilter.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = E77A36DE196844E20050264B /* OverlayFilter.cikernel */; };
@@ -712,6 +714,8 @@
 		E74A50461C62583200A83A52 /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
 		E74CC8BD1AB1D78B00430A8A /* SVGGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGGradient.h; sourceTree = "<group>"; };
 		E74CC8BE1AB1D78B00430A8A /* SVGGradient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGGradient.mm; sourceTree = "<group>"; };
+		E751D30C230E990500D35BE2 /* noimagecross64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noimagecross64.png; sourceTree = "<group>"; };
+		E751D30D230E990500D35BE2 /* noimagecross.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = noimagecross.svg; sourceTree = "<group>"; };
 		E767B7271A3890F20048C6BA /* GraphicOtherController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicOtherController.h; sourceTree = "<group>"; };
 		E767B7281A3890F20048C6BA /* GraphicOtherController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphicOtherController.mm; sourceTree = "<group>"; };
 		E77A36DB196841FB0050264B /* OverlayFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayFilter.h; sourceTree = "<group>"; };
@@ -1092,6 +1096,8 @@
 				E740578615B2D3050040F590 /* tinyplus.tiff */,
 				E740578715B2D3050040F590 /* whitearrow1.tif */,
 				E740578815B2D3050040F590 /* whitearrow1alt.tif */,
+				E751D30D230E990500D35BE2 /* noimagecross.svg */,
+				E751D30C230E990500D35BE2 /* noimagecross64.png */,
 			);
 			name = images;
 			sourceTree = "<group>";
@@ -1334,6 +1340,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = E74054B215B1ED040040F590;
@@ -1372,6 +1379,7 @@
 				E740578B15B2D3060040F590 /* elbow.tif in Resources */,
 				E740578C15B2D3060040F590 /* elbowalt.tif in Resources */,
 				E740578D15B2D3060040F590 /* ellipse.tif in Resources */,
+				E751D30E230E990500D35BE2 /* noimagecross64.png in Resources */,
 				E740578E15B2D3060040F590 /* ellipsealt.tif in Resources */,
 				E740578F15B2D3060040F590 /* freehand.tif in Resources */,
 				E740579015B2D3060040F590 /* freehandalt.tif in Resources */,
@@ -1381,6 +1389,7 @@
 				E740579315B2D3060040F590 /* lettera.tif in Resources */,
 				E740579415B2D3060040F590 /* letteraalt.tif in Resources */,
 				E740579515B2D3060040F590 /* line2.tif in Resources */,
+				E751D30F230E990500D35BE2 /* noimagecross.svg in Resources */,
 				E740579615B2D3060040F590 /* line2alt.tif in Resources */,
 				E740579715B2D3060040F590 /* pat1.tif in Resources */,
 				E73184BF1A71BEC30011A1BB /* eye3.tiff in Resources */,

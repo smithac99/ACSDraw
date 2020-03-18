@@ -16,8 +16,15 @@
 #import "ObjectAdditions.h"
 #import "HtmlExportController.h"
 #import "ACSDText.h"
+#import "ACSDPath.h"
 #import "GXPArchiveDelegate.h"
-
+#import "XMLManager.h"
+#import "SVGGradient.h"
+#import "ACSDRect.h"
+#import "ACSDCircle.h"
+#import "ACSDGroup.h"
+#import "ACSDDocImage.h"
+#import "ACSDLink.h"
 int weight_from_float(float w);
 NSString* stringForAlignment(int ali);
 
@@ -52,6 +59,246 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 		[document performSelector:@selector(registerObject:)withObjectsFromArray:layers];
 	}
 	return self;
+}
+
++(NSString*)findPathForName:(NSString*)fn libs:(NSArray*)libs dirAddition:(NSString*)dirAddition suffixes:(NSArray*)suffixes
+{
+    NSFileManager *fm = [NSFileManager defaultManager];
+    for (NSString *lib in libs)
+    {
+        NSString *path = lib;
+        if (![path hasSuffix:dirAddition])
+            path = [path stringByAppendingPathComponent:dirAddition];
+        path = [path stringByAppendingPathComponent:fn];
+        for (NSString *suff in suffixes)
+        {
+            NSString *fullPath = [path stringByAppendingPathExtension:suff];
+            if ([fm fileExistsAtPath:fullPath])
+                return fullPath;
+        }
+    }
+    return nil;
+}
+
++(ACSDLink*)linkFromObject:(id)fromObject toObject:(id)toObject anchor:(int)anchor
+{
+    ACSDLink *l = [ACSDLink linkFrom:fromObject to:toObject anchorID:anchor];
+    if ([fromObject link])
+        [[fromObject link]removeFromLinkedObjects];
+    [fromObject setLink:l];
+    [toObject uAddLinkedObject:l];
+    return l;
+}
+
++(NSArray*)childrenFromXMLParent:(XMLNode*)pageNode document:(ACSDrawDocument*)doc settingsStack:(NSMutableArray*)settingsStack objectDict:(NSMutableDictionary*)objectDict
+{
+    NSArray *libs = [[NSUserDefaults standardUserDefaults] objectForKey:@"ACSDrawprefsImageLibs"];
+    NSMutableDictionary *zposes = [NSMutableDictionary dictionary];
+
+    NSMutableArray *kids = [NSMutableArray array];
+    for (XMLNode *objNode in [pageNode children])
+    {
+        NSMutableDictionary *settings = [[settingsStack lastObject]mutableCopy];
+        NSString *parentStr = [objNode attributeStringValue:@"parent"];
+        ACSDGraphic *parent = nil;
+        if (parentStr)
+            parent = objectDict[parentStr];
+        NSRect f;
+        if (parent)
+        {
+            f = [parent transformedBounds];
+            settings[@"parentrect"] = [NSValue valueWithRect:f];
+        }
+        else
+            f = [settings[@"parentrect"]rectValue];
+        
+        NSAffineTransform *t = [[NSAffineTransform alloc]initWithTransform:[settings objectForKey:@"transform"]];
+        [t scaleXBy:f.size.width yBy:f.size.height];
+        [t translateXBy:f.origin.x yBy:f.origin.y];
+        settings[@"transform"] = t;
+        [settingsStack addObject:settings];
+        NSSet *unusedAttrs = [doc getAttributesFromSVGNode:objNode settings:settings];
+        
+        ACSDGraphic *g = nil;
+        if ([[objNode nodeName]isEqualToString:@"path"])
+        {
+            ACSDPath *p = [ACSDPath pathWithSVGNode:objNode settingsStack:settingsStack];
+            g = p;
+        }
+        else if ([[objNode nodeName]isEqualToString:@"rectangle"])
+        {
+            ACSDRect *p = [ACSDRect rectangleWithXMLNode:objNode settingsStack:settingsStack];
+            g = p;
+        }
+        else if ([[objNode nodeName]isEqualToString:@"circle"])
+        {
+            ACSDCircle *p = [ACSDCircle circleWithXMLNode:objNode settingsStack:settingsStack];
+            g = p;
+        }
+        else if ([[objNode nodeName]isEqualToString:@"text"])
+        {
+            ACSDText *t = [ACSDText textWithXMLNode:objNode settingsStack:settingsStack];
+            g = t;
+        }
+        else if ([[objNode nodeName]isEqualToString:@"vector"])
+        {
+            NSString *src = [objNode attributeStringValue:@"src"];
+            NSString *svgPath = [self findPathForName:src libs:libs dirAddition:@"vector" suffixes:@[@"svg"]];
+            if (svgPath == nil)
+                svgPath = [[NSBundle mainBundle]pathForResource:@"noimagecross" ofType:@"svg"];
+            
+            NSData *d = [NSData dataWithContentsOfFile:svgPath];
+            ACSDrawDocument *adoc = [[[ACSDrawDocument alloc]init]autorelease];
+            [adoc setFileURL:[NSURL fileURLWithPath:svgPath]];
+            [adoc readFromData:d ofType:@"svg" error:nil];
+            NSRect b = NSZeroRect;
+            b.size = [adoc documentSize];
+            ACSDDocImage *image = [[ACSDDocImage alloc]initWithName:@"" fill:nil stroke:nil rect:b layer:nil drawDoc:adoc];
+            image.sourcePath = svgPath;
+            NSString *pos = [objNode attributeStringValue:@"pos"];
+            NSArray *comps = [pos componentsSeparatedByString:@","];
+            CGPoint pt = CGPointMake([comps[0]floatValue]*f.size.width,f.size.height - [comps[1]floatValue]*f.size.height);
+            [image setPosition:pt];
+            
+            g = image;
+        }
+        else if ([[objNode nodeName]isEqualToString:@"image"])
+        {
+            NSString *src = [objNode attributeStringValue:@"src"];
+            NSString *imPath = [self findPathForName:src libs:libs dirAddition:@"shared_3" suffixes:@[@"jpg",@"png"]];
+            if (imPath == nil)
+                imPath = [self findPathForName:src libs:libs dirAddition:@"shared_4" suffixes:@[@"jpg",@"png"]];
+            if (imPath == nil)
+                imPath = [[NSBundle mainBundle]pathForResource:@"noimagecross64" ofType:@"png"];
+
+            NSImage *im = ImageFromFile(imPath);
+            if (!im)
+                im = [[[NSImage alloc]initWithContentsOfFile:imPath]autorelease];
+
+            NSSize iSize = [im size];
+            NSRect r = NSZeroRect;
+            r.size = iSize;
+            ACSDImage *image = [[ACSDImage alloc]initWithName:src
+                                                         fill:nil stroke:nil rect:r layer:nil image:im];
+            image.sourcePath = imPath;
+
+            NSString *pos = [objNode attributeStringValue:@"pos"];
+            NSArray *comps = [pos componentsSeparatedByString:@","];
+            CGPoint pt = CGPointMake([comps[0]floatValue]*f.size.width,f.size.height - [comps[1]floatValue]*f.size.height);
+            [image setPosition:pt];
+            
+            g = image;
+        }
+        else if ([[objNode nodeName]isEqualToString:@"group"])
+        {
+            NSMutableDictionary *od = [NSMutableDictionary dictionary];
+            NSArray *graphics = [ACSDPage childrenFromXMLParent:objNode document:doc settingsStack:settingsStack objectDict:od];
+            ACSDGroup *gp = [[ACSDGroup alloc]initWithName:@"" graphics:graphics layer:nil];
+            g = gp;
+        }
+        
+        if (g.attributes == nil)
+            g.attributes = [NSMutableArray array];
+        for (NSString *k in [unusedAttrs allObjects])
+        {
+            if ([objNode attributeStringValue:k])
+                [[g attributes]addObject:@[k,[objNode attributeStringValue:k]]];
+        }
+        
+        [kids addObject:g];
+        [g setName:[objNode attributeStringValue:@"id"]];
+        if (g)
+        {
+            [g setStroke:[settings objectForKey:@"stroke"]];
+            id f = [settings objectForKey:@"fill"];
+            if ([f isKindOfClass:[NSString class]] && [f hasPrefix:@"url("])
+            {
+                NSString *url = [f substringWithRange:NSMakeRange(5,[f length]-1-5)];
+                NSDictionary *defs = settings[@"defs"];
+                id obj = defs[url];
+                if (obj)
+                {
+                    if ([obj isKindOfClass:[SVGGradient class]])
+                    {
+                        SVGGradient *svgg = [obj copy];
+                        NSRect bounds = NSZeroRect;
+                        bounds.size = doc.documentSize;
+                        [svgg resolveSettingsForOriginalBoundingBox:[g bounds] frame:bounds];
+                        [[doc fills] addObject:svgg];
+                        [doc registerObject:svgg];
+                        [g setFill:svgg];
+                    }
+                }
+            }
+            else
+                [g setFill:f];
+            
+            
+            NSNumber *alphan = [settings objectForKey:@"opacity"];
+            if (alphan)
+                [g setAlpha:[alphan floatValue]];
+            float xs = 1,ys = 1;
+            NSNumber *xsn = settings[@"scalex"];
+            if (xsn)
+                xs = [xsn floatValue];
+            NSNumber *ysn = settings[@"scaley"];
+            if (ysn)
+                ys = [ysn floatValue];
+            if (xs != 1 && ys != 1)
+            {
+                [g setXScale:xs];
+                [g setYScale:ys];
+            }
+            NSNumber *rotn = [settings objectForKey:@"rotation"];
+            if (rotn)
+                [g setRotation:[rotn floatValue]];
+            NSString *idstr = [objNode attributeStringValue:@"id"];
+            if (idstr == nil)
+                idstr = @"";
+            [g setName:idstr];
+            objectDict[idstr] = g;
+            if ([settings[@"hidden"]boolValue])
+                g.hidden = YES;
+            
+            float zpos = [[objNode attributeStringValue:@"zpos"]floatValue];
+
+            zposes[[NSValue valueWithNonretainedObject:g]] = @(zpos);
+            if (parent)
+                [ACSDPage linkFromObject:g toObject:parent anchor:-1];
+        }
+        [settingsStack removeLastObject];
+    }
+    NSArray *objsbyz = [[zposes allKeys]sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        NSNumber *n1 = zposes[obj1];
+        NSNumber *n2 = zposes[obj2];
+        return [n1 compare:n2];
+    }];
+    NSMutableArray *gs = [NSMutableArray array];
+    for (NSValue *v in objsbyz)
+    {
+        [gs addObject:[v nonretainedObjectValue]];
+    }
+    return gs;
+}
+
+
+-(id)initWithXMLNode:(XMLNode*)pageNode document:(ACSDrawDocument*)doc settingsStack:(NSMutableArray*)settingsStack objectDict:(NSMutableDictionary*)objectDict
+{
+    if ((self = [self initWithDocument:doc]))
+    {
+        if (self.attributes == nil)
+            self.attributes = [NSMutableArray arrayWithCapacity:6];
+        for (NSString *k in [pageNode.attributes allKeys])
+        {
+            if ([k isEqualToString:@"id"])
+                self.pageTitle = pageNode.attributes[k];
+            else
+                [self.attributes addObject:@[k,pageNode.attributes[k]]];
+        }
+        NSArray *children = [ACSDPage childrenFromXMLParent:pageNode document:doc settingsStack:settingsStack objectDict:objectDict];
+        [[self currentLayer]addGraphics:children];
+    }
+    return self;
 }
 
 -(id)copy
@@ -739,6 +986,8 @@ static int MasterLayerCount(ACSDPage *p)
         g *= 255;
         b *= 255;
         [pageString appendFormat:@"colour=\"%d,%d,%d\" ",(int)r,(int)g,(int)b];
+        if (a != 1.0)
+            [pageString appendFormat:@"bgalpha=\"%g\" ",a];
     }
 	[pageString appendString:@">\n"];
 	[options setObject:[indent stringByAppendingString:@"\t"] forKey:xmlIndent];

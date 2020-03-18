@@ -9,6 +9,7 @@
 @class ACSDLayer;
 @class GraphicView;
 @class ACSDrawDocument;
+@class XMLNode;
 
 #import <Cocoa/Cocoa.h>
 #import "KeyedObject.h"
@@ -62,6 +63,7 @@ enum
 
 
 -(id)initWithDocument:(ACSDrawDocument*)d;
+-(id)initWithXMLNode:(XMLNode*)pageNode document:(ACSDrawDocument*)doc settingsStack:(NSMutableArray*)settingsStack objectDict:(NSMutableDictionary*)objectDict;
 -(NSString*)nextLayerName;
 - (NSMutableArray*)layers;
 - (ACSDLayer*)currentLayer;

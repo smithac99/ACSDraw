@@ -244,7 +244,7 @@
 
 		[[NSGraphicsContext currentContext] saveGraphicsState];
 		NSAffineTransform *tr = [NSAffineTransform transform];
-		if (isflipped)
+		if ([[NSGraphicsContext currentContext] isFlipped])
 		{
 			[tr scaleXBy:1.0 yBy:-1.0];
 			[tr translateXBy:0 yBy:-yOf];

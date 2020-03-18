@@ -28,7 +28,7 @@ enum
     PDF_LINK_TEXT_UNDERLINE = 16
    };
 
-@interface ACSDPrefsController : NSWindowController
+@interface ACSDPrefsController : NSWindowController<NSTableViewDataSource,NSTableViewDelegate>
 {
     IBOutlet NSColorWell* guideColour;
     IBOutlet id hotSpotSize;
@@ -41,6 +41,7 @@ enum
     IBOutlet NSButton* openAfterExportCB;
 	IBOutlet NSColorWell* backGroundColourWell;
 	IBOutlet NSMatrix* backgroundColourTypeMatrix;
+    __weak IBOutlet NSTableView *imageLibTableView;
 }
 
 @property (retain) IBOutlet NSView* exportAccessoryView;

@@ -36,7 +36,14 @@
 
 -(float)attributeFloatValue:(NSString*)attrname
 {
-	return [[_attributes objectForKey:attrname]floatValue];
+    NSString *str = [[_attributes objectForKey:attrname]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    float div = 1;
+    if ([str hasSuffix:@"%"])
+    {
+        str = [str substringWithRange:NSMakeRange(0, [str length]-1)];
+        div = 100;
+    }
+	return [str floatValue] / div;
 }
 
 -(NSInteger)attributeIntValue:(NSString*)attrname

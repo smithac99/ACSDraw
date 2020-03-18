@@ -234,7 +234,7 @@ enum GV_Cursor_Mode
 -(void)uGroupGraphicsFromIndexSet:(NSIndexSet*)ixs intoGroup:(ACSDGroup*)gp atIndex:(NSInteger)ind;
 
 - (void)cropToRectangle:(id)sender;
--(void)selectGraphicsInCurrentLayerFromSet:(NSSet*)gset;
+-(void)selectGraphicsInCurrentLayerFromSet:(NSSet*)gset extend:(BOOL)extend;
 -(void)selectGraphicWithName:(NSString*)nm;
 - (void)scaleDocumentBy:(float)f;
 - (void)cancelOp:(id)sender;
@@ -257,5 +257,6 @@ NSString *IncrementString(NSString *s);
 -(void)repeatSelectedGraphicsRows:(NSInteger)rows cols:(NSInteger)cols xinc:(CGFloat)xinc yinc:(CGFloat)yinc rowOffset:(CGFloat)rowOffset;
 -(void)updateSelectedPointFromDictionary:(NSDictionary*)dict;
 -(IBAction)sizeToWidth:(id)sender;
+-(NSImage*)iconImageFromCurrentPageOfSize:(NSInteger)sz;
 
 @end

@@ -39,6 +39,26 @@
 	return [[ACSDCircle alloc]initWithName:@"" fill:nil stroke:nil rect:frame layer:nil];
 }
 
++(id)circleWithXMLNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack
+{
+    NSDictionary *settings = [settingsStack lastObject];
+    NSRect parentRect = [settings[@"parentrect"]rectValue];
+
+    
+    float x = [xmlnode attributeFloatValue:@"x"];
+    float y = [xmlnode attributeFloatValue:@"y"];
+    float width = [xmlnode attributeFloatValue:@"width"];
+    float height = [xmlnode attributeFloatValue:@"height"];
+    
+    //parentRect = InvertedRect(parentRect, docHeight);
+    width = width * parentRect.size.width;
+    height = height * parentRect.size.height;
+    NSPoint pos = LocationForRect(x, 1 - y, parentRect);
+    ACSDGraphic *r = [[ACSDCircle alloc]initWithName:@"" fill:nil stroke:nil rect:NSMakeRect(pos.x, pos.y - height, width, height) layer:nil];
+    //[r setPosition:pos];
+    return r;
+}
+
 - (NSBezierPath *)bezierPath
 {
 	return [NSBezierPath bezierPathWithOvalInRect:bounds];

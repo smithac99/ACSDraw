@@ -49,7 +49,7 @@ NSString* string_from_nscolor(NSColor *col)
 
 id fillFromNodeAttributes(NSDictionary* attrs)
 {
-    if (([attrs objectForKey:@"fill"]==nil) && ([attrs objectForKey:@"fill-opacity"]==nil))
+    if (([attrs objectForKey:@"fill"]==nil) && ([attrs objectForKey:@"fill-opacity"]==nil) && ([attrs objectForKey:@"fillopacity"]==nil))
         return nil;
     NSColor *col = nil;
     NSString *str = [attrs objectForKey:@"fill"];
@@ -61,6 +61,8 @@ id fillFromNodeAttributes(NSDictionary* attrs)
         col = [NSColor blackColor];
     float opacity = 1.0;
     id n = [attrs objectForKey:@"fill-opacity"];
+    if (n == nil)
+        n = [attrs objectForKey:@"fillopacity"];
     if (n)
         opacity = [n floatValue];
     return [[[ACSDFill alloc]initWithColour:[col colorWithAlphaComponent:opacity]]autorelease];
@@ -83,14 +85,18 @@ ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs)
     col = [col colorWithAlphaComponent:opacity];
     float width = 1.0;
     n = [attrs objectForKey:@"stroke-width"];
+    if (n == nil)
+        n = [attrs objectForKey:@"strokewidth"];
     if (n)
         width = [n floatValue];
     ACSDStroke *stroke = [[[ACSDStroke alloc]initWithColour:col width:width]autorelease];
     float mitrelimit = 1.0;
-    n = [attrs objectForKey:@"stroke-width"];
+    n = [attrs objectForKey:@"mitre-limit"];
     if (n)
         mitrelimit = [n floatValue];
     NSString *lc = [attrs objectForKey:@"stroke-linecap"];
+    if (lc == nil)
+        lc = [attrs objectForKey:@"linecap"];
     if (lc)
     {
         if ([lc isEqualToString:@"butt"])
@@ -188,6 +194,20 @@ NSColor *colorFromRGBString(NSString* str)
                     rgb[i] = [[comp substringToIndex:[comp length]-1]floatValue] / 100.0;
                 else
                     rgb[i] = [comp floatValue] / 255.0;
+            }
+            return [NSColor colorWithCalibratedRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
+        }
+    }
+    else
+    {
+        NSArray *comps = [str componentsSeparatedByString:@","];
+        if ([comps count] > 2)
+        {
+            float rgb[3];
+            for (int i = 0;i < 3;i++)
+            {
+                NSString *comp = comps[i];
+                rgb[i] = [comp floatValue] / 255.0;
             }
             return [NSColor colorWithCalibratedRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
         }
