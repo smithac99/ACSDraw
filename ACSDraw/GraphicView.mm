@@ -441,7 +441,9 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
            [[self selectedGraphics] addObject:graphic];
            [graphic invalidateInView];
            [[self window] invalidateCursorRectsForView:self];
-           [[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicViewSelectionDidChangeNotification object:self];
+           dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+               [[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicViewSelectionDidChangeNotification object:self];
+           });
            if (cursorMode == GV_ROTATION_AWAITING_SELECTION)
                cursorMode = GV_ROTATION_AWAITING_CLICK;
            return YES;
@@ -457,7 +459,9 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
            [[self selectedGraphics] removeObject:graphic];
            [graphic invalidateInView];
            [[self window] invalidateCursorRectsForView:self];
-           [[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicViewSelectionDidChangeNotification object:self];
+           dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+               [[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicViewSelectionDidChangeNotification object:self];
+           });
            return YES;
        }
     return NO;
@@ -469,7 +473,9 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 	for (ACSDGraphic *g in elementArray)
 		selectionDidChange = [self deselectGraphic:g] || selectionDidChange;
 	if (selectionDidChange)
-        [[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicViewSelectionDidChangeNotification object:self];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicViewSelectionDidChangeNotification object:self];
+        });
 	return selectionDidChange;
 }
 
@@ -6841,25 +6847,27 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 {
     NSSize sz = [self bounds].size;
     NSInteger w,h;
-    float sc;
+    float sc,xoff=0,yoff=0;
     if (sz.width > sz.height)
     {
         sc = s / sz.width;
         w = s;
         h = sz.height * sc;
+        yoff = (sz.width - sz.height) / 2.0;
     }
     else
     {
         sc = s / sz.height;
         h = s;
         w = sz.width * sc;
+        xoff = (sz.height - sz.width) / 2.0;
     }
-    NSBitmapImageRep *bm = newBitmap(w,h);
-    NSImage *im = [[[NSImage alloc]initWithSize:NSMakeSize(w,h)]autorelease];
+    NSBitmapImageRep *bm = newBitmap((int)s,(int)s);
+    NSImage *im = [[[NSImage alloc]initWithSize:NSMakeSize(s,s)]autorelease];
     [im addRepresentation:bm];
     [im lockFocusFlipped:YES];
     [[NSAffineTransform transformWithScaleXBy:sc yBy:sc]concat];
-    [[NSAffineTransform transformWithTranslateXBy:0 yBy:sz.height]concat];
+    [[NSAffineTransform transformWithTranslateXBy:xoff yBy:sz.height+yoff*sc]concat];
     [[NSAffineTransform transformWithScaleXBy:1.0 yBy:-1.0]concat];
     [self drawPage:[self currentPage] rect:[self bounds] drawingToScreen:NO drawMarkers:NO
       drawingToPDF:nil substitutions:[NSMutableDictionary dictionaryWithCapacity:5]

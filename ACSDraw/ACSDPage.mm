@@ -117,6 +117,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
         [t translateXBy:f.origin.x yBy:f.origin.y];
         settings[@"transform"] = t;
         [settingsStack addObject:settings];
+        settings = [settings mutableCopy];
         NSSet *unusedAttrs = [doc getAttributesFromSVGNode:objNode settings:settings];
         
         ACSDGraphic *g = nil;

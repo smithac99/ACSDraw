@@ -33,10 +33,11 @@ extern NSString *xmlDocWidth;
 extern NSString *xmlDocHeight;
 extern NSString *xmlIndent;
 
+NSString* Creator();
 
 @interface ACSDrawDocument : NSDocument
 {
-	NSMutableArray *pages;
+	NSMutableArray<ACSDPage*> *pages;
 	NSSize documentSize;
 	MainWindowController *mainWindowController;
 	NSMutableArray *strokes;
@@ -79,7 +80,7 @@ extern NSString *xmlIndent;
 -(BOOL)uSetBackgroundColour:(NSColor*)c;
 -(NSMutableDictionary*)nameCounts;
 -(NSMutableDictionary*)miscValues;
-- (NSMutableArray*)pages;
+- (NSMutableArray<ACSDPage*>*)pages;
 - (NSMutableArray*)systemLineEndings;
 -(NSCalendarDate*)documentKey;
 -(unsigned)nextObjectKey;

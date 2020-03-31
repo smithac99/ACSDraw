@@ -258,7 +258,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
     return miscValues;
    }
 
-- (NSMutableArray*)pages
+- (NSMutableArray<ACSDPage*>*)pages
    {
 	if (!pages)
 	   {
@@ -1249,6 +1249,17 @@ NSString *xHTMLString2 = @"<html>\n";
 	return xmlString;
 }
 
+NSString* Creator()
+{
+    NSString *version = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleVersion"];
+    NSString *creator;
+    if (version)
+        creator = [NSString stringWithFormat:@"ACSDraw %@",version];
+    else
+        creator = @"ACSDraw";
+    return creator;
+}
+
 -(NSString*)eventsXMLString
 {
 	NSMutableString *xmlString = [NSMutableString stringWithCapacity:500];
@@ -1259,6 +1270,7 @@ NSString *xHTMLString2 = @"<html>\n";
 	options[@"document"] = self;
 	options[xmlIndent] = @"\t";
 	[xmlString appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<events>\n"];
+    [xmlString appendFormat:@"<!--Exported from %@ by %@ using %@-->",[[self fileURL]lastPathComponent],NSFullUserName(),Creator()];
 	for (ACSDPage *page in self.pages)
 		[xmlString appendString:[page graphicXMLForEvent:options]];
     [xmlString appendString:@"</events>"];
