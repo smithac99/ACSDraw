@@ -3600,10 +3600,14 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 		[attrString appendFormat:@" rotation=\"%g\"",rotation];
     if (fill)
     {
-		if ([fill isKindOfClass:[ACSDGradient class]])
-		{
-			[attrString appendFormat:@" fill=\"url(#%@)\" ",[(ACSDGradient*)fill svgName:[self document]]];
-		}
+        if ([fill isKindOfClass:[ACSDGradient class]])
+        {
+            [attrString appendFormat:@" fill=\"url(#%@)\" ",[(ACSDGradient*)fill svgName:[self document]]];
+        }
+        else if ([fill isKindOfClass:[ACSDPattern class]])
+        {
+            [attrString appendFormat:@" fill=\"url(#%@)\" ",[(ACSDPattern*)fill svgName:[self document]]];
+        }
 		else if (fill.colour)
 		{
 			CGFloat r,g,b,a;
@@ -3693,8 +3697,10 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 {
 	NSMutableString *graphicString = [NSMutableString stringWithCapacity:100];
 	NSString *indent = [options objectForKey:xmlIndent];
-	if ([self.fill isKindOfClass:[ACSDGradient class]])
-		[graphicString appendString:[((ACSDGradient*)self.fill)graphicXMLForEvent:options]];
+    if ([self.fill isKindOfClass:[ACSDGradient class]])
+        [graphicString appendString:[((ACSDGradient*)self.fill)graphicXMLForEvent:options]];
+    else if ([self.fill isKindOfClass:[ACSDPattern class]])
+        [graphicString appendString:[((ACSDPattern*)self.fill)graphicXMLForEvent:options]];
 	[graphicString appendFormat:@"%@<%@ id=\"%@\"",indent,[self xmlEventTypeName],self.name];
 	[graphicString appendFormat:@"%@ />\n",[self graphicAttributesXML:options]];
 	[options setObject:indent forKey:xmlIndent];

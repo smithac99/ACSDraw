@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -133,6 +133,12 @@
                                                 <action selector="exportImage:" target="-1" id="974"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Images…" alternate="YES" keyEquivalent="/" id="SDd-rr-MWc">
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="exportImages:" target="-1" id="2lh-XD-9pL"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Selection As Image…" keyEquivalent="/" id="1083">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>
@@ -211,6 +217,12 @@
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES" command="YES"/>
                                             <connections>
                                                 <action selector="exportEventXMLToLastFile:" target="-1" id="edT-Nj-cU4"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Event XML by Page…" alternate="YES" id="LDC-PY-2b6">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="exportEventXMLFromPages:" target="-1" id="C30-Ez-ilK"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -1199,6 +1211,12 @@ CA
                                                 <action selector="outlineStrokeBuiltIn:" target="-1" id="0Bp-8k-lbt"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Import images as pages…" id="Gwb-fp-1yv">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="importImagesToPages:" target="-1" id="X5U-2C-2wr"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -1897,6 +1915,7 @@ CA
                     </connections>
                 </button>
             </subviews>
+            <point key="canvasLocation" x="140" y="116"/>
         </customView>
         <menuItem isSeparatorItem="YES" id="1069">
             <modifierMask key="keyEquivalentModifierMask" command="YES"/>

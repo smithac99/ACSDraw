@@ -202,6 +202,8 @@ struct KnobDescriptor
 @property u_int8_t linkAlignmentFlags;
 @property BOOL hidden;
 @property (retain) NSMutableDictionary *tempSettings;
+@property NSPoint originalPos,scaleAnchorPos;
+@property float originalScale;
 
 + (NSString*)nextNameForDocument:(ACSDrawDocument*)doc;
 + (NSString*)graphicTypeName;

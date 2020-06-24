@@ -23,6 +23,7 @@
 @property int imageWidth,imageHeight;
 @property BOOL maintainAspectRatio;
 @property (retain) IBOutlet NSView *accessoryView;
+@property BOOL ignoreSavePanel;
 
 
 
@@ -34,6 +35,7 @@
 - (IBAction)compressionQualitySliderHit:(id)sender;
 - (IBAction)compressionQualityTextFieldHit:(id)sender;
 -(NSString*)uti;
+-(NSString*)chosenSuffix;
 
 
 @end

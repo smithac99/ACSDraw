@@ -48,6 +48,7 @@ CGColorSpaceRef getRGBColorSpace();
 - (NSUndoManager*)undoManager;
 - (void)adjustWindowSize;
 -(CGImageRef)cgImageFromCurrentPageOfSize:(NSSize)sz;
+-(CGImageRef)cgImageFromPage:(int)pidx ofSize:(NSSize)sz;
 -(CGImageRef)cgImageFromCurrentPageSelectionOnlyDrawSelectionOnly:(BOOL)drawSelectionOnly;
 - (NSData*)tiffRepresentation;
 - (NSData*)epsRepresentation;

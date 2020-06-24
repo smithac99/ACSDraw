@@ -10,6 +10,8 @@
 #import "ACSDLayer.h"
 #import "ACSDGraphic.h"
 #import "ACSDPage.h"
+#import "ACSDImage.h"
+#import "ACSDPrefsController.h"
 
 @implementation GraphicView (GraphicViewAdditions)
 
@@ -155,4 +157,89 @@ static NSPoint relativePositionInRect(CGPoint p,NSRect r)
 	 ];
 }
 
+- (IBAction)importImagesToPages:(id)menuItem
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setCanChooseDirectories:YES];
+    [panel setCanChooseFiles:NO];
+    [panel beginSheetModalForWindow:[self window]
+                  completionHandler:^(NSInteger result)
+     {
+         if (result == NSFileHandlingPanelOKButton)
+         {
+             for (NSURL *url in [panel URLs])
+                 [self processImagesToPages:url];
+         }
+     }];
+}
+
+-(NSString*)assetsDir
+{
+    NSArray *libs = [[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs];
+    NSString *lib = libs[0];
+    while ([lib length] > 5 && ![[lib lastPathComponent]isEqualToString:@"assets"])
+        lib = [lib stringByDeletingLastPathComponent];
+    if ([[lib lastPathComponent]isEqualToString:@"assets"])
+        return lib;
+    return @"/";
+}
+-(void)processImagesToPages:(NSURL*)dir
+{
+    NSFileManager *fman = [NSFileManager defaultManager];
+    NSInteger i = [pages count];
+    NSArray *gs = [self graphicsMatchingName:@"model"];
+    float sc = 1.0;
+    NSSize sz = [self bounds].size;
+    NSPoint pos = NSMakePoint(sz.width / 2, sz.height / 2);
+    if ([gs count] > 0)
+    {
+        ACSDGraphic *g = gs[0];
+        sc = [g xScale];
+        pos = [g centrePoint];
+    }
+    ACSDGraphic *bookicon = nil;
+    gs = [self graphicsMatchingName:@"bookicon"];
+    if ([gs count] > 0)
+        bookicon = gs[0];
+    NSString *assetsDir = [self assetsDir];
+    for (NSURL *u in [fman contentsOfDirectoryAtURL:dir includingPropertiesForKeys:@[] options:NSDirectoryEnumerationSkipsHiddenFiles error:nil])
+    {
+        NSImage *im = [[NSImage alloc]initByReferencingURL:u];
+        NSString *nm = [[u lastPathComponent]stringByDeletingPathExtension];
+        ACSDPage *page = [[ACSDPage alloc]initWithDocument:[self document]];
+        [self addPage:page atIndex:i++];
+        page.pageTitle = nm;
+        page.xmlEventName = @"image";
+        [page.layers addObject:[[ACSDLayer alloc]initWithName:@"im" isGuideLayer:NO]];
+
+        ACSDLayer *layer = page.layers[2];
+        NSRect bounds = NSZeroRect;
+        bounds.size = im.size;
+        ACSDImage *gim = [[ACSDImage alloc]initWithName:@"test" fill:nil stroke:nil rect:bounds layer:layer image:im];
+        [layer addGraphic:gim];
+        [layer setExportable:NO];
+        [gim setGraphicXScale:sc yScale:sc undo:NO];
+        [gim setPosition:pos];
+        
+        layer = page.layers[1];
+        NSString *path = [assetsDir stringByAppendingPathComponent:@"oc-reading/books"];
+        path = [path stringByAppendingPathComponent:nm];
+        path = [path stringByAppendingPathComponent:@"img/shared_3"];
+        path = [path stringByAppendingPathComponent:@"p0.jpg"];
+        if ([fman fileExistsAtPath:path])
+        {
+            im = [[NSImage alloc]initByReferencingFile:path];
+            bounds.size = im.size;
+            ACSDImage *gim = [[ACSDImage alloc]initWithName:@"image" fill:nil stroke:nil rect:bounds layer:layer image:im];
+            [layer addGraphic:gim];
+            [gim setPosition:pos];
+            gim.rotationPoint = [gim centrePoint];
+            [gim setAlpha:0.6];
+            [gim setSourcePath:path];
+            if (bookicon)
+                [self setLinkFromObjects:[NSSet setWithObject:gim] toObject:bookicon modifiers:0];
+        }
+
+    }
+}
 @end

@@ -71,6 +71,10 @@ NSMutableArray *_suffixes;
 	return _suffixes;
 }
 
+-(NSString*)chosenSuffix
+{
+    return [self file_suffixes][selectedUTI];
+}
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
 {
 	[fileTypeMenu removeAllItems];
@@ -85,7 +89,8 @@ NSMutableArray *_suffixes;
 	[fileTypeMenu selectItemAtIndex:selectedUTI];
 	[savePanel setAccessoryView:_accessoryView];
 	//[savePanel setRequiredFileType:[[self utis] objectAtIndex:selectedUTI]];
-	[savePanel setAllowedFileTypes:[NSArray arrayWithObject:[[self utis] objectAtIndex:selectedUTI]]];	
+    if (!self.ignoreSavePanel)
+        [savePanel setAllowedFileTypes:[NSArray arrayWithObject:[[self utis] objectAtIndex:selectedUTI]]];
 	[compressionQualitySlider setFloatValue:compressionQuality];
 	[compressionQualityTextField setFloatValue:compressionQuality];
     return YES;
@@ -117,7 +122,8 @@ NSMutableArray *_suffixes;
 - (IBAction)fileTypeMenuHit:(id)sender
 {
 	selectedUTI = [sender indexOfSelectedItem];
-	[(NSSavePanel*)[_accessoryView window] setAllowedFileTypes:[NSArray arrayWithObject:[[self file_suffixes] objectAtIndex:selectedUTI]]];
+    if (!self.ignoreSavePanel)
+        [(NSSavePanel*)[_accessoryView window] setAllowedFileTypes:[NSArray arrayWithObject:[[self file_suffixes] objectAtIndex:selectedUTI]]];
 	[[NSUserDefaults standardUserDefaults]setObject:[[self utis] objectAtIndex:selectedUTI] forKey:@"imageexportcontrolleruti"];
 }
 

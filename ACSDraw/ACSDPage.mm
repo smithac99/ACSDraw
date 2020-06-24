@@ -118,13 +118,14 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
         settings[@"transform"] = t;
         [settingsStack addObject:settings];
         settings = [settings mutableCopy];
-        NSSet *unusedAttrs = [doc getAttributesFromSVGNode:objNode settings:settings];
-        
+        NSMutableSet *unusedAttrs = [[doc getAttributesFromSVGNode:objNode settings:settings]mutableCopy];
+        [unusedAttrs removeObject:@"parent"];
         ACSDGraphic *g = nil;
         if ([[objNode nodeName]isEqualToString:@"path"])
         {
             ACSDPath *p = [ACSDPath pathWithSVGNode:objNode settingsStack:settingsStack];
             g = p;
+            [unusedAttrs removeObject:@"d"];
         }
         else if ([[objNode nodeName]isEqualToString:@"rectangle"])
         {
@@ -313,6 +314,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 	[p setLayers:newLayers];
 	[p setLayerPages];
     [p registerWithDocument:document];
+    p.xmlEventName = self.xmlEventName;
 	return p;
 }
 
@@ -385,7 +387,8 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 	[coder encodeInt:masterType forKey:@"ACSDGraphic_masterType"];
 	[coder encodeInt:useMasterType forKey:@"ACSDGraphic_useMasterType"];
 	[coder encodeBool:inactive forKey:@"ACSDPage_inactive"];
-	[coder encodeObject:self.animations forKey:@"ACSDPage_animations"];
+    [coder encodeObject:self.animations forKey:@"ACSDPage_animations"];
+    [coder encodeObject:self.xmlEventName forKey:@"ACSDPage_xmlEventName"];
 }
 
 - (id) initWithCoder:(NSCoder*)coder
@@ -406,6 +409,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 	[self workOutIndexes];
 	[self setLayerPages];
     self.animations = [coder decodeObjectForKey:@"ACSDPage_animations"];
+    self.xmlEventName = [coder decodeObjectForKey:@"ACSDPage_xmlEventName"];
 	return self;
 }
 
@@ -970,7 +974,11 @@ static int MasterLayerCount(ACSDPage *p)
 {
 	NSMutableString *pageString = [NSMutableString stringWithCapacity:200];
 	NSString *indent = [options objectForKey:xmlIndent];
-	NSString *title = pageTitle;
+    NSString *title;
+    if (self.xmlEventName)
+        title = self.xmlEventName;
+    else
+        title = pageTitle;
 	if (title == nil)
 		title = [NSString stringWithFormat:@"%ld",pageNo];
 	[pageString appendFormat:@"%@<event id=\"%@\" ",indent,title];

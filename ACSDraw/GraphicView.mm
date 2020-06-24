@@ -3139,6 +3139,21 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
         [[self undoManager] setActionName:@"Change Selection"];
 }
 
+-(NSArray*)graphicsMatchingName:(NSString*)nm
+{
+    NSMutableArray *gs = [NSMutableArray array];
+    NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:nm options:NSRegularExpressionCaseInsensitive error:nil];
+    if (regexp)
+    {
+        for (ACSDPage*p in pages)
+            for (ACSDLayer *l in p.layers)
+                for (ACSDGraphic *g in [l graphics])
+                    if ([regexp numberOfMatchesInString:[g name] options:0 range:NSMakeRange(0, [[g name]length])] > 0)
+                        [gs addObject:g];
+    }
+    return gs;
+}
+
 - (void)selectAndTrackMouseWithEvent:(NSEvent *)theEvent commandDown:(BOOL)commandDown
 {
 	NSPoint curPoint;
@@ -3322,7 +3337,72 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	}
    }
 
-- (void)trackGradientWithEvent:(NSEvent *)theEvent 
+- (void)trackScaleWithEvent:(NSEvent *)theEvent
+{
+    NSPoint anchorPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint secondPoint;
+    float distForScale2 = [self bounds].size.height / 2;
+    NSArray *selection = [[self selectedGraphics]allObjects];
+    for (ACSDGraphic *g in selection)
+    {
+        g.originalPos = g.rotationPoint;
+        g.originalScale = g.xScale;
+        NSPoint pt = diff_points(anchorPoint, g.rotationPoint);
+        NSAffineTransform *t = [NSAffineTransform transform];
+        //[t translateXBy:-pt.x yBy:-pt.y];
+        [t scaleXBy:1/g.xScale yBy:1/g.yScale];
+        [t rotateByDegrees:-g.rotation];
+        //[t translateXBy:pt.x yBy:pt.y];
+        g.scaleAnchorPos = [t transformPoint:pt];
+    }
+    NSInteger ct = [selection count];
+    if (ct == 0)
+        return;
+     while (1)
+        {
+         theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask | NSFlagsChangedMask)];
+         if ([theEvent type] == NSFlagsChanged)
+         {
+         }
+         else
+         {
+             secondPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+             float dist = pointDistance(anchorPoint, secondPoint);
+             float thisScale = 1.0;
+             if (dist > 0.0)
+             {
+                 if (secondPoint.y > anchorPoint.y)
+                     thisScale = interpolateVal(1.0, 2, dist / distForScale2);
+                 else
+                     thisScale = interpolateVal(1.0, 0.5,  dist / distForScale2);
+                 for (int i = 0;i < ct;i++)
+                 {
+                     ACSDGraphic *g = [selection objectAtIndex:i];
+                     [g invalidateInView];
+                     float sc = g.originalScale * thisScale;
+                     [g setGraphicXScale:sc yScale:sc undo:YES];
+                     
+                     
+                     NSAffineTransform *t = [NSAffineTransform transform];
+                     //[t translateXBy:-g.scaleAnchorPos.x yBy:-g.scaleAnchorPos.y];
+                     [t scaleXBy:g.xScale yBy:g.yScale];
+                     [t rotateByDegrees:g.rotation];
+                     //[t translateXBy:g.scaleAnchorPos.x yBy:g.scaleAnchorPos.y];
+                     NSPoint p = [t transformPoint:g.scaleAnchorPos];
+                     p = diff_points(anchorPoint,p);
+                     [g setPosition:p];
+                     
+                     [g invalidateInView];
+                     [NSApp updateWindows];
+                 }
+             }
+         }
+        if ([theEvent type] == NSLeftMouseUp)
+            break;
+    }
+}
+
+- (void)trackGradientWithEvent:(NSEvent *)theEvent
    {
 	NSPoint anchorPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil],dragPoint = anchorPoint;
 	while (1)
@@ -3703,17 +3783,27 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		[(ACSDPath*)creatingPath trackAndAddPointWithEvent:theEvent inView:self];
 		return;
 	   }
+    if (selectedTool == ACSD_SCALE_TOOL)
+    {
+        [self trackScaleWithEvent:theEvent];
+        return;
+    }
 	if (selectedTool == ACSD_WHITE_ARROW_TOOL)
 	   {
 		[self selectPathElementAndTrackMouseWithEvent:theEvent];
 		return;
 	   }
-	if (selectedTool == ACSD_SPLIT_POINT_TOOL)
-	   {
-		[self splitAndTrackMouseWithEvent:theEvent];
-		return;
-	   }
-    if ([theEvent clickCount] > 1) 
+    if (selectedTool == ACSD_SPLIT_POINT_TOOL)
+       {
+        [self splitAndTrackMouseWithEvent:theEvent];
+        return;
+       }
+    if (selectedTool == ACSD_SCALE_TOOL)
+       {
+        [self splitAndTrackMouseWithEvent:theEvent];
+        return;
+       }
+    if ([theEvent clickCount] > 1)
 	   {
 		[self emptyRepeatQueue];
         ACSDGraphic *graphic = [self graphicUnderPoint:curPoint extending:NO];
@@ -6841,6 +6931,23 @@ static ACSDGraphic *parg(ACSDGraphic *g)
                   options:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:sz.width/b.size.width] forKey:@"overrideScale"]];
 	[im unlockFocus];
 	return im;
+}
+
+-(NSImage*)imageFromPage:(int)pidx ofSize:(NSSize)sz
+{
+    NSBitmapImageRep *bm = newBitmap(sz.width,sz.height);
+    NSImage *im = [[[NSImage alloc]initWithSize:sz]autorelease];
+    [im addRepresentation:bm];
+    [im lockFocusFlipped:YES];
+    NSRect b = [self bounds];
+    [[NSAffineTransform transformWithScaleXBy:  sz.width/b.size.width yBy: sz.height/b.size.height]concat];
+    [[NSAffineTransform transformWithTranslateXBy:0 yBy:b.size.height]concat];
+    [[NSAffineTransform transformWithScaleXBy:1.0 yBy:-1.0]concat];
+    [self drawPage:pages[pidx] rect:b drawingToScreen:NO drawMarkers:NO
+             drawingToPDF:nil substitutions:[NSMutableDictionary dictionaryWithCapacity:5]
+           options:@{@"overrideScale":@(sz.width/b.size.width)}];
+    [im unlockFocus];
+    return im;
 }
 
 -(NSImage*)iconImageFromCurrentPageOfSize:(NSInteger)s

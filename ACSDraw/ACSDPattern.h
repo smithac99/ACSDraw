@@ -72,5 +72,7 @@ enum
 -(NSPDFImageRep*)pdfImageRep;
 -(NSPoint)pdfOffset;
 -(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray<ACSDPattern*>*)allPatterns;
+-(NSString*)graphicXMLForEvent:(NSMutableDictionary*)options;
+-(NSString*)svgName:(ACSDrawDocument*)doc;
 
 @end

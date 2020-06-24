@@ -1260,7 +1260,7 @@ NSString* Creator()
     return creator;
 }
 
--(NSString*)eventsXMLString
+-(NSString*)eventsXMLString:(NSArray*)pages
 {
 	NSMutableString *xmlString = [NSMutableString stringWithCapacity:500];
 	NSMutableDictionary *options = [NSMutableDictionary dictionaryWithCapacity:10];
@@ -1270,8 +1270,8 @@ NSString* Creator()
 	options[@"document"] = self;
 	options[xmlIndent] = @"\t";
 	[xmlString appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<events>\n"];
-    [xmlString appendFormat:@"<!--Exported from %@ by %@ using %@-->",[[self fileURL]lastPathComponent],NSFullUserName(),Creator()];
-	for (ACSDPage *page in self.pages)
+    [xmlString appendFormat:@"<!--Exported from %@ by %@ using %@-->\n",[[self fileURL]lastPathComponent],NSFullUserName(),Creator()];
+	for (ACSDPage *page in pages)
 		[xmlString appendString:[page graphicXMLForEvent:options]];
     [xmlString appendString:@"</events>"];
 	return xmlString;
@@ -1507,6 +1507,44 @@ NSString* Creator()
 	 ];
 }
 
+- (void)exportEventXMLFromPages:(id)menuItem
+{
+    NSSavePanel *sp;
+    NSString *fName = [[self displayName]stringByDeletingPathExtension];
+    sp = [NSSavePanel savePanel];
+    [sp setAllowedFileTypes:nil];
+    [sp setTitle:@"Export Page Event XML"];
+    [sp setDirectoryURL:[self exportDirectory]];
+    [sp setNameFieldStringValue:fName];
+    [sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
+     {
+         if (result == NSFileHandlingPanelOKButton)
+         {
+             [self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
+             NSURL *url = [(NSSavePanel*)sp URL];
+             NSFileManager *fileManager = [NSFileManager defaultManager];
+             NSError *err;
+             if ([fileManager fileExistsAtPath:[url path]])
+                 [fileManager removeItemAtURL:url error:nil];
+             if (![fileManager createDirectoryAtPath:[url path] withIntermediateDirectories:NO attributes:nil error:&err])
+             {
+                 show_error_alert([NSString stringWithFormat:@"Error creating directory: %@, %@",[url path],[err localizedDescription]]);
+                 return;
+             }
+             for (ACSDPage *page in self.pages)
+             {
+                 if ([page pageType] == PAGE_TYPE_NORMAL)
+                 {
+                     NSString *nm = [page.pageTitle stringByAppendingPathExtension:@"xml"];
+                     NSURL *furl = [url URLByAppendingPathComponent:nm];
+                     if (!([[self eventsXMLString:@[page]] writeToURL:furl atomically:YES encoding:NSUTF8StringEncoding error:&err]))
+                         show_error_alert([NSString stringWithFormat:@"Error writing xml: %@, %@",furl,[err localizedDescription]]);
+
+                 }
+             }
+         }
+    }];
+}
 - (void)exportEventXML:(id)menuItem
 {
 	NSSavePanel *sp;
@@ -1523,7 +1561,7 @@ NSString* Creator()
 			 NSError *err = nil;
              self.exportDirectory = [sp directoryURL];
 			 miscValues[@"exporteventxml"] = [sp URL];
-			 if (!([[self eventsXMLString] writeToURL:[sp URL] atomically:YES encoding:NSUTF8StringEncoding error:&err]))
+             if (!([[self eventsXMLString:self.pages] writeToURL:[sp URL] atomically:YES encoding:NSUTF8StringEncoding error:&err]))
 				 show_error_alert([NSString stringWithFormat:@"Error writing xml: %@, %@",[sp URL],[err localizedDescription]]);
 		 }
 	 }
@@ -1536,7 +1574,7 @@ NSString* Creator()
 	if (url == nil)
 		return;
 	NSError *err = nil;
-	if (!([[self eventsXMLString] writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:&err]))
+    if (!([[self eventsXMLString:self.pages] writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:&err]))
 	{
 		NSLog(@"%@",[err localizedDescription]);
 		NSBeep();
@@ -1619,6 +1657,71 @@ NSString* Creator()
 - (void)exportSelectionImageDrawAll:(id)menuItem
 {
     [self exportSelectionImageDrawSelectionOnly:NO];
+    }
+
+- (void)exportImages:(id)menuItem
+{
+    if (!_exportImageController)
+    {
+        NSArray *topLevelObjects;
+        [[NSBundle mainBundle] loadNibNamed:@"ImageController" owner:self topLevelObjects:&topLevelObjects];
+    }
+    NSSavePanel *sp;
+    NSString *fName = [[self displayName]stringByDeletingPathExtension];
+    sp = [NSSavePanel savePanel];
+    [sp setNameFieldLabel:@"Export As:"];
+    [sp setNameFieldStringValue:fName];
+    [sp setAllowedFileTypes:nil];
+    if (!exportImageSettings)
+    {
+        exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
+        [exportImageSettings setObject:[NSNumber numberWithFloat:0.7] forKey:@"compressionQuality"];
+    }
+    [exportImageSettings setObject:@(documentSize.width) forKey:@"imageWidth"];
+    [exportImageSettings setObject:@(documentSize.height) forKey:@"imageHeight"];
+    [_exportImageController setControls:exportImageSettings];
+    [_exportImageController setIgnoreSavePanel:YES];
+    [_exportImageController prepareSavePanel:sp];
+    [sp setAllowedFileTypes:nil];
+    [sp setTitle:@"Export Image"];
+    [sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton)
+        {
+            NSURL *dirURL = [(NSSavePanel*)sp URL];
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSError *err;
+            if (![fileManager fileExistsAtPath:[dirURL path]])
+                if (![fileManager createDirectoryAtPath:[dirURL path] withIntermediateDirectories:NO attributes:nil error:&err])
+                {
+                    NSRunAlertPanel(@"Error",@"%@",@"OK",nil,nil,[NSString stringWithFormat:@"Error creating directory: %@, %@",[dirURL path],[err localizedDescription]]);
+                    return;
+                }
+            int resolution = 72;
+            [_exportImageController updateSettingsFromControls:exportImageSettings];
+            NSSize sz;
+            sz.width = [exportImageSettings[@"imageWidth"]floatValue];
+            sz.height = [exportImageSettings[@"imageHeight"]floatValue];
+            float compressionQuality = [[exportImageSettings objectForKey:@"compressionQuality"]floatValue];
+            //[self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
+            NSString *dirpath = [[sp URL]path];
+            NSString *suffix = [_exportImageController chosenSuffix];
+            for (int i = 0;i < [pages count];i++)
+            {
+                ACSDPage *p = pages[i];
+                CGImageRef cgr = [[self frontmostMainWindowController]cgImageFromPage:i ofSize:sz];
+                CGImageRetain(cgr);
+                NSString *path = [[dirpath stringByAppendingPathComponent:[p pageTitle]]stringByAppendingPathExtension:suffix];
+                NSURL *url = [NSURL fileURLWithPath:path];
+                CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)url,(CFStringRef)[_exportImageController uti],1,nil);
+                NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:compressionQuality],kCGImageDestinationLossyCompressionQuality,
+                                       [NSNumber numberWithInt:resolution],kCGImagePropertyDPIHeight,[NSNumber numberWithInt:resolution],kCGImagePropertyDPIWidth,nil];
+                CGImageDestinationAddImage(dest,cgr,(CFDictionaryRef)props);
+                CGImageDestinationFinalize(dest);
+                CFRelease(dest);
+                CGImageRelease(cgr);
+            }
+        }
+    }];
 }
 
 - (void)exportImage:(id)menuItem

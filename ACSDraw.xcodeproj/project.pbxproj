@@ -12,6 +12,8 @@
 		E7066F1E1961BD4E009C3F30 /* AnimationEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = E7066F1D1961BD4E009C3F30 /* AnimationEntry.m */; };
 		E7066F2019669281009C3F30 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7066F1F19669281009C3F30 /* AVFoundation.framework */; };
 		E7066F22196692CB009C3F30 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7066F21196692CB009C3F30 /* CoreMedia.framework */; };
+		E70E81C7249E5D27003CDF0D /* scale.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E70E81C5249E5D27003CDF0D /* scale.tiff */; };
+		E70E81C8249E5D27003CDF0D /* scalealt.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E70E81C6249E5D27003CDF0D /* scalealt.tiff */; };
 		E71E28D11823BAAE00F5C5B9 /* XMLManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E71E28CE1823BAAE00F5C5B9 /* XMLManager.m */; };
 		E71E28D21823BAAE00F5C5B9 /* XMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = E71E28D01823BAAE00F5C5B9 /* XMLNode.m */; };
 		E7291DA51A2E63BB0082EDA9 /* ACSDFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = E7291DA41A2E63BB0082EDA9 /* ACSDFieldEditor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -291,6 +293,8 @@
 		E7066F1D1961BD4E009C3F30 /* AnimationEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationEntry.m; sourceTree = "<group>"; };
 		E7066F1F19669281009C3F30 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E7066F21196692CB009C3F30 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		E70E81C5249E5D27003CDF0D /* scale.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scale.tiff; path = tiffs/scale.tiff; sourceTree = "<group>"; };
+		E70E81C6249E5D27003CDF0D /* scalealt.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scalealt.tiff; path = tiffs/scalealt.tiff; sourceTree = "<group>"; };
 		E71E28CD1823BAAE00F5C5B9 /* XMLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLManager.h; sourceTree = "<group>"; };
 		E71E28CE1823BAAE00F5C5B9 /* XMLManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLManager.m; sourceTree = "<group>"; };
 		E71E28CF1823BAAE00F5C5B9 /* XMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLNode.h; sourceTree = "<group>"; };
@@ -1035,6 +1039,8 @@
 				E746F6ED15E8BCC900110247 /* lock2.tif */,
 				E746F6EE15E8BCC900110247 /* magminus.tiff */,
 				E746F6EF15E8BCC900110247 /* magplus.tiff */,
+				E70E81C5249E5D27003CDF0D /* scale.tiff */,
+				E70E81C6249E5D27003CDF0D /* scalealt.tiff */,
 				E746F6F015E8BCC900110247 /* markersmall.tif */,
 				E746F6F115E8BCC900110247 /* markersmall90.tif */,
 				E746F6F215E8BCC900110247 /* oblique.tiff */,
@@ -1361,6 +1367,7 @@
 				E74054CC15B1ED040040F590 /* InfoPlist.strings in Resources */,
 				E74054D215B1ED040040F590 /* Credits.rtf in Resources */,
 				E74056F815B1EF950040F590 /* DocPadding.nib in Resources */,
+				E70E81C8249E5D27003CDF0D /* scalealt.tiff in Resources */,
 				E74056F915B1EF950040F590 /* HTMLExport.nib in Resources */,
 				E74056FA15B1EF950040F590 /* ImageController.xib in Resources */,
 				E74056FC15B1EF950040F590 /* LineEndingWindow.nib in Resources */,
@@ -1433,6 +1440,7 @@
 				E746F70015E8BCCA00110247 /* eye.tif in Resources */,
 				E74A50451C6228A000A83A52 /* GroupWindow.xib in Resources */,
 				E746F70115E8BCCA00110247 /* eye2.tif in Resources */,
+				E70E81C7249E5D27003CDF0D /* scale.tiff in Resources */,
 				E746F70215E8BCCA00110247 /* leftright.tiff in Resources */,
 				E746F70315E8BCCA00110247 /* lock.tif in Resources */,
 				E746F70415E8BCCA00110247 /* lock2.tif in Resources */,
@@ -1868,9 +1876,11 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.037;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACSDraw/ACSDraw-Prefix.pch";
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
+				MARKETING_VERSION = 1.037;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -1884,9 +1894,11 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.037;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACSDraw/ACSDraw-Prefix.pch";
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
+				MARKETING_VERSION = 1.037;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

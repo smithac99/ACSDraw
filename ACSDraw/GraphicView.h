@@ -242,6 +242,7 @@ enum GV_Cursor_Mode
 -(void)hideLayersWithName:(NSString*)nm;
 -(void)selectLayersWithName:(NSString*)nm;
 -(NSImage*)imageFromCurrentPageOfSize:(NSSize)sz;
+-(NSImage*)imageFromPage:(int)pidx ofSize:(NSSize)sz;
 -(void)duplicatePageAtIndex:(NSInteger)index;
 -(int)renameGraphics:(NSArray*)grphs usingRegularExpression:(NSRegularExpression*)regexp template:(NSString*)templateString;
 -(void)renameSelectedGraphicsUsingParams:(NSMutableArray*)params startA:(NSString*)starta startN:(int)startN orderBy:(int)orderBy rowAscending:(BOOL)rowAscending colAscending:(BOOL)colAscending;
@@ -258,5 +259,6 @@ NSString *IncrementString(NSString *s);
 -(void)updateSelectedPointFromDictionary:(NSDictionary*)dict;
 -(IBAction)sizeToWidth:(id)sender;
 -(NSImage*)iconImageFromCurrentPageOfSize:(NSInteger)sz;
+-(NSArray*)graphicsMatchingName:(NSString*)nm;
 
 @end

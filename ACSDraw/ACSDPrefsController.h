@@ -12,6 +12,7 @@ extern NSString *prefsRenameString;
 extern NSString *prefsRenameStartFromString;
 extern NSString *prefsRegexpPattern;
 extern NSString *prefsRegexpTemplate;
+extern NSString *prefsImageLibs;
 
 
 #define BACKGROUND_DRAW_NONE 0

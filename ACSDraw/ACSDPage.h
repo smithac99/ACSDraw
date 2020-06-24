@@ -54,7 +54,7 @@ enum
 	BOOL inactive;
    }
 
-@property (copy) NSString *name,*pageTitle;
+@property (copy) NSString *name,*pageTitle,*xmlEventName;
 @property (assign) ACSDrawDocument *document;
 @property BOOL inactive;
 @property NSInteger currentLayerInd,pageNo,guideLayerInd;

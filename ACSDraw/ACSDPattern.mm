@@ -389,7 +389,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	}
 	for (int i = -1;i < iCount;i++)
 	{
-		destRect.origin.y = pathBounds.origin.y + i * yIncrement;
+        destRect.origin.y = pathBounds.origin.y + pathBounds.size.height - (i + 1) * yIncrement;
 		for (int j = -1;j < jCount;j++)
 		{
 			destRect.origin.x = pathBounds.origin.x + j * xIncrement;
@@ -430,6 +430,61 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 {
     NSUInteger i = [[doc fills]indexOfObjectIdenticalTo:self];
     return [NSString stringWithFormat:@"Pattern%ld",i];
+}
+
+-(NSString*)graphicXMLForEvent:(NSMutableDictionary*)options
+{
+    NSMutableString *graphicString = [NSMutableString stringWithCapacity:100];
+    NSArray *allPatterns = options[@"allpatterns"];
+    NSString *xlink = nil;
+    NSInteger idx = [allPatterns indexOfObjectIdenticalTo:self];
+    for (NSInteger i = 0;i < idx;i++)
+    {
+        ACSDPattern *other = allPatterns[i];
+        if ([other.graphic isSameAs:self.graphic] && other.tempName)
+        {
+            xlink = other.tempName;
+            break;
+        }
+    }
+    
+    NSString *name = [self svgName:options[@"document"]];
+    self.tempName = name;
+    NSRect graphicBounds = [self patternBounds];
+    float patternWidth = graphicBounds.size.width;
+    float patternHeight = graphicBounds.size.height;
+    float scaledPatternWidth = patternWidth * self.scale;
+    float scaledPatternHeight = patternHeight * self.scale;
+    float xIncrement = scaledPatternWidth * (1.0 + self.spacing);
+    float yIncrement = scaledPatternHeight * (1.0 + self.spacing);
+
+    [graphicString appendString:@"<pattern"];
+    if (xlink)
+        [graphicString appendFormat:@" xlink:href=\"#%@\"",xlink];
+    [graphicString appendFormat:@" id=\"%@\" patternUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%0.03g\" height=\"%0.03g\"",name,xIncrement,yIncrement];
+    if (!self.clip)
+        [graphicString appendString:@" overflow=\"visible\""];
+    if (self.rotation == 0)
+    {
+        if (xlink)
+            [graphicString appendString:@" patternTransform=\"\""];
+    }
+    else
+        [graphicString appendFormat:@" patternTransform=\"rotate(%g)\"",self.rotation];
+    [graphicString appendString:@">\n"];
+    if (xlink == nil)
+    {
+        if (self.backgroundColour && [self.backgroundColour alphaComponent] > 0.0)
+        {
+            [graphicString appendFormat:@"\t<rect x=\"-1\" y=\"-1\" width=\"%0.03g\" height=\"%0.03g\" fill=\"%@\"/>\n",xIncrement+2,yIncrement+2,string_from_nscolor([self backgroundColour])];
+        }
+        //[graphicString appendFormat:@"\t<group transform=\"translate(%g,%g)\">\n",-graphicBounds.origin.x,-graphicBounds.origin.y];
+        [graphicString appendFormat:@"\t<group scalex=\"%g\" scaley=\"%g\">\n",self.scale,self.scale];
+        [graphicString appendString:[self.graphic graphicXMLForEvent:options]];
+        [graphicString appendString:@"\t</group>\n"];
+    }
+    [graphicString appendString:@"</pattern>\n"];
+    return graphicString;
 }
 
 -(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray<ACSDPattern*>*)allPatterns
