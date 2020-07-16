@@ -9,6 +9,8 @@
 #import "ACSDPattern.h"
 #import "GraphicView.h"
 #import "ACSDPath.h"
+#import "ACSDRect.h"
+#import "ACSDGroup.h"
 #import "ACSDGraphic.h"
 #import "ACSDFill.h"
 #import "SVGWriter.h"
@@ -57,8 +59,30 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 +(ACSDPattern*)patternWithGraphic:(ACSDGraphic*)g
 {
-	return [[[ACSDPattern alloc] initWithGraphic:g scale:1.0 spacing:0.2 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
-								   patternBounds:[g bounds]]autorelease];
+    NSRect bnds;
+    ACSDRect *foundrect = nil;
+    int rectcount = 0;
+    if ([g isKindOfClass:[ACSDGroup class]])
+    {
+        ACSDGroup *gp = (ACSDGroup*)g;
+        for (ACSDGraphic *gr in [gp graphics])
+        {
+            if ([gr isKindOfClass:[ACSDRect class]])
+            {
+                rectcount++;
+                foundrect = (ACSDRect*)gr;
+            }
+            if (rectcount > 1)
+                break;
+        }
+    }
+    if (foundrect)
+        bnds = [foundrect bounds];
+    else
+        bnds = [g bounds];
+	ACSDPattern *pat = [[[ACSDPattern alloc] initWithGraphic:g scale:1.0 spacing:0.0 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
+								   patternBounds:bnds]autorelease];
+    return pat;
 }
 
 -(id)initWithGraphic:(ACSDGraphic*)g scale:(float)sc spacing:(float)sp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r
@@ -506,41 +530,47 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     NSRect graphicBounds = [self patternBounds];
     float patternWidth = graphicBounds.size.width;
     float patternHeight = graphicBounds.size.height;
-    float scaledPatternWidth = patternWidth * self.scale;
-    float scaledPatternHeight = patternHeight * self.scale;
-    float xIncrement = scaledPatternWidth * (1.0 + self.spacing);
-    float yIncrement = scaledPatternHeight * (1.0 + self.spacing);
+    //float scaledPatternWidth = patternWidth * self.scale;
+    //float scaledPatternHeight = patternHeight * self.scale;
+    //float xIncrement = scaledPatternWidth * (1.0 + self.spacing);
+    //float yIncrement = scaledPatternHeight * (1.0 + self.spacing);
+    float xIncrement = patternWidth * (1.0 + self.spacing);
+    float yIncrement = patternHeight * (1.0 + self.spacing);
 
 	[[svgWriter defs]appendString:@"<pattern"];
 	if (xlink)
 		[[svgWriter defs]appendFormat:@" xlink:href=\"#%@\"",xlink];
     [[svgWriter defs]appendFormat:@" id=\"%@\" patternUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%0.03g\" height=\"%0.03g\"",name,xIncrement,yIncrement];
+    [[svgWriter defs]appendFormat:@" viewBox=\"%g %g %g %g\"",graphicBounds.origin.x,graphicBounds.origin.y,graphicBounds.size.width,graphicBounds.size.height];
+
 	if (!self.clip)
 		[[svgWriter defs]appendString:@" overflow=\"visible\""];
-	if (self.rotation == 0)
-    {
-        if (xlink)
-            [[svgWriter defs]appendString:@" patternTransform=\"\""];
-    }
-    else
-		[[svgWriter defs]appendFormat:@" patternTransform=\"rotate(%g)\"",self.rotation];
+    NSMutableString *transString = [NSMutableString string];
+    if (self.rotation != 0.0)
+        [transString appendFormat:@"rotate(%g)",self.rotation];
+    if (self.scale != 1.0)
+        [transString appendFormat:@" scale(%g)",self.scale];
+    if ([transString length] > 0)
+        [[svgWriter defs]appendFormat:@" patternTransform=\"%@\"",transString];
+	else if (xlink)
+        [[svgWriter defs]appendString:@" patternTransform=\"\""];
 	[[svgWriter defs]appendString:@">\n"];
 	if (xlink == nil)
 	{
 		if (self.backgroundColour && [self.backgroundColour alphaComponent] > 0.0)
 		{
-			[[svgWriter defs] appendFormat:@"\t<rect x=\"-1\" y=\"-1\" width=\"%0.03g\" height=\"%0.03g\" fill=\"%@\"/>\n",xIncrement+2,yIncrement+2,string_from_nscolor([self backgroundColour])];
+			[[svgWriter defs] appendFormat:@"\t<rect x=\"%0.03g\" y=\"%0.03g\" width=\"%0.03g\" height=\"%0.03g\" fill=\"%@\"/>\n",graphicBounds.origin.x,graphicBounds.origin.y,xIncrement,yIncrement,string_from_nscolor([self backgroundColour])];
 		}
-		[[svgWriter defs] appendFormat:@"\t<g transform=\"translate(%g,%g)\">\n",-graphicBounds.origin.x,-graphicBounds.origin.y];
+		//[[svgWriter defs] appendFormat:@"\t<g transform=\"translate(%g,%g)\">\n",-graphicBounds.origin.x,-graphicBounds.origin.y];
 		[svgWriter saveContents];
 		[svgWriter indentDef];
 		[self.graphic writeSVGData:svgWriter];
 		[svgWriter outdentDef];
 		[[svgWriter defs]appendString:[svgWriter contents]];
 		[svgWriter restoreContents];
-		[[svgWriter defs]appendString:@"\t</g>"];
+		//[[svgWriter defs]appendString:@"\t</g>"];
 	}
-    [[svgWriter defs]appendString:@"</pattern>\n"];
+    [[svgWriter defs]appendString:@"\t</pattern>\n"];
 }
 
 -(void)writeSVGData:(SVGWriter*)svgWriter
