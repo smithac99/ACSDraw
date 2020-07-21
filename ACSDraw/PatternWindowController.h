@@ -23,7 +23,9 @@
     IBOutlet id scaleText;
     IBOutlet id scaleSlider;
     IBOutlet id backgroundColourWell;
-	ACSDPattern *pattern;
+    IBOutlet NSTextField *originXText;
+    IBOutlet NSTextField *originYText;
+    ACSDPattern *pattern;
 	NSMutableArray *pages;
 	GraphicRulerView *horizontalRuler,*verticalRuler;
 	SnapLine *verticalOriginLine,*horizontalOriginLine,*verticalLimitLine,*horizontalLimitLine;

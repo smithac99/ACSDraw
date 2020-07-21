@@ -100,6 +100,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 		self.alpha = al;
 		self.mode = m;
 		self.patternBounds = r;
+        self.patternOrigin = NSMakePoint(0.5, 0.5);
 		graphicCache = nil;
 		self.backgroundColour = [NSColor clearColor];
 		self.clip = YES;
@@ -113,7 +114,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 														 mode:self.mode patternBounds:[self patternBounds]];
 	[o setBackgroundColour:self.backgroundColour];
 	[o setClip:self.clip];
-	[o setRotation:self.rotation];
+    [o setRotation:self.rotation];
+    o.patternOrigin = self.patternOrigin;
 	return o;
 }
 
@@ -130,6 +132,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	[ACSDGraphic encodeRect:self.patternBounds coder:coder forKey:@"ACSDPattern_patternBounds"];
 	[coder encodeBool:self.clip forKey:@"ACSDPattern_clip"];
 	[coder encodeFloat:self.rotation forKey:@"ACSDPattern_rotation"];
+    [coder encodePoint:self.patternOrigin forKey:@"ACSDPattern_patternOrigin"];
 }
 
 - (id) initWithCoder:(NSCoder*)coder
@@ -146,6 +149,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	self.backgroundColour = [coder decodeObjectForKey:@"ACSDPattern_backgroundColour"];
 	self.clip = [coder decodeBoolForKey:@"ACSDPattern_clip"];
 	self.rotation = [coder decodeFloatForKey:@"ACSDPattern_rotation"];
+    if ([coder decodeObjectForKey:@"ACSDPattern_patternOrigin"])
+        self.patternOrigin = [coder decodePointForKey:@"ACSDPattern_patternOrigin"];
 	[self.graphic buildPDFData];
 	pdfImageRep = [[NSPDFImageRep imageRepWithData:[[self.graphic objectPdfData]pdfData]]retain];
 	pdfOffset = [[self.graphic objectPdfData]offset];
@@ -401,26 +406,28 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	float scaledPatternHeight = patternHeight * self.scale;
 	float xIncrement = scaledPatternWidth * (1.0 + self.spacing);
 	float yIncrement = scaledPatternHeight * (1.0 + self.spacing);
-	int jCount = (int)((pathBounds.size.width + xIncrement) / xIncrement); 
-	int iCount = (int)((pathBounds.size.height + yIncrement) / yIncrement); 
-	NSRect destRect = pathBounds;
-	destRect.size.width = self.patternBounds.size.width * self.scale;
-	destRect.size.height = self.patternBounds.size.height * self.scale;
+	NSRect destRect = NSZeroRect;
+	destRect.size.width = scaledPatternWidth;
+	destRect.size.height = scaledPatternHeight;
 	if (self.alpha < 1.0)
 	{
 		CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 		CGContextSetAlpha(currentContext,self.alpha);
 	}
-	for (int i = -1;i < iCount;i++)
+    float ox = pathBounds.origin.x + _patternOrigin.x * pathBounds.size.width;
+    float oy = pathBounds.origin.y + (1.0 - _patternOrigin.y) * pathBounds.size.height;
+    while (ox > pathBounds.origin.x)
+        ox -= xIncrement;
+    while (oy > pathBounds.origin.y)
+        oy -= yIncrement;
+    for (destRect.origin.y = oy;destRect.origin.y < NSMaxY(pathBounds);destRect.origin.y += yIncrement)
 	{
-        destRect.origin.y = pathBounds.origin.y + pathBounds.size.height - (i + 1) * yIncrement;
-		for (int j = -1;j < jCount;j++)
+        for (destRect.origin.x = ox;destRect.origin.x < NSMaxX(pathBounds);destRect.origin.x += xIncrement)
 		{
-			destRect.origin.x = pathBounds.origin.x + j * xIncrement;
 			[NSGraphicsContext saveGraphicsState];
 			[[NSAffineTransform transformWithTranslateXBy:destRect.origin.x 
 													  yBy:destRect.origin.y]concat];
-			[[self transformWithOffsetForI:i j:j destRect:destRect]concat];
+			//[[self transformWithOffsetForI:i j:j destRect:destRect]concat];
 			if (self.clip)
 				[[NSBezierPath bezierPathWithRect:NSMakeRect(0.0,0.0,destRect.size.width,destRect.size.height)]addClip];
 			[[NSAffineTransform transformWithScaleBy:self.scale]concat];
@@ -511,6 +518,88 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     return graphicString;
 }
 
+#define svgShouldUseBBUnits YES
+
+-(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray*)allPatterns bounds:(NSRect)bnds name:(NSString*)pname
+{
+    NSString *xlink = nil;
+    for (NSDictionary *d in allPatterns)
+    {
+        ACSDPattern *other = d[@"pattern"];
+        if (other == self)
+        {
+            NSString *othername = d[@"name"];
+            if (othername != pname)
+                xlink = othername;
+            break;
+        }
+    }
+    
+    NSString *name = pname;
+    self.tempName = name;
+    NSRect graphicBounds = [self patternBounds];
+    float patternWidth = graphicBounds.size.width;
+    float patternHeight = graphicBounds.size.height;
+    float xIncrement = patternWidth * (1.0 + self.spacing);
+    float yIncrement = patternHeight * (1.0 + self.spacing);
+
+    [[svgWriter defs]appendFormat:@"\t<pattern id=\"%@\" ",name];
+    
+    float cx,cy;
+    if (svgShouldUseBBUnits)
+    {
+        //cx = (NSMidX(bnds) - bnds.origin.x) / bnds.size.width;
+        //cy = (NSMidY(bnds) - bnds.origin.y) / bnds.size.height;
+        cx = _patternOrigin.x;
+        cy = _patternOrigin.y;
+        xIncrement = xIncrement / bnds.size.width;
+        yIncrement = yIncrement / bnds.size.height;
+    }
+    else
+    {
+        cx = NSMidX(bnds) / self.scale;
+        cy = NSMidY(bnds) / self.scale;
+
+    }
+    if (xlink)
+    {
+        [[svgWriter defs]appendFormat:@" xlink:href=\"#%@\" ",xlink];
+        [[svgWriter defs]appendFormat:@"x=\"%g\" y=\"%g\"",cx,cy];
+    }
+    else
+    {
+        NSString *coordType=@"userSpaceOnUse";
+        if (svgShouldUseBBUnits)
+            coordType = @"objectBoundingBox";
+        [[svgWriter defs]appendFormat:@"patternUnits=\"%@\" x=\"%g\" y=\"%g\" width=\"%0.03g\" height=\"%0.03g\"",coordType, cx,cy,xIncrement,yIncrement];
+        [[svgWriter defs]appendFormat:@" viewBox=\"%g %g %g %g\"",graphicBounds.origin.x,graphicBounds.origin.y,graphicBounds.size.width,graphicBounds.size.height];
+        if (!self.clip)
+            [[svgWriter defs]appendString:@" overflow=\"visible\""];
+        NSMutableString *transString = [NSMutableString string];
+        if (self.rotation != 0.0)
+            [transString appendFormat:@"rotate(%g)",self.rotation];
+        if (self.scale != 1.0)
+            [transString appendFormat:@" scale(%g)",self.scale];
+        if ([transString length] > 0)
+            [[svgWriter defs]appendFormat:@" patternTransform=\"%@\"",transString];
+    }
+    [[svgWriter defs]appendString:@">\n"];
+    if (xlink == nil)
+    {
+        /*if (self.backgroundColour && [self.backgroundColour alphaComponent] > 0.0)
+        {
+            [[svgWriter defs] appendFormat:@"\t<rect x=\"%0.03g\" y=\"%0.03g\" width=\"%0.03g\" height=\"%0.03g\" fill=\"%@\"/>\n",graphicBounds.origin.x,graphicBounds.origin.y,xIncrement,yIncrement,string_from_nscolor([self backgroundColour])];
+        }*/
+        [svgWriter saveContents];
+        [svgWriter indentDef];
+        [self.graphic writeSVGData:svgWriter];
+        [svgWriter outdentDef];
+        [[svgWriter defs]appendString:[svgWriter contents]];
+        [svgWriter restoreContents];
+    }
+    [[svgWriter defs]appendString:@"\t</pattern>\n"];
+}
+
 -(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray<ACSDPattern*>*)allPatterns
 {
 	NSString *xlink = nil;
@@ -575,8 +664,9 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 -(void)writeSVGData:(SVGWriter*)svgWriter
 {
-    NSString *name = [self svgName:[svgWriter document]];
-    [[svgWriter contents]appendFormat:@"fill=\"url(#%@)\" ",name];
+    //NSString *name = [self svgName:[svgWriter document]];
+    //[[svgWriter contents]appendFormat:@"fill=\"url(#%@)\" ",name];
+    [[svgWriter contents]appendFormat:@"fill=\"url(#%@)\" ",self.tempName];
 }
 
 

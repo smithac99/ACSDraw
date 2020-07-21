@@ -49,6 +49,7 @@ enum
 @property int offsetMode;
 @property NSRect patternBounds;
 @property BOOL clip;
+@property NSPoint patternOrigin;
 @property (retain) NSString *tempName;
 
 +(ACSDPattern*)defaultPattern;
@@ -72,6 +73,7 @@ enum
 -(NSPDFImageRep*)pdfImageRep;
 -(NSPoint)pdfOffset;
 -(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray<ACSDPattern*>*)allPatterns;
+-(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray*)allPatterns bounds:(NSRect)bnds name:(NSString*)pname;
 -(NSString*)graphicXMLForEvent:(NSMutableDictionary*)options;
 -(NSString*)svgName:(ACSDrawDocument*)doc;
 

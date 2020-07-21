@@ -31,12 +31,14 @@ ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs);
     NSMutableString *prefix,*defs,*contents;
     NSInteger page;
     NSString *clipPathName;
-    NSMutableSet *lineEndings,*shadows,*patterns;
+    NSMutableSet *lineEndings,*shadows;
     NSMutableArray *contentsStack;
+    NSMutableArray *otherDefStrings;
     NSString *indentString;
 }
 
 @property (strong) NSMutableArray *gradients;
+@property (strong) NSMutableArray *patterns;
 
 -(id)initWithSize:(NSSize)sz document:(ACSDrawDocument*)doc page:(NSInteger)p;
 -(void)createData;
@@ -48,7 +50,8 @@ ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs);
 -(void)addShadow:(ShadowType*)shad;
 -(void)addGradient:(NSDictionary*)d;
 -(void)addLineEnding:(ACSDLineEnding*)le;
--(void)addPattern:(ACSDPattern*)g;
+-(void)addOtherDefString:(NSString*)defstr;
+-(void)addPattern:(id)g;
 -(NSString*)clipPathName;
 -(void)setClipPathName:(NSString*)s;
 -(NSString*)indentString;

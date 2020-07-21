@@ -325,8 +325,9 @@ NSString* canvas_string_from_path(NSBezierPath* path)
            self.gradients = [NSMutableArray array];
            lineEndings = [[NSMutableSet setWithCapacity:5]retain];
            shadows = [[NSMutableSet setWithCapacity:5]retain];
-           patterns = [[NSMutableSet setWithCapacity:5]retain];
+           self.patterns = [[NSMutableArray alloc]init];
            contentsStack = [[NSMutableArray array]retain];
+           otherDefStrings = [[NSMutableArray array]retain];
        }
     return self;
 }
@@ -339,7 +340,8 @@ NSString* canvas_string_from_path(NSBezierPath* path)
 	self.gradients = nil;
 	[lineEndings release];
     [shadows release];
-    [patterns release];
+    [otherDefStrings release];
+    self.patterns = nil;
 	[super dealloc];
 }
 
@@ -359,15 +361,20 @@ NSString* headerString(int width,int height)
     [self.gradients addObject:d];
 }
 
--(void)addPattern:(ACSDPattern*)g
+-(void)addPattern:(id)g
 {
-    [patterns addObject:g];
+    [self.patterns addObject:g];
 }
 
 -(void)addLineEnding:(ACSDLineEnding*)le
-   {
-	[lineEndings addObject:le];
-   }
+{
+ [lineEndings addObject:le];
+}
+
+-(void)addOtherDefString:(NSString*)defstr
+{
+ [otherDefStrings addObject:defstr];
+}
 
 -(void)createDataForGraphic:(ACSDGraphic*)g
 {
@@ -460,16 +467,26 @@ NSString* headerString(int width,int height)
     if ([lineEndings count] > 0)
         [lineEndings makeObjectsPerformSelector:@selector(writeSVGData:) withObject:self];
     
-    if ([patterns count] > 0)
+    if ([self.patterns count] > 0)
 	{
-		NSArray *allp = [patterns allObjects];
-		for (ACSDPattern *pat in allp)
-			[pat writeSVGPatternDef:self allPatterns:allp];
+		for (id pat in self.patterns)
+            if ([pat isKindOfClass:[ACSDPattern class]])
+                [pat writeSVGPatternDef:self allPatterns:self.patterns];
+            else
+            {
+                NSDictionary *d = pat;
+                ACSDPattern *p = d[@"pattern"];
+                NSRect r = [d[@"bounds"]rectValue];
+                NSString *name = d[@"name"];
+                [p writeSVGPatternDef:self allPatterns:self.patterns bounds:r name:name];
+            }
 	}
-    if ([defs length] > 0)
+    if ([defs length] > 0 || [otherDefStrings count] > 0)
 	   {
            [prefix appendString:@"<defs>\n"];
            [prefix appendString:defs];
+           for (NSString *s in otherDefStrings)
+               [prefix appendFormat:@"\t%@\n",s];
            [prefix appendString:@"</defs>\n"];
        }
     [prefix appendFormat:@"<g transform=\"translate(0,%d) scale(1,-1)\">\n",(int)docSize.height];

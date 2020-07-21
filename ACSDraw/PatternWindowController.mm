@@ -115,6 +115,8 @@
 	[offsetTypeRBMatrix selectCellAtRow:0 column:[pattern offsetMode]];
 	[opacityText setFloatValue:[pattern alpha]];
 	[opacitySlider setFloatValue:[pattern alpha]];
+    [originXText setFloatValue:pattern.patternOrigin.x];
+    [originYText setFloatValue:pattern.patternOrigin.y];
 	[backgroundColourWell setColor:[pattern backgroundColour]];
     self.displayClip = pattern.clip;
     self.displayRotation = pattern.rotation;
@@ -331,6 +333,52 @@
 	[self setActionsDisabled:NO];
 }
 
+-(void)uSetOriginX:(float)v text:(BOOL)text
+{
+    NSPoint pt = [[self temporaryPattern] patternOrigin];
+    if (pt.x != v)
+        [[[self undoManager] prepareWithInvocationTarget:self] uSetOriginX:pt.x text:YES];
+    if (text)
+        [originXText setFloatValue:v];
+    pt.x = v;
+    [[self temporaryPattern] setPatternOrigin:pt];
+    [patternPreview setNeedsDisplay:YES];
+    [[self undoManager]setActionName:@"Change X Origin"];
+}
+
+- (IBAction)originXTextHit:(id)sender
+{
+    if (actionsDisabled)
+        return;
+    [self setActionsDisabled:YES];
+    float ox = [sender floatValue];
+    [self uSetOriginX:ox text:YES];
+    [self setActionsDisabled:NO];
+}
+
+-(void)uSetOriginY:(float)v text:(BOOL)text
+{
+    NSPoint pt = [[self temporaryPattern] patternOrigin];
+    if (pt.y != v)
+        [[[self undoManager] prepareWithInvocationTarget:self] uSetOriginY:pt.y text:YES];
+    if (text)
+        [originYText setFloatValue:v];
+    pt.y = v;
+    [[self temporaryPattern] setPatternOrigin:pt];
+    [patternPreview setNeedsDisplay:YES];
+    [[self undoManager]setActionName:@"Change Y Origin"];
+}
+
+- (IBAction)originYTextHit:(id)sender
+{
+    if (actionsDisabled)
+        return;
+    [self setActionsDisabled:YES];
+    float oy = [sender floatValue];
+    [self uSetOriginY:oy text:YES];
+    [self setActionsDisabled:NO];
+}
+
 -(void)uSetScale:(float)v text:(BOOL)text slider:(BOOL)slider
 {
 	if ([[self temporaryPattern] scale] != v)
@@ -388,6 +436,7 @@
 
 - (IBAction)updateHit:(id)sender
 {
+    [[scaleSlider window]makeFirstResponder:nil];
 	ACSDPattern *pat = [self temporaryPattern];
 	[pattern changeGraphic:[pat graphic] view:nil];
 	[pattern changeScale:[pat scale] view:nil];
@@ -402,6 +451,7 @@
 	[pattern setPdfImageRep:[pat pdfImageRep]];
 	[pattern setPdfOffset:[pat pdfOffset]];
 	[pattern setBackgroundColour:[pat backgroundColour]];
+    [pattern setPatternOrigin:[pat patternOrigin]];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDFillAdded object:self];
 	[[self undoManager]removeAllActions];
 }

@@ -255,4 +255,18 @@
         [attrString appendFormat:@" cornerradius=\"%g\"",self.cornerRadius / b.size.height];
     return attrString;
 }
+
+-(NSString*)svgType
+{
+    return @"rect";
+}
+
+-(NSString*)svgTypeSpecifics
+{
+    NSString *rectstring = [NSString stringWithFormat:@"x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" ", bounds.origin.x,bounds.origin.y,bounds.size.width,bounds.size.height];
+    if (self.cornerRadius != 0)
+        rectstring = [rectstring stringByAppendingFormat:@"rx=\"%g\" ry=\"%g\" ",self.cornerRadius,self.cornerRadius];
+    return rectstring;
+}
+
 @end

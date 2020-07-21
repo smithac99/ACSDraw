@@ -148,4 +148,19 @@
 	return attrString;
 }
 
+-(NSString*)svgType
+{
+    if (bounds.size.width == bounds.size.height)
+        return @"circle";
+    return @"ellipse";
+}
+
+-(NSString*)svgTypeSpecifics
+{
+    if (bounds.size.width == bounds.size.height)
+        return [NSString stringWithFormat:@"cx=\"%g\" cy=\"%g\" r=\"%g\" ",NSMidX(bounds),NSMidY(bounds),bounds.size.width/2];
+    return [NSString stringWithFormat:@"cx=\"%g\" cy=\"%g\" rx=\"%g\" ry=\"%g\" ", NSMidX(bounds),NSMidY(bounds),bounds.size.width/2,bounds.size.height/2];
+}
+
+
 @end

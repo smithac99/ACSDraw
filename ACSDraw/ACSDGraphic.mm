@@ -2799,7 +2799,12 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 	if ([fill isKindOfClass:[ACSDGradient class]])
 		[svgWriter addGradient:@{@"gradient":fill,@"bounds":[NSValue valueWithRect:[self bounds]],@"index":@([svgWriter.gradients count])}];
     else if ([fill isKindOfClass:[ACSDPattern class]])
-        [svgWriter addPattern:(ACSDPattern*)fill];
+    {
+        //[svgWriter addPattern:(ACSDPattern*)fill];
+        ACSDPattern *pat = (ACSDPattern*)fill;
+        pat.tempName = [NSString stringWithFormat:@"pat%d",(int)[svgWriter.patterns count]];
+        [svgWriter addPattern:@{@"pattern":fill,@"bounds":[NSValue valueWithRect:[self bounds]],@"name":pat.tempName}];
+    }
 	if (shadowType && [shadowType itsShadow])
 		[svgWriter addShadow:shadowType];
 	if (stroke)
@@ -2824,13 +2829,47 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 {
     
 }
+
+-(NSString*)svgType
+{
+    return @"path";
+}
+
+-(NSString*)svgTypeSpecifics
+{
+    return [NSString stringWithFormat:@"d=\"%@\" ",string_from_path([self bezierPath])];
+}
+
 -(void)writeSVGData:(SVGWriter*)svgWriter
 {
     [self writeSVGDefs:svgWriter];
-    [[svgWriter contents]appendFormat:@"%@<path id=\"%@\" %@",[svgWriter indentString],self.name,[self svgTransform]];
-    if ([svgWriter clipPathName])
-        [[svgWriter contents]appendFormat:@"clip-path=\"url(#%@)\" ",[svgWriter clipPathName]];
-    [[svgWriter contents]appendFormat:@"d=\"%@\" ",string_from_path([self transformedBezierPath])];
+    NSString *defId = nil;
+    NSColor *patternBackColour = nil;
+    if (fill && [fill isKindOfClass:[ACSDPattern class]] && (patternBackColour = [((ACSDPattern*)fill)backgroundColour]))
+    {
+        defId = [NSString stringWithFormat:@"D_%d",self.objectKey];
+    }
+    if (defId)
+    {
+        NSMutableString *defstr = [[NSMutableString alloc]init];
+        [defstr appendFormat:@"<%@ id=\"%@\" %@",[self svgType],defId,[self svgTransform]];
+        [defstr appendString:[self svgTypeSpecifics]];
+        [defstr appendString:@" />\n"];
+        [svgWriter addOtherDefString:defstr];
+        [[svgWriter contents]appendFormat:@"%@<use id=\"%@f\" xlink:href=\"#%@\" ",[svgWriter indentString],self.name,defId];
+        if ([svgWriter clipPathName])
+            [[svgWriter contents]appendFormat:@"clip-path=\"url(#%@)\" ",[svgWriter clipPathName]];
+        [[svgWriter contents]appendFormat:@"fill=\"%@\"",string_from_nscolor(patternBackColour)];
+        [[svgWriter contents]appendString:@" />\n"];
+        [[svgWriter contents]appendFormat:@"%@<use id=\"%@\" xlink:href=\"#%@\" ",[svgWriter indentString],self.name,defId];
+    }
+    else
+    {
+        [[svgWriter contents]appendFormat:@"%@<%@ id=\"%@\" %@",[svgWriter indentString],[self svgType],self.name,[self svgTransform]];
+        if ([svgWriter clipPathName])
+            [[svgWriter contents]appendFormat:@"clip-path=\"url(#%@)\" ",[svgWriter clipPathName]];
+        [[svgWriter contents]appendString:[self svgTypeSpecifics]];
+    }
     if (stroke)
 	   {
            [stroke writeSVGData:svgWriter];
