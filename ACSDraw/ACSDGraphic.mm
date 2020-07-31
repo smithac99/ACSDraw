@@ -665,22 +665,32 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
    }
 
 -(NSRect)bounds
-   {
-	return bounds;
-   }
+{
+    return bounds;
+}
+
+-(NSRect)strictBounds
+{
+    return bounds;
+}
 
 -(NSRect)transformedBounds
 {
-	if (transform == nil)
+    if (transform == nil)
     {
         NSRect b = bounds;
         if (b.size.width == 0.0)
             b.size.width = 0.001;
         if (b.size.height == 0.0)
             b.size.height = 0.001;
-		return b;
+        return b;
     }
-	return [[self transformedBezierPath]bounds];
+    return [[self transformedBezierPath]bounds];
+}
+
+-(NSRect)transformedStrictBounds
+{
+    return [self transformedBounds];
 }
 
 
@@ -1562,13 +1572,15 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
    }
 
 -(FlippableView*)setCurrentDrawingDestination:(FlippableView*)dest
-   {
-	FlippableView* temp = currentDrawingDestination;
-	currentDrawingDestination = dest;
-	if (fill && [fill respondsToSelector:(@selector(setCurrentDrawingDestination:))])
-		[(id)fill setCurrentDrawingDestination:dest];
-	return temp;
-   }
+{
+    if (currentDrawingDestination == dest)
+        return dest;
+    FlippableView* temp = currentDrawingDestination;
+    currentDrawingDestination = [dest retain];
+    if (fill && [fill respondsToSelector:(@selector(setCurrentDrawingDestination:))])
+        [(id)fill setCurrentDrawingDestination:dest];
+    return [temp autorelease];
+}
 
 -(FlippableView*)currentDrawingDestination
    {
@@ -2803,7 +2815,7 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
         //[svgWriter addPattern:(ACSDPattern*)fill];
         ACSDPattern *pat = (ACSDPattern*)fill;
         pat.tempName = [NSString stringWithFormat:@"pat%d",(int)[svgWriter.patterns count]];
-        [svgWriter addPattern:@{@"pattern":fill,@"bounds":[NSValue valueWithRect:[self bounds]],@"name":pat.tempName}];
+        [svgWriter addPattern:@{@"pattern":fill,@"bounds":[NSValue valueWithRect:[self strictBounds]],@"name":pat.tempName}];
     }
 	if (shadowType && [shadowType itsShadow])
 		[svgWriter addShadow:shadowType];
@@ -2816,11 +2828,18 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 	   }
    }
 
--(NSString*)svgTransform
+-(NSString*)svgTransform:(SVGWriter*)svgWriter
 {
     if (rotation != 0.0)
     {
-        return [NSString stringWithFormat:@" transform=\"rotate(%g %g %g)\" ",rotation,rotationPoint.x,rotationPoint.y];
+        NSPoint rpt = rotationPoint;
+        float rot = rotation;
+        if (svgWriter.shouldInvertSVGCoords)
+        {
+            rpt = [svgWriter.inversionTransform transformPoint:rpt];
+            rot = -rotation;
+        }
+        return [NSString stringWithFormat:@" transform=\"rotate(%g %g %g)\" ",rot,rpt.x,rpt.y];
     }
     return @"";
 }
@@ -2835,9 +2854,14 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
     return @"path";
 }
 
--(NSString*)svgTypeSpecifics
+-(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter
 {
-    return [NSString stringWithFormat:@"d=\"%@\" ",string_from_path([self bezierPath])];
+    NSBezierPath *p = [self bezierPath];
+    if ([svgWriter shouldInvertSVGCoords])
+    {
+        p = [svgWriter.inversionTransform transformBezierPath:p];
+    }
+    return [NSString stringWithFormat:@"d=\"%@\" ",string_from_path(p)];
 }
 
 -(void)writeSVGData:(SVGWriter*)svgWriter
@@ -2847,28 +2871,31 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
     NSColor *patternBackColour = nil;
     if (fill && [fill isKindOfClass:[ACSDPattern class]] && (patternBackColour = [((ACSDPattern*)fill)backgroundColour]))
     {
-        defId = [NSString stringWithFormat:@"D_%d",self.objectKey];
+        if ([patternBackColour alphaComponent] > 0.0)
+            defId = [NSString stringWithFormat:@"D_%d",self.objectKey];
     }
     if (defId)
     {
         NSMutableString *defstr = [[NSMutableString alloc]init];
-        [defstr appendFormat:@"<%@ id=\"%@\" %@",[self svgType],defId,[self svgTransform]];
-        [defstr appendString:[self svgTypeSpecifics]];
+        [defstr appendFormat:@"<%@ id=\"%@\" %@",[self svgType],defId,[self svgTransform:svgWriter]];
+        [defstr appendString:[self svgTypeSpecifics:svgWriter]];
         [defstr appendString:@" />\n"];
         [svgWriter addOtherDefString:defstr];
         [[svgWriter contents]appendFormat:@"%@<use id=\"%@f\" xlink:href=\"#%@\" ",[svgWriter indentString],self.name,defId];
         if ([svgWriter clipPathName])
             [[svgWriter contents]appendFormat:@"clip-path=\"url(#%@)\" ",[svgWriter clipPathName]];
         [[svgWriter contents]appendFormat:@"fill=\"%@\"",string_from_nscolor(patternBackColour)];
+        if ([patternBackColour alphaComponent] < 1.0)
+                [[svgWriter contents]appendFormat:@"fill-opacity=\"%g\" ",[patternBackColour alphaComponent]];
         [[svgWriter contents]appendString:@" />\n"];
         [[svgWriter contents]appendFormat:@"%@<use id=\"%@\" xlink:href=\"#%@\" ",[svgWriter indentString],self.name,defId];
     }
     else
     {
-        [[svgWriter contents]appendFormat:@"%@<%@ id=\"%@\" %@",[svgWriter indentString],[self svgType],self.name,[self svgTransform]];
+        [[svgWriter contents]appendFormat:@"%@<%@ id=\"%@\" %@",[svgWriter indentString],[self svgType],self.name,[self svgTransform:svgWriter]];
         if ([svgWriter clipPathName])
             [[svgWriter contents]appendFormat:@"clip-path=\"url(#%@)\" ",[svgWriter clipPathName]];
-        [[svgWriter contents]appendString:[self svgTypeSpecifics]];
+        [[svgWriter contents]appendString:[self svgTypeSpecifics:svgWriter]];
     }
     if (stroke)
 	   {

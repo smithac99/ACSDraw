@@ -13,6 +13,7 @@
 #import "ACSDPath.h"
 #import "XMLNode.h"
 #import "geometry.h"
+#import "SVGWriter.h"
 
 
 @implementation ACSDCircle
@@ -155,11 +156,14 @@
     return @"ellipse";
 }
 
--(NSString*)svgTypeSpecifics
+-(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter
 {
+    NSPoint cpt = NSMakePoint(NSMidX(bounds),NSMidY(bounds));
+    if (svgWriter.shouldInvertSVGCoords)
+        cpt = [svgWriter.inversionTransform transformPoint:cpt];
     if (bounds.size.width == bounds.size.height)
-        return [NSString stringWithFormat:@"cx=\"%g\" cy=\"%g\" r=\"%g\" ",NSMidX(bounds),NSMidY(bounds),bounds.size.width/2];
-    return [NSString stringWithFormat:@"cx=\"%g\" cy=\"%g\" rx=\"%g\" ry=\"%g\" ", NSMidX(bounds),NSMidY(bounds),bounds.size.width/2,bounds.size.height/2];
+        return [NSString stringWithFormat:@"cx=\"%g\" cy=\"%g\" r=\"%g\" ",cpt.x,cpt.y,bounds.size.width/2];
+    return [NSString stringWithFormat:@"cx=\"%g\" cy=\"%g\" rx=\"%g\" ry=\"%g\" ", cpt.x,cpt.y,bounds.size.width/2,bounds.size.height/2];
 }
 
 

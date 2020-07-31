@@ -39,6 +39,9 @@ ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs);
 
 @property (strong) NSMutableArray *gradients;
 @property (strong) NSMutableArray *patterns;
+@property BOOL shouldInvertSVGCoords;
+@property NSSize documentSize;
+@property (strong) NSAffineTransform *inversionTransform;;
 
 -(id)initWithSize:(NSSize)sz document:(ACSDrawDocument*)doc page:(NSInteger)p;
 -(void)createData;
@@ -60,5 +63,6 @@ ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs);
 -(NSString*)fullString;
 -(void)saveContents;
 -(void)restoreContents;
+-(NSRect)invertRect:(NSRect)r;
 
 @end

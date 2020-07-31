@@ -632,10 +632,18 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
 -(NSRect)unionGraphicBounds
 {
-	NSRect r = NSZeroRect;
-	for (ACSDLayer *l in layers)
-		r = NSUnionRect(r,[l unionGraphicBounds]);
-	return r;
+    NSRect r = NSZeroRect;
+    for (ACSDLayer *l in layers)
+        r = NSUnionRect(r,[l unionGraphicBounds]);
+    return r;
+}
+
+-(NSRect)unionStrictGraphicBounds
+{
+    NSRect r = NSZeroRect;
+    for (ACSDLayer *l in layers)
+        r = NSUnionRect(r,[l unionStrictGraphicBounds]);
+    return r;
 }
 
 -(void)freePDFData

@@ -274,10 +274,18 @@
 
 -(NSRect)unionGraphicBounds
 {
-	NSRect r = NSZeroRect;
-	for (ACSDGraphic *g in graphics)
-		r = NSUnionRect(r,[g transformedBounds]);
-	return r;
+    NSRect r = NSZeroRect;
+    for (ACSDGraphic *g in graphics)
+        r = NSUnionRect(r,[g transformedBounds]);
+    return r;
+}
+
+-(NSRect)unionStrictGraphicBounds
+{
+    NSRect r = NSZeroRect;
+    for (ACSDGraphic *g in graphics)
+        r = NSUnionRect(r,[g transformedStrictBounds]);
+    return r;
 }
 
 -(NSMutableArray*)triggers

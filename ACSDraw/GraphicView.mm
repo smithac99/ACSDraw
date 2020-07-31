@@ -7121,11 +7121,12 @@ NSString *IncrementString(NSString *str)
         return;
     CGRect r = CGRectNull;
     for (ACSDGraphic *g in elementArray)
-        r = CGRectUnion(r, [g transformedBounds]);
+        r = CGRectUnion(r, [g transformedStrictBounds]);
     creatingGraphic = [[ACSDRect alloc] initWithName:[ACSDRect nextNameForDocument:[self document]]
                                                 fill:[self defaultFill] stroke:[self defaultStroke] rect:r layer:[self currentEditableLayer]];
     [creatingGraphic setShadowType:[self defaultShadow]];
     [[[self currentEditableLayer] graphics] addObject:[[self document]registerObject:creatingGraphic]];
+    [self clearSelection];
     [self selectGraphic:creatingGraphic];
     [[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
     [[self undoManager] setActionName:@"Create Bounding Box"];

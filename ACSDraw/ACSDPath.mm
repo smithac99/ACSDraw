@@ -869,6 +869,15 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 	[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
    }
 
+-(NSRect)strictBounds
+{
+ return [path bounds];
+}
+
+-(NSRect)transformedStrictBounds
+{
+    return [[self transformedBezierPath]bounds];
+}
 
 - (BOOL)closePathWithEvent:(NSEvent *)theEvent inView:(GraphicView *)view 
    {

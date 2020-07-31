@@ -282,7 +282,10 @@
             [p transformUsingAffineTransform:t];
             NSPoint pt1 = NSMakePoint([p bounds].origin.x,0);
             NSPoint pt2 = NSMakePoint(NSMaxX([p bounds]),0);
-            t = [NSAffineTransform transformWithRotationByDegrees:self.angle];
+            if (svgWriter.shouldInvertSVGCoords)
+                t = [NSAffineTransform transformWithRotationByDegrees:-self.angle];
+            else
+                t = [NSAffineTransform transformWithRotationByDegrees:self.angle];
             pt1 = [t transformPoint:pt1];
             pt2 = [t transformPoint:pt2];
             pt1.x += 0.5;

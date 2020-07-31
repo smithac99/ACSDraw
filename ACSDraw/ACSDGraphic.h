@@ -103,7 +103,7 @@ float normalisedAngle(float ang);
 @class ACSDLink;
 @class ACSDGroup;
 @class CanvasWriter;
-
+@class SVGWriter;
 extern NSString *ACSDGraphicDidChangeNotification;
 NSString *substitute_characters(NSString* string);
 
@@ -236,8 +236,10 @@ struct KnobDescriptor
 -(ACSDStroke*)graphicStroke;
 -(ShadowType*)shadowType;
 -(NSRect)bounds;
+-(NSRect)strictBounds;
 -(NSRect)transformedBounds;
 -(NSRect)displayBounds;
+-(NSRect)transformedStrictBounds;
 -(NSMutableDictionary*)events;
 -(void)setFill:(ACSDFill*)f;
 -(void)setStroke:(ACSDStroke*)s;
@@ -452,7 +454,7 @@ selectedGraphics:(NSSet*)selectedGraphics;
 -(NSString*)xmlEventTypeName;
 - (BOOL)setGraphicHidden:(BOOL)b;
 -(void)uSetAttributes:(NSMutableArray*)arr;
--(NSString*)svgTransform;
+-(NSString*)svgTransform:(SVGWriter*)svgWriter;
 -(NSString*)graphicAttributesXML:(NSMutableDictionary*)options;
 -(NSRect)parentRect:(NSMutableDictionary*)options;
 

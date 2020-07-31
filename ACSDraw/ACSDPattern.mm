@@ -44,17 +44,17 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	[path lineToPoint:NSMakePoint(12,15)];
 	[path lineToPoint:NSMakePoint(10,5)];
 	[path closePath];
-	ACSDPath *ap = [[ACSDPath alloc]initWithName:@"DefaultPattern" fill:[[[ACSDFill alloc]initWithColour:[NSColor blackColor]]autorelease] 
+	ACSDPath *ap = [[ACSDPath alloc]initWithName:@"DefaultPattern" fill:[[ACSDFill alloc]initWithColour:[NSColor blackColor]]
 										  stroke:nil rect:NSZeroRect layer:nil
 									  bezierPath:path];
-	return [[[ACSDPattern alloc] initWithGraphic:ap scale:1.0 spacing:0.2 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
-								   patternBounds:[ap bounds]]autorelease];
+	return [[ACSDPattern alloc] initWithGraphic:ap scale:1.0 spacing:0.2 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
+								   patternBounds:[ap bounds]];
 }
 
 +(ACSDPattern*)patternWithGraphic:(ACSDGraphic*)g scale:(float)sc spacing:(float)sp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r
 {
-	return [[[ACSDPattern alloc] initWithGraphic:g scale:sc spacing:sp offset:o offsetMode:om alpha:al mode:m
-								   patternBounds:r]autorelease];
+	return [[ACSDPattern alloc] initWithGraphic:g scale:sc spacing:sp offset:o offsetMode:om alpha:al mode:m
+								   patternBounds:r];
 }
 
 +(ACSDPattern*)patternWithGraphic:(ACSDGraphic*)g
@@ -80,8 +80,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         bnds = [foundrect bounds];
     else
         bnds = [g bounds];
-	ACSDPattern *pat = [[[ACSDPattern alloc] initWithGraphic:g scale:1.0 spacing:0.0 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
-								   patternBounds:bnds]autorelease];
+	ACSDPattern *pat = [[ACSDPattern alloc] initWithGraphic:g scale:1.0 spacing:0.0 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
+								   patternBounds:bnds];
     return pat;
 }
 
@@ -91,7 +91,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	{
 		self.graphic = g;
 		[self.graphic buildPDFData];
-		pdfImageRep = [[NSPDFImageRep imageRepWithData:[[self.graphic objectPdfData]pdfData]]retain];
+		pdfImageRep = [NSPDFImageRep imageRepWithData:[[self.graphic objectPdfData]pdfData]];
 		pdfOffset = [[self.graphic objectPdfData]offset];
 		self.scale = sc;
 		self.offset = o;
@@ -110,7 +110,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 - (id)copyWithZone:(NSZone *)zone 
 {
-    ACSDPattern *o = [[[self class] allocWithZone:zone] initWithGraphic:[[self.graphic copy]autorelease] scale:self.scale spacing:self.spacing offset:self.offset offsetMode:self.offsetMode alpha:self.alpha
+    ACSDPattern *o = [[[self class] allocWithZone:zone] initWithGraphic:[self.graphic copy] scale:self.scale spacing:self.spacing offset:self.offset offsetMode:self.offsetMode alpha:self.alpha
 														 mode:self.mode patternBounds:[self patternBounds]];
 	[o setBackgroundColour:self.backgroundColour];
 	[o setClip:self.clip];
@@ -152,7 +152,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     if ([coder decodeObjectForKey:@"ACSDPattern_patternOrigin"])
         self.patternOrigin = [coder decodePointForKey:@"ACSDPattern_patternOrigin"];
 	[self.graphic buildPDFData];
-	pdfImageRep = [[NSPDFImageRep imageRepWithData:[[self.graphic objectPdfData]pdfData]]retain];
+	pdfImageRep = [NSPDFImageRep imageRepWithData:[[self.graphic objectPdfData]pdfData]];
 	pdfOffset = [[self.graphic objectPdfData]offset];
 	graphicCache = nil;
 	return self;
@@ -161,10 +161,10 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 -(void)dealloc
 {
 	self.graphic = nil;
-	[graphicCache release];
-	[pdfImageRep release];
+	//[graphicCache release];
+	//[pdfImageRep release];
 	self.backgroundColour = nil;
-	[super dealloc];
+	//[super dealloc];
 }
 
 -(BOOL)canFill
@@ -520,7 +520,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 #define svgShouldUseBBUnits YES
 
--(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray*)allPatterns bounds:(NSRect)bnds name:(NSString*)pname
+-(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray*)allPatterns bounds:(NSRect)objectBounds name:(NSString*)pname
 {
     NSString *xlink = nil;
     for (NSDictionary *d in allPatterns)
@@ -537,9 +537,11 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     
     NSString *name = pname;
     self.tempName = name;
-    NSRect graphicBounds = [self patternBounds];
-    float patternWidth = graphicBounds.size.width;
-    float patternHeight = graphicBounds.size.height;
+    NSRect patBounds = [self patternBounds];
+    if (svgWriter.shouldInvertSVGCoords)
+        patBounds = [svgWriter invertRect:patBounds];
+    float patternWidth = patBounds.size.width;
+    float patternHeight = patBounds.size.height;
     float xIncrement = patternWidth * (1.0 + self.spacing);
     float yIncrement = patternHeight * (1.0 + self.spacing);
 
@@ -548,17 +550,15 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     float cx,cy;
     if (svgShouldUseBBUnits)
     {
-        //cx = (NSMidX(bnds) - bnds.origin.x) / bnds.size.width;
-        //cy = (NSMidY(bnds) - bnds.origin.y) / bnds.size.height;
         cx = _patternOrigin.x;
         cy = _patternOrigin.y;
-        xIncrement = xIncrement / bnds.size.width;
-        yIncrement = yIncrement / bnds.size.height;
+        xIncrement = xIncrement / objectBounds.size.width;
+        yIncrement = yIncrement / objectBounds.size.height;
     }
     else
     {
-        cx = NSMidX(bnds) / self.scale;
-        cy = NSMidY(bnds) / self.scale;
+        cx = NSMidX(objectBounds) / self.scale;
+        cy = NSMidY(objectBounds) / self.scale;
 
     }
     if (xlink)
@@ -572,7 +572,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         if (svgShouldUseBBUnits)
             coordType = @"objectBoundingBox";
         [[svgWriter defs]appendFormat:@"patternUnits=\"%@\" x=\"%g\" y=\"%g\" width=\"%0.03g\" height=\"%0.03g\"",coordType, cx,cy,xIncrement,yIncrement];
-        [[svgWriter defs]appendFormat:@" viewBox=\"%g %g %g %g\"",graphicBounds.origin.x,graphicBounds.origin.y,graphicBounds.size.width,graphicBounds.size.height];
+        [[svgWriter defs]appendFormat:@" viewBox=\"%g %g %g %g\"",patBounds.origin.x,patBounds.origin.y,patBounds.size.width,patBounds.size.height];
         if (!self.clip)
             [[svgWriter defs]appendString:@" overflow=\"visible\""];
         NSMutableString *transString = [NSMutableString string];
@@ -586,10 +586,6 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     [[svgWriter defs]appendString:@">\n"];
     if (xlink == nil)
     {
-        /*if (self.backgroundColour && [self.backgroundColour alphaComponent] > 0.0)
-        {
-            [[svgWriter defs] appendFormat:@"\t<rect x=\"%0.03g\" y=\"%0.03g\" width=\"%0.03g\" height=\"%0.03g\" fill=\"%@\"/>\n",graphicBounds.origin.x,graphicBounds.origin.y,xIncrement,yIncrement,string_from_nscolor([self backgroundColour])];
-        }*/
         [svgWriter saveContents];
         [svgWriter indentDef];
         [self.graphic writeSVGData:svgWriter];
@@ -721,12 +717,9 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 -(FlippableView*)setCurrentDrawingDestination:(FlippableView*)dest
 {
-	FlippableView* temp;
 	if (self.graphic)
 	{
-		temp = [self.graphic currentDrawingDestination];
-		[self.graphic setCurrentDrawingDestination:dest];
-		return temp;
+		return [self.graphic setCurrentDrawingDestination:dest];
 	}
 	return nil;
 }
@@ -735,11 +728,11 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 {
 	if (pdfImageRep == pir)
 		return;
-	if (pdfImageRep)
-		[pdfImageRep release];
+	//if (pdfImageRep)
+		//[pdfImageRep release];
 	pdfImageRep = pir;
-	if (pdfImageRep)
-		[pdfImageRep retain];
+	//if (pdfImageRep)
+		//[pdfImageRep retain];
 }
 
 -(void)setPdfOffset:(NSPoint)p

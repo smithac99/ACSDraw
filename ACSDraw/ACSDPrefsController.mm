@@ -27,6 +27,11 @@ NSString *prefsRenameStartFromString = @"ACSDrawRenameStringStart";
 NSString *prefsRegexpPattern = @"ACSDrawprefsRegexpPattern";
 NSString *prefsRegexpTemplate = @"ACSDrawprefsRegexpTemplate";
 NSString *prefsImageLibs = @"ACSDrawprefsImageLibs";
+NSString *prefsDocScale = @"ACSDrawprefsDocScale";
+NSString *prefsDocSizeWidth = @"ACSDrawprefsDocSizeWidth";
+NSString *prefsDocSizeHeight = @"ACSDrawprefsDocSizeHeight";
+NSString *prefsDocSizeRow = @"ACSDrawprefsDocSizeRow";
+NSString *prefsDocSizeColumn = @"ACSDrawprefsDocSizeColumn";
 
 NSString *ixPBType = @"indexpbtype";
 NSArray *arrayFromColour(NSColor *col);
@@ -59,6 +64,7 @@ NSColor *colourFromArray(NSArray* arr);
                         [NSNumber numberWithInt:BACKGROUND_DRAW_COLOUR],prefsBackgroundType,
                         [NSArchiver archivedDataWithRootObject:[NSColor whiteColor]],prefsBackgroundColour,
                        [NSNumber numberWithBool:NO],prefsShowPathDirection,
+                       @(1),prefsDocScale,
                        @[@"/"],prefsImageLibs,
                         nil];
     }

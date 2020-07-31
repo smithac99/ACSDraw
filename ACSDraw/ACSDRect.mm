@@ -13,6 +13,7 @@
 #import "SelectionSet.h"
 #import "geometry.h"
 #import "XMLNode.h"
+#import "SVGWriter.h"
 
 @implementation ACSDRect
 
@@ -261,9 +262,15 @@
     return @"rect";
 }
 
--(NSString*)svgTypeSpecifics
+-(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter
 {
-    NSString *rectstring = [NSString stringWithFormat:@"x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" ", bounds.origin.x,bounds.origin.y,bounds.size.width,bounds.size.height];
+    NSPoint origin = bounds.origin;
+    if (svgWriter.shouldInvertSVGCoords)
+    {
+        origin = NSMakePoint(origin.x,  NSMaxY(bounds));
+        origin = [svgWriter.inversionTransform transformPoint:origin];
+    }
+    NSString *rectstring = [NSString stringWithFormat:@"x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" ", origin.x,origin.y,bounds.size.width,bounds.size.height];
     if (self.cornerRadius != 0)
         rectstring = [rectstring stringByAppendingFormat:@"rx=\"%g\" ry=\"%g\" ",self.cornerRadius,self.cornerRadius];
     return rectstring;

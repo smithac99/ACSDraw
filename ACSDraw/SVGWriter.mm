@@ -315,6 +315,7 @@ NSString* canvas_string_from_path(NSBezierPath* path)
 {
     if (self = [super init])
 	   {
+           _documentSize = sz;
            prefix = [[NSMutableString alloc]initWithCapacity:100];
            defs = [[NSMutableString alloc]initWithCapacity:512];
            contents = [[NSMutableString alloc]initWithCapacity:512];
@@ -328,6 +329,13 @@ NSString* canvas_string_from_path(NSBezierPath* path)
            self.patterns = [[NSMutableArray alloc]init];
            contentsStack = [[NSMutableArray array]retain];
            otherDefStrings = [[NSMutableArray array]retain];
+           self.shouldInvertSVGCoords = YES;
+           if (self.shouldInvertSVGCoords)
+           {
+               self.inversionTransform = [[NSAffineTransform alloc]init];
+               [self.inversionTransform translateXBy:0 yBy:_documentSize.height];
+               [self.inversionTransform scaleXBy:1 yBy:-1];
+           }
        }
     return self;
 }
@@ -342,6 +350,7 @@ NSString* canvas_string_from_path(NSBezierPath* path)
     [shadows release];
     [otherDefStrings release];
     self.patterns = nil;
+    self.inversionTransform = nil;
 	[super dealloc];
 }
 
@@ -394,7 +403,10 @@ NSString* headerString(int width,int height)
 		[prefix appendString:defs];
 		[prefix appendString:@"</defs>\n"];
 	}
-	[prefix appendFormat:@"<g transform=\"translate(0,%d) scale(1,-1)\">\n",(int)displayBounds.size.height];
+    if (self.shouldInvertSVGCoords)
+        [prefix appendString:@"<g>\n"];
+    else
+        [prefix appendFormat:@"<g transform=\"translate(0,%d) scale(1,-1)\">\n",(int)displayBounds.size.height];
 	[contents appendString:@"</g>\n"];
 }
 
@@ -489,7 +501,19 @@ NSString* headerString(int width,int height)
                [prefix appendFormat:@"\t%@\n",s];
            [prefix appendString:@"</defs>\n"];
        }
-    [prefix appendFormat:@"<g transform=\"translate(0,%d) scale(1,-1)\">\n",(int)docSize.height];
+    if (self.shouldInvertSVGCoords)
+        [prefix appendString:@"<g>\n"];
+    else
+        [prefix appendFormat:@"<g transform=\"translate(0,%d) scale(1,-1)\">\n",(int)docSize.height];
+}
+
+-(NSRect)invertRect:(NSRect)r
+{
+    NSPoint origin = r.origin;
+    origin = NSMakePoint(origin.x,  NSMaxY(r));
+    origin = [self.inversionTransform transformPoint:origin];
+    r.origin = origin;
+    return r;
 }
 
 -(NSString*)clipPathName

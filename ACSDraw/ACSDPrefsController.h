@@ -13,7 +13,11 @@ extern NSString *prefsRenameStartFromString;
 extern NSString *prefsRegexpPattern;
 extern NSString *prefsRegexpTemplate;
 extern NSString *prefsImageLibs;
-
+extern NSString *prefsDocScale;
+extern NSString *prefsDocSizeWidth;
+extern NSString *prefsDocSizeHeight;
+extern NSString *prefsDocSizeRow;
+extern NSString *prefsDocSizeColumn;
 
 #define BACKGROUND_DRAW_NONE 0
 #define BACKGROUND_DRAW_CHECKERS 1

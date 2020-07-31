@@ -622,7 +622,7 @@
 -(void)writeSVGData:(SVGWriter*)svgWriter
    {
 //	[[svgWriter contents]appendFormat:@"%@<g id=\"%@\" transform=\"translate(%g,%g)\">\n",[svgWriter indentString],name,bounds.origin.x,bounds.origin.y];
-	[[svgWriter contents]appendFormat:@"%@<g id=\"%@\" %@",[svgWriter indentString],self.name,[self svgTransform]];
+	[[svgWriter contents]appendFormat:@"%@<g id=\"%@\" %@",[svgWriter indentString],self.name,[self svgTransform:svgWriter]];
     if (self.hidden)
         [[svgWriter contents] appendString:@"visibility=\"hidden\" "];
 	if (shadowType)

@@ -1858,7 +1858,7 @@ NSString* Creator()
    {
 	NSRect bounds = NSZeroRect;
 	for (ACSDPage *p in [self pages])
-		bounds = NSUnionRect(bounds,[p unionGraphicBounds]);
+		bounds = NSUnionRect(bounds,[p unionStrictGraphicBounds]);
 	bounds.origin.x -= hPad;
 	bounds.origin.y -= vPad;
 	bounds.size.width += (hPad * 2);

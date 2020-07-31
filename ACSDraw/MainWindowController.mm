@@ -860,7 +860,14 @@ static NSMutableArray *parseRenameString(NSString* str)
 		[self loadSheetNib];
         NSString *ren = [[NSUserDefaults standardUserDefaults]objectForKey:prefsRenameString];
         if (ren != nil)
+        {
             [renameTextField setStringValue:ren];
+            NSInteger idx = [ren rangeOfString:@"%"].location;
+            if (idx != NSNotFound)
+            {
+                [[renameTextField currentEditor]setSelectedRange:NSMakeRange(0, idx)];
+            }
+        }
         NSString *rena = [[NSUserDefaults standardUserDefaults]objectForKey:prefsRenameStartFromString];
         if (rena != nil)
             [renameStartFromTextField setStringValue:rena];
@@ -1115,23 +1122,42 @@ static NSMutableArray *parseRenameString(NSString* str)
    }
 
 - (IBAction)closeDocSizeSheet: (id)sender
-   {
+{
     NSInteger reply = [sender tag];
-	if (reply == 0)
-	   {
-		NSSize sz = NSMakeSize([docSizeWidth intValue],[docSizeHeight intValue]);
-		[graphicView changeDocumentSize:sz matrixRow:(int)[docSizeMatrix selectedRow] matrixColumn:(int)[docSizeMatrix selectedColumn]];
-	   }
-	[NSApp endSheet:_docSizeSheet];
-   }
+    if (reply == 0)
+    {
+        NSSize sz = NSMakeSize([docSizeWidth intValue],[docSizeHeight intValue]);
+        [[NSUserDefaults standardUserDefaults]setInteger:sz.width forKey:prefsDocSizeWidth];
+        [[NSUserDefaults standardUserDefaults]setInteger:sz.height forKey:prefsDocSizeHeight];
+        [[NSUserDefaults standardUserDefaults]setInteger:[docSizeMatrix selectedRow] forKey:prefsDocSizeRow];
+        [[NSUserDefaults standardUserDefaults]setInteger:[docSizeMatrix selectedColumn] forKey:prefsDocSizeColumn];
+        [graphicView changeDocumentSize:sz matrixRow:(int)[docSizeMatrix selectedRow] matrixColumn:(int)[docSizeMatrix selectedColumn]];
+    }
+    [NSApp endSheet:_docSizeSheet];
+}
 
+-(IBAction)resizeDocAgain:(id)sender
+{
+    NSInteger w = [[NSUserDefaults standardUserDefaults]integerForKey:prefsDocSizeWidth];
+    NSInteger h = [[NSUserDefaults standardUserDefaults]integerForKey:prefsDocSizeHeight];
+    NSInteger row = [[NSUserDefaults standardUserDefaults]integerForKey:prefsDocSizeRow];
+    NSInteger column = [[NSUserDefaults standardUserDefaults]integerForKey:prefsDocSizeColumn];
+    if (w > 0 && h > 0)
+    {
+        [graphicView changeDocumentSize:NSMakeSize(w, h) matrixRow:(int)row matrixColumn:(int)column];
+    }
+}
 - (IBAction)closeScaleDocSheet: (id)sender
 {
     int reply = (int)[sender tag];
 	if (reply == 0)
 	{
 		float scale = [scaleTextField floatValue];
-		[graphicView scaleDocumentBy:scale];
+        if (scale != 0)
+        {
+            [[NSUserDefaults standardUserDefaults]setFloat:scale forKey:prefsDocScale];
+            [graphicView scaleDocumentBy:scale];
+        }
 	}
 	[NSApp endSheet:_scaleSheet];
 }
@@ -1159,7 +1185,7 @@ static NSMutableArray *parseRenameString(NSString* str)
 {
 	if (!_scaleSheet)
 		[self loadSheetNib];
-	[scaleTextField setIntValue:1];
+	[scaleTextField setFloatValue:[[NSUserDefaults standardUserDefaults]floatForKey:prefsDocScale]];
     [NSApp beginSheet: _scaleSheet
 	   modalForWindow: [self window]
 		modalDelegate: self
@@ -1186,6 +1212,16 @@ static NSMutableArray *parseRenameString(NSString* str)
 	SEL action = [menuItem action];
 	if (action == @selector(showGroupView:))
 		return [[[self graphicView]selectedGraphics]count] == 1;
+    if (action == @selector(resizeDocAgain:))
+    {
+        NSInteger w = [[NSUserDefaults standardUserDefaults]integerForKey:prefsDocSizeWidth];
+        NSInteger h = [[NSUserDefaults standardUserDefaults]integerForKey:prefsDocSizeHeight];
+        if (w == 0 || h == 0)
+            return NO;
+        [menuItem setTitle:[NSString stringWithFormat:@"Size Document to %d x %d",(int)w,(int(h))]];
+        NSSize sz = [graphicView bounds].size;
+        return !(sz.width == w && sz.height == h);
+    }
 	return YES;
 }
 @end

@@ -70,7 +70,7 @@
 -(NSString*)graphicXMLForEvent:(NSMutableDictionary*)options;
 -(NSIndexSet*)indexesOfSelectedGraphics;
 -(void)setGraphics:(NSMutableArray*)gs;
-
+-(NSRect)unionStrictGraphicBounds;
 @end
 
 NSArray* OrderGraphics(NSArray* toDo);

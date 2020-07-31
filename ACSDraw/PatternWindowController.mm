@@ -18,15 +18,6 @@
 	return self;
 }
 
-- (void)dealloc 
-{
-	if (pages)
-		[pages release];
-	if (undoManager)
-		[undoManager release];
-	[super dealloc];
-}
-
 - (GraphicView*)graphicView
 {
 	return graphicView;
@@ -41,9 +32,9 @@
 - (void)windowDidLoad
 {
 	[self setActionsDisabled:YES];
-	pages = [[NSMutableArray arrayWithCapacity:1]retain];
+	pages = [NSMutableArray arrayWithCapacity:1];
 	ACSDPage *p = [[ACSDPage alloc]initWithDocument:[self document]];
-	[pages addObject:[p autorelease]];
+	[pages addObject:p];
 	[[graphicView enclosingScrollView]setHasHorizontalRuler:YES];
 	[[graphicView enclosingScrollView]setHasVerticalRuler:YES];
 	[[graphicView enclosingScrollView]setRulersVisible:YES];
@@ -74,14 +65,14 @@
 																   image:markerImage imageOrigin:NSMakePoint([markerImage size].width/2,10)];
 	[horizMarker setMovable:YES];
 	[[[graphicView enclosingScrollView]horizontalRulerView]setClientView:graphicView];
-	[[[graphicView enclosingScrollView]horizontalRulerView]addMarker:[horizMarker autorelease]];
+	[[[graphicView enclosingScrollView]horizontalRulerView]addMarker:horizMarker];
 	NSRulerMarker *verticalMarker = [[NSRulerMarker alloc]initWithRulerView:verticalRuler 
 															 markerLocation:patternRect.origin.y + patternRect.size.height
 																	  image:markerImage90 imageOrigin:NSMakePoint(10,[markerImage90 size].height/2)];
 	[verticalMarker setMovable:YES];
 	[[[graphicView enclosingScrollView]verticalRulerView]setClientView:graphicView];
-	[[[graphicView enclosingScrollView]verticalRulerView]addMarker:[verticalMarker autorelease]];
-	[[p currentLayer]addGraphic:[g autorelease]];
+	[[[graphicView enclosingScrollView]verticalRulerView]addMarker:verticalMarker];
+	[[p currentLayer]addGraphic:g];
 	verticalOriginLine = [[SnapLine alloc]initWithGraphicView:graphicView orientation:SNAPLINE_VERTICAL];
 	[verticalOriginLine setVisible:YES];
 	[verticalOriginLine setLocation:patternRect.origin.x];
@@ -466,18 +457,14 @@
 {
 	if (temporaryPattern == p)
 		return;
-	if (temporaryPattern)
-		[temporaryPattern release];
 	temporaryPattern = p;
-	if (temporaryPattern)
-		[temporaryPattern retain];
 }
 
 -(ACSDPattern*)temporaryPattern
 {
 	if (temporaryPattern)
 		return temporaryPattern;
-	temporaryPattern = [[self tempPattern]retain];
+	temporaryPattern = [self tempPattern];
 	return temporaryPattern;
 }
 
@@ -514,7 +501,7 @@
 	{
 		NSMutableArray *arr = [NSMutableArray arrayWithCapacity:ct];
 		for (int i = 0;i < ct;i++)
-			[arr addObject:[[[graphics objectAtIndex:i]copy]autorelease]];
+			[arr addObject:[[graphics objectAtIndex:i]copy]];
 		g = [[ACSDGroup alloc]initWithName:@"patgroup" graphics:arr  layer:nil];
 	}
 	float xOffset = [horizontalRuler originOffset];
@@ -529,7 +516,6 @@
     pat.clip = pattern.clip;
     pat.rotation = pattern.rotation;
 	[[self undoManager] enableUndoRegistration];
-	[g release];
 	return pat;
 }
 

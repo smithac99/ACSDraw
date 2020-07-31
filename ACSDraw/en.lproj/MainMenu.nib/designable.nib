@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -118,7 +118,7 @@
                             <menuItem title="Export" id="315">
                                 <menu key="submenu" title="Export" id="316">
                                     <items>
-                                        <menuItem title="SVG…" tag="151" id="317">
+                                        <menuItem title="SVG…" tag="151" keyEquivalent="9" id="317">
                                             <connections>
                                                 <action selector="exportSVG:" target="-1" id="318"/>
                                             </connections>
@@ -207,6 +207,12 @@
                                                 <action selector="exportGraphicXML:" target="-1" id="1068"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Event XML by Page…" alternate="YES" id="LDC-PY-2b6">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="exportEventXMLFromPages:" target="-1" id="C30-Ez-ilK"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Event XML…" keyEquivalent="E" id="Ogw-ab-EHh">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
@@ -217,12 +223,6 @@
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES" command="YES"/>
                                             <connections>
                                                 <action selector="exportEventXMLToLastFile:" target="-1" id="edT-Nj-cU4"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Event XML by Page…" alternate="YES" id="LDC-PY-2b6">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="exportEventXMLFromPages:" target="-1" id="C30-Ez-ilK"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -726,8 +726,14 @@ CA
                                     <action selector="showDocSizeDialog:" target="-1" id="668"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Scale Document…" id="1042">
-                                <modifierMask key="keyEquivalentModifierMask"/>
+                            <menuItem title="Size Document To" alternate="YES" keyEquivalent="X" id="LUS-qj-xG7">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="resizeDocAgain:" target="-1" id="ytN-hu-fmh"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Scale Document…" keyEquivalent="9" id="1042">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="showScaleDocDialog:" target="-1" id="1044"/>
                                 </connections>
