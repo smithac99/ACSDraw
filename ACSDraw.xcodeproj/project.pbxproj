@@ -153,7 +153,7 @@
 		E74056C615B1EF2E0040F590 /* StyleTableSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740560C15B1EF2D0040F590 /* StyleTableSource.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056C715B1EF2E0040F590 /* StyleWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740560E15B1EF2D0040F590 /* StyleWindowController.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056C815B1EF2E0040F590 /* SubSegment.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561015B1EF2D0040F590 /* SubSegment.mm */; };
-		E74056C915B1EF2E0040F590 /* SVGWriter.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561215B1EF2D0040F590 /* SVGWriter.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E74056C915B1EF2E0040F590 /* SVGWriter.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561215B1EF2D0040F590 /* SVGWriter.mm */; };
 		E74056CA15B1EF2E0040F590 /* TableSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561415B1EF2D0040F590 /* TableSource.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056CB15B1EF2E0040F590 /* TextController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561715B1EF2D0040F590 /* TextController.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056CD15B1EF2E0040F590 /* TextStyleHolder.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561B15B1EF2D0040F590 /* TextStyleHolder.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };

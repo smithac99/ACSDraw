@@ -232,6 +232,8 @@ enum GV_Cursor_Mode
 -(void)uAddTrigger:(NSMutableDictionary*)t toGraphic:(ACSDGraphic*)g;
 -(void)uRemoveTrigger:(NSMutableDictionary*)t fromGraphic:(ACSDGraphic*)g;
 -(void)uGroupGraphicsFromIndexSet:(NSIndexSet*)ixs intoGroup:(ACSDGroup*)gp atIndex:(NSInteger)ind;
+-(void)uSetCurrentLayer:(ACSDLayer*)l forPage:(ACSDPage*)page;
+-(void)moveSelectedGraphicsToLayerIndex:(NSInteger)layerind;
 
 - (void)cropToRectangle:(id)sender;
 -(void)selectGraphicsInCurrentLayerFromSet:(NSSet*)gset extend:(BOOL)extend;

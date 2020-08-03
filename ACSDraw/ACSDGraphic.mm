@@ -2601,11 +2601,21 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
    }
 
 
-- (BOOL)intersectsWithRect:(NSRect)selectionRect	//used for selecting with rubberband
-   {
-	NSBezierPath *p = [self transformedBezierPath];
-	return pathIntersectsWithRect(p,[p bounds],NSIntersectionRect([p bounds],selectionRect),YES,YES,YES,YES);
-   }
+- (BOOL)intersectsWithRect:(NSRect)selectionRect    //used for selecting with rubberband
+{
+    NSBezierPath *p = [self transformedBezierPath];
+    BOOL success = pathIntersectsWithRect(p,[p bounds],NSIntersectionRect([p bounds],selectionRect),YES,YES,YES,YES);
+    if (success)
+        return YES;
+    if ([p bounds].size.height == 0 || [p bounds].size.width == 0)
+    {
+        return NSPointInRect(NSMakePoint(NSMinX([p bounds]),NSMinY([p bounds])), selectionRect) ||
+        NSPointInRect(NSMakePoint(NSMinX([p bounds]),NSMaxY([p bounds])), selectionRect) ||
+        NSPointInRect(NSMakePoint(NSMaxX([p bounds]),NSMinY([p bounds])), selectionRect) ||
+        NSPointInRect(NSMakePoint(NSMaxX([p bounds]),NSMinY([p bounds])), selectionRect);
+    }
+    return NO;
+}
 
 - (BOOL)shapeUnderPoint:(NSPoint)point includeKnobs:(BOOL)includeKnobs view:(GraphicView*)vw
    {

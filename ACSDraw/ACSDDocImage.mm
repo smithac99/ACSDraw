@@ -108,7 +108,7 @@
 	return @"vector";
 }
 
--(void)writeSVGData:(SVGWriter*)svgWriter
+-(void)writeSVGDatao:(SVGWriter*)svgWriter
 {
 	[[svgWriter contents] appendFormat:@"<g id=\"%@\" transform=\"translate(%g,%g)\"",self.name,bounds.origin.x,bounds.origin.y];
     if (self.hidden)
@@ -119,4 +119,56 @@
 	[[svgWriter contents] appendString:arr[1]];
 	[[svgWriter contents] appendString:@"</g>\n"];
 }
+
+-(NSString*)svgTransform:(SVGWriter*)svgWriter
+{
+    NSMutableString *mstr = [NSMutableString string];
+    NSPoint pt = bounds.origin;
+    if (svgWriter.shouldInvertSVGCoords)
+    {
+        pt = NSMakePoint(pt.x, NSMaxY(bounds));
+        pt = [svgWriter.inversionTransform transformPoint:pt];
+    }
+    [mstr appendFormat:@"translate(%g,%g)",pt.x,pt.y];
+    if (rotation != 0.0 || xScale != 1.0 || yScale != 1.0)
+    {
+        float h2 = bounds.size.height / 2.0;
+        float w2 = bounds.size.width / 2.0;
+        [mstr appendFormat:@" translate(%g,%g)",w2,h2];
+        if (rotation != 0.0)
+        {
+            float rot = rotation;
+            if (svgWriter.shouldInvertSVGCoords)
+                rot = -rotation;
+            [mstr appendFormat:@" rotate(%g)",rot];
+        }
+        if (xScale != 1.0 || yScale != 1.0)
+            [mstr appendFormat:@" scale(%g %g)",xScale,yScale];
+        [mstr appendFormat:@" translate(%g,%g)",-w2,-h2];
+    }
+    if ([mstr length] > 0)
+    {
+        mstr = [[NSMutableString alloc]initWithString:[NSString stringWithFormat:@" transform=\"%@\"",mstr]];
+    }
+    return mstr;
+}
+
+-(void)writeSVGData:(SVGWriter*)svgWriter
+{
+    NSString *sourceName = [[self.sourcePath lastPathComponent]stringByDeletingPathExtension];
+    if (svgWriter.sources[sourceName] == nil)
+    {
+        NSArray *arr = [self.drawDoc svgBodyString];
+        [[svgWriter defs]appendString:arr[0]];
+        [[svgWriter defs]appendFormat:@"\t<g id=\"%@\" >\n%@",sourceName,arr[1]];
+        [[svgWriter defs]appendString:@"</g>\n"];
+        svgWriter.sources[sourceName] = @"";
+    }
+
+    [[svgWriter contents] appendFormat:@"\t<use id=\"%@\" xlink:href=\"#%@\" %@",self.name,sourceName,[self svgTransform:svgWriter]];
+    if (self.hidden)
+        [[svgWriter contents] appendString:@" visibility=\"hidden\" "];
+    [[svgWriter contents] appendString:@"/>\n"];
+}
+
 @end

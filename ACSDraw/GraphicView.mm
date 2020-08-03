@@ -347,6 +347,18 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
     [page setCurrentLayer:l];
 }
 
+-(void)moveSelectedGraphicsToLayerIndex:(NSInteger)layerind
+{
+    ACSDLayer *sourceLayer = [self currentEditableLayer];
+    ACSDLayer *destLayer = [[self layers] objectAtIndex:layerind];
+    NSIndexSet *ixs = [sourceLayer indexesOfSelectedGraphics];
+    NSArray *grs = [[sourceLayer selectedGraphics]allObjects];
+    [self uSetSelectionForLayer:sourceLayer toObjects:@[]];
+    [self moveGraphicsFromLayer:sourceLayer atIndexes:ixs toLayer:destLayer atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange([[destLayer graphics]count],[ixs count])]];
+    [self uSetSelectionForLayer:destLayer toObjects:grs];
+    [self uSetCurrentLayer:destLayer forPage:[self currentPage]];
+    [[self undoManager]setActionName:[NSString stringWithFormat:@"Move %d graphic%@ to %@",(int)[grs count],[grs count] > 1?@"s":@"",[destLayer name]]];
+}
 -(BOOL)setCurrentLayer:(ACSDLayer*)l forPage:(ACSDPage*)page
 {
     if ([page currentLayer] == l)

@@ -132,7 +132,16 @@
     NSInteger dragRow = [rowIndexes firstIndex];
 	if (operation == NSTableViewDropOn)
 	   {
-		[graphicView moveSelectedGraphicsToLayer:row];
+		//[graphicView moveSelectedGraphicsToLayer:row];
+           /*ACSDLayer *sourceLayer = [graphicView currentEditableLayer];
+           ACSDLayer *destLayer = [layerList objectAtIndex:row];
+           NSIndexSet *ixs = [sourceLayer indexesOfSelectedGraphics];
+           NSArray *grs = [[sourceLayer selectedGraphics]allObjects];
+           [graphicView uSetSelectionForLayer:sourceLayer toObjects:@[]];
+           [graphicView moveGraphicsFromLayer:sourceLayer atIndexes:ixs toLayer:destLayer atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange([[destLayer graphics]count],[ixs count])]];
+           [graphicView uSetSelectionForLayer:destLayer toObjects:grs];
+           [graphicView uSetCurrentLayer:destLayer forPage:[graphicView currentPage]];*/
+           [graphicView moveSelectedGraphicsToLayerIndex:row];
 	   }
 	else
 	   {

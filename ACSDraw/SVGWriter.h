@@ -39,6 +39,8 @@ ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs);
 
 @property (strong) NSMutableArray *gradients;
 @property (strong) NSMutableArray *patterns;
+@property (strong) NSMutableDictionary *sources;
+
 @property BOOL shouldInvertSVGCoords;
 @property NSSize documentSize;
 @property (strong) NSAffineTransform *inversionTransform;;
