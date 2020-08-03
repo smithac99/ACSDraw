@@ -865,7 +865,9 @@ static NSMutableArray *parseRenameString(NSString* str)
             NSInteger idx = [ren rangeOfString:@"%"].location;
             if (idx != NSNotFound)
             {
-                [[renameTextField currentEditor]setSelectedRange:NSMakeRange(0, idx)];
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[[renameTextField currentEditor]setSelectedRange:NSMakeRange(0, idx)];
+				});
             }
         }
         NSString *rena = [[NSUserDefaults standardUserDefaults]objectForKey:prefsRenameStartFromString];
