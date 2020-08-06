@@ -18,22 +18,18 @@
    {
 	NSMutableArray *graphics;
 	SelectionSet *selectedGraphics;
-	BOOL visible,editable,exportable;
 	BOOL isGuideLayer;
-	NSString *name;
-	ACSDPage *page;
 	NSMutableArray *triggers;
    }
 
 @property BOOL visible,editable,exportable;
-@property (assign) ACSDPage *page;
+@property (weak) ACSDPage *page;
 @property (copy) NSString *name;
 @property int zPosOffset;
 
 + (NSString*)nextNameForDocument:(ACSDrawDocument*)doc;
 -(id)initWithName:(NSString*)n isGuideLayer:(BOOL)gl;
 
--(void)setPage:(ACSDPage*)p;
 
 -(void)setLayerVisible:(BOOL)v;
 -(BOOL)isGuideLayer;

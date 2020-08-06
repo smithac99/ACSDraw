@@ -32,12 +32,12 @@
 		E740563715B1EF2D0040F590 /* ACSDFreeHand.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054EC15B1EF2D0040F590 /* ACSDFreeHand.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740563815B1EF2D0040F590 /* ACSDGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054EE15B1EF2D0040F590 /* ACSDGradient.mm */; };
 		E740563915B1EF2D0040F590 /* ACSDGraphic.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F015B1EF2D0040F590 /* ACSDGraphic.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		E740563A15B1EF2D0040F590 /* ACSDGrid.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F215B1EF2D0040F590 /* ACSDGrid.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740563A15B1EF2D0040F590 /* ACSDGrid.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F215B1EF2D0040F590 /* ACSDGrid.mm */; };
 		E740563B15B1EF2D0040F590 /* ACSDGroup.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F415B1EF2D0040F590 /* ACSDGroup.mm */; };
 		E740563C15B1EF2D0040F590 /* ACSDImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F615B1EF2D0040F590 /* ACSDImage.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740563D15B1EF2D0040F590 /* ACSDImageRep.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F815B1EF2D0040F590 /* ACSDImageRep.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740563E15B1EF2D0040F590 /* ACSDLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FA15B1EF2D0040F590 /* ACSDLabel.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		E740563F15B1EF2D0040F590 /* ACSDLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FC15B1EF2D0040F590 /* ACSDLayer.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740563F15B1EF2D0040F590 /* ACSDLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FC15B1EF2D0040F590 /* ACSDLayer.mm */; };
 		E740564015B1EF2D0040F590 /* ACSDLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FE15B1EF2D0040F590 /* ACSDLine.mm */; };
 		E740564115B1EF2D0040F590 /* ACSDLineEnding.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550015B1EF2D0040F590 /* ACSDLineEnding.mm */; };
 		E740564215B1EF2D0040F590 /* ACSDLink.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550215B1EF2D0040F590 /* ACSDLink.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -60,7 +60,7 @@
 		E740565415B1EF2D0040F590 /* ACSDTextStorage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740552715B1EF2D0040F590 /* ACSDTextStorage.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740565515B1EF2D0040F590 /* ACSDTextView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740552915B1EF2D0040F590 /* ACSDTextView.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740565615B1EF2D0040F590 /* AffineTransformAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740552B15B1EF2D0040F590 /* AffineTransformAdditions.mm */; };
-		E740565715B1EF2D0040F590 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740552D15B1EF2D0040F590 /* AppDelegate.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740565715B1EF2D0040F590 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740552D15B1EF2D0040F590 /* AppDelegate.mm */; };
 		E740565815B1EF2D0040F590 /* ArchiveDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740552F15B1EF2D0040F590 /* ArchiveDelegate.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740565915B1EF2D0040F590 /* ArchiveTextDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740553115B1EF2D0040F590 /* ArchiveTextDelegate.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740565A15B1EF2D0040F590 /* ArrayAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740553315B1EF2D0040F590 /* ArrayAdditions.mm */; };

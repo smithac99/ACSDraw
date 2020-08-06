@@ -32,6 +32,7 @@ NSString *prefsDocSizeWidth = @"ACSDrawprefsDocSizeWidth";
 NSString *prefsDocSizeHeight = @"ACSDrawprefsDocSizeHeight";
 NSString *prefsDocSizeRow = @"ACSDrawprefsDocSizeRow";
 NSString *prefsDocSizeColumn = @"ACSDrawprefsDocSizeColumn";
+NSString *prefSVGInlineEmbedded = @"prefsSVGInlineEmbedded";
 
 NSString *ixPBType = @"indexpbtype";
 NSArray *arrayFromColour(NSColor *col);

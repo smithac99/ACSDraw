@@ -1359,6 +1359,9 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
     [view addSubview:editor];
     [view setEditingGraphic:self];
     [editor setSelectedRange:NSMakeRange(0, [contents length])];
+       editor.selectedTextAttributes = @{NSForegroundColorAttributeName:[NSColor blackColor],
+                                         NSBackgroundColorAttributeName:[[NSColor blueColor]colorWithAlphaComponent:0.3]
+       };
 	if ([contents length] == 0)
 		[editor setTypingAttributes:[[[StyleWindowController sharedStyleWindowController]currentStyle]textAndStyleAttributes]];
     [editor setDelegate:self];

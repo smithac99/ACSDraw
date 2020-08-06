@@ -1475,7 +1475,7 @@ CA
                                     <rect key="frame" x="10" y="33" width="379" height="341"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <colorWell translatesAutoresizingMaskIntoConstraints="NO" id="361">
+                                        <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="361">
                                             <rect key="frame" x="218" y="290" width="54" height="26"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <color key="color" red="1" green="0.59691786999999996" blue="0.93261616999999997" alpha="1" colorSpace="calibratedRGB"/>
@@ -1483,7 +1483,7 @@ CA
                                                 <action selector="guideColourHit:" target="363" id="366"/>
                                             </connections>
                                         </colorWell>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="351">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="351">
                                             <rect key="frame" x="122" y="295" width="91" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Guide Colour:" id="977">
@@ -1492,7 +1492,7 @@ CA
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="350">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="350">
                                             <rect key="frame" x="102" y="261" width="111" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Selection Colour:" id="976">
@@ -1501,7 +1501,7 @@ CA
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <colorWell translatesAutoresizingMaskIntoConstraints="NO" id="346">
+                                        <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="346">
                                             <rect key="frame" x="218" y="256" width="54" height="26"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <color key="color" red="0.34521329000000001" green="0.97641599000000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1509,7 +1509,7 @@ CA
                                                 <action selector="selectionColourHit:" target="363" id="367"/>
                                             </connections>
                                         </colorWell>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="636">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="636">
                                             <rect key="frame" x="125" y="224" width="88" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Hilite Colour:" id="978">
@@ -1518,7 +1518,7 @@ CA
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <colorWell translatesAutoresizingMaskIntoConstraints="NO" id="637">
+                                        <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="637">
                                             <rect key="frame" x="218" y="219" width="54" height="26"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <color key="color" red="1" green="0.037037015" blue="0.037037015" alpha="1" colorSpace="calibratedRGB"/>
@@ -1526,7 +1526,7 @@ CA
                                                 <action selector="hiliteColourHit:" target="363" id="1011"/>
                                             </connections>
                                         </colorWell>
-                                        <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="999">
+                                        <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="999">
                                             <rect key="frame" x="101" y="98" width="119" height="58"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1540,15 +1540,15 @@ CA
                                                 <column>
                                                     <buttonCell type="radio" title="None" imagePosition="left" alignment="left" controlSize="small" state="on" tag="1" inset="2" id="1003">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                        <font key="font" metaFont="message" size="11"/>
+                                                        <font key="font" metaFont="menu" size="11"/>
                                                     </buttonCell>
                                                     <buttonCell type="radio" title="Checkerboard" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1004">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                        <font key="font" metaFont="message" size="11"/>
+                                                        <font key="font" metaFont="menu" size="11"/>
                                                     </buttonCell>
                                                     <buttonCell type="radio" title="Colour" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1006">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                        <font key="font" metaFont="message" size="11"/>
+                                                        <font key="font" metaFont="menu" size="11"/>
                                                     </buttonCell>
                                                 </column>
                                             </cells>
@@ -1556,7 +1556,7 @@ CA
                                                 <action selector="backgroundColourTypeHit:" target="363" id="1010"/>
                                             </connections>
                                         </matrix>
-                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1000">
+                                        <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1000">
                                             <rect key="frame" x="86" y="164" width="148" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Document Background" id="1002">
@@ -1565,7 +1565,7 @@ CA
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <colorWell translatesAutoresizingMaskIntoConstraints="NO" id="1001">
+                                        <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1001">
                                             <rect key="frame" x="228" y="99" width="44" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1635,7 +1635,7 @@ CA
                                                     <decimal key="minimum" value="0"/>
                                                     <decimal key="maximum" value="NaN"/>
                                                 </numberFormatter>
-                                                <font key="font" metaFont="message" size="11"/>
+                                                <font key="font" metaFont="menu" size="11"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -1647,7 +1647,7 @@ CA
                                             <rect key="frame" x="195" y="258" width="21" height="14"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="pts" id="985">
-                                                <font key="font" metaFont="message" size="11"/>
+                                                <font key="font" metaFont="menu" size="11"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -1673,7 +1673,7 @@ CA
                                             <autoresizingMask key="autoresizingMask"/>
                                             <clipView key="contentView" id="YcS-Ex-3uJ">
                                                 <rect key="frame" x="1" y="0.0" width="318" height="139"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="kKP-V3-1ER" id="8gb-rX-UY4">
                                                         <rect key="frame" x="0.0" y="0.0" width="318" height="114"/>
@@ -1738,6 +1738,28 @@ CA
                                             </connections>
                                         </button>
                                     </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="SVG" identifier="" id="41J-Kr-fJS">
+                                <view key="view" id="h5X-6I-Vl1">
+                                    <rect key="frame" x="10" y="33" width="379" height="341"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bce-V2-Ylw">
+                                            <rect key="frame" x="38" y="296" width="160" height="18"/>
+                                            <buttonCell key="cell" type="check" title="Inline embedded SVGs" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="jtx-Ng-UHJ">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <binding destination="1098" name="value" keyPath="values.prefsSVGInlineEmbedded" id="Nwo-uv-MKK"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="bce-V2-Ylw" firstAttribute="leading" secondItem="h5X-6I-Vl1" secondAttribute="leading" constant="40" id="K6Q-qf-Hmr"/>
+                                        <constraint firstItem="bce-V2-Ylw" firstAttribute="top" secondItem="h5X-6I-Vl1" secondAttribute="top" constant="29" id="Qrg-uu-GjG"/>
+                                    </constraints>
                                 </view>
                             </tabViewItem>
                         </tabViewItems>
@@ -1858,7 +1880,7 @@ CA
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="snap2" imagePosition="above" alignment="center" alternateImage="snap3" controlSize="small" borderStyle="border" id="986">
                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="menu" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="snapButtonHit:" target="398" id="404"/>

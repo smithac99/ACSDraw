@@ -18,6 +18,7 @@ extern NSString *prefsDocSizeWidth;
 extern NSString *prefsDocSizeHeight;
 extern NSString *prefsDocSizeRow;
 extern NSString *prefsDocSizeColumn;
+extern NSString *prefSVGInlineEmbedded;
 
 #define BACKGROUND_DRAW_NONE 0
 #define BACKGROUND_DRAW_CHECKERS 1

@@ -21,7 +21,6 @@
 
 @implementation ACSDLayer
 
-@synthesize visible,editable,exportable,page,name;
 
 + (NSString*)nextNameForDocument:(ACSDrawDocument*)doc
    {
@@ -43,14 +42,14 @@
 {
 	if ((self = [super init]))
 	{
-		graphics = [[NSMutableArray arrayWithCapacity:15]retain];
+		graphics = [NSMutableArray arrayWithCapacity:15];
 		selectedGraphics = [[SelectionSet alloc] initWithCapacity:15];
-		visible = YES;
-		editable = YES;
-		exportable = !gl;
-		name = [n copy];
+		self.visible = YES;
+		self.editable = YES;
+		self.exportable = !gl;
+		self.name = n;
 		isGuideLayer = gl;
-		page = nil;
+        self.page = nil;
 	}
 	return self;
 }
@@ -58,42 +57,39 @@
 - (void) encodeWithCoder:(NSCoder*)coder
 {
 	[coder encodeObject:graphics forKey:@"ACSDLayer_elements"];
-	[coder encodeObject:name forKey:@"ACSDLayer_name"];
-	[coder encodeBool:visible forKey:@"ACSDLayer_visible"];
-	[coder encodeBool:editable forKey:@"ACSDLayer_editable"];
+	[coder encodeObject:self.name forKey:@"ACSDLayer_name"];
+	[coder encodeBool:self.visible forKey:@"ACSDLayer_visible"];
+	[coder encodeBool:self.editable forKey:@"ACSDLayer_editable"];
 	[coder encodeBool:isGuideLayer forKey:@"ACSDLayer_isGuideLayer"];
-    [coder encodeBool:exportable forKey:@"ACSDLayer_exportable"];
+    [coder encodeBool:self.exportable forKey:@"ACSDLayer_exportable"];
     [coder encodeInt:self.zPosOffset forKey:@"ACSDLayer_zPosOffset"];
 }
 
 - (id)initWithCoder:(NSCoder*)coder
 {
 	self = [super init];
-	graphics = [[coder decodeObjectForKey:@"ACSDLayer_elements"]retain];
-	name = [[coder decodeObjectForKey:@"ACSDLayer_name"]retain];
-	visible = [coder decodeBoolForKey:@"ACSDLayer_visible"];
-	editable = [coder decodeBoolForKey:@"ACSDLayer_editable"];
+	graphics = [coder decodeObjectForKey:@"ACSDLayer_elements"];
+	self.name = [coder decodeObjectForKey:@"ACSDLayer_name"];
+	self.visible = [coder decodeBoolForKey:@"ACSDLayer_visible"];
+	self.editable = [coder decodeBoolForKey:@"ACSDLayer_editable"];
 	isGuideLayer = [coder decodeBoolForKey:@"ACSDLayer_isGuideLayer"];
-	//id b = [coder decodeObjectForKey:@"ACSDLayer_exportable"];
-	//NSLog(@"%@,%@",b,NSStringFromClass([b class]));
-	exportable = [coder decodeBoolForKey:@"ACSDLayer_exportable"];
-	//exportable = [b boolValue];
+	self.exportable = [coder decodeBoolForKey:@"ACSDLayer_exportable"];
 	selectedGraphics = [[SelectionSet alloc] initWithCapacity:15];
-	page = nil;
+    self.page = nil;
     self.zPosOffset = [coder decodeIntForKey:@"ACSDLayer_zPosOffset"];
 	return self;
 }
 
 -(id)copy
 {
-	ACSDLayer *layer = [[[self class]alloc] initWithName:name isGuideLayer:isGuideLayer];
-	[layer setVisible:visible];
-	[layer setEditable:editable];
-	[layer setExportable:exportable];
+	ACSDLayer *layer = [[[self class]alloc] initWithName:self.name isGuideLayer:isGuideLayer];
+	[layer setVisible:self.visible];
+	[layer setEditable:self.editable];
+	[layer setExportable:self.exportable];
 	NSMutableArray *newGraphics = [NSMutableArray arrayWithCapacity:[graphics count]];
 	for (ACSDGraphic *g in graphics)
 	{
-		ACSDGraphic *gc = [[g copy] autorelease];
+		ACSDGraphic *gc = [g copy];
 		[gc setLayer:layer];
 		[newGraphics addObject:gc];
 	}
@@ -105,11 +101,6 @@
 {
 	[graphics makeObjectsPerformSelector:@selector(setLayer:)withObject:nil];
 	[graphics makeObjectsPerformSelector:@selector(clearReferences)];
-	[graphics release];
-	[selectedGraphics release];
-	[name release];
-	[triggers release];
-	[super dealloc];
 }
 
 - (BOOL)isEqual:(id)anObject
@@ -143,8 +134,7 @@
 {
 	if (graphics != gs)
 	{
-		[graphics release];
-		graphics = [gs retain];
+		graphics = gs;
 	}
 }
 
@@ -166,7 +156,7 @@
 -(BOOL)addTrigger:(NSDictionary*)t
 {
 	if (!triggers)
-		triggers = [[NSMutableArray arrayWithCapacity:10]retain];
+		triggers = [NSMutableArray arrayWithCapacity:10];
 	[triggers addObject:t];
 	return YES;
 }
@@ -306,8 +296,8 @@
 
 -(void)writeSVGData:(SVGWriter*)svgWriter
 {
-	[[svgWriter contents] appendFormat:@"%@<g id=\"%@\" ",[svgWriter indentString],name];
-	if (!visible)
+    [[svgWriter contents] appendFormat:@"%@<g id=\"%@\" ",[svgWriter indentString],self.name];
+	if (!self.visible)
 		[[svgWriter contents] appendString:@"visibility=\"hidden\" "];
 	[[svgWriter contents] appendString:@">\n"];
 	if (triggers)
@@ -334,7 +324,7 @@
 
 -(NSString*)htmlDivName
 {
-	if ([page pageType] == PAGE_TYPE_MASTER)
+	if ([self.page pageType] == PAGE_TYPE_MASTER)
 		return [NSString stringWithFormat:@"m-%@",[self name]];
 	return [self name];
 }
@@ -343,14 +333,14 @@
 {
 	if (isGuideLayer)
 		return;
-	if ((visible || (triggers && [triggers count] > 0)) && graphics && [graphics count] > 0)
+	if ((self.visible || (triggers && [triggers count] > 0)) && graphics && [graphics count] > 0)
 	{
 		NSMutableString *bodyString = [options objectForKey:@"bodyString"];
 		NSSize sz = [[self document]documentSize];
 		[bodyString appendFormat:@"<div id=\"%@\"style='margin-left:auto;margin-right:auto;width:%dpx;height:%dpx;",[self htmlDivName],(int)sz.width,(int)sz.height];
-		if (!visible)
+		if (!self.visible)
 			[bodyString appendString:@"visibility:hidden;"];
-		[bodyString appendFormat:@"background-color:%@;position:relative;'",string_from_nscolor([page backgroundColour])];
+		[bodyString appendFormat:@"background-color:%@;position:relative;'",string_from_nscolor([self.page backgroundColour])];
 		[bodyString appendString:@">\n"];
 		[graphics makeObjectsPerformSelector:@selector(processHTMLOptions:)withObject:options];
 		[bodyString appendString:@"</div>\n"];
@@ -359,7 +349,7 @@
 
 -(ACSDrawDocument*)document
 {
-	return [page document];
+    return [self.page document];
 }
 
 -(NSMutableArray*)allTextObjects
@@ -420,8 +410,8 @@
 	int i = (int)[graphics indexOfObjectIdenticalTo:g];
 	for (int j = i + 1,ct = (int)[graphics count];j < ct;j++)
 		[set addObject:[graphics objectAtIndex:j]];
-	NSInteger layerInd = [page currentLayerInd] + 1;
-	NSArray *layers = [page layers];
+	NSInteger layerInd = [self.page currentLayerInd] + 1;
+	NSArray *layers = [self.page layers];
 	for (NSInteger j = layerInd,ct = (NSInteger)[layers count];j < ct;j++)
 	{
 		ACSDLayer *l = [layers objectAtIndex:j];
@@ -442,7 +432,7 @@
 	{
 		NSMutableString *layerString = [NSMutableString stringWithCapacity:200];
 		NSString *indent = [options objectForKey:xmlIndent];
-		[layerString appendFormat:@"%@<layer name=\"%@\">\n",indent,name];
+		[layerString appendFormat:@"%@<layer name=\"%@\">\n",indent,self.name];
 		[options setObject:[indent stringByAppendingString:@"\t"] forKey:xmlIndent];
 		for (ACSDGraphic *g in graphics)
 		{

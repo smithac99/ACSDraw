@@ -16,7 +16,7 @@ BOOL show_error_alert(NSString *msg1)
 {
 	if (self = [super init])
     {
-		appKey = [[NSCalendarDate calendarDate]retain];
+		appKey = [NSCalendarDate calendarDate];
 		[ACSDImageRep class];
         self.copiedScreens = [NSMutableArray arrayWithCapacity:5];
     }
@@ -25,10 +25,7 @@ BOOL show_error_alert(NSString *msg1)
 
 -(void)dealloc
 {
-	if (appKey)
-		[appKey release];
     self.copiedScreens = nil;
-	[super dealloc];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -41,10 +38,9 @@ BOOL show_error_alert(NSString *msg1)
 	   {
 		while ([textMenu numberOfItems] > 0)
 		   {
-			NSMenuItem *mi = (NSMenuItem*)[[textMenu itemAtIndex:0]retain];
+			NSMenuItem *mi = (NSMenuItem*)[textMenu itemAtIndex:0];
 			[textMenu removeItem:mi];
 			[m addItem:mi];
-			[mi release];
 		   }
 	   }
 	[[PalletteViewController sharedPalletteViewController]createPanels];

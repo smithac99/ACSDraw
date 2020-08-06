@@ -11,6 +11,7 @@
 #import "ACSDPage.h"
 #import "AffineTransformAdditions.h"
 #import "SVGWriter.h"
+#import "ACSDPrefsController.h"
 
 @implementation ACSDDocImage
 
@@ -108,16 +109,19 @@
 	return @"vector";
 }
 
--(void)writeSVGDatao:(SVGWriter*)svgWriter
+-(void)writeSVGDataWithRef:(SVGWriter*)svgWriter
 {
-	[[svgWriter contents] appendFormat:@"<g id=\"%@\" transform=\"translate(%g,%g)\"",self.name,bounds.origin.x,bounds.origin.y];
+    NSString *sourceName = [[self.sourcePath lastPathComponent]stringByDeletingPathExtension];
+    if (svgWriter.sources[sourceName] == nil)
+    {
+        [[svgWriter defs]appendFormat:@"\t<image id=\"%@\" width=\"%g\" height=\"%g\" xlink:href=\"%@\"/>\n",sourceName,bounds.size.width,bounds.size.height,[self.sourcePath lastPathComponent]];
+        svgWriter.sources[sourceName] = @"";
+    }
+
+    [[svgWriter contents] appendFormat:@"\t<use id=\"%@\" xlink:href=\"#%@\" %@",self.name,sourceName,[self svgTransform:svgWriter]];
     if (self.hidden)
         [[svgWriter contents] appendString:@" visibility=\"hidden\" "];
-    [[svgWriter contents]appendString:@" >\n"];
-	NSArray *arr = [self.drawDoc svgBodyString];
-	[[svgWriter defs]appendString:arr[0]];
-	[[svgWriter contents] appendString:arr[1]];
-	[[svgWriter contents] appendString:@"</g>\n"];
+    [[svgWriter contents] appendString:@"/>\n"];
 }
 
 -(NSString*)svgTransform:(SVGWriter*)svgWriter
@@ -153,7 +157,7 @@
     return mstr;
 }
 
--(void)writeSVGData:(SVGWriter*)svgWriter
+-(void)writeSVGDataInline:(SVGWriter*)svgWriter
 {
     NSString *sourceName = [[self.sourcePath lastPathComponent]stringByDeletingPathExtension];
     if (svgWriter.sources[sourceName] == nil)
@@ -171,4 +175,12 @@
     [[svgWriter contents] appendString:@"/>\n"];
 }
 
+-(void)writeSVGData:(SVGWriter*)svgWriter
+{
+    BOOL embedInline = [[NSUserDefaults standardUserDefaults]boolForKey:prefSVGInlineEmbedded];
+    if (embedInline)
+        [self writeSVGDataInline:svgWriter];
+    else
+        [self writeSVGDataWithRef:svgWriter];
+}
 @end
