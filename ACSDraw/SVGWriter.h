@@ -64,7 +64,7 @@ ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs);
 -(void)outdentDef;
 -(NSString*)fullString;
 -(void)saveContents;
--(void)restoreContents;
+-(NSString*)restoreContents;
 -(NSRect)invertRect:(NSRect)r;
 
 @end

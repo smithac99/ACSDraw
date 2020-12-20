@@ -17,6 +17,7 @@
 #import "geometry.h"
 #import "GraphicView.h"
 #import <Accelerate/Accelerate.h>
+#import "SVGWriter.h"
 
 CIFilter *_wideCylinderHalfWrapFilter = nil;
 CIFilter *_wideCylinderHalfUnwrapFilter = nil;
@@ -1074,4 +1075,26 @@ CGContextRef CreateArgbContext(int width,int height)
 		[self createHistogram];
 	return histogram;
 }
+
+-(void)writeSVGDataWithRef:(SVGWriter*)svgWriter
+{
+    NSString *sourceName = [self.sourcePath lastPathComponent];
+    if (svgWriter.sources[sourceName] == nil)
+    {
+        [[svgWriter defs]appendFormat:@"\t<image id=\"%@\" width=\"%g\" height=\"%g\" xlink:href=\"%@\"/>\n",sourceName,bounds.size.width,bounds.size.height,[self.sourcePath lastPathComponent]];
+        svgWriter.sources[sourceName] = @"";
+    }
+
+    NSRect r = [self transformedStrictBounds];
+    [[svgWriter contents] appendFormat:@"\t<use id=\"%@\" x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" xlink:href=\"#%@\" %@",self.name,r.origin.x,r.origin.y,r.size.width,r.size.height,sourceName,[self svgTransform:svgWriter]];
+    if (self.hidden)
+        [[svgWriter contents] appendString:@" visibility=\"hidden\" "];
+    [[svgWriter contents] appendString:@"/>\n"];
+}
+
+-(void)writeSVGData:(SVGWriter*)svgWriter
+{
+    [self writeSVGDataWithRef:svgWriter];
+}
+
 @end

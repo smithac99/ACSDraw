@@ -627,13 +627,12 @@
         [[svgWriter contents] appendString:@"visibility=\"hidden\" "];
 	if (shadowType)
 		[shadowType writeSVGData:svgWriter];
-	[[svgWriter contents]appendString:@">\n"];
 	[svgWriter indentDef];
-	if (isMask)
+	/*if (isMask)
 	   {
 		NSString *saveName = [svgWriter clipPathName];
 		[svgWriter setClipPathName:[NSString stringWithFormat:@"clip%ld",(NSUInteger)self]];
-		[[svgWriter contents]appendFormat:@"%@<clipPath id=\"%@\">\n",[svgWriter indentString],[svgWriter clipPathName]];
+		[[svgWriter contents]appendFormat:@"%@<clipPath id=\"url(#%@)\">\n",[svgWriter indentString],[svgWriter clipPathName]];
 		NSBezierPath *clipPath = [NSBezierPath bezierPath];
 		int ct = (int)[graphics count];
 		for (int i = ct - 1;i > 0;i--)
@@ -645,14 +644,22 @@
 		if (ct > 0)
 			[[graphics objectAtIndex:0]writeSVGData:svgWriter];
 		[svgWriter setClipPathName:saveName];
-	   }
-	else
-	   {
-		NSEnumerator *objEnum = [graphics objectEnumerator];
-		ACSDGraphic *curGraphic;
-		while ((curGraphic = [objEnum nextObject]) != nil)
-			[curGraphic writeSVGData:svgWriter];
-	   }
+	   }*/
+    if (self.clipGraphic)
+    {
+        [svgWriter setClipPathName:[NSString stringWithFormat:@"clip%ld",(NSUInteger)self]];
+        NSMutableString *defstr = [NSMutableString stringWithFormat:@"\t<clipPath id=\"%@\" >\n",[svgWriter clipPathName]];
+        [defstr appendFormat:@"\t\t<%@ id=\"%@\" %@/>\n",[self.clipGraphic svgType],self.clipGraphic.name,[self.clipGraphic svgTypeSpecifics:svgWriter boundingBox:NSZeroRect]];
+        [defstr appendString:@"\t</clipPath>\n"];
+        [svgWriter addOtherDefString:defstr];
+        [[svgWriter contents]appendFormat:@"clip-path=\"url(#%@)\" ",[svgWriter clipPathName]];
+    }
+   [[svgWriter contents]appendString:@">\n"];
+    NSEnumerator *objEnum = [graphics objectEnumerator];
+    ACSDGraphic *curGraphic;
+    while ((curGraphic = [objEnum nextObject]) != nil)
+        [curGraphic writeSVGData:svgWriter];
+	   
 	[svgWriter outdentDef];
 	[[svgWriter contents]appendFormat:@"%@</g>\n",[svgWriter indentString]];
    }

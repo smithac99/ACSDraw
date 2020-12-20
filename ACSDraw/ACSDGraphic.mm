@@ -385,6 +385,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
     [filterSettings release];
     [_tempSettings release];
 	self.sourcePath = nil;
+    self.clipGraphic = nil;
 	[super dealloc];
 }
 
@@ -416,7 +417,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
     [l setGraphic:obj];
     obj.alpha = alpha;
     obj.hidden = self.hidden;
-    
+    obj.clipGraphic = self.clipGraphic;
     
 	[obj setGraphicMode:graphicMode];
 	[obj setToolTip:toolTip];
@@ -487,7 +488,8 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
     [coder encodeBool:isMask forKey:@"ACSDGraphic_Mask"];
     [coder encodeBool:self.hidden forKey:@"ACSDGraphic_hidden"];
 	[coder encodeInt:graphicMode forKey:@"ACSDGraphic_graphicMode"];
-	[coder encodeObject:[self link] forKey:@"ACSDGraphic_link"];
+    [coder encodeObject:[self link] forKey:@"ACSDGraphic_link"];
+    [coder encodeObject:self.clipGraphic forKey:@"ACSDGraphic_clipGraphic"];
 	if (linkedObjects)
 		[coder encodeObject:linkedObjects forKey:@"ACSDGraphic_linkedObjects"];
 	if (preOutlineFill)
@@ -556,6 +558,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 		filterSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
 	self.sourcePath = [coder decodeObjectForKey:@"ACSDImage_sourcepath"];
 	self.linkAlignmentFlags = [coder decodeIntForKey:@"linkAlignmentFlags"];
+    self.clipGraphic = [coder decodeObjectForKey:@"ACSDGraphic_clipGraphic"];
 	return self;
 }
 
@@ -1814,11 +1817,12 @@ float normalisedAngle(float ang)
 	drawingToCache = YES;
 	[NSGraphicsContext saveGraphicsState];
    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:graphicCache.bitmap]];
-
 	//[[graphicCache image]lockFocus];
 	[[NSColor clearColor]set];
 	NSRectFill([graphicCache magnifiedImageBounds]);
 	[self transformForCacheDrawing];
+    if (self.clipGraphic)
+       [[self.clipGraphic bezierPath]addClip];
 	FlippableView *temp = [self setCurrentDrawingDestination:(GraphicView*)[graphicCache image]];
 	if (transform)
 		[transform concat];
@@ -1855,7 +1859,11 @@ float normalisedAngle(float ang)
 			[self drawObjectWithEffect:aRect inView:gView useCache:YES options:options];
 	   }
 	else
+    {
+        if (self.clipGraphic)
+            [[self.clipGraphic bezierPath]addClip];
 		[self drawObjectWithEffect:aRect inView:gView useCache:NO options:options];
+    }
    }
 
 - (void)postChangeOfBounds
@@ -1882,6 +1890,8 @@ float normalisedAngle(float ang)
 	[self computeTransform];
 	[self computeTransformedHandlePoints];
 	bounds = NSOffsetRect([self bounds], vector.x, vector.y);
+    if (self.clipGraphic)
+        [self.clipGraphic moveBy:vector];
 	if (layer)
 	   {
 		[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
@@ -2864,7 +2874,7 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
     return @"path";
 }
 
--(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter
+-(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter boundingBox:(NSRect)bb
 {
     NSBezierPath *p = [self bezierPath];
     if ([svgWriter shouldInvertSVGCoords])
@@ -2888,7 +2898,7 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
     {
         NSMutableString *defstr = [[NSMutableString alloc]init];
         [defstr appendFormat:@"<%@ id=\"%@\" %@",[self svgType],defId,[self svgTransform:svgWriter]];
-        [defstr appendString:[self svgTypeSpecifics:svgWriter]];
+        [defstr appendString:[self svgTypeSpecifics:svgWriter boundingBox:NSZeroRect]];
         [defstr appendString:@" />\n"];
         [svgWriter addOtherDefString:defstr];
         [[svgWriter contents]appendFormat:@"%@<use id=\"%@f\" xlink:href=\"#%@\" ",[svgWriter indentString],self.name,defId];
@@ -2903,9 +2913,18 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
     else
     {
         [[svgWriter contents]appendFormat:@"%@<%@ id=\"%@\" %@",[svgWriter indentString],[self svgType],self.name,[self svgTransform:svgWriter]];
-        if ([svgWriter clipPathName])
+        //if ([svgWriter clipPathName])
+            //[[svgWriter contents]appendFormat:@"clip-path=\"url(#%@)\" ",[svgWriter clipPathName]];
+        if (self.clipGraphic)
+        {
+            [svgWriter setClipPathName:[NSString stringWithFormat:@"clip%ld",(NSUInteger)self]];
+            NSMutableString *defstr = [NSMutableString stringWithFormat:@"\t<clipPath id=\"%@\" >\n",[svgWriter clipPathName]];
+            [defstr appendFormat:@"\t\t<%@ id=\"%@\" %@/>\n",[self.clipGraphic svgType],self.clipGraphic.name,[self.clipGraphic svgTypeSpecifics:svgWriter boundingBox:NSZeroRect]];
+            [defstr appendString:@"\t</clipPath>\n"];
+            [svgWriter addOtherDefString:defstr];
             [[svgWriter contents]appendFormat:@"clip-path=\"url(#%@)\" ",[svgWriter clipPathName]];
-        [[svgWriter contents]appendString:[self svgTypeSpecifics:svgWriter]];
+        }
+        [[svgWriter contents]appendString:[self svgTypeSpecifics:svgWriter boundingBox:NSZeroRect]];
     }
     if (stroke)
 	   {

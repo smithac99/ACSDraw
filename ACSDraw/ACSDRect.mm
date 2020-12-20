@@ -262,7 +262,7 @@
     return @"rect";
 }
 
--(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter
+-(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter boundingBox:(NSRect)bb
 {
     NSPoint origin = bounds.origin;
     if (svgWriter.shouldInvertSVGCoords)

@@ -1486,6 +1486,48 @@ NSString* Creator()
 	 ];
 }
 
+- (IBAction)exportSVGByPage:(id)menuItem
+{
+    NSSavePanel *sp;
+    NSString *fName = [[self displayName]stringByDeletingPathExtension];
+    sp = [NSSavePanel savePanel];
+    [sp setAllowedFileTypes:nil];
+    [sp setTitle:@"Export SVG By Page"];
+    [sp setDirectoryURL:[self exportDirectory]];
+    [sp setNameFieldStringValue:fName];
+    [sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
+     {
+        if (result == NSFileHandlingPanelOKButton)
+        {
+            [self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
+            NSURL *url = [(NSSavePanel*)sp URL];
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSError *err;
+            if ([fileManager fileExistsAtPath:[url path]])
+                [fileManager removeItemAtURL:url error:nil];
+            if (![fileManager createDirectoryAtPath:[url path] withIntermediateDirectories:NO attributes:nil error:&err])
+            {
+                show_error_alert([NSString stringWithFormat:@"Error creating directory: %@, %@",[url path],[err localizedDescription]]);
+                return;
+            }
+            for (NSInteger i = 0;i < [self.pages count];i++)
+            {
+                ACSDPage *page = self.pages[i];
+                if ([page pageType] == PAGE_TYPE_NORMAL)
+                {
+                    NSString *nm = [[NSString stringWithFormat:@"%d_%@",(int)i,page.pageTitle] stringByAppendingPathExtension:@"svg"];
+                    NSURL *furl = [url URLByAppendingPathComponent:nm];
+                    SVGWriter *svgWriter = [[[SVGWriter alloc]initWithSize:documentSize document:self page:i] autorelease];
+                    [svgWriter createData];
+                    NSError *err = nil;
+                    if (!([[svgWriter fullString] writeToURL:furl atomically:YES encoding:NSUTF8StringEncoding error:&err]))
+                        show_error_alert([NSString stringWithFormat:@"Error writing svg: %@, %@",furl,[err localizedDescription]]);
+                }
+            }
+        }
+    }];
+}
+
 - (void)exportGraphicXML:(id)menuItem
 {
 	NSSavePanel *sp;

@@ -4497,6 +4497,44 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
 }
 
+- (void)reInsertGraphic:(ACSDGraphic*)graphic atIndex:(NSInteger)i andRemoveFromClipFor:(ACSDGraphic*)group
+{
+    [[[self undoManager] prepareWithInvocationTarget:self] removeGraphicAtIndex:i andMakeClipFor:group];
+    [[[self currentEditableLayer] graphics]insertObject:graphic atIndex:i];
+    [graphic invalidateInView];
+    [group setClipGraphic:nil];
+    [[self window] invalidateCursorRectsForView:self];
+    [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
+}
+
+- (void)removeGraphicAtIndex:(NSInteger)i andMakeClipFor:(ACSDGraphic*)group
+{
+    ACSDGraphic *g = [[[self currentEditableLayer] graphics]objectAtIndex:i];
+    [g invalidateInView];
+    [[[self undoManager] prepareWithInvocationTarget:self] reInsertGraphic:g atIndex:i andRemoveFromClipFor:group];
+    [group setClipGraphic:g];
+    [[[self currentEditableLayer] graphics]removeObjectAtIndex:i];
+    [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
+}
+
+- (void)clip:(id)sender
+{
+    NSMutableIndexSet *ixs = [[self indexesOfSelectedGraphics]mutableCopy];
+    if ([ixs count] < 2)
+        return;
+    [self clearSelection];
+    NSInteger idx = [ixs lastIndex];
+    [ixs removeIndex:idx];
+    //ACSDGraphic *clipper = [[[self currentEditableLayer]graphics]objectAtIndex:idx];
+    ACSDGroup *group = [[ACSDGroup alloc]initWithName:[ACSDGroup nextNameForDocument:[self document]] graphics:[NSArray array]
+     layer:[self currentEditableLayer]];
+    [self removeGraphicAtIndex:idx andMakeClipFor:group];
+    [self uGroupGraphicsFromIndexSet:ixs intoGroup:group atIndex:[[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:group]];
+    [self selectGraphic:group];
+    [group release];
+    [[self undoManager] setActionName:@"Clip"];
+}
+
 - (void)group:(id)sender
    {
 	NSIndexSet *ixs = [self indexesOfSelectedGraphics];

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17156" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17156"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -121,6 +121,12 @@
                                         <menuItem title="SVG…" tag="151" keyEquivalent="9" id="317">
                                             <connections>
                                                 <action selector="exportSVG:" target="-1" id="318"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="SVG by Page…" tag="151" alternate="YES" keyEquivalent="9" id="tzI-e5-uLR">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="exportSVGByPage:" target="-1" id="GjN-Xy-oSz"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Tiff…" id="321">
@@ -920,13 +926,27 @@ CA
                                     <action selector="setMask:" target="-1" id="647"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="954"/>
+                            <menuItem title="Clip" id="IDx-Xb-ChP">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="clip:" target="-1" id="klj-1i-7uk"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Unclip" id="Jo2-7U-A22">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="unclip:" target="-1" id="E0r-gq-IaI"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="5PL-Jp-wF1"/>
                             <menuItem title="Show Group View" id="zAz-XE-ucp">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="showGroupView:" target="-1" id="isV-qO-LQa"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="954"/>
+                            <menuItem isSeparatorItem="YES" id="Fjx-kS-efv"/>
                             <menuItem title="Mode" id="650">
                                 <menu key="submenu" title="Mode" id="651">
                                     <items>
@@ -1673,7 +1693,7 @@ CA
                                             <autoresizingMask key="autoresizingMask"/>
                                             <clipView key="contentView" id="YcS-Ex-3uJ">
                                                 <rect key="frame" x="1" y="0.0" width="318" height="139"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="kKP-V3-1ER" id="8gb-rX-UY4">
                                                         <rect key="frame" x="0.0" y="0.0" width="318" height="114"/>

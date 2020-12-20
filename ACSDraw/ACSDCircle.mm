@@ -156,7 +156,7 @@
     return @"ellipse";
 }
 
--(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter
+-(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter boundingBox:(NSRect)bb
 {
     NSPoint cpt = NSMakePoint(NSMidX(bounds),NSMidY(bounds));
     if (svgWriter.shouldInvertSVGCoords)

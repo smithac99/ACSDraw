@@ -344,6 +344,7 @@ Gw
             <connections>
                 <outlet property="delegate" destination="-2" id="LTp-eY-0vh"/>
             </connections>
+            <point key="canvasLocation" x="142" y="405"/>
         </window>
         <window title="Panel" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="84" userLabel="DocScale" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
@@ -372,7 +373,7 @@ Gw
                                 <attributedString key="attributedStringForZero">
                                     <fragment content="0"/>
                                 </attributedString>
-                                <real key="minimum" value="0.25"/>
+                                <real key="minimum" value="0.001"/>
                                 <real key="maximum" value="100"/>
                             </numberFormatter>
                             <font key="font" metaFont="system"/>

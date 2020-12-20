@@ -46,10 +46,13 @@
 -(void)writeSVGGradientDef:(SVGWriter*)svgWriter
 {
     NSString *name = [self svgName:[svgWriter document]];
-    [[svgWriter defs]appendFormat:@"<linearGradient id=\"%@\" ",name];
+    NSString *gType = @"linearGradient";
+    if (self.gradientType == GRADIENT_RADIAL)
+        gType = @"radialGradient";
+    [[svgWriter defs]appendFormat:@"<%@ id=\"%@\" ",gType,name];
     if (self.attrs[@"transform"])
         [[svgWriter defs]appendFormat:@"gradientTransform=\"%@\" ",string_from_transform(self.attrs[@"transform"])];
-	for (NSString *k in @[@"x1",@"y1",@"x2",@"y2"])
+	for (NSString *k in @[@"x1",@"y1",@"x2",@"y2",@"cx",@"cy",@"fx",@"fy",@"r",@"gradientUnits",@"spreadMethod"])
 		if (self.attrs[k])
 			[[svgWriter defs]appendFormat:@"%@=\"%@\" ",k,self.attrs[k]];
     [[svgWriter defs]appendString:@">\n"];
@@ -59,7 +62,7 @@
         [[svgWriter defs]appendFormat:@"\t<stop offset=\"%g%%\" stop-color=\"%@\" stop-opacity=\"%g\"/>\n",ge.position * 100,
          string_from_nscolor(col),[col alphaComponent]];
     }
-    [[svgWriter defs]appendString:@"</linearGradient>\n"];
+    [[svgWriter defs]appendFormat:@"</%@>\n",gType];
 }
 
 -(BOOL)isSameAs:(id)obj

@@ -591,10 +591,12 @@ NSString* headerString(int width,int height)
     contents = [[NSMutableString alloc]init];
 }
 
--(void)restoreContents
+-(NSString*)restoreContents
 {
+    NSString *curr = contents;
     contents = [contentsStack lastObject];
     [contentsStack removeLastObject];
+    return curr;
 }
 
 -(void)createData
@@ -675,27 +677,27 @@ NSString* headerString(int width,int height)
    }
 
 -(ACSDrawDocument*)document
-   {
+{
     return document;
-   }
+}
    
 -(NSMutableString*)contents
-   {
+{
     return contents;
-   }
+}
 
 -(NSMutableString*)prefix
-   {
+{
     return prefix;
-   }
+}
 
 -(NSMutableString*)defs
 {
-	return defs;
+    return defs;
 }
 
 -(NSString*)fullString
 {
-	return [NSString stringWithFormat:@"%@%@</g>\n</svg>\n",prefix,contents];
+    return [NSString stringWithFormat:@"%@%@</g>\n</svg>\n",prefix,contents];
 }
 @end

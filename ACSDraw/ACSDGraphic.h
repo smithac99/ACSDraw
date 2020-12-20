@@ -204,6 +204,7 @@ struct KnobDescriptor
 @property (retain) NSMutableDictionary *tempSettings;
 @property NSPoint originalPos,scaleAnchorPos;
 @property float originalScale;
+@property (strong) ACSDGraphic *clipGraphic;
 
 + (NSString*)nextNameForDocument:(ACSDrawDocument*)doc;
 + (NSString*)graphicTypeName;
@@ -217,7 +218,8 @@ struct KnobDescriptor
 +(void)postChangeFromAnchorPoint:(NSPoint)anchorPoint toPoint:(NSPoint)point;
 +(void)postShowCoordinates:(BOOL)show;
 + (NSInteger)flipKnob:(NSInteger)knob horizontal:(BOOL)horizFlag;
-
+-(NSString*)svgType;
+-(NSString*)svgTypeSpecifics:(SVGWriter*)svgWriter boundingBox:(NSRect)bb;
 
 - (NSRect)handleRect:(NSPoint)point magnification:(float)magnification;
 
