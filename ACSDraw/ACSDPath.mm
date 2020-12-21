@@ -1497,6 +1497,19 @@ selectedGraphics:(NSSet*)selectedGraphics
 	return NO;
    }
 
+-(void)splitPathWithT:(float)t copy:(BOOL)copy
+{
+    unsigned subPathInd;
+    ACSDSubPath *subPath;
+    for (subPathInd=0;subPathInd < [subPaths count];subPathInd++)
+    {
+        subPath = [subPaths objectAtIndex:subPathInd];
+        [subPath splitEachSegmentAtT:t copy:copy path:self pathInd:subPathInd];
+    }
+    [self generatePath];
+    [self completeRebuild];
+}
+
 - (BOOL)removePathElementWithEvent:(NSEvent *)theEvent inView:(GraphicView*)view
 {
     NSPoint hitPoint = [view convertPoint:[theEvent locationInWindow] fromView:nil];

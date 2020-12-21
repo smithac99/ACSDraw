@@ -41,6 +41,7 @@
 - (void) applyTransform:(NSAffineTransform*)trans;
 - (BOOL)removePathElementWithPoint:(NSPoint)hitPoint newSubPath:(ACSDSubPath**)newSubPath;
 - (BOOL)splitPathWithPoint:(NSPoint)hitPoint copy:(BOOL)copy path:(ACSDPath*)path pathInd:(int)pathInd;
+- (void)splitEachSegmentAtT:(float)t copy:(BOOL)copy path:(ACSDPath*)path pathInd:(int)pathInd;
 - (float)roughArea;
 - (BOOL)isCounterClockWise;
 -(NSMutableArray*)outlineStroke:(float)strokeWidth lineStart:(ACSDLineEnding*)lineStart lineEnd:(ACSDLineEnding*)lineEnd lineCap:(int)lineCap;

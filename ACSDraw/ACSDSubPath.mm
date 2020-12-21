@@ -581,6 +581,107 @@ NSBezierPath *lineEndingPath(ACSDLineEnding *lineEnding,NSPoint pt1,NSPoint pt2,
 	[self setPathElements:[self reversedPathElements]];
    }
 
+- (void)splitEachSegmentAtT:(float)t copy:(BOOL)copy path:(ACSDPath*)path pathInd:(int)pathInd
+{
+    NSInteger ct = [pathElements count];
+    if (ct == 0)
+        return;
+    NSPoint lastCP,thisPreControlpoint,thisPostControlPoint,lastPoint;
+    ACSDPathElement *lastEl,*element = [pathElements objectAtIndex:0];
+    lastPoint = [element point];
+    BOOL lastHasPostControlPoint = [element hasPostControlPoint];
+    if (lastHasPostControlPoint)
+        lastCP = [element postControlPoint];
+    else
+        lastCP = [element point];
+    lastEl = element;
+    int lastInd = 0;
+    for (NSInteger i = ct - 2;i >= 0;i--)
+    {
+        ACSDPathElement *e1 = [pathElements objectAtIndex:i];
+        ACSDPathElement *e2 = [pathElements objectAtIndex:i + 1];
+        if ([e2 isLineToPoint])
+        {
+            if ([e1 hasPostControlPoint] || [e2 hasPreControlPoint])    //it's a curve
+            {
+                if ([e2 hasPreControlPoint])
+                    thisPreControlpoint = [e2 preControlPoint];
+                else
+                    thisPreControlpoint = [e2 point];
+                if ([e1 hasPostControlPoint])
+                    thisPostControlPoint = [e1 postControlPoint];
+                else
+                    thisPostControlPoint = [e1 point];
+                NSPoint c1EndPt,c1CP1,c1CP2,c2CP1,c2CP2;
+                splitCurveByT([e1 point],[e2 point],thisPostControlPoint,thisPreControlpoint,t,
+                              c1EndPt,c1CP1,c1CP2,
+                              c2CP1,c2CP2);
+                ACSDPathElement *e1c = [e1 copy],*e2c = [e2 copy];
+                [e1c setPostControlPoint:c1CP1];
+                [path uReplacePathElementWithElement:e1c forKnob:KnobDescriptor(pathInd,i,1)];
+                [e2c setPreControlPoint:c2CP2];
+                [path uReplacePathElementWithElement:e2c forKnob:KnobDescriptor(pathInd,i+1,1)];
+                ACSDPathElement *en = [[ACSDPathElement alloc]initWithPoint:c1EndPt
+                                                            preControlPoint:c1CP2 postControlPoint:c2CP1 hasPreControlPoint:YES
+                                                        hasPostControlPoint:YES isLineToPoint:YES];
+                [en setControlPointsContinuous:YES];
+                [path uInsertPathElement:en forKnob:KnobDescriptor(pathInd,i+1,1)];
+            }
+            else                //it's just a line segment
+            {
+                NSPoint npt = tPointAlongLine(t,[e1 point],[e2 point]);
+                ACSDPathElement *en = [[ACSDPathElement alloc]initWithPoint:npt
+                                                                preControlPoint:npt postControlPoint:npt hasPreControlPoint:NO
+                                                            hasPostControlPoint:NO isLineToPoint:YES];
+                [path uInsertPathElement:en forKnob:KnobDescriptor(pathInd,i+1,1)];
+            }
+        }
+        lastHasPostControlPoint = [element hasPostControlPoint];
+        if (lastHasPostControlPoint)
+            lastCP = [element postControlPoint];
+        else
+            lastCP = [element point];
+        lastEl = element;
+        lastPoint = [element point];
+    }
+    if (!isClosed)
+        return;
+    ACSDPathElement *e1 = [pathElements lastObject];
+    ACSDPathElement *e2 = [pathElements objectAtIndex:0];
+    if ([e1 hasPostControlPoint] || [e2 hasPreControlPoint])    //it's a curve
+    {
+        if ([e2 hasPreControlPoint])
+            thisPreControlpoint = [e2 preControlPoint];
+        else
+            thisPreControlpoint = [e2 point];
+        if ([e1 hasPostControlPoint])
+            thisPostControlPoint = [e1 postControlPoint];
+        else
+            thisPostControlPoint = [e1 point];
+        NSPoint c1EndPt,c1CP1,c1CP2,c2CP1,c2CP2;
+        splitCurveByT([e1 point],[e2 point],thisPostControlPoint,thisPreControlpoint,t,
+                      c1EndPt,c1CP1,c1CP2,
+                      c2CP1,c2CP2);
+        ACSDPathElement *e1c = [e1 copy],*e2c = [e2 copy];
+        [e1c setPostControlPoint:c1CP1];
+        [path uReplacePathElementWithElement:e1c forKnob:KnobDescriptor(pathInd,[pathElements count]-1,1)];
+        [e2c setPreControlPoint:c2CP2];
+        [path uReplacePathElementWithElement:e2c forKnob:KnobDescriptor(pathInd,0,1)];
+        ACSDPathElement *en = [[ACSDPathElement alloc]initWithPoint:c1EndPt
+                                                    preControlPoint:c1CP2 postControlPoint:c2CP1 hasPreControlPoint:YES
+                                                hasPostControlPoint:YES isLineToPoint:YES];
+        [en setControlPointsContinuous:YES];
+        [path uInsertPathElement:en forKnob:KnobDescriptor(pathInd,[pathElements count],1)];
+    }
+    else                //it's just a line segment
+    {
+        NSPoint npt = tPointAlongLine(t,[e1 point],[e2 point]);
+        ACSDPathElement *en = [[ACSDPathElement alloc]initWithPoint:npt
+                                                    preControlPoint:npt postControlPoint:npt hasPreControlPoint:NO
+                                                hasPostControlPoint:NO isLineToPoint:YES];
+        [path uInsertPathElement:en forKnob:KnobDescriptor(pathInd,[pathElements count],1)];
+    }
+}
 - (BOOL)splitPathWithPoint:(NSPoint)hitPoint copy:(BOOL)copy path:(ACSDPath*)path pathInd:(int)pathInd
    {
 	CGFloat t,dist,threshold = 4.0;

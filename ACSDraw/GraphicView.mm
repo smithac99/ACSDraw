@@ -2877,6 +2877,23 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[self window] invalidateCursorRectsForView:self];
 }
 
+-(IBAction)splitPathSegmentsInHalf:(id)sender
+{
+    NSArray *graphics = [self selectedGraphics];
+    BOOL didSomething = NO;
+    for (ACSDGraphic *gr in graphics)
+    {
+        if ([gr respondsToSelector:@selector(splitPathWithT:copy:)])
+        {
+            ACSDPath *p = (ACSDPath*)gr;
+            [p splitPathWithT:0.5 copy:NO];
+            didSomething = YES;
+        }
+    }
+    if (didSomething)
+        [[self undoManager] setActionName:@"Split Path Segments"];
+}
+
 - (void)splitAndTrackMouseWithEvent:(NSEvent *)theEvent
 {
     NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];

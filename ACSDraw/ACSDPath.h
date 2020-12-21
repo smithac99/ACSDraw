@@ -74,6 +74,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath);
 - (KnobDescriptor)resizeByMovingKnob:(const KnobDescriptor)kd by:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain;
 -(void)applyTransform;
 - (BOOL)splitPathWithEvent:(NSEvent *)theEvent copy:(BOOL)copy inView:(GraphicView*)view;
+-(void)splitPathWithT:(float)t copy:(BOOL)copy;
 - (float)roughArea;
 - (BOOL)isCounterClockWise;
 - (ACSDPath*)outlineStroke;
