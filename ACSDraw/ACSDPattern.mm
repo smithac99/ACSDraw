@@ -552,8 +552,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     {
         cx = _patternOrigin.x;
         cy = _patternOrigin.y;
-        xIncrement = xIncrement / objectBounds.size.width;
-        yIncrement = yIncrement / objectBounds.size.height;
+        xIncrement = xIncrement  * _scale / objectBounds.size.width;
+        yIncrement = yIncrement * _scale / objectBounds.size.height;
     }
     else
     {
@@ -578,8 +578,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         NSMutableString *transString = [NSMutableString string];
         if (self.rotation != 0.0)
             [transString appendFormat:@"rotate(%g)",self.rotation];
-        if (self.scale != 1.0)
-            [transString appendFormat:@" scale(%g)",self.scale];
+        //if (self.scale != 1.0)
+            //[transString appendFormat:@" scale(%g)",self.scale];
         if ([transString length] > 0)
             [[svgWriter defs]appendFormat:@" patternTransform=\"%@\"",transString];
     }
