@@ -115,6 +115,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	[o setBackgroundColour:self.backgroundColour];
 	[o setClip:self.clip];
     [o setRotation:self.rotation];
+    o.layoutMode = self.layoutMode;
     o.patternOrigin = self.patternOrigin;
 	return o;
 }
@@ -131,7 +132,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	[coder encodeObject:self.backgroundColour forKey:@"ACSDPattern_backgroundColour"];
 	[ACSDGraphic encodeRect:self.patternBounds coder:coder forKey:@"ACSDPattern_patternBounds"];
 	[coder encodeBool:self.clip forKey:@"ACSDPattern_clip"];
-	[coder encodeFloat:self.rotation forKey:@"ACSDPattern_rotation"];
+    [coder encodeFloat:self.rotation forKey:@"ACSDPattern_rotation"];
+    [coder encodeInt:self.layoutMode forKey:@"ACSDPattern_layoutMode"];
     [coder encodePoint:self.patternOrigin forKey:@"ACSDPattern_patternOrigin"];
 }
 
@@ -148,7 +150,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	self.patternBounds = [ACSDGraphic decodeRectForKey:@"ACSDPattern_patternBounds" coder:coder];
 	self.backgroundColour = [coder decodeObjectForKey:@"ACSDPattern_backgroundColour"];
 	self.clip = [coder decodeBoolForKey:@"ACSDPattern_clip"];
-	self.rotation = [coder decodeFloatForKey:@"ACSDPattern_rotation"];
+    self.rotation = [coder decodeFloatForKey:@"ACSDPattern_rotation"];
+    self.layoutMode = [coder decodeIntForKey:@"ACSDPattern_layoutMode"];
     if ([coder decodeObjectForKey:@"ACSDPattern_patternOrigin"])
         self.patternOrigin = [coder decodePointForKey:@"ACSDPattern_patternOrigin"];
 	[self.graphic buildPDFData];
@@ -262,10 +265,18 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 -(void)changeRotation:(float)rot view:(GraphicView*)gView
 {
-	[self invalidateGraphicsRefreshCache:NO];
-	[self setRotation:rot];
-	[self changeCache];
-	[self invalidateGraphicsRefreshCache:YES];
+    [self invalidateGraphicsRefreshCache:NO];
+    [self setRotation:rot];
+    [self changeCache];
+    [self invalidateGraphicsRefreshCache:YES];
+}
+
+-(void)changeLayoutMode:(int)ly view:(GraphicView*)gView
+{
+    [self invalidateGraphicsRefreshCache:NO];
+    [self setLayoutMode:ly];
+    [self changeCache];
+    [self invalidateGraphicsRefreshCache:YES];
 }
 
 -(void)refreshGraphicCache
@@ -381,7 +392,97 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	return aff;
 }
 
+
 -(void)fillPath:(NSBezierPath*)path
+{
+    [NSGraphicsContext saveGraphicsState];
+    [path addClip];
+    NSRect pathBounds = [path bounds];
+    if (self.rotation != 0)
+    {
+        NSAffineTransform *afff = [NSAffineTransform transformWithRotationByDegrees:self.rotation];
+        [afff concat];
+        afff = [NSAffineTransform transformWithRotationByDegrees:-self.rotation];
+        path = [afff transformBezierPath:path];
+        pathBounds = [path bounds];
+    }
+    if (self.backgroundColour)
+    {
+        [self.backgroundColour set];
+        [NSBezierPath fillRect:pathBounds];
+    }
+    
+    CGRect viewBox = [self patternBounds];
+    float patternWidth = viewBox.size.width;
+    float patternHeight = viewBox.size.height;
+    float scaledPatternWidth = patternWidth * self.scale;
+    float scaledPatternHeight = patternHeight * self.scale;
+    float xIncrement;
+    float yIncrement;
+    float xoffsetamount;
+    float sqrt05 = sqrt(0.5);
+    if (self.layoutMode == LAYOUT_MODE_C4)
+    {
+        xIncrement = patternWidth * sqrt05 * 2;
+        yIncrement = patternHeight * sqrt05;
+        xoffsetamount = -xIncrement * 0.5;
+    }
+    else if (self.layoutMode == LAYOUT_MODE_C6)
+    {
+        xIncrement = patternWidth * sin(RADIANS(60)) * 2;
+        yIncrement = patternHeight * 0.5;
+        xoffsetamount = -xIncrement * 0.5;
+    }
+    else
+    {
+        xIncrement = patternWidth;
+        yIncrement = patternHeight;
+        xoffsetamount = 0;
+
+    }
+    xIncrement = xIncrement * self.scale * (1.0 + self.spacing);
+    yIncrement = yIncrement * self.scale * (1.0 + self.spacing);
+    xoffsetamount = xoffsetamount * self.scale * (1.0 + self.spacing);
+    float destWidth = patternWidth * self.scale;
+    float destHeight = patternHeight * self.scale;
+    float ox = pathBounds.origin.x + _patternOrigin.x * pathBounds.size.width;
+    float oy = pathBounds.origin.y + (1.0 - _patternOrigin.y) * pathBounds.size.height;
+    while (ox > pathBounds.origin.x)
+        ox -= xIncrement;
+    while (oy > pathBounds.origin.y)
+        oy -= yIncrement;
+    NSInteger rown = 0;
+    NSMutableDictionary *md = [NSMutableDictionary dictionary];
+    for (float y = oy;y < NSMaxY(pathBounds);y = oy + yIncrement * rown)
+    {
+        float xoffset = xoffsetamount * (rown & 1);
+        NSInteger coln = 0;
+        for (float x = ox + xoffset;x < NSMaxX(pathBounds);x = ox + xoffset + xIncrement * coln)
+        {
+            [NSGraphicsContext saveGraphicsState];
+            [[NSAffineTransform transformWithTranslateXBy:x yBy:y]concat];
+            //[[NSAffineTransform transformWithTranslateXBy:-viewBox.origin.x yBy:-viewBox.origin.y]concat];
+            if (self.clip)
+                [[NSBezierPath bezierPathWithRect:NSMakeRect(0.0,0.0,destWidth,destHeight)]addClip];
+            //[[NSAffineTransform transformWithTranslateXBy:pdfOffset.x - viewBox.origin.x
+              //                                        yBy:pdfOffset.y - viewBox.origin.y]concat];
+            //[pdfImageRep draw];
+            [[NSAffineTransform transformWithScaleXBy:self.scale yBy:self.scale]concat];
+            [[NSAffineTransform transformWithTranslateXBy:-viewBox.origin.x
+                                                yBy:-viewBox.origin.y]concat];
+            [self.graphic drawObject:NSMakeRect(0.0,0.0,destWidth,destHeight) view:nil options:md];
+            [NSGraphicsContext restoreGraphicsState];
+            coln++;
+        }
+        rown++;
+    }
+
+    
+    [NSGraphicsContext restoreGraphicsState];
+
+}
+
+-(void)fillPatho:(NSBezierPath*)path
 {
 	[NSGraphicsContext saveGraphicsState];
 	[path addClip];
@@ -550,8 +651,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     float cx,cy;
     if (svgShouldUseBBUnits)
     {
-        cx = _patternOrigin.x;
-        cy = _patternOrigin.y;
+        cx = _patternOrigin.x + (self.spacing * patternWidth * _scale / objectBounds.size.width / 2);
+        cy = _patternOrigin.y + (self.spacing * patternHeight * _scale / objectBounds.size.height / 2);
         xIncrement = xIncrement  * _scale / objectBounds.size.width;
         yIncrement = yIncrement * _scale / objectBounds.size.height;
     }
@@ -571,8 +672,11 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         NSString *coordType=@"userSpaceOnUse";
         if (svgShouldUseBBUnits)
             coordType = @"objectBoundingBox";
+        float spaceMultiplier = 1.0;
+        if (self.spacing != 0)
+            spaceMultiplier += self.spacing;
         [[svgWriter defs]appendFormat:@"patternUnits=\"%@\" x=\"%g\" y=\"%g\" width=\"%0.03g\" height=\"%0.03g\"",coordType, cx,cy,xIncrement,yIncrement];
-        [[svgWriter defs]appendFormat:@" viewBox=\"%g %g %g %g\"",patBounds.origin.x,patBounds.origin.y,patBounds.size.width,patBounds.size.height];
+        [[svgWriter defs]appendFormat:@" viewBox=\"%g %g %g %g\"",patBounds.origin.x,patBounds.origin.y,patBounds.size.width * spaceMultiplier,patBounds.size.height * spaceMultiplier];
         if (!self.clip)
             [[svgWriter defs]appendString:@" overflow=\"visible\""];
         NSMutableString *transString = [NSMutableString string];
@@ -687,8 +791,10 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 		return NO;
 	if ([pat clip] != self.clip)
 		return NO;
-	if ([pat rotation] != self.rotation)
-		return NO;
+    if ([pat rotation] != self.rotation)
+        return NO;
+    if ([pat layoutMode] != self.layoutMode)
+        return NO;
 	if (NSEqualRects([pat patternBounds],self.patternBounds))
 		return NO;
 	return YES;

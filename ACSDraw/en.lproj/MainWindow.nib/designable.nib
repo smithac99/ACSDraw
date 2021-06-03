@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,18 +24,18 @@
                 <rect key="frame" x="0.0" y="0.0" width="547" height="432"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="22">
+                    <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="22">
                         <rect key="frame" x="0.0" y="-1" width="548" height="433"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="AkK-iy-jQp">
                             <rect key="frame" x="1" y="1" width="531" height="416"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <customView id="21" customClass="GraphicView">
+                                <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="21" customClass="GraphicView">
                                     <rect key="frame" x="0.0" y="0.0" width="531" height="416"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <customView id="39" customClass="MarkerView">
+                                        <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="39" customClass="MarkerView">
                                             <rect key="frame" x="0.0" y="0.0" width="531" height="416"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <connections>
@@ -66,6 +66,7 @@
                 <outlet property="delegate" destination="-2" id="17"/>
                 <outlet property="initialFirstResponder" destination="21" id="24"/>
             </connections>
+            <point key="canvasLocation" x="113" y="442"/>
         </window>
         <menu title="Menu" id="25" userLabel="ViewMenu">
             <items>
@@ -163,10 +164,16 @@
                         <action selector="sizeToWidth:" target="-1" id="JDU-8I-Ilj"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Create Bounding Box" id="kAA-fi-6eh">
+                <menuItem title="Create Bounding Box" keyEquivalent="b" id="kAA-fi-6eh">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="createBoundingBox:" target="21" id="0AV-bz-Q2f"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Create Bounding Ellipse" alternate="YES" keyEquivalent="b" id="Wog-dy-Hsb">
+                    <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                    <connections>
+                        <action selector="createBoundingEllipse:" target="-1" id="YuU-X5-CUZ"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vet-Cr-Yzu">

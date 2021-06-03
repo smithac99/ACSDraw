@@ -25,6 +25,7 @@
     IBOutlet id backgroundColourWell;
     IBOutlet NSTextField *originXText;
     IBOutlet NSTextField *originYText;
+    __weak IBOutlet NSPopUpButton *layoutPopUp;
     ACSDPattern *pattern;
 	NSMutableArray *pages;
 	GraphicRulerView *horizontalRuler,*verticalRuler;

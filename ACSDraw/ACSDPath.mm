@@ -92,7 +92,7 @@ static float getFloat(NSString* str,int *i)
     while (idx < [str length])
     {
         unichar uc = [str characterAtIndex:idx];
-        if (![svgFloatCharacterSet() characterIsMember:uc] || (uc == '-' && lastChar == 'e'))
+        if (!([svgFloatCharacterSet() characterIsMember:uc] || (uc == '-' && lastChar == 'e')))
             break;
         lastChar = uc;
         [rstr appendString:[str substringWithRange:NSMakeRange(idx, 1)]];

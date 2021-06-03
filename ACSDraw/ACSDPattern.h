@@ -26,9 +26,16 @@ enum
 
 enum
 {
-	OFFSET_MODE_NONE,
-	OFFSET_MODE_X,
-	OFFSET_MODE_Y
+    OFFSET_MODE_NONE,
+    OFFSET_MODE_X,
+    OFFSET_MODE_Y
+};
+
+enum
+{
+    LAYOUT_MODE_RECT,
+    LAYOUT_MODE_C4,
+    LAYOUT_MODE_C6
 };
 
 @interface ACSDPattern : ACSDFill
@@ -47,6 +54,7 @@ enum
 @property float rotation;
 @property int mode;
 @property int offsetMode;
+@property int layoutMode;
 @property NSRect patternBounds;
 @property BOOL clip;
 @property NSPoint patternOrigin;

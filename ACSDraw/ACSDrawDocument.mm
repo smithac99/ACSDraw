@@ -993,6 +993,15 @@ static BOOL isCSSIdent(unichar ch)
 
 -(void)processSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
 {
+    NSString *nodeName = [child.nodeName lowercaseString];
+    if ([nodeName isEqualToString:@"switch"])
+    {
+        for (XMLNode *n in child.children)
+        {
+            [self processSVGNode:n settingsStack:settingsStack];
+        }
+        return;
+    }
     ACSDGraphic *g = [self graphicFromSVGNode:child settingsStack:settingsStack];
     if (g)
     {

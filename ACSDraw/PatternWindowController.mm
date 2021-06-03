@@ -370,6 +370,29 @@
     [self setActionsDisabled:NO];
 }
 
+-(BOOL)uSetLayoutMode:(int)md
+{
+    if (md != [self temporaryPattern].layoutMode)
+    {
+        [[[self undoManager] prepareWithInvocationTarget:self] uSetLayoutMode:[self temporaryPattern].layoutMode];
+        [self temporaryPattern].layoutMode = md;
+        [patternPreview setNeedsDisplay:YES];
+        return YES;
+    }
+    return NO;
+}
+
+- (IBAction)layoutModePopUpHit:(id)sender
+{
+    if (actionsDisabled)
+        return;
+    [self setActionsDisabled:YES];
+    NSPopUpButton *pu = sender;
+    [self uSetLayoutMode:(int)[pu indexOfSelectedItem]];
+    [self setActionsDisabled:NO];
+    [[self undoManager]setActionName:@"Change Layout Mode"];
+}
+
 -(void)uSetScale:(float)v text:(BOOL)text slider:(BOOL)slider
 {
 	if ([[self temporaryPattern] scale] != v)

@@ -7202,7 +7202,31 @@ NSString *IncrementString(NSString *str)
     [creatingGraphic release];
     creatingGraphic = nil;
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
+    
+}
 
+-(IBAction)createBoundingEllipse:(id)sender
+{
+    NSArray *elementArray = [[self selectedGraphics] allObjects];
+    if ([elementArray count] == 0)
+        return;
+    CGRect r = CGRectNull;
+    for (ACSDGraphic *g in elementArray)
+        r = CGRectUnion(r, [g transformedStrictBounds]);
+    creatingGraphic = [[ACSDCircle alloc] initWithName:[ACSDCircle nextNameForDocument:[self document]]
+                                                fill:[self defaultFill] stroke:[self defaultStroke] rect:r layer:[self currentEditableLayer]];
+    [creatingGraphic setShadowType:[self defaultShadow]];
+    [[[self currentEditableLayer] graphics] addObject:[[self document]registerObject:creatingGraphic]];
+    [self clearSelection];
+    [self selectGraphic:creatingGraphic];
+    [[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
+    [[self undoManager] setActionName:@"Create Bounding Box"];
+    [[self window] invalidateCursorRectsForView:self];
+    [self reCalcHandleBitsIgnoreSelected:NO];
+    [creatingGraphic release];
+    creatingGraphic = nil;
+    [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
+    
 }
 
 

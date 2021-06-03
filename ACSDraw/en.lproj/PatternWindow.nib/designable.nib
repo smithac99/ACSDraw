@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="101000" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -10,6 +10,7 @@
             <connections>
                 <outlet property="backgroundColourWell" destination="127" id="128"/>
                 <outlet property="graphicView" destination="7" id="9"/>
+                <outlet property="layoutPopUp" destination="ngt-db-XZQ" id="LW8-6N-feu"/>
                 <outlet property="offsetSlider" destination="55" id="59"/>
                 <outlet property="offsetText" destination="18" id="22"/>
                 <outlet property="offsetTypeRBMatrix" destination="32" id="36"/>
@@ -295,7 +296,7 @@
                         <rect key="frame" x="512" y="310" width="36" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Mode" id="119">
-                            <font key="font" metaFont="label" size="12"/>
+                            <font key="font" metaFont="cellTitle"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -456,6 +457,24 @@
                             <action selector="originYTextHit:" target="-2" id="e8B-UK-rTw"/>
                         </connections>
                     </textField>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ngt-db-XZQ">
+                        <rect key="frame" x="713" y="431" width="116" height="25"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="rectangle" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="nkf-mx-dkj" id="MwB-JA-RLh">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="miniSystem"/>
+                            <menu key="menu" id="43k-Z3-JWe">
+                                <items>
+                                    <menuItem title="rectangle" state="on" id="nkf-mx-dkj"/>
+                                    <menuItem title="circle 4" id="Kvj-Og-Nbi"/>
+                                    <menuItem title="circle 6" id="CA0-H1-DJ8"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <action selector="layoutModePopUpHit:" target="-2" id="xX0-Tx-BkX"/>
+                        </connections>
+                    </popUpButton>
                 </subviews>
             </view>
             <connections>
