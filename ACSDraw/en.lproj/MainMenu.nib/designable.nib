@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -843,6 +843,11 @@ CA
                                                 <action selector="centreHorizontally:" target="-1" id="DU2-Fd-VWL"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Mirror Position Horizontally" tag="409" id="SZU-9z-Ezi">
+                                            <connections>
+                                                <action selector="mirrorHorizontally:" target="-1" id="4oS-H4-1iu"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="5Qh-Ea-RqV">
                                             <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </menuItem>
@@ -1085,6 +1090,12 @@ CA
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>
                                                 <action selector="aXorB:" target="-1" id="506"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Slice" alternate="YES" id="9ki-QM-s5T">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="aXorB:" target="-1" id="4Ge-9q-7DU"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Outline Stroke" keyEquivalent="O" id="428">

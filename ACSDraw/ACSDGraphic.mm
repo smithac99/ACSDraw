@@ -58,6 +58,30 @@ int operator==(const KnobDescriptor &kd1,const KnobDescriptor &kd2)
     return kd1.subPath == kd2.subPath && kd1.knob == kd2.knob && kd1.controlPoint == kd2.controlPoint && kd1.isLine == kd2.isLine;
    }
 
+void restrictToStraight(CGPoint *currPoint,CGPoint origPoint,CGPoint prevPoint)
+{
+    CGFloat dx = origPoint.x - prevPoint.x;
+    CGFloat dy = origPoint.y - prevPoint.y;
+    if (dx == 0 && dy == 0)
+        return;
+    CGFloat nx = currPoint->x;
+    CGFloat ny = currPoint->y;
+    if (fabs(dx) > fabs(dy))
+    {
+        CGFloat ratio = (currPoint->x - prevPoint.x) / dx;
+        CGFloat ndy = dy * ratio;
+        ny = prevPoint.y + ndy;
+    }
+    else
+    {
+        CGFloat ratio = (currPoint->y - prevPoint.y) / dy;
+        CGFloat ndx = dx * ratio;
+        nx = prevPoint.x + ndx;
+    }
+    currPoint->x = nx;
+    currPoint->y = ny;
+}
+
 void restrictTo45(NSPoint pt1,NSPoint *pt2)
    {
 //	float theta = getAngleForPoints(*pt2,pt1);

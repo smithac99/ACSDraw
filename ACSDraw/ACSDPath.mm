@@ -1295,14 +1295,29 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
    }
 
 -(NSPoint)pointForKnob:(const KnobDescriptor&)kd
-   {
-	ACSDPathElement *pe = [self pathElementForKnob:kd];
-	if (pe)
-		return [pe point];
-	return NSZeroPoint;
-   }
+{
+    ACSDPathElement *pe = [self pathElementForKnob:kd];
+    if (pe)
+        return [pe point];
+    return NSZeroPoint;
+}
 
-- (void)uChangeElement:(ACSDPathElement*)el point:(NSPoint)pt preControlPoint:(NSPoint)preCP postControlPoint:(NSPoint)postCP 
+-(NSPoint)pointOrCPForKnob:(const KnobDescriptor&)kd
+{
+    ACSDPathElement *pe = [self pathElementForKnob:kd];
+    if (pe)
+    {
+        if (kd.controlPoint == 0)
+            return [pe point];
+        if (kd.controlPoint == 1)
+            return pe.preControlPoint;
+        if (kd.controlPoint == 2)
+            return pe.postControlPoint;
+    }
+    return NSZeroPoint;
+}
+
+- (void)uChangeElement:(ACSDPathElement*)el point:(NSPoint)pt preControlPoint:(NSPoint)preCP postControlPoint:(NSPoint)postCP
 	hasPreControlPoint:(BOOL) hasPreCP hasPostControlPoint:(BOOL)hasPostCP isLineToPoint:(BOOL)iltp 
 	controlPointsContinuous:(BOOL) cpc
    {
@@ -1359,8 +1374,11 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 		else
 			if ([theEvent type] != NSFlagsChanged)
 				point = [view convertPoint:[theEvent locationInWindow] fromView:nil];
+        
 		point.y = [view adjustHSmartGuide:point.y tool:1];
 		point.x = [view adjustVSmartGuide:point.x tool:1];
+        if (([theEvent modifierFlags] & NSShiftKeyMask)!=0)
+            restrictToStraight(&point, trackingOriginalPoint, trackingPreviousPoint);
 		if (!NSEqualPoints(point,lastPoint))
 		{
 			NSPoint newPoint = [self invertPoint:point];
@@ -1425,6 +1443,8 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 
 -(BOOL)trackInit:(KnobDescriptor&)kd withEvent:(NSEvent *)theEvent inView:(GraphicView*)view ok:(BOOL*)success
 {
+    trackingPreviousPoint = [self previousPointToKnob:kd];
+    trackingOriginalPoint = [self pointOrCPForKnob:kd];
     if (kd.controlPoint > 0)
 	{
 	    *success = [self trackControlPointForKnob:kd withEvent:theEvent inView:view mirrorLengths:NO];
@@ -1691,6 +1711,22 @@ selectedGraphics:(NSSet*)selectedGraphics
 	isCreating = NO;
     return !can;
 }*/
+-(NSPoint)previousPointToKnob:(KnobDescriptor)kd
+{
+    ACSDSubPath *subPath = [subPaths objectAtIndex:kd.subPath];
+    NSInteger controlPoint = kd.controlPoint;
+    ACSDPathElement *el;
+    if (controlPoint == 0)
+    {
+        NSInteger knob = kd.knob == 0?[[subPath pathElements]count]-1:kd.knob - 1;
+        el = [[subPath pathElements] objectAtIndex:knob];
+    }
+    else
+    {
+        el = [[subPath pathElements] objectAtIndex:kd.knob];
+    }
+    return el.point;
+}
 
 - (KnobDescriptor)knobUnderPoint:(NSPoint)point view:(GraphicView*)gView
    {
@@ -1776,12 +1812,16 @@ selectedGraphics:(NSSet*)selectedGraphics
    }
 
 - (KnobDescriptor)resizeByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain aroundCentre:(BOOL)aroundCentre
-   {
+{
 	if (transform)
 		point = [self invertPoint:point];
+    if (constrain)
+    {
+        restrictToStraight(&point, trackingOriginalPoint, trackingPreviousPoint);
+    }
 	[self uMoveKnob:kd toPoint:point];
 	return kd;
-   }
+}
 
 -(void)moveSelectedElementsBy:(NSValue*)amt
    {

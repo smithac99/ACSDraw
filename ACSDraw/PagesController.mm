@@ -231,9 +231,17 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
     //if ([col alphaComponent] == 0.0)
         //col = nil;
 	[currentPage uSetBackgroundColour:col];
-	[[[self inspectingGraphicView] undoManager] setActionName:@"Set Background Colour"];	
+	[[[self inspectingGraphicView] undoManager] setActionName:@"Set Page Background Colour"];	
 }
 
+-(IBAction)clearBackgroundColour:(id)sender
+{
+    ACSDPage *currentPage = [[self inspectingGraphicView] currentPage];
+    if (!currentPage)
+        return;
+    [currentPage uSetBackgroundColour:nil];
+    [[[self inspectingGraphicView] undoManager] setActionName:@"Clear Page Background Colour"];
+}
 - (void)setLayerList:(NSMutableArray*)f
 {
 	if (layerList == f)

@@ -22,13 +22,14 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath);
 @class ACSDPathElement;
 
 @interface ACSDPath : ACSDGraphic
-   {
+{
 	NSBezierPath *path,*addingPointPath;
 	NSMutableArray *subPaths;
 	NSInteger currentSubPathInd;
 	BOOL isCreating;
 	NSMutableSet *selectedElements;
-   }
+    NSPoint trackingPreviousPoint,trackingOriginalPoint;
+}
 
 +(id)pathWithSubPaths:(NSArray*)subPaths;
 +(id)pathWithPath:(NSBezierPath*)p;
@@ -124,6 +125,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath);
 - (void)uChangeElement:(ACSDPathElement*)el point:(NSPoint)pt preControlPoint:(NSPoint)preCP postControlPoint:(NSPoint)postCP
     hasPreControlPoint:(BOOL) hasPreCP hasPostControlPoint:(BOOL)hasPostCP isLineToPoint:(BOOL)iltp
 controlPointsContinuous:(BOOL) cpc;
+-(NSPoint)previousPointToKnob:(KnobDescriptor)kd;
 
 
 

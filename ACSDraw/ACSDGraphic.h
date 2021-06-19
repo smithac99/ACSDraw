@@ -89,6 +89,7 @@ enum
 CGFloat angleForPoints(NSPoint pt1,NSPoint pt2);
 float getAngleForPoints(NSPoint pt1,NSPoint pt2);
 void restrictTo45(NSPoint pt1,NSPoint *pt2);
+void restrictToStraight(CGPoint *currPoint,CGPoint origPoint,CGPoint prevPoint);
 NSString *imageNameForOptions(NSDictionary* options);
 CGRect CGRectFromNSRect(NSRect r);
 float normalisedAngle(float ang);

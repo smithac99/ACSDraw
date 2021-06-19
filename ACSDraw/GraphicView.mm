@@ -5611,6 +5611,31 @@ static ACSDGraphic *parg(ACSDGraphic *g)
     [[self undoManager] setActionName:@"Centre Horizontally"];
 }
 
+- (void)mirrorHorizontally:(id)sender
+{
+    NSArray *objectsToMove = [[self selectedGraphics]allObjects];
+    if ([objectsToMove count] == 0)
+        return;
+    NSRect r;
+    ACSDGraphic *gpar = [self commonParent:objectsToMove];
+    if (gpar == nil)
+        r = [self bounds];
+    else
+        r = [gpar transformedBounds];
+    for (ACSDGraphic *g in objectsToMove)
+    {
+        float oldx = CGRectGetMidX([g displayBounds]);
+        float diff = CGRectGetMaxX(r) - oldx;
+        float newx = CGRectGetMinX(r) + diff;
+        
+        [g invalidateInView];
+        [g uMoveBy:NSMakePoint(newx - oldx,0.0)];
+        [g invalidateInView];
+    }
+    [self redoCursorStuff];
+    [[self undoManager] setActionName:@"Mirror Horizontally"];
+}
+
 - (void)centreVertically:(id)sender
 {
     NSArray *objectsToMove = [[self selectedGraphics]allObjects];
@@ -6432,6 +6457,14 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	[[self undoManager] setActionName:[sender title]];
    }
 
+- (void)slice:(id)sender
+{
+    NSArray *arr = [self sortedSelectedGraphics];
+    if ([arr count] < 2)
+        return;
+    
+}
+
 - (void)unite:(id)sender
    {
 	NSArray *arr = [self sortedSelectedGraphics];
@@ -6480,7 +6513,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		action == @selector(bringToFront:)||action == @selector(sendToBack:)||action == @selector(bringForward:)||action == @selector(sendBackward:)||
 		action == @selector(flipHorizontal:)||action == @selector(flipHorizontalCopy:)||action == @selector(flipVertical:)||action == @selector(flipVerticalCopy:)||
 		action == @selector(definePattern:)||action == @selector(defineLineEnding:)||action == @selector(resetScale:)||action == @selector(moveToOrigin:) ||
-        action == @selector(centreHorizontally:)||action == @selector(centreVertically:))
+        action == @selector(centreHorizontally:)||action == @selector(centreVertically:)||action == @selector(mirrorHorizontally:))
 		return [[self selectedGraphics] count] > 0;
 	if (action == @selector(alignLeftEdges:)||action == @selector(alignRightEdges:)||action == @selector(alignTopEdges:)||action == @selector(alignBottomEdges:)||
 		action == @selector(alignVerticalCentres:)||action == @selector(alignHorizontalCentres:)||action == @selector(bringForward:)||action == @selector(sendBackward:))
