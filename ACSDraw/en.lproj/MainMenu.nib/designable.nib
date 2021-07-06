@@ -703,6 +703,12 @@ CA
                                     <action selector="sizeToObjects:" target="-1" id="644"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Size To Objects Again" alternate="YES" keyEquivalent="5" id="D2j-7H-Ulx">
+                                <modifierMask key="keyEquivalentModifierMask" shift="YES" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="sizeToObjectsAgain:" target="-1" id="oe4-4T-exZ"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Crop to Opaque" keyEquivalent="6" id="956">
                                 <connections>
                                     <action selector="cropToOpaque:" target="-1" id="1079"/>
@@ -739,9 +745,15 @@ CA
                                 </connections>
                             </menuItem>
                             <menuItem title="Scale Document…" keyEquivalent="9" id="1042">
-                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                 <connections>
                                     <action selector="showScaleDocDialog:" target="-1" id="1044"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Scale Document by" alternate="YES" keyEquivalent="9" id="c3T-Y1-Smf">
+                                <modifierMask key="keyEquivalentModifierMask" shift="YES" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="scaleDocAgain:" target="-1" id="eVe-a1-2a2"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="763">

@@ -1919,6 +1919,13 @@ NSString* Creator()
 	[self sizeToRect:bounds];
    }
 
+-(IBAction)sizeToObjectsAgain:(id)sender
+{
+    float hpad = [[NSUserDefaults standardUserDefaults]floatForKey:@"hPadding"];
+    float vpad = [[NSUserDefaults standardUserDefaults]floatForKey:@"vPadding"];
+    [self sizeToObjectsHPad:hpad vPad:vpad];
+}
+
 - (IBAction)closePaddingSheet: (id)sender
    {
     NSInteger reply = [sender tag];
@@ -2217,6 +2224,13 @@ static NSString *LastX(NSString* path,int ct)
 		[menuItem setTitle:[NSString stringWithFormat:@"Event XML to %@",LastX([url path],5)]];
 		return YES;
 	}
+    if (action == @selector(sizeToObjectsAgain:))
+    {
+        float hpad = [[NSUserDefaults standardUserDefaults]floatForKey:@"hPadding"];
+        float vpad = [[NSUserDefaults standardUserDefaults]floatForKey:@"vPadding"];
+        [menuItem setTitle:[NSString stringWithFormat:@"Size to Objects + %g/%g pad",hpad,vpad]];
+        return YES;
+    }
 	return YES;
 }
 

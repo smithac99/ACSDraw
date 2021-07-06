@@ -30,6 +30,7 @@ NSString *prefsImageLibs = @"ACSDrawprefsImageLibs";
 NSString *prefsDocScale = @"ACSDrawprefsDocScale";
 NSString *prefsDocSizeWidth = @"ACSDrawprefsDocSizeWidth";
 NSString *prefsDocSizeHeight = @"ACSDrawprefsDocSizeHeight";
+NSString *prefsDocRepeatScale = @"ACSDrawprefsDocRepeatScale";
 NSString *prefsDocSizeRow = @"ACSDrawprefsDocSizeRow";
 NSString *prefsDocSizeColumn = @"ACSDrawprefsDocSizeColumn";
 NSString *prefSVGInlineEmbedded = @"prefsSVGInlineEmbedded";

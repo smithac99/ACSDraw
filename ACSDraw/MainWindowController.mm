@@ -1149,6 +1149,15 @@ static NSMutableArray *parseRenameString(NSString* str)
         [graphicView changeDocumentSize:NSMakeSize(w, h) matrixRow:(int)row matrixColumn:(int)column];
     }
 }
+
+-(IBAction)scaleDocAgain:(id)sender
+{
+    float lastScale = [[NSUserDefaults standardUserDefaults]floatForKey:prefsDocScale];
+    if (lastScale > 0)
+    {
+        [graphicView scaleDocumentBy:lastScale];
+    }
+}
 - (IBAction)closeScaleDocSheet: (id)sender
 {
     int reply = (int)[sender tag];
@@ -1223,6 +1232,14 @@ static NSMutableArray *parseRenameString(NSString* str)
         [menuItem setTitle:[NSString stringWithFormat:@"Size Document to %d x %d",(int)w,(int(h))]];
         NSSize sz = [graphicView bounds].size;
         return !(sz.width == w && sz.height == h);
+    }
+    if (action == @selector(scaleDocAgain:))
+    {
+        float lastScale = [[NSUserDefaults standardUserDefaults]floatForKey:prefsDocScale];
+        if (lastScale == 0)
+            return NO;
+        [menuItem setTitle:[NSString stringWithFormat:@"Scale Document by %g",lastScale]];
+        return YES;
     }
 	return YES;
 }
