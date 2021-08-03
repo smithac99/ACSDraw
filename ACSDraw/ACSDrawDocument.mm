@@ -1086,6 +1086,9 @@ static BOOL isCSSIdent(unichar ch)
 		documentSize.height = vbh;
     NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
     NSMutableDictionary *svgSettings = [NSMutableDictionary dictionaryWithCapacity:10];
+    
+    //[self getAttributesFromSVGNode:root settings:svgSettings];
+    
 	ACSDFill *blackFill = [[[ACSDFill alloc]initWithColour:[NSColor blackColor]]autorelease];
     [svgSettings setObject:[self fillLikeFill:blackFill] forKey:@"fill"];
     [svgSettings setObject:[NSMutableDictionary dictionaryWithCapacity:10] forKey:@"defs"];

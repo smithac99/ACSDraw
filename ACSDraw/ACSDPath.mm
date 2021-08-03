@@ -791,6 +791,17 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
     [self completeRebuild];
 }
 
+-(void)applyTransform:(NSAffineTransform*)tr
+{
+    NSMutableArray *arr = [[self copySubPaths]autorelease];
+    [arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:tr];
+    [self setGraphicTransform:nil];
+    [self setSubPathsAndRebuild:arr];
+    [self setGraphicRotation:0.0 notify:YES];
+    [self setGraphicXScale:1.0 notify:YES];
+    [self setGraphicYScale:1.0 notify:YES];
+}
+
 -(void)applyTransform
    {
 	if (!transform)

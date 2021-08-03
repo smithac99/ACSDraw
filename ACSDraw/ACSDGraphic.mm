@@ -2621,7 +2621,7 @@ BOOL rightKnob(NSInteger knob)
 
 BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL checkBottomLeft,BOOL checkTopLeft,BOOL checkTopRight,BOOL checkBottomRight)
    {
-	if (r.size.width <= 0.5 || r.size.height <= 0.5)
+	if (r.size.width <= 0.5 && r.size.height <= 0.5)
 		return NO;
 	if ((checkTopLeft && [p containsPoint:top_left(r)]) || 
 		(checkTopRight && [p containsPoint:top_right(r)]) ||

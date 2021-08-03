@@ -269,6 +269,34 @@
 	[ACSDGroup adjustGraphicsBoundsForArray:graphics offset:offset];
    }
 
+-(void)applyTransform:(NSAffineTransform*)tr
+{
+    if (!tr)
+        return;
+    for (ACSDGraphic *g in graphics)
+    {
+        if ([g respondsToSelector:@selector(applyTransform:)])
+        {
+            [(id)g applyTransform:tr];
+        }
+    }
+    [self setGraphicTransform:nil];
+    [self setGraphicRotation:0.0 notify:YES];
+    [self setGraphicXScale:1.0 notify:YES];
+    [self setGraphicYScale:1.0 notify:YES];
+}
+
+-(void)applyTransform
+{
+    if (!transform)
+        return;
+    [self applyTransform:transform];
+    //[self setGraphicTransform:nil];
+    //[self setGraphicRotation:0.0 notify:YES];
+    //[self setGraphicXScale:1.0 notify:YES];
+    //[self setGraphicYScale:1.0 notify:YES];
+}
+
 - (NSArray*)originalObjects
    {
 	return graphics;

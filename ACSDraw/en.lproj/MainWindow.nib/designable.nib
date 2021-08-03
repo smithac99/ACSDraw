@@ -170,6 +170,12 @@
                         <action selector="createBoundingBox:" target="21" id="0AV-bz-Q2f"/>
                     </connections>
                 </menuItem>
+                <menuItem title="Create Bounding Boxes" alternate="YES" keyEquivalent="B" id="6kP-qD-9U7">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="createBoundingBoxes:" target="-1" id="3Tg-Jc-7q7"/>
+                    </connections>
+                </menuItem>
                 <menuItem title="Create Bounding Ellipse" alternate="YES" keyEquivalent="b" id="Wog-dy-Hsb">
                     <modifierMask key="keyEquivalentModifierMask" option="YES"/>
                     <connections>
