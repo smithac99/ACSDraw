@@ -273,9 +273,9 @@
 
 
 -(void)notifyOnADDOrRemove
-   {
-	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDRefreshLineEndingsNotification object:self];
-   }
+{
+    [self postNotify:ACSDRefreshLineEndingsNotification object:self];
+}
 
 
 @end

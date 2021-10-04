@@ -143,7 +143,7 @@
 
 -(void)notifyOnADDOrRemove
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDFillAdded object:self];
+    [self postNotify:ACSDFillAdded object:self];
 }
 
 

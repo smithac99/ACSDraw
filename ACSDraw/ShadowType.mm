@@ -152,42 +152,42 @@
    }
 
 -(void)setBlurRadius:(float)br
-   {
-	if (br == [itsShadow shadowBlurRadius])
-		return;
-	[self invalidateGraphicsRefreshCache:NO];
-	[itsShadow setShadowBlurRadius:br];
-	[self invalidateGraphicsRefreshCache:NO];
-   }
+{
+    if (br == [itsShadow shadowBlurRadius])
+        return;
+    [self invalidateGraphicsRefreshCache:NO];
+    [itsShadow setShadowBlurRadius:br];
+    [self invalidateGraphicsRefreshCache:NO];
+}
 
 -(void)setOffset:(NSSize)sz
-   {
-	if (NSEqualSizes(sz,[itsShadow shadowOffset]))
-		return;
-	[self invalidateGraphicsRefreshCache:NO];
-	[itsShadow setShadowOffset:sz];
-	[self invalidateGraphicsRefreshCache:NO];
-   }
+{
+    if (NSEqualSizes(sz,[itsShadow shadowOffset]))
+        return;
+    [self invalidateGraphicsRefreshCache:NO];
+    [itsShadow setShadowOffset:sz];
+    [self invalidateGraphicsRefreshCache:NO];
+}
 
 -(void)setColour:(NSColor*)col
-   {
-	if ([itsShadow shadowColor] == col)
-		return;
-	[self invalidateGraphicsRefreshCache:NO];
-	[itsShadow setShadowColor:col];
-	[self invalidateGraphicsRefreshCache:NO];
-   }
+{
+    if ([itsShadow shadowColor] == col)
+        return;
+    [self invalidateGraphicsRefreshCache:NO];
+    [itsShadow setShadowColor:col];
+    [self invalidateGraphicsRefreshCache:NO];
+}
 
 -(NSString*)svgName:(ACSDrawDocument*)doc
-   {
-	NSUInteger i = [[doc shadows]indexOfObjectIdenticalTo:self];
-	return [NSString stringWithFormat:@"Shadow%ld",i];
-   }
+{
+    NSUInteger i = [[doc shadows]indexOfObjectIdenticalTo:self];
+    return [NSString stringWithFormat:@"Shadow%ld",i];
+}
 
 -(void)notifyOnADDOrRemove
-   {
-	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDRefreshShadowsNotification object:self];
-   }
+{
+    [self postNotify:ACSDRefreshShadowsNotification object:self];
+}
 
 -(void)writeSVGShadowDef:(SVGWriter*)svgWriter
    {
