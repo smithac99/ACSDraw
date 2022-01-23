@@ -1785,15 +1785,35 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	[self uSetFont:fnew forRange:r oldFont:f];
 }
 
+-(void)scaleFontsBy:(CGFloat)sc
+{
+    NSTextStorage *textStorage = [layoutManager textStorage];
+    if ([[self textContainer] textView])
+    {
+        NSArray<NSValue*>*ranges= [[[self textContainer] textView]selectedRanges];
+        if ([ranges count] > 0)
+        {
+            for (NSValue *v in ranges)
+            {
+                NSRange r = [v rangeValue];
+                [textStorage enumerateAttribute:NSFontAttributeName inRange:r options:0
+                                     usingBlock:^void (id value,NSRange r,BOOL *stop){[self uScale:sc pointSizeInRange:r];}];
+            }
+            return;
+        }
+    }
+    [textStorage enumerateAttribute:NSFontAttributeName inRange:NSMakeRange(0,[textStorage length]) options:0
+                         usingBlock:^void (id value,NSRange r,BOOL *stop){[self uScale:sc pointSizeInRange:r];}];
+}
+
 -(void)permanentScale:(float)sc transform:(NSAffineTransform*)t
 {
 	[super permanentScale:sc transform:t];
 	if (!layoutManager)
 		return;
-	NSTextStorage *textStorage = [layoutManager textStorage];
-	[textStorage enumerateAttribute:NSFontAttributeName inRange:NSMakeRange(0,[textStorage length]) options:0 
-						 usingBlock:^void (id value,NSRange r,BOOL *stop){[self uScale:sc pointSizeInRange:r];}];
+    [self scaleFontsBy:sc];
 }
+
 -(void)processAttributesInRange:(NSRange)totalRange forStyle:(ACSDStyle*)style oldAttributes:(NSDictionary*)oldAttrs
    {
 	NSRange longestRange;

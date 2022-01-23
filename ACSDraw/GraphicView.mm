@@ -3593,6 +3593,34 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		[[sortedSelectedGraphics objectAtIndex:i]rotateByDegrees:rotation aroundPoint:rp];
    }
 
+-(BOOL)scaleFontSizeBy:(CGFloat)sc
+{
+    NSArray *sortedSelectedGraphics = [self sortedSelectedGraphics];
+    BOOL didSomething = NO;
+    for (NSInteger i = 0,ct = [sortedSelectedGraphics count];i < ct;i++)
+    {
+        id g = [sortedSelectedGraphics objectAtIndex:i];
+        if ([g respondsToSelector:@selector(scaleFontsBy:)])
+        {
+            [g scaleFontsBy:sc];
+            didSomething = YES;
+        }
+    }
+    return  didSomething;
+}
+
+- (IBAction)incrementTextSize:(id)sender
+{
+    if ([self scaleFontSizeBy:1.0 + 1.0/12.0])
+        [[self undoManager]setActionName:@"Increment Font Size"];
+}
+
+- (IBAction)decrementTextSize:(id)sender
+{
+    if ([self scaleFontSizeBy:1.0 - 1.0/12.0])
+        [[self undoManager]setActionName:@"Increment Font Size"];
+}
+
 - (IBAction)linkTo: (id)sender
    {
 	[[self window] invalidateCursorRectsForView:self];
@@ -6531,8 +6559,10 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		return [[self selectedGraphics] count] >= 1;
 	if (action == @selector(intersect:))
 		return [[self selectedGraphics] count] >= 1;
-	if (action == @selector(applyImageTransform:))
-		return [[self selectedGraphics] count] >= 1;
+    if (action == @selector(applyImageTransform:))
+        return [[self selectedGraphics] count] >= 1;
+    if (action == @selector(incrementTextSize:) || action == @selector(decrementTextSize:))
+        return [[self selectedGraphics] count] >= 1;
 	if (action == @selector(decompose:) || action == @selector(decomposeCopy:))
 		return [[self selectedGraphics] count] >= 1;
     if (action == @selector(showLink:))
