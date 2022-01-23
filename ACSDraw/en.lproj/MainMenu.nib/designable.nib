@@ -237,9 +237,15 @@
                             <menuItem title="Import" id="693">
                                 <menu key="submenu" title="Import" id="694">
                                     <items>
-                                        <menuItem title="Import Picture…" id="696">
+                                        <menuItem title="Import Image…" id="696">
                                             <connections>
                                                 <action selector="importPicture:" target="-1" id="697"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="IdT-sg-cf0"/>
+                                        <menuItem title="Import Images as Book…" id="bGq-Lg-T4J">
+                                            <connections>
+                                                <action selector="importImagesAsBook:" target="-1" id="9At-yW-yHc"/>
                                             </connections>
                                         </menuItem>
                                     </items>

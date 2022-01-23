@@ -276,4 +276,21 @@
     return rectstring;
 }
 
+-(void)applyTransform
+{
+    if (!transform)
+        return;
+    if (xScale == 1.0 && yScale == 1.0)
+        return;
+    CGRect tb = [self transformedBounds];
+    //[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+    [self setGraphicTransform:nil];
+    [self setDisplayBoundsValid:NO];
+    [self setGraphicBoundsTo:tb from:[self bounds]];
+    [self setGraphicRotation:0.0 notify:YES];
+    [self setGraphicXScale:1.0 notify:YES];
+    [self setGraphicYScale:1.0 notify:YES];
+    //[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+}
+
 @end

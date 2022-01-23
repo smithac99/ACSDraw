@@ -788,10 +788,12 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 	   }
    }
 	
-- (void)addNewPageAtIndex:(NSInteger)index
+- (ACSDPage*)addNewPageAtIndex:(NSInteger)index
 {
-	[self addPage:[[[ACSDPage alloc]initWithDocument:[self document]]autorelease]atIndex:index];
+    ACSDPage *p = [[[ACSDPage alloc]initWithDocument:[self document]]autorelease];
+    [self addPage:p atIndex:index];
 	[[self undoManager] setActionName:@"Add Page"];
+    return p;
 }
 
 /*NSString *IncrementString(NSString *s)
@@ -833,13 +835,14 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 		[self duplicatePageAtIndex:currentPageInd];
 }
 
-- (void)addNewLayerAtIndex:(NSInteger)index
-   {
-	[self addLayer:[[[ACSDLayer alloc]initWithName:[[self currentPage] nextLayerName]isGuideLayer:NO]autorelease]
-		atIndex:index];
-	[self setCurrentEditableLayerIndex:index force:NO select:YES withUndo:YES];
-	[[self undoManager] setActionName:@"Add Layer"];
-   }
+- (ACSDLayer*)addNewLayerAtIndex:(NSInteger)index
+{
+    ACSDLayer *l = [[[ACSDLayer alloc]initWithName:[[self currentPage] nextLayerName]isGuideLayer:NO]autorelease];
+    [self addLayer:l atIndex:index];
+    [self setCurrentEditableLayerIndex:index force:NO select:YES withUndo:YES];
+    [[self undoManager] setActionName:@"Add Layer"];
+    return l;
+}
 
 -(void)setDefaultMastersForMasterPage:(ACSDPage*)masterPage fromIndex:(NSInteger)ind
    {
