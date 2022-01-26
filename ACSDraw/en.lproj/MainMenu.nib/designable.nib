@@ -237,9 +237,15 @@
                             <menuItem title="Import" id="693">
                                 <menu key="submenu" title="Import" id="694">
                                     <items>
-                                        <menuItem title="Import Picture…" id="696">
+                                        <menuItem title="Import Image…" id="696">
                                             <connections>
                                                 <action selector="importPicture:" target="-1" id="697"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="IdT-sg-cf0"/>
+                                        <menuItem title="Import Images as Book…" id="bGq-Lg-T4J">
+                                            <connections>
+                                                <action selector="importImagesAsBook:" target="-1" id="9At-yW-yHc"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -585,6 +591,28 @@ CA
                                             <connections>
                                                 <action selector="pasteFont:" target="-1" id="259"/>
                                             </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="sJa-rt-GQK">
+                                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                        </menuItem>
+                                        <menuItem title="Size" id="hLu-uK-PfG">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Size" id="UAw-kD-q3e">
+                                                <items>
+                                                    <menuItem title="+" keyEquivalent="=" id="bfH-zP-uoE">
+                                                        <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="incrementTextSize:" target="-1" id="Qwl-nR-Aly"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="-" keyEquivalent="-" id="qFW-m4-s2a">
+                                                        <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="decrementTextSize:" target="-1" id="yAV-af-chs"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
                                         </menuItem>
                                     </items>
                                 </menu>

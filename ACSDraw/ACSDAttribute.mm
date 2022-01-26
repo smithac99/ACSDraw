@@ -15,124 +15,132 @@
 @implementation ACSDAttribute
 
 -(id)init
-   {
-	if (self = [super init])
-	   {
-		graphics = [NSMutableSet setWithCapacity:10];
-		nonDeletedCount = 0;
-	   }
-	return self;
-   }
+{
+    if (self = [super init])
+    {
+        graphics = [NSMutableSet setWithCapacity:10];
+        nonDeletedCount = 0;
+    }
+    return self;
+}
 
 -(void)addGraphic:(id)g
-   {
-	[graphics addObject:g];
-	if (![g deleted])
-	   {
-		nonDeletedCount++;
-		if (nonDeletedCount == 1)
-			[self notifyOnADDOrRemove];
-		if ([g respondsToSelector:@selector(invalidateGraphicSizeChanged:shapeChanged:redraw:notify:)])
-		   {
-			[g invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
-		   }
-	   }
-   }
+{
+    [graphics addObject:g];
+    if (![g deleted])
+    {
+        nonDeletedCount++;
+        if (nonDeletedCount == 1)
+            [self notifyOnADDOrRemove];
+        if ([g respondsToSelector:@selector(invalidateGraphicSizeChanged:shapeChanged:redraw:notify:)])
+        {
+            [g invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
+        }
+    }
+}
+
+-(void)postNotify:(NSString*)notif object:(id)obj
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:notif object:obj];
+    });
+}
 
 -(void)notifyOnADDOrRemove
-   {
-   }
+{
+}
 
 -(void)removeGraphic:(id)g
-   {
-	[graphics removeObject:g];
-	if (![g deleted])
-	   {
-		nonDeletedCount--;
-		if (nonDeletedCount == 0)
-			[self notifyOnADDOrRemove];
-		if ([g respondsToSelector:@selector(invalidateGraphicSizeChanged:shapeChanged:redraw:notify:)])
-		   {
-			[g invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
-		   }
-	   }
-   }
+{
+    [graphics removeObject:g];
+    if (![g deleted])
+    {
+        nonDeletedCount--;
+        if (nonDeletedCount == 0)
+            [self notifyOnADDOrRemove];
+        if ([g respondsToSelector:@selector(invalidateGraphicSizeChanged:shapeChanged:redraw:notify:)])
+        {
+            [g invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
+        }
+    }
+}
 
 -(void)invalidateGraphicsRefreshCache:(BOOL)redo
-   {
-	NSEnumerator *objEnum = [graphics objectEnumerator];
-	ACSDGraphic *curGraphic;
+{
+    NSEnumerator *objEnum = [graphics objectEnumerator];
+    ACSDGraphic *curGraphic;
     while ((curGraphic = [objEnum nextObject]) != nil)
-		[curGraphic invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:redo notify:NO];
-   }
+        [curGraphic invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:redo notify:NO];
+}
 
 -(NSMutableSet*)graphics
-   {
+{
     return graphics;
-   }
+}
 
 -(BOOL)isSameAs:(id)obj
-   {
-	return [self class] == [obj class];
-   }
-   
+{
+    return [self class] == [obj class];
+}
+
 -(void)writeSVGData:(SVGWriter*)svgWriter
-   {
-   }
+{
+}
 
 -(NSSet*)usedStrokes
-   {
-	return [NSSet set];
-   }
+{
+    return [NSSet set];
+}
 
 -(NSSet*)usedFills
-   {
-	return [NSSet set];
-   }
+{
+    return [NSSet set];
+}
 
 -(NSSet*)usedShadows
-   {
-	return [NSSet set];
-   }
+{
+    return [NSSet set];
+}
 
 - (int)showIndicator
-   {
-	if (nonDeletedCount > 0)
-		return 2;
-	return 0;
-   }
+{
+    if (nonDeletedCount > 0)
+        return 2;
+    return 0;
+}
 
 -(BOOL)addToNonDeletedCount:(int)inc
-   {
-	nonDeletedCount += inc;
-	if ((nonDeletedCount == inc) || (nonDeletedCount == 0))
-	   {
-		[self notifyOnADDOrRemove];
-		return YES;
-	   }
-	return NO;
-   }
+{
+    nonDeletedCount += inc;
+    if ((nonDeletedCount == inc) || (nonDeletedCount == 0))
+    {
+        [self notifyOnADDOrRemove];
+        return YES;
+    }
+    return NO;
+}
 
 -(int)nonDeletedCount
-   {
-	return nonDeletedCount;
-   }
+{
+    return nonDeletedCount;
+}
 
 -(void)setDeleted:(BOOL)d
-   {
-	if (d == deleted)
-		return;
-	deleted = d;
-   }
+{
+    if (d == deleted)
+        return;
+    deleted = d;
+}
 
 -(BOOL)deleted
-   {
-	return deleted;
-   }
+{
+    return deleted;
+}
 
 -(NSString*)canvasData:(CanvasWriter*)canvasWriter
 {
-	return @"";
+    return @"";
 }
 
 @end
+

@@ -37,5 +37,6 @@
 -(int)nonDeletedCount;
 -(void)notifyOnADDOrRemove;
 -(NSString*)canvasData:(CanvasWriter*)canvasWriter;
+-(void)postNotify:(NSString*)notif object:(id)obj;
 
 @end

@@ -130,7 +130,7 @@ enum GV_Cursor_Mode
 - (void)changeAdditionalCSS:(NSString*)t;
 - (void)setCurrentEditableLayerIndex:(NSInteger)i force:(BOOL)force select:(BOOL)sel withUndo:(BOOL)withUndo;
 - (void)setCurrentPageIndex:(NSInteger)i force:(BOOL)force withUndo:(BOOL)withUndo;
-- (void)addNewPageAtIndex:(NSInteger)index;
+- (ACSDPage*)addNewPageAtIndex:(NSInteger)index;
 - (void)adjustPageNumbersFromIndex:(NSInteger)index;
 - (ACSDLayer*)currentEditableLayer;
 - (ACSDPage*)currentPage;
@@ -150,7 +150,7 @@ enum GV_Cursor_Mode
 - (BOOL)deselectGraphic:(ACSDGraphic *)graphic;
 - (BOOL)selectGraphics:(NSArray*)graphicArray;
 - (void)addLayer:(ACSDLayer*)layer atIndex:(NSInteger)index;
-- (void)addNewLayerAtIndex:(NSInteger)index;
+- (ACSDLayer*)addNewLayerAtIndex:(NSInteger)index;
 - (void)invalidateGraphic:(ACSDGraphic*)graphic;
 - (void)invalidateGraphics:(NSArray *)graphics;
 - (void)deleteSelectedGraphics;

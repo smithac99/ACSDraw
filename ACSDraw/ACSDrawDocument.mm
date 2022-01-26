@@ -1890,6 +1890,66 @@ NSString* Creator()
 	 }];	
 }
 
+-(ACSDPage*)addPage:(ACSDPage*)page
+{
+    [pages addObject:page];
+    [page registerWithDocument:self];
+    return page;
+}
+
+-(void)insertImagesAsBook:(NSDictionary*)imageDict
+{
+    NSArray *pageNames = [[imageDict allKeys]sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        return [obj1 caseInsensitiveCompareWithNumbers:obj2];
+    }];
+    if ([pageNames count] == 0)
+        return;
+    NSImage *firstImage = imageDict[pageNames[0]][0];
+    CGSize sz = [firstImage size];
+    NSPoint loc = NSMakePoint(sz.width/2.0, sz.height/2.0);
+    [[[self frontmostMainWindowController] graphicView]changeDocumentSize:sz];
+    for (NSString *pageName in pageNames)
+    {
+        ACSDPage *page = [[[self frontmostMainWindowController] graphicView]addNewPageAtIndex:[pages count]];
+        page.pageTitle = pageName;
+        ACSDLayer *l = [[[self frontmostMainWindowController] graphicView]currentEditableLayer];
+        l.name = @"text";
+        l = [[[self frontmostMainWindowController] graphicView]addNewLayerAtIndex:[page.layers count]];
+        l.name = @"preview";
+        l = [[[self frontmostMainWindowController] graphicView]addNewLayerAtIndex:[page.layers count]];
+        NSArray *arr = imageDict[pageName];
+        [[[self frontmostMainWindowController] graphicView]createImage:arr[0] name:pageName location:&loc fileName:arr[1]];
+        l.editable = NO;
+        l.name = @"image";
+        [[[self frontmostMainWindowController] graphicView]setCurrentEditableLayerIndex:1 force:NO select:NO withUndo:NO];
+    }
+
+}
+
+- (IBAction)importImagesAsBook:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowsMultipleSelection:YES];
+    [panel setAllowedFileTypes:@[@"public.image"]];
+    [panel beginSheetModalForWindow:[[self frontmostMainWindowController] window]
+                  completionHandler:^(NSInteger result)
+     {
+        if (result == NSFileHandlingPanelOKButton)
+        {
+            NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
+            for (NSURL *url in [panel URLs])
+            {
+                NSString *path = [url path];
+                NSString *fn = [[url lastPathComponent]stringByDeletingPathExtension];
+                NSImage *im = [[[NSImage alloc]initWithContentsOfURL:url]autorelease];
+                imageDict[fn] = @[im,path];
+            }
+            [self insertImagesAsBook:imageDict];
+        }
+    }];
+
+}
+
 -(void)sizeToRect:(NSRect)r
 {
 	NSPoint antiVector = r.origin;

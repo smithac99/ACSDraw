@@ -108,6 +108,7 @@ enum
 - (BOOL)uUnlinkText;
 - (BOOL)uLinkToText:(ACSDText*)sText;
 -(BOOL)htmlMustBeDoneAsImage;
+-(void)scaleFontsBy:(CGFloat)sc;
 
 @end
 

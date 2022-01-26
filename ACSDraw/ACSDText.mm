@@ -718,10 +718,10 @@ NSString *substitute_characters(NSString* string)
     p0 = RelativePointInRect(p0.x,p0.y, invrect);
     p1 = RelativePointInRect(p1.x,p1.y, invrect);
     NSRect r = rectFromPoints(p0, p1);
-    [attrString appendFormat:@" x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\"",r.origin.x,r.origin.y,r.size.width,r.size.height];
-    for (NSArray *arr in self.attributes)
+    [attrString appendFormat:@" x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" pxwidth=\"%g\" pxheight=\"%g\"",r.origin.x,r.origin.y,r.size.width,r.size.height,b.size.width,b.size.height];
+    /*for (NSArray *arr in self.attributes)
         if ([arr[0]isEqualToString:@"widthtracksheight"] || [arr[0]isEqualToString:@"heighttrackswidth"])
-            [attrString appendFormat:@" pxwidth=\"%g\" pxheight=\"%g\"",b.size.width,b.size.height];
+            [attrString appendFormat:@" pxwidth=\"%g\" pxheight=\"%g\"",b.size.width,b.size.height];*/
     if (cornerRadius != 0.0)
         [attrString appendFormat:@" cornerradius=\"%g\"",cornerRadius / b.size.height];
     return attrString;
@@ -1781,8 +1781,29 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 -(void)uScale:(float)sc pointSizeInRange:(NSRange)r
 {
 	NSFont *f = [[layoutManager textStorage] attribute:NSFontAttributeName atIndex:r.location effectiveRange:NULL];
-	NSFont *fnew = [[NSFontManager sharedFontManager]convertFont:f toSize:[f pointSize] * 2];
+	NSFont *fnew = [[NSFontManager sharedFontManager]convertFont:f toSize:[f pointSize] * sc];
 	[self uSetFont:fnew forRange:r oldFont:f];
+}
+
+-(void)scaleFontsBy:(CGFloat)sc
+{
+    NSTextStorage *textStorage = [layoutManager textStorage];
+    if ([[self textContainer] textView])
+    {
+        NSArray<NSValue*>*ranges= [[[self textContainer] textView]selectedRanges];
+        if ([ranges count] > 0)
+        {
+            for (NSValue *v in ranges)
+            {
+                NSRange r = [v rangeValue];
+                [textStorage enumerateAttribute:NSFontAttributeName inRange:r options:0
+                                     usingBlock:^void (id value,NSRange r,BOOL *stop){[self uScale:sc pointSizeInRange:r];}];
+            }
+            return;
+        }
+    }
+    [textStorage enumerateAttribute:NSFontAttributeName inRange:NSMakeRange(0,[textStorage length]) options:0
+                         usingBlock:^void (id value,NSRange r,BOOL *stop){[self uScale:sc pointSizeInRange:r];}];
 }
 
 -(void)permanentScale:(float)sc transform:(NSAffineTransform*)t
@@ -1790,10 +1811,9 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	[super permanentScale:sc transform:t];
 	if (!layoutManager)
 		return;
-	NSTextStorage *textStorage = [layoutManager textStorage];
-	[textStorage enumerateAttribute:NSFontAttributeName inRange:NSMakeRange(0,[textStorage length]) options:0 
-						 usingBlock:^void (id value,NSRange r,BOOL *stop){[self uScale:sc pointSizeInRange:r];}];
+    [self scaleFontsBy:sc];
 }
+
 -(void)processAttributesInRange:(NSRange)totalRange forStyle:(ACSDStyle*)style oldAttributes:(NSDictionary*)oldAttrs
    {
 	NSRange longestRange;

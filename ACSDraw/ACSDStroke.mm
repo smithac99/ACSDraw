@@ -279,9 +279,9 @@
    }
 
 -(void)notifyOnADDOrRemove
-   {
-	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDRefreshStrokesNotification object:self];
-   }
+{
+    [self postNotify:ACSDRefreshStrokesNotification object:self];
+}
 
 -(void)writeSVGData:(SVGWriter*)svgWriter
    {
