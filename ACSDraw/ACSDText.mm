@@ -1802,8 +1802,10 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
             return;
         }
     }
+    [textStorage beginEditing];
     [textStorage enumerateAttribute:NSFontAttributeName inRange:NSMakeRange(0,[textStorage length]) options:0
                          usingBlock:^void (id value,NSRange r,BOOL *stop){[self uScale:sc pointSizeInRange:r];}];
+    [textStorage endEditing];
 }
 
 -(void)permanentScale:(float)sc transform:(NSAffineTransform*)t

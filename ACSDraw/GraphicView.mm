@@ -3617,7 +3617,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 
 - (IBAction)decrementTextSize:(id)sender
 {
-    if ([self scaleFontSizeBy:1.0 - 1.0/12.0])
+    if ([self scaleFontSizeBy:1.0 - 1.0/24.0])
         [[self undoManager]setActionName:@"Increment Font Size"];
 }
 

@@ -237,15 +237,20 @@
                             <menuItem title="Import" id="693">
                                 <menu key="submenu" title="Import" id="694">
                                     <items>
-                                        <menuItem title="Import Image…" id="696">
+                                        <menuItem title="Image…" id="696">
                                             <connections>
                                                 <action selector="importPicture:" target="-1" id="697"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="IdT-sg-cf0"/>
-                                        <menuItem title="Import Images as Book…" id="bGq-Lg-T4J">
+                                        <menuItem title="Images as Book…" id="bGq-Lg-T4J">
                                             <connections>
                                                 <action selector="importImagesAsBook:" target="-1" id="9At-yW-yHc"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Book XML…" id="qv4-x5-CxR">
+                                            <connections>
+                                                <action selector="importBookXML:" target="-1" id="bJi-Wy-yNH"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -1942,7 +1947,7 @@ CA
                                     <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="menu" size="10"/>
                                 </buttonCell>
-                                <buttonCell type="square" bezelStyle="shadowlessSquare" image="buttonCell:989:image" imagePosition="only" alignment="left" tag="-1" id="742">
+                                <buttonCell type="square" bezelStyle="shadowlessSquare" image="expand" imagePosition="only" alignment="left" alternateImage="expandalt" tag="-1" imageScaling="proportionallyUpOrDown" id="742">
                                     <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="menu" size="10"/>
                                 </buttonCell>
@@ -1968,6 +1973,7 @@ CA
             <connections>
                 <outlet property="delegate" destination="398" id="403"/>
             </connections>
+            <point key="canvasLocation" x="113" y="330"/>
         </window>
         <customObject id="398" userLabel="ToolWindowController" customClass="ToolWindowController">
             <connections>
@@ -2126,6 +2132,8 @@ txO/E8wT0RPTE9UT2hPiE+UT6hPyAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAAE/U
         <image name="elbowalt" width="32" height="32"/>
         <image name="ellipse" width="32" height="32"/>
         <image name="ellipsealt" width="32" height="32"/>
+        <image name="expand" width="32" height="32"/>
+        <image name="expandalt" width="32" height="32"/>
         <image name="freehand" width="32" height="32"/>
         <image name="freehandalt" width="32" height="32"/>
         <image name="grid" width="32" height="32"/>
