@@ -5309,6 +5309,43 @@ NSInteger findSame(id obj,NSArray *arr)
     [[self undoManager] setActionName:[sender title]];
 }
 
+-(void)slice:(id)sender
+{
+    NSArray *arr = [self sortedSelectedGraphics];
+    NSInteger ct = [arr count];
+    if (ct < 2)
+        return;
+    [self clearSelection];
+    ACSDGraphic *top = [arr lastObject];
+    ACSDPath *slicer;
+    if ([top isKindOfClass:[ACSDPath class]])
+        slicer = (ACSDPath*)top;
+    else
+        slicer = [top convertToPath];
+    
+    for (NSInteger i = 0;i < ct - 1;i++)
+    {
+        ACSDGraphic *g = arr[i];
+        NSMutableArray<ACSDPath*>*paths = [self subPathsFromSelectedObjects:@[slicer,g]];
+        ACSDPath *intersectedpath = [ACSDPath intersectedSubPathsFromObjects:paths];
+        if ([g isKindOfClass:[ACSDPath class]])
+        {
+            ACSDPath *p = (ACSDPath*)g;
+            [self uRestoreSubPaths:[intersectedpath subPaths] forPath:p];
+        }
+        else
+        {
+            ACSDPath *newGraphic = [[ACSDPath alloc]initWithName:[g name] fill:[g fill] stroke:[g stroke]rect:[g bounds] layer:[self currentEditableLayer] subPaths:[intersectedpath subPaths]];
+            NSInteger idx = [[[self currentEditableLayer]graphics]indexOfObject:g];
+            [self uInsertGraphic:newGraphic intoLayer:[self currentEditableLayer] atIndex:idx];
+            [newGraphic completeRebuild];
+            [newGraphic release];
+            [self deleteGraphic:g];
+        }
+    }
+    [[self undoManager] setActionName:[sender title]];
+}
+
 - (void)uRestoreSubPaths:(NSMutableArray*)subPaths forPath:(ACSDPath*)path
    {
 	[[[self undoManager] prepareWithInvocationTarget:self] uRestoreSubPaths:[path subPaths] forPath:path];
@@ -6488,14 +6525,6 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	[[self undoManager] setActionName:[sender title]];
    }
 
-- (void)slice:(id)sender
-{
-    NSArray *arr = [self sortedSelectedGraphics];
-    if ([arr count] < 2)
-        return;
-    
-}
-
 - (void)unite:(id)sender
    {
 	NSArray *arr = [self sortedSelectedGraphics];
@@ -6557,8 +6586,8 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		return ([[self selectedGraphics] count] == 1 && [[[self selectedGraphics]anyObject]respondsToSelector:@selector(centroid)]);
     if (action == @selector(convertToPath:) || action == @selector(reloadImage:) || action == @selector(group:))
 		return [[self selectedGraphics] count] >= 1;
-	if (action == @selector(intersect:))
-		return [[self selectedGraphics] count] >= 1;
+	if (action == @selector(intersect:) || action == @selector(slice:))
+		return [[self selectedGraphics] count] > 1;
     if (action == @selector(applyImageTransform:))
         return [[self selectedGraphics] count] >= 1;
     if (action == @selector(incrementTextSize:) || action == @selector(decrementTextSize:))

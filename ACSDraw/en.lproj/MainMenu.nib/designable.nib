@@ -1140,7 +1140,7 @@ CA
                                         <menuItem title="Slice" alternate="YES" id="9ki-QM-s5T">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="aXorB:" target="-1" id="4Ge-9q-7DU"/>
+                                                <action selector="slice:" target="-1" id="fJv-54-EMr"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Outline Stroke" keyEquivalent="O" id="428">
