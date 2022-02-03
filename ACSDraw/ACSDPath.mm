@@ -573,18 +573,20 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
    }
 
 +(ACSDPath*)intersectedSubPathsFromObjects:(NSMutableArray*)objectArray
-   {
-	NSInteger ct = [objectArray count];
-	ACSDPath *o0 = [objectArray objectAtIndex:(ct - 1)];
-	for (NSInteger i = ct - 2;i >= 0;i--)
-	   {
-		ACSDPath *o1 = [objectArray objectAtIndex:i];
-		NSArray *vertexList = [ACSDSubPath intersectionsBetweenPath:o0 andPath:o1];
-		NSMutableArray *subPaths = [GraphicView intersectedSubPathsFromVertexList:vertexList];
-		o0 = [[[ACSDPath alloc]initWithName:@"path" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:subPaths]autorelease];
-	   }
-	return o0;
-   }
+{
+    NSInteger ct = [objectArray count];
+    ACSDPath *o0 = [objectArray objectAtIndex:(ct - 1)];
+    for (NSInteger i = ct - 2;i >= 0;i--)
+    {
+        ACSDPath *o1 = [objectArray objectAtIndex:i];
+        NSArray *vertexList = [ACSDSubPath intersectionsBetweenPath:o0 andPath:o1];
+        NSMutableArray *subPaths = [GraphicView intersectedSubPathsFromVertexList:vertexList];
+        if ([subPaths count] == 0)
+            return nil;
+        o0 = [[[ACSDPath alloc]initWithName:@"path" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:subPaths]autorelease];
+    }
+    return o0;
+}
 
 +(ACSDPath*)xorSubPathsFromObjects:(NSMutableArray*)objectArray
    {

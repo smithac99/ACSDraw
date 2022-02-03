@@ -5328,6 +5328,11 @@ NSInteger findSame(id obj,NSArray *arr)
         ACSDGraphic *g = arr[i];
         NSMutableArray<ACSDPath*>*paths = [self subPathsFromSelectedObjects:@[slicer,g]];
         ACSDPath *intersectedpath = [ACSDPath intersectedSubPathsFromObjects:paths];
+        if (intersectedpath == nil)
+        {
+            [self deleteGraphic:g];
+            continue;
+        }
         if ([g isKindOfClass:[ACSDPath class]])
         {
             ACSDPath *p = (ACSDPath*)g;
