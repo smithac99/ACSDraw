@@ -6325,6 +6325,25 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	return pathArray;
    }
 
++(NSMutableArray*)subPathsFromSelectedObjects:(NSArray*)arr
+{
+    NSInteger ct = [arr count];
+    NSMutableArray *pathArray = [NSMutableArray arrayWithCapacity:ct];
+    for (int i = 0;i < ct;i++)
+    {
+        id g = [arr objectAtIndex:i];
+        if ([g isMemberOfClass:[ACSDPath class]])
+            g = [[g copy]autorelease];
+        else
+            g = [g convertToPath];
+        [g applyTransform];
+        if (![g isCounterClockWise])
+            [g reversePathWithStrokeList:[NSMutableArray array]];
+        [pathArray addObject:g];
+    }
+    return pathArray;
+}
+
 - (NSMutableArray*)subPathsFromSelectedObjects:(NSArray*)arr
    {
 	NSInteger ct = [arr count];

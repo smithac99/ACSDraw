@@ -799,6 +799,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
                NSPoint glyphLoc = [[self layoutManager] locationForGlyphAtIndex:glyphRange.location + i];
                NSFont *font = [attributeDict objectForKey:NSFontAttributeName];
                NSColor *col = [attributeDict objectForKey:NSForegroundColorAttributeName];
+               NSString *letterSpacing = attributeDict[NSKernAttributeName];
                int underlined = [[attributeDict objectForKey:NSUnderlineStyleAttributeName]intValue];
                NSFontTraitMask fontMask = [[NSFontManager sharedFontManager]traitsOfFont:font];
                NSPoint pt;
@@ -813,6 +814,11 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
                    [tString appendString:@" font-style=\"italic\""];
                if (underlined)
                    [tString appendString:@" text-decoration=\"underline\""];
+               if (letterSpacing)
+               {
+                   float ls = [letterSpacing floatValue];
+                   [tString appendFormat:@" letter-spacing=\"%g\"",ls];
+               }
                NSString *printString = substitute_characters([[lineString attributedSubstringFromRange:attributeRange]string]);
                [tString appendFormat:@" fill=\"%@\" >%@</tspan>\n",string_from_nscolor(col),printString];
                i += attributeRange.length;
@@ -843,8 +849,9 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	if (transform)
 		[[svgWriter contents]appendString:string_from_transform(transform)];
 	NSRect b = [self bounds];
-	[[svgWriter contents]appendFormat:@" translate(%g,%g) scale(1,-1) translate(%g,%g)\">\n",
-		b.origin.x,b.origin.y,-b.origin.x,-(b.origin.y + b.size.height)];
+	//[[svgWriter contents]appendFormat:@" translate(%g,%g) scale(1,-1) translate(%g,%g)",
+		//b.origin.x,b.origin.y,-b.origin.x,-(b.origin.y + b.size.height)];
+    [[svgWriter contents]appendString:@"\">\n"];
 	//NSTextStorage *cont = [[self layoutManager] textStorage];
 	b.origin.x += leftMargin;
 	b.size.width -= (leftMargin + rightMargin);

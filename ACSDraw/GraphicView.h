@@ -262,5 +262,6 @@ NSString *IncrementString(NSString *s);
 -(IBAction)sizeToWidth:(id)sender;
 -(NSImage*)iconImageFromCurrentPageOfSize:(NSInteger)sz;
 -(NSArray*)graphicsMatchingName:(NSString*)nm;
++(NSMutableArray*)subPathsFromSelectedObjects:(NSArray*)arr;
 
 @end
