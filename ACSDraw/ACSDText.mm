@@ -827,97 +827,63 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
        }
     return tString;
 }
+
 -(void)writeSVGData:(SVGWriter*)svgWriter
-   {
-	[self writeSVGDefs:svgWriter];
-	[[svgWriter contents]appendFormat:@"<g id=\"%@\" ",self.name];
-//	if (shadowType)
-//		[shadowType writeSVGData:svgWriter];
-	[[svgWriter contents]appendString:@">\n"];
-	if (fill || stroke)
-	   {
-		[[svgWriter contents]appendFormat:@"<path d=\"%@\" ",string_from_path([self transformedBezierPath])];
-		if (fill)
-			[fill writeSVGData:svgWriter];
-		if (stroke)
-			[stroke writeSVGData:svgWriter];
-		if (shadowType)
-			[shadowType writeSVGData:svgWriter];
-		[[svgWriter contents]appendString:@" />\n"];
-	   }
-	[[svgWriter contents]appendString:@"<text transform=\""];
-	if (transform)
-		[[svgWriter contents]appendString:string_from_transform(transform)];
-	NSRect b = [self bounds];
-	//[[svgWriter contents]appendFormat:@" translate(%g,%g) scale(1,-1) translate(%g,%g)",
-		//b.origin.x,b.origin.y,-b.origin.x,-(b.origin.y + b.size.height)];
-    [[svgWriter contents]appendString:@"\">\n"];
-	//NSTextStorage *cont = [[self layoutManager] textStorage];
-	b.origin.x += leftMargin;
-	b.size.width -= (leftMargin + rightMargin);
-	b.origin.y += topMargin;
-	b.size.height -= (topMargin + bottomMargin);
-	[[self textContainer] setContainerSize:b.size];
-	//NSRange glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
-	if (verticalAlignment != VERTICAL_ALIGNMENT_TOP)
-		{
-		NSRect r = [[self layoutManager] usedRectForTextContainer:[self textContainer]];
-		float diff = b.size.height - r.size.height;
-		if (diff > 0.0)
-			{
-			if (verticalAlignment ==  VERTICAL_ALIGNMENT_BOTTOM)
-				b.origin.y += diff;
-			else
-				b.origin.y += (diff / 2.0);
-			}
-		}
-//	int glyphCount = [[self layoutManager] numberOfGlyphs];
-/*	NSUInteger glyphCount = glyphRange.location + glyphRange.length;
-	for (NSUInteger glyphIndex = glyphRange.location;glyphIndex < glyphCount;)
-	   {
-		NSRect glyphRect = [[self layoutManager] lineFragmentRectForGlyphAtIndex:glyphIndex effectiveRange:&glyphRange];
-		NSPoint loc = glyphRect.origin;
-		NSAttributedString *lineString = [cont attributedSubstringFromRange:glyphRange];
-		for (unsigned int i = 0;i < glyphRange.length;)
-		   {
-			NSRange attributeRange;
-			NSDictionary *attributeDict	= [lineString attributesAtIndex:i effectiveRange:&attributeRange];
-			if (attributeRange.location < i)
-			   {
-				attributeRange.length -= (i - attributeRange.location);
-				attributeRange.location = i;
-			   }
-			NSRange tabRange = [[lineString string]rangeOfString:@"\t" options:NSLiteralSearch range:attributeRange];
-			if (tabRange.location != NSNotFound)
-			   {
-				if (tabRange.location >= [lineString length])
-					NSLog(@"shouldn't happen");
-					
-				attributeRange.length = tabRange.location + 1 - attributeRange.location;
-			   }
-			NSPoint glyphLoc = [[self layoutManager] locationForGlyphAtIndex:glyphRange.location + i];
-			NSFont *font = [attributeDict objectForKey:NSFontAttributeName];
-			NSColor *col = [attributeDict objectForKey:NSForegroundColorAttributeName];
-			int underlined = [[attributeDict objectForKey:NSUnderlineStyleAttributeName]intValue];
-			NSFontTraitMask fontMask = [[NSFontManager sharedFontManager]traitsOfFont:font];
-			[[svgWriter contents] appendFormat:@"<tspan x=\"%g\" y=\"%g\" font-family=\"%@\" font-size=\"%f\"",
-				glyphLoc.x + b.origin.x,loc.y + b.origin.y + glyphLoc.y,[font familyName],[font pointSize]];
-			if (fontMask & NSBoldFontMask)
-				[[svgWriter contents] appendString:@" font-weight=\"bold\""];
-			if (fontMask & NSItalicFontMask)
-				[[svgWriter contents] appendString:@" font-style=\"italic\""];
-			if (underlined)
-				[[svgWriter contents] appendString:@" text-decoration=\"underline\""];
-			NSString *printString = substitute_characters([[lineString attributedSubstringFromRange:attributeRange]string]);
-			[[svgWriter contents] appendFormat:@" fill=\"%@\" > %@ </tspan>\n",string_from_nscolor(col),printString];
-			i += attributeRange.length;
-		   }
-		glyphIndex += glyphRange.length;
-	   }*/
+{
+    [self writeSVGDefs:svgWriter];
+    [[svgWriter contents]appendFormat:@"<g id=\"%@\" ",self.name];
+    if (transform)
+    {
+        //[[svgWriter contents]appendFormat:@"transform=\"%@\"",string_from_transform(transform)];
+        [[svgWriter contents]appendString:[self svgTransform:svgWriter]];
+    }
+    [[svgWriter contents]appendString:@">\n"];
+    NSPoint origin = bounds.origin;
+    if (fill || stroke)
+    {
+        //        [[svgWriter contents]appendFormat:@"<path d=\"%@\" ",string_from_path([self transformedBezierPath])];
+        if (svgWriter.shouldInvertSVGCoords)
+        {
+            origin = NSMakePoint(origin.x,  NSMaxY(bounds));
+            origin = [svgWriter.inversionTransform transformPoint:origin];
+        }
+        NSString *rectstring = [NSString stringWithFormat:@"<rect x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" ", origin.x,origin.y,bounds.size.width,bounds.size.height];
+        if (self.cornerRadius != 0)
+            rectstring = [rectstring stringByAppendingFormat:@"rx=\"%g\" ry=\"%g\" ",self.cornerRadius,self.cornerRadius];
+        [[svgWriter contents]appendString:rectstring];
+        if (fill)
+            [fill writeSVGData:svgWriter];
+        if (stroke)
+            [stroke writeSVGData:svgWriter];
+        if (shadowType)
+            [shadowType writeSVGData:svgWriter];
+        [[svgWriter contents]appendString:@" />\n"];
+    }
+    [[svgWriter contents]appendString:@"<text "];
+    NSRect b = [self bounds];
+    b.origin = origin;
+    [[svgWriter contents]appendString:@">\n"];
+    b.origin.x += leftMargin;
+    b.size.width -= (leftMargin + rightMargin);
+    b.origin.y += topMargin;
+    b.size.height -= (topMargin + bottomMargin);
+    [[self textContainer] setContainerSize:b.size];
+    if (verticalAlignment != VERTICAL_ALIGNMENT_TOP)
+    {
+        NSRect r = [[self layoutManager] usedRectForTextContainer:[self textContainer]];
+        float diff = b.size.height - r.size.height;
+        if (diff > 0.0)
+        {
+            if (verticalAlignment ==  VERTICAL_ALIGNMENT_BOTTOM)
+                b.origin.y += diff;
+            else
+                b.origin.y += (diff / 2.0);
+        }
+    }
     [[svgWriter contents]appendString:[self tSpansInRect:b relative:NO relativeRect:b]];
     [[svgWriter contents]appendString:@"</text>\n"];
-	[[svgWriter contents]appendString:@"</g>\n"];
-   }
+    [[svgWriter contents]appendString:@"</g>\n"];
+}
 
 - (NSRect)boundsWithinMargins
    {
