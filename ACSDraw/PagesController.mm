@@ -79,9 +79,15 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLayerSelection:) name:ACSDLayerSelectionChanged object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLayerSelection:) name:ACSDGraphicViewSelectionDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLayers:) name:ACSDCurrentLayerChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inactivateColourWells:) name:ACSDInactivateFillWells object:nil];
 }
 
 #pragma mark actions
+
+-(void)inactivateColourWells:(NSNotification *)notification
+{
+    [backgroundColour deactivate];
+}
 
 - (IBAction)inactiveCBHit:(id)sender
 {

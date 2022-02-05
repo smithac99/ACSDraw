@@ -493,6 +493,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                 </customView>
             </subviews>
+            <point key="canvasLocation" x="741" y="-369"/>
         </customView>
         <customObject id="102" customClass="ColourController">
             <connections>
@@ -2949,7 +2950,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                             <clipView key="contentView" id="SDc-2t-wOC">
                                 <rect key="frame" x="1" y="1" width="229" height="155"/>
-                                <autoresizingMask key="autoresizingMask"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="824" customClass="ACSDTableView">
                                         <rect key="frame" x="0.0" y="0.0" width="229" height="155"/>
@@ -3043,6 +3044,7 @@
                     </subviews>
                 </customView>
             </subviews>
+            <point key="canvasLocation" x="556" y="391"/>
         </customView>
         <customView id="661" userLabel="FillView">
             <rect key="frame" x="0.0" y="0.0" width="282" height="77"/>
@@ -3057,6 +3059,7 @@
                     </connections>
                 </colorWell>
             </subviews>
+            <point key="canvasLocation" x="421" y="-81"/>
         </customView>
         <customView id="662" userLabel="GradientView">
             <rect key="frame" x="0.0" y="0.0" width="282" height="229"/>
@@ -3647,7 +3650,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="radius" width="16" minWidth="10" maxWidth="1000" id="876">
+                                    <tableColumn identifier="radius" width="15" minWidth="10" maxWidth="1000" id="876">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="radius">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -3685,7 +3688,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="yoff" width="92.500020000000006" minWidth="10" maxWidth="1000" id="873">
+                                    <tableColumn identifier="yoff" width="93.500020000000006" minWidth="10" maxWidth="1000" id="873">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="yoff">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>

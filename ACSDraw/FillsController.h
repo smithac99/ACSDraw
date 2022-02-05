@@ -22,15 +22,17 @@ enum
 {
 	IBOutlet id staticView;
 	IBOutlet id fillView;
-	IBOutlet id fillDisplay;
+    __weak IBOutlet NSColorWell *fillDisplay;
     IBOutlet id fillMinus;
     IBOutlet id fillPlus;
     IBOutlet id fillRBMatrix;
     IBOutlet ACSDTableView *fillTableView;
-	IBOutlet id gradientView;
+        
+    IBOutlet id gradientView;
 	IBOutlet id gradientControl;
 	IBOutlet id gradientDisplay;
 	IBOutlet id gradientWell1;
+    
 	IBOutlet id graphicOpacitySlider;
 	IBOutlet id graphicOpacityText;
     IBOutlet id patternView;

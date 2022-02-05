@@ -71,7 +71,13 @@ enum
 
 -(void)graphicChanged:(NSNotification *)notification
 {
-	[self addChange:FC_GRAPHIC_SELECTION_CHANGE];
+    [self addChange:FC_GRAPHIC_SELECTION_CHANGE];
+}
+
+-(void)inactivateColourWells:(NSNotification *)notification
+{
+    [fillDisplay deactivate];
+    [gradientWell1 deactivate];
 }
 
 -(void)awakeFromNib
@@ -85,7 +91,8 @@ enum
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowResigned:) name:NSWindowDidResignMainNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(graphicChanged:) name:ACSDGraphicDidChangeNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(graphicChanged:) name:ACSDGraphicViewSelectionDidChangeNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(graphicChanged:) name:ACSDPageChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(graphicChanged:) name:ACSDPageChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inactivateColourWells:) name:ACSDInactivateFillWells object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update:) name:NSWindowDidUpdateNotification object:[self.contentView window]];
 }
 
