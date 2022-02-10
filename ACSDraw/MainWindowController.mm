@@ -388,7 +388,8 @@ NSBitmapImageRep *newBitmap(int width,int height)
 
 -(CGImageRef)cgImageFromCurrentPageOfSize:(NSSize)sz
 {
-    return [[graphicView imageFromCurrentPageOfSize:sz] CGImageForProposedRect:NULL context:nil hints:nil];
+    return [graphicView cgImageFromCurrentPageOfSize:sz];
+    //return [[graphicView imageFromCurrentPageOfSize:sz] CGImageForProposedRect:NULL context:nil hints:nil];
 }
 
 -(CGImageRef)cgImageFromPage:(int)pidx ofSize:(NSSize)sz

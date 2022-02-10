@@ -263,5 +263,6 @@ NSString *IncrementString(NSString *s);
 -(NSImage*)iconImageFromCurrentPageOfSize:(NSInteger)sz;
 -(NSArray*)graphicsMatchingName:(NSString*)nm;
 +(NSMutableArray*)subPathsFromSelectedObjects:(NSArray*)arr;
+-(CGImageRef)cgImageFromCurrentPageOfSize:(NSSize)sz;
 
 @end
