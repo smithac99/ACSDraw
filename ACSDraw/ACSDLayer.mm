@@ -494,6 +494,21 @@ static NSArray *GraphicHasLoop(ACSDGraphic *g)
 	return nil;
 }
 
+-(NSArray*)graphicsWithName:(NSString*)nm
+{
+    if (nm == nil)
+        return @[];
+    NSMutableArray *objs = [NSMutableArray array];
+    NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:nm options:NSRegularExpressionCaseInsensitive error:nil];
+    if (regexp)
+    {
+        for (ACSDGraphic *g in [self graphics])
+            if ([regexp numberOfMatchesInString:[g name] options:0 range:NSMakeRange(0, [[g name]length])] > 0)
+                [objs addObject:g];
+    }
+    return objs;;
+}
+
 -(NSString*)graphicXMLForEvent:(NSMutableDictionary*)options
 {
 	if ((!isGuideLayer) && [graphics count] > 0)

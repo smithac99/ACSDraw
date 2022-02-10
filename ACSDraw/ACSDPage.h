@@ -116,4 +116,6 @@ enum
 -(BOOL)uSetAttributeValue:(NSString*)val atIndex:(NSInteger)idx notify:(BOOL)notify;
 -(BOOL)uSetAttributeValue:(NSString*)val forName:(NSString*)nme notify:(BOOL)notify;
 -(NSRect)unionStrictGraphicBounds;
+-(NSArray*)graphicsWithName:(NSString*)nm;
+
 @end

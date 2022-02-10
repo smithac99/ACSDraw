@@ -67,6 +67,8 @@
 -(NSIndexSet*)indexesOfSelectedGraphics;
 -(void)setGraphics:(NSMutableArray*)gs;
 -(NSRect)unionStrictGraphicBounds;
+-(NSArray*)graphicsWithName:(NSString*)nm;
+
 @end
 
 NSArray* OrderGraphics(NSArray* toDo);

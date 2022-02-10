@@ -12,6 +12,7 @@
 #import "ACSDLayer.h"
 #import "ACSDPage.h"
 #import "ACSDPath.h"
+#import "ACSDText.h"
 #import "ACSDStroke.h"
 #import "ACSDCircle.h"
 #import "ACSDLineEnding.h"
@@ -1897,6 +1898,77 @@ NSString* Creator()
     return page;
 }
 
+-(NSDictionary*)pagesDict
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    for (ACSDPage *p in self.pages)
+    {
+        NSString *name = p.pageTitle;
+        if (name)
+            dict[name] = p;
+    }
+    return dict;
+}
+-(void)updateWithBookXML:(XMLNode*)xmlNode
+{
+    NSDictionary *pagesDict = [self pagesDict];
+    NSArray *pageNodes = [xmlNode childrenOfType:@"page"];
+    for (XMLNode *pageNode in pageNodes)
+    {
+        NSString *pno = [pageNode attributeStringValue:@"pageno"];
+        if (pno)
+        {
+            pno = [NSString stringWithFormat:@"p%@",pno];
+            ACSDPage *page = pagesDict[pno];
+            if (page)
+            {
+                NSArray<XMLNode*>*paraNodes = [pageNode childrenOfType:@"para"];
+                CGFloat y = documentSize.height - 300,x = 100;
+                int idx = 1;
+                for (XMLNode *para in paraNodes)
+                {
+                    NSString *textBoxName = [NSString stringWithFormat:@"t%d_1",idx];
+                    NSArray<ACSDGraphic*>*graphics = [page graphicsWithName:textBoxName];
+                    if ([graphics count] > 0)
+                    {
+                        if ([graphics[0] isKindOfClass:[ACSDText class]])
+                        {
+                            ACSDText *t = (ACSDText*)graphics[0];
+                            NSString *text = para.contents;
+                            if (t)
+                            {
+                                NSTextStorage *ts = [t contents];
+                                [ts beginEditing];
+                                [ts replaceCharactersInRange:NSMakeRange(0, [ts length]) withString:text];
+                                [ts endEditing];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ACSDLayer *layer = page.layers[1];
+                        ACSDText *t = [[ACSDText alloc]initWithName:textBoxName fill:nil stroke:nil rect:NSMakeRect(x,y,300,200) layer:layer];
+                        x += 100;
+                        y -= 100;
+                        NSColor *textFill = [NSColor blackColor];
+                        NSFont *f = [NSFont fontWithName:@"onebillionreader-Regular" size:40];
+                        if (f == nil)
+                            f = [NSFont systemFontOfSize:40];
+                        NSAttributedString *mas = [[[NSAttributedString alloc]initWithString:para.contents attributes:@{NSFontAttributeName:f,NSForegroundColorAttributeName:textFill}]autorelease];
+                        NSTextStorage *contents = [[NSTextStorage alloc]initWithAttributedString:mas];
+                        [contents addLayoutManager:[t layoutManager]];
+                        [t setContents:contents];
+                        [[layer graphics] addObject:[self registerObject:t]];
+
+                    }
+                    idx++;
+                }
+            }
+        }
+
+    }
+}
+
 -(void)insertImagesAsBook:(NSDictionary*)imageDict
 {
     NSArray *pageNames = [[imageDict allKeys]sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
@@ -1916,14 +1988,36 @@ NSString* Creator()
         l.name = @"text";
         l = [[[self frontmostMainWindowController] graphicView]addNewLayerAtIndex:[page.layers count]];
         l.name = @"preview";
+        l.exportable = NO;
         l = [[[self frontmostMainWindowController] graphicView]addNewLayerAtIndex:[page.layers count]];
         NSArray *arr = imageDict[pageName];
         [[[self frontmostMainWindowController] graphicView]createImage:arr[0] name:pageName location:&loc fileName:arr[1]];
         l.editable = NO;
+        l.exportable = NO;
         l.name = @"image";
         [[[self frontmostMainWindowController] graphicView]setCurrentEditableLayerIndex:1 force:NO select:NO withUndo:NO];
     }
 
+}
+
+- (IBAction)importBookXML:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowedFileTypes:@[@"public.xml"]];
+    [panel beginSheetModalForWindow:[[self frontmostMainWindowController] window]
+                  completionHandler:^(NSInteger result)
+     {
+        if (result == NSFileHandlingPanelOKButton)
+        {
+            for (NSURL *url in [panel URLs])
+            {
+                NSString *path = [url path];
+                XMLNode *root = [[[XMLManager alloc]init]parseFile:path];
+                if (root)
+                    [self updateWithBookXML:root];
+            }
+        }
+    }];
 }
 
 - (IBAction)importImagesAsBook:(id)sender
