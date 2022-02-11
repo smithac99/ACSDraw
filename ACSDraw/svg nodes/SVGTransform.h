@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alan Smith. All rights reserved.
 //
 
-@import AppKit;
+#import <Cocoa/Cocoa.h>
 
 #define RADIANS(x) ((x)/(360.0/(2.0 * M_PI)))
 

@@ -80,7 +80,7 @@ static float getFloat(NSString* str,int *i)
     return [rstr floatValue];
 }
 
-BOOL stringContainsChar(NSString* s,unichar uc)
+static BOOL stringContainsChar(NSString* s,unichar uc)
 {
     NSString *str = [NSString stringWithCharacters:&uc length:1];
     NSRange r = [s rangeOfString:str];

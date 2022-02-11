@@ -36,7 +36,7 @@
 #import "AnimationsController.h"
 #import "GradientElement.h"
 #import "ACSDGradient.h"
-#import "SVGGradient.h"
+#import "SVG_Gradient.h"
 #import "geometry.h"
 #import "NSString+StringAdditions.h"
 
@@ -799,9 +799,9 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
     }
 }
 
--(SVGGradient*)gradientFromSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack isLinear:(BOOL)linear
+-(SVG_Gradient*)gradientFromSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack isLinear:(BOOL)linear
 {
-    SVGGradient *grad = [[[SVGGradient alloc]init]autorelease];
+    SVG_Gradient *grad = [[[SVG_Gradient alloc]init]autorelease];
 	if (!linear)
 		grad.gradientType = GRADIENT_RADIAL;
 	for (NSString *k in @[@"x1",@"y1",@"x2",@"y2",@"gradientUnits",@"spreadMethod",@"cx",@"cy",@"fx",@"fy",@"r"])
@@ -961,9 +961,9 @@ static BOOL isCSSIdent(unichar ch)
 			id obj = defs[url];
 			if (obj)
 			{
-				if ([obj isKindOfClass:[SVGGradient class]])
+				if ([obj isKindOfClass:[SVG_Gradient class]])
 				{
-					SVGGradient *svgg = [obj copy];
+					SVG_Gradient *svgg = [obj copy];
 					NSRect bounds = NSZeroRect;
 					bounds.size = documentSize;
 					[svgg resolveSettingsForOriginalBoundingBox:[g bounds] frame:bounds];

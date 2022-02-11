@@ -12,6 +12,36 @@
 		E7066F1E1961BD4E009C3F30 /* AnimationEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = E7066F1D1961BD4E009C3F30 /* AnimationEntry.m */; };
 		E7066F2019669281009C3F30 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7066F1F19669281009C3F30 /* AVFoundation.framework */; };
 		E7066F22196692CB009C3F30 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7066F21196692CB009C3F30 /* CoreMedia.framework */; };
+		E70BFB8627B6F2A300768EC0 /* SVG_rect.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB5027B6F14E00768EC0 /* SVG_rect.m */; };
+		E70BFB8727B6F2BA00768EC0 /* SVG_style.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB6C27B6F14E00768EC0 /* SVG_style.m */; };
+		E70BFB8827B6F2BA00768EC0 /* SVG_polyline.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB5C27B6F14E00768EC0 /* SVG_polyline.m */; };
+		E70BFB8927B6F2BA00768EC0 /* SVGShape.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB5E27B6F14E00768EC0 /* SVGShape.m */; };
+		E70BFB8A27B6F2BA00768EC0 /* SVG_g.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB6427B6F14E00768EC0 /* SVG_g.m */; };
+		E70BFB8B27B6F2BA00768EC0 /* SVG_svg.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB5327B6F14E00768EC0 /* SVG_svg.m */; };
+		E70BFB8C27B6F2BA00768EC0 /* SVGGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB5D27B6F14E00768EC0 /* SVGGradient.m */; };
+		E70BFB8D27B6F2BA00768EC0 /* SVG_circle.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB6A27B6F14E00768EC0 /* SVG_circle.m */; };
+		E70BFB8E27B6F2BA00768EC0 /* SVG_ellipse.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB6327B6F14E00768EC0 /* SVG_ellipse.m */; };
+		E70BFB8F27B6F2BA00768EC0 /* SVGGraphicalObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB5927B6F14E00768EC0 /* SVGGraphicalObject.m */; };
+		E70BFB9027B6F2BA00768EC0 /* SVG_symbol.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB6927B6F14E00768EC0 /* SVG_symbol.m */; };
+		E70BFB9127B6F2BA00768EC0 /* SVGNode.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB6827B6F14E00768EC0 /* SVGNode.m */; };
+		E70BFB9227B6F2BA00768EC0 /* SVGContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB5127B6F14E00768EC0 /* SVGContainer.m */; };
+		E70BFB9327B6F2BA00768EC0 /* SVG_line.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB6027B6F14E00768EC0 /* SVG_line.m */; };
+		E70BFB9427B6F2D000768EC0 /* SVGDimension.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7927B6F14E00768EC0 /* SVGDimension.m */; };
+		E70BFB9527B6F2D000768EC0 /* SVGDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7E27B6F14F00768EC0 /* SVGDocument.m */; };
+		E70BFB9627B6F2D000768EC0 /* SVG_path.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7C27B6F14E00768EC0 /* SVG_path.m */; };
+		E70BFB9727B6F2D000768EC0 /* SVG_radialGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7827B6F14E00768EC0 /* SVG_radialGradient.m */; };
+		E70BFB9827B6F2D000768EC0 /* SVGTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB8427B6F14F00768EC0 /* SVGTransform.m */; };
+		E70BFB9927B6F2D000768EC0 /* SVG_clipPath.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7A27B6F14E00768EC0 /* SVG_clipPath.m */; };
+		E70BFB9A27B6F2D000768EC0 /* SVGPaint.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7327B6F14E00768EC0 /* SVGPaint.m */; };
+		E70BFB9B27B6F2D000768EC0 /* SVG_defs.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7227B6F14E00768EC0 /* SVG_defs.m */; };
+		E70BFB9C27B6F2D000768EC0 /* SVG_use.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7127B6F14E00768EC0 /* SVG_use.m */; };
+		E70BFB9D27B6F2D000768EC0 /* SVG_text.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7727B6F14E00768EC0 /* SVG_text.m */; };
+		E70BFB9E27B6F2D000768EC0 /* SVG_stop.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7027B6F14E00768EC0 /* SVG_stop.m */; };
+		E70BFB9F27B6F2D000768EC0 /* SVG_linearGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB8327B6F14F00768EC0 /* SVG_linearGradient.m */; };
+		E70BFBA027B6F2D000768EC0 /* SVG_polygon.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB6F27B6F14E00768EC0 /* SVG_polygon.m */; };
+		E70BFBA127B6F2D000768EC0 /* SVG_pattern.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB8227B6F14F00768EC0 /* SVG_pattern.m */; };
+		E70BFBA227B6F2D000768EC0 /* SVGPaintServer.m in Sources */ = {isa = PBXBuildFile; fileRef = E70BFB7F27B6F14F00768EC0 /* SVGPaintServer.m */; };
+		E70BFBA527B709D900768EC0 /* ACSDSVGImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E70BFBA427B709D900768EC0 /* ACSDSVGImage.mm */; };
 		E70E81C7249E5D27003CDF0D /* scale.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E70E81C5249E5D27003CDF0D /* scale.tiff */; };
 		E70E81C8249E5D27003CDF0D /* scalealt.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E70E81C6249E5D27003CDF0D /* scalealt.tiff */; };
 		E71E28D11823BAAE00F5C5B9 /* XMLManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E71E28CE1823BAAE00F5C5B9 /* XMLManager.m */; };
@@ -267,7 +297,7 @@
 		E74A50431C620FE300A83A52 /* GroupViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74A50421C620FE300A83A52 /* GroupViewController.mm */; };
 		E74A50451C6228A000A83A52 /* GroupWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74A50441C6228A000A83A52 /* GroupWindow.xib */; };
 		E74A50471C62583200A83A52 /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E74A50461C62583200A83A52 /* SceneKit.framework */; };
-		E74CC8BF1AB1D78B00430A8A /* SVGGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74CC8BE1AB1D78B00430A8A /* SVGGradient.mm */; };
+		E74CC8BF1AB1D78B00430A8A /* SVG_Gradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74CC8BE1AB1D78B00430A8A /* SVG_Gradient.mm */; };
 		E751D30E230E990500D35BE2 /* noimagecross64.png in Resources */ = {isa = PBXBuildFile; fileRef = E751D30C230E990500D35BE2 /* noimagecross64.png */; };
 		E751D30F230E990500D35BE2 /* noimagecross.svg in Resources */ = {isa = PBXBuildFile; fileRef = E751D30D230E990500D35BE2 /* noimagecross.svg */; };
 		E767B7291A3890F20048C6BA /* GraphicOtherController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E767B7281A3890F20048C6BA /* GraphicOtherController.mm */; };
@@ -353,6 +383,8 @@
 		E70BFB8327B6F14F00768EC0 /* SVG_linearGradient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_linearGradient.m; sourceTree = "<group>"; };
 		E70BFB8427B6F14F00768EC0 /* SVGTransform.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGTransform.m; sourceTree = "<group>"; };
 		E70BFB8527B6F14F00768EC0 /* SVG_g.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_g.h; sourceTree = "<group>"; };
+		E70BFBA327B709D900768EC0 /* ACSDSVGImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACSDSVGImage.h; sourceTree = "<group>"; };
+		E70BFBA427B709D900768EC0 /* ACSDSVGImage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ACSDSVGImage.mm; sourceTree = "<group>"; };
 		E70E81C5249E5D27003CDF0D /* scale.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scale.tiff; path = tiffs/scale.tiff; sourceTree = "<group>"; };
 		E70E81C6249E5D27003CDF0D /* scalealt.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scalealt.tiff; path = tiffs/scalealt.tiff; sourceTree = "<group>"; };
 		E71E28CD1823BAAE00F5C5B9 /* XMLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLManager.h; sourceTree = "<group>"; };
@@ -776,8 +808,8 @@
 		E74A50421C620FE300A83A52 /* GroupViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GroupViewController.mm; sourceTree = "<group>"; };
 		E74A50441C6228A000A83A52 /* GroupWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GroupWindow.xib; sourceTree = "<group>"; };
 		E74A50461C62583200A83A52 /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
-		E74CC8BD1AB1D78B00430A8A /* SVGGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGGradient.h; sourceTree = "<group>"; };
-		E74CC8BE1AB1D78B00430A8A /* SVGGradient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGGradient.mm; sourceTree = "<group>"; };
+		E74CC8BD1AB1D78B00430A8A /* SVG_Gradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVG_Gradient.h; sourceTree = "<group>"; };
+		E74CC8BE1AB1D78B00430A8A /* SVG_Gradient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVG_Gradient.mm; sourceTree = "<group>"; };
 		E751D30C230E990500D35BE2 /* noimagecross64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noimagecross64.png; sourceTree = "<group>"; };
 		E751D30D230E990500D35BE2 /* noimagecross.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = noimagecross.svg; sourceTree = "<group>"; };
 		E767B7271A3890F20048C6BA /* GraphicOtherController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicOtherController.h; sourceTree = "<group>"; };
@@ -1317,6 +1349,8 @@
 				E74054F615B1EF2D0040F590 /* ACSDImage.mm */,
 				E79139401A607B7C00A9B1C4 /* ACSDDocImage.h */,
 				E79139411A607B7C00A9B1C4 /* ACSDDocImage.mm */,
+				E70BFBA327B709D900768EC0 /* ACSDSVGImage.h */,
+				E70BFBA427B709D900768EC0 /* ACSDSVGImage.mm */,
 				E74054F715B1EF2D0040F590 /* ACSDImageRep.h */,
 				E74054F815B1EF2D0040F590 /* ACSDImageRep.mm */,
 				E74054F915B1EF2D0040F590 /* ACSDLabel.h */,
@@ -1359,8 +1393,8 @@
 				E7D18F0E1988EA67000664F6 /* gElement.m */,
 				E740558515B1EF2D0040F590 /* gSubPath.h */,
 				E740558615B1EF2D0040F590 /* gSubPath.mm */,
-				E74CC8BD1AB1D78B00430A8A /* SVGGradient.h */,
-				E74CC8BE1AB1D78B00430A8A /* SVGGradient.mm */,
+				E74CC8BD1AB1D78B00430A8A /* SVG_Gradient.h */,
+				E74CC8BE1AB1D78B00430A8A /* SVG_Gradient.mm */,
 			);
 			name = "Graphics Objects";
 			sourceTree = "<group>";
@@ -1610,10 +1644,12 @@
 				E740563715B1EF2D0040F590 /* ACSDFreeHand.mm in Sources */,
 				E7BB1B451BD8361C0053B9DE /* NSView+Additions.m in Sources */,
 				E740563815B1EF2D0040F590 /* ACSDGradient.mm in Sources */,
+				E70BFB8B27B6F2BA00768EC0 /* SVG_svg.m in Sources */,
 				E740563915B1EF2D0040F590 /* ACSDGraphic.mm in Sources */,
 				E740563A15B1EF2D0040F590 /* ACSDGrid.mm in Sources */,
 				E740563B15B1EF2D0040F590 /* ACSDGroup.mm in Sources */,
 				E740563C15B1EF2D0040F590 /* ACSDImage.mm in Sources */,
+				E70BFBA227B6F2D000768EC0 /* SVGPaintServer.m in Sources */,
 				E740563D15B1EF2D0040F590 /* ACSDImageRep.mm in Sources */,
 				E740563E15B1EF2D0040F590 /* ACSDLabel.mm in Sources */,
 				E740563F15B1EF2D0040F590 /* ACSDLayer.mm in Sources */,
@@ -1624,27 +1660,32 @@
 				E740564415B1EF2D0040F590 /* ACSDPage.mm in Sources */,
 				E740564515B1EF2D0040F590 /* ACSDPath.mm in Sources */,
 				E740564615B1EF2D0040F590 /* ACSDPathElement.mm in Sources */,
+				E70BFB9F27B6F2D000768EC0 /* SVG_linearGradient.m in Sources */,
 				E740564715B1EF2D0040F590 /* ACSDPattern.mm in Sources */,
 				E7CFC26A1C92C68600114E18 /* ACSDReference.mm in Sources */,
 				E79139421A607B7C00A9B1C4 /* ACSDDocImage.mm in Sources */,
+				E70BFBA127B6F2D000768EC0 /* SVG_pattern.m in Sources */,
 				E740564815B1EF2D0040F590 /* ACSDPolygon.mm in Sources */,
 				E74A50431C620FE300A83A52 /* GroupViewController.mm in Sources */,
 				E740564915B1EF2D0040F590 /* ACSDPrefsController.mm in Sources */,
 				E740564A15B1EF2D0040F590 /* ACSDrawDocument.mm in Sources */,
 				E740564B15B1EF2D0040F590 /* ACSDrawTextAttachmentCell.mm in Sources */,
 				E740564C15B1EF2D0040F590 /* ACSDRect.mm in Sources */,
-				E74CC8BF1AB1D78B00430A8A /* SVGGradient.mm in Sources */,
+				E74CC8BF1AB1D78B00430A8A /* SVG_Gradient.mm in Sources */,
 				E740564E15B1EF2D0040F590 /* ACSDStroke.mm in Sources */,
 				E740564F15B1EF2D0040F590 /* ACSDStyle.mm in Sources */,
 				E740565015B1EF2D0040F590 /* ACSDSubPath.mm in Sources */,
 				E740565115B1EF2D0040F590 /* ACSDTableView.mm in Sources */,
 				E740565215B1EF2D0040F590 /* ACSDText.mm in Sources */,
+				E70BFB8627B6F2A300768EC0 /* SVG_rect.m in Sources */,
 				E740565315B1EF2D0040F590 /* ACSDTextContainer.mm in Sources */,
 				E740565415B1EF2D0040F590 /* ACSDTextStorage.mm in Sources */,
 				E740565515B1EF2D0040F590 /* ACSDTextView.mm in Sources */,
 				E740565615B1EF2D0040F590 /* AffineTransformAdditions.mm in Sources */,
 				E740565715B1EF2D0040F590 /* AppDelegate.mm in Sources */,
 				E740565815B1EF2D0040F590 /* ArchiveDelegate.mm in Sources */,
+				E70BFBA027B6F2D000768EC0 /* SVG_polygon.m in Sources */,
+				E70BFB9027B6F2BA00768EC0 /* SVG_symbol.m in Sources */,
 				E740565915B1EF2D0040F590 /* ArchiveTextDelegate.mm in Sources */,
 				E740565A15B1EF2D0040F590 /* ArrayAdditions.mm in Sources */,
 				E740565B15B1EF2E0040F590 /* ArrowCell.mm in Sources */,
@@ -1667,11 +1708,14 @@
 				E703A7991A5D7D7E00262DC1 /* SMTextView.m in Sources */,
 				E740567015B1EF2E0040F590 /* FillsController.mm in Sources */,
 				E7066F1B1961B749009C3F30 /* AnimationsController.mm in Sources */,
+				E70BFB8F27B6F2BA00768EC0 /* SVGGraphicalObject.m in Sources */,
+				E70BFB9327B6F2BA00768EC0 /* SVG_line.m in Sources */,
 				E7D18F0F1988EA67000664F6 /* gElement.m in Sources */,
 				E740567115B1EF2E0040F590 /* FlippableView.mm in Sources */,
 				E740567215B1EF2E0040F590 /* float_array.cpp in Sources */,
 				E740567315B1EF2E0040F590 /* FocusCell.mm in Sources */,
 				E740567415B1EF2E0040F590 /* FontFamilyTableSource.mm in Sources */,
+				E70BFB8A27B6F2BA00768EC0 /* SVG_g.m in Sources */,
 				E740567515B1EF2E0040F590 /* FontSizeTableSource.mm in Sources */,
 				E740567615B1EF2E0040F590 /* FreeHandPoint.mm in Sources */,
 				E740567715B1EF2E0040F590 /* gCurve.mm in Sources */,
@@ -1680,6 +1724,7 @@
 				E740567A15B1EF2E0040F590 /* gParent.mm in Sources */,
 				E740567B15B1EF2E0040F590 /* GradientControl.mm in Sources */,
 				E740567C15B1EF2E0040F590 /* GradientDisplay.mm in Sources */,
+				E70BFB9D27B6F2D000768EC0 /* SVG_text.m in Sources */,
 				E77A36DD196841FB0050264B /* OverlayFilter.m in Sources */,
 				E740567D15B1EF2E0040F590 /* GradientElement.mm in Sources */,
 				E740567E15B1EF2E0040F590 /* GradientRulerView.mm in Sources */,
@@ -1688,6 +1733,8 @@
 				E740568115B1EF2E0040F590 /* GraphicView.mm in Sources */,
 				E740568215B1EF2E0040F590 /* GreyView.mm in Sources */,
 				E73BDA9E1A7D44C100557A74 /* SelView.m in Sources */,
+				E70BFB9227B6F2BA00768EC0 /* SVGContainer.m in Sources */,
+				E70BFB8727B6F2BA00768EC0 /* SVG_style.m in Sources */,
 				E740568315B1EF2E0040F590 /* gSubPath.mm in Sources */,
 				E740568415B1EF2E0040F590 /* GXPArchiveDelegate.mm in Sources */,
 				E740568515B1EF2E0040F590 /* HighLightLayer.mm in Sources */,
@@ -1695,15 +1742,20 @@
 				E740568715B1EF2E0040F590 /* HTMLAccumulator.mm in Sources */,
 				E740568815B1EF2E0040F590 /* HtmlExportController.mm in Sources */,
 				E740568915B1EF2E0040F590 /* IComponent.mm in Sources */,
+				E70BFB8D27B6F2BA00768EC0 /* SVG_circle.m in Sources */,
+				E70BFB9427B6F2D000768EC0 /* SVGDimension.m in Sources */,
 				E740568A15B1EF2E0040F590 /* ICurve.mm in Sources */,
 				E740568B15B1EF2E0040F590 /* ICurveElement.mm in Sources */,
 				E740568F15B1EF2E0040F590 /* ImageExportController.mm in Sources */,
 				E7291DA51A2E63BB0082EDA9 /* ACSDFieldEditor.m in Sources */,
 				E740569115B1EF2E0040F590 /* InvocationHolder.mm in Sources */,
 				E740569315B1EF2E0040F590 /* IPolygon.mm in Sources */,
+				E70BFB8E27B6F2BA00768EC0 /* SVG_ellipse.m in Sources */,
 				E740569415B1EF2E0040F590 /* ISegElement.mm in Sources */,
+				E70BFB9727B6F2D000768EC0 /* SVG_radialGradient.m in Sources */,
 				E740569515B1EF2E0040F590 /* ISegment.mm in Sources */,
 				E740569A15B1EF2E0040F590 /* IVertex.mm in Sources */,
+				E70BFB9127B6F2BA00768EC0 /* SVGNode.m in Sources */,
 				E740569B15B1EF2E0040F590 /* KeyedAttributeObject.mm in Sources */,
 				E740569C15B1EF2E0040F590 /* KeyedObject.mm in Sources */,
 				E740569D15B1EF2E0040F590 /* LayerListTableSource.mm in Sources */,
@@ -1724,6 +1776,7 @@
 				E74056AD15B1EF2E0040F590 /* Panel.mm in Sources */,
 				E74056B015B1EF2E0040F590 /* ParaStyleHolder.mm in Sources */,
 				E74056B115B1EF2E0040F590 /* PatternDisplay.mm in Sources */,
+				E70BFB9C27B6F2D000768EC0 /* SVG_use.m in Sources */,
 				E74056B215B1EF2E0040F590 /* PatternPreview.mm in Sources */,
 				E74056B315B1EF2E0040F590 /* PatternWindowController.mm in Sources */,
 				E74056B415B1EF2E0040F590 /* PositionalObject.mm in Sources */,
@@ -1733,18 +1786,23 @@
 				E74056B815B1EF2E0040F590 /* SelectedElement.mm in Sources */,
 				E74056B915B1EF2E0040F590 /* SelectionSet.mm in Sources */,
 				E74056BB15B1EF2E0040F590 /* ShadowCell.mm in Sources */,
+				E70BFB9A27B6F2D000768EC0 /* SVGPaint.m in Sources */,
 				E74056BC15B1EF2E0040F590 /* ShadowListTableSource.mm in Sources */,
 				E74056BE15B1EF2E0040F590 /* ShadowsController.mm in Sources */,
 				E74056BF15B1EF2E0040F590 /* ShadowType.mm in Sources */,
 				E74056C015B1EF2E0040F590 /* SizeController.mm in Sources */,
+				E70BFB8827B6F2BA00768EC0 /* SVG_polyline.m in Sources */,
 				E74056C215B1EF2E0040F590 /* StrokeCell.mm in Sources */,
 				E74056C315B1EF2E0040F590 /* StrokeListTableSource.mm in Sources */,
 				E74056C515B1EF2E0040F590 /* StrokesController.mm in Sources */,
 				E74056C615B1EF2E0040F590 /* StyleTableSource.mm in Sources */,
 				E74056C715B1EF2E0040F590 /* StyleWindowController.mm in Sources */,
+				E70BFBA527B709D900768EC0 /* ACSDSVGImage.mm in Sources */,
 				E74056C815B1EF2E0040F590 /* SubSegment.mm in Sources */,
+				E70BFB8927B6F2BA00768EC0 /* SVGShape.m in Sources */,
 				E74056C915B1EF2E0040F590 /* SVGWriter.mm in Sources */,
 				E74056CA15B1EF2E0040F590 /* TableSource.mm in Sources */,
+				E70BFB8C27B6F2BA00768EC0 /* SVGGradient.m in Sources */,
 				E74056CB15B1EF2E0040F590 /* TextController.mm in Sources */,
 				E74056CD15B1EF2E0040F590 /* TextStyleHolder.mm in Sources */,
 				E74056CE15B1EF2E0040F590 /* TextSubstitution.mm in Sources */,
@@ -1752,6 +1810,7 @@
 				E74056D015B1EF2E0040F590 /* TOCTableSource.mm in Sources */,
 				E74056D115B1EF2E0040F590 /* ToolWindow.mm in Sources */,
 				E74056D215B1EF2E0040F590 /* ToolWindowController.mm in Sources */,
+				E70BFB9E27B6F2D000768EC0 /* SVG_stop.m in Sources */,
 				E74056D315B1EF2E0040F590 /* TriggerController.mm in Sources */,
 				E74056D415B1EF2E0040F590 /* TriggerTableSource.mm in Sources */,
 				E74056D515B1EF2E0040F590 /* ViewController.mm in Sources */,
@@ -1759,6 +1818,7 @@
 				E740570915B2ACB00040F590 /* SnapLine.mm in Sources */,
 				E740573315B2B18C0040F590 /* XXAffineTransform.mm in Sources */,
 				E740573415B2B18C0040F590 /* XXAffineTransformAdditions.mm in Sources */,
+				E70BFB9927B6F2D000768EC0 /* SVG_clipPath.m in Sources */,
 				E740573515B2B18C0040F590 /* XXAttributedString.mm in Sources */,
 				E740573615B2B18C0040F590 /* XXAttributedStringAdditions.mm in Sources */,
 				E740573715B2B18C0040F590 /* XXColor.mm in Sources */,
@@ -1766,11 +1826,15 @@
 				E740573915B2B18C0040F590 /* XXImage.mm in Sources */,
 				E740573A15B2B18C0040F590 /* XXImageAdditions.mm in Sources */,
 				E7F50038179410A1009FEC7D /* NSString+StringAdditions.m in Sources */,
+				E70BFB9527B6F2D000768EC0 /* SVGDocument.m in Sources */,
 				E71E28D11823BAAE00F5C5B9 /* XMLManager.m in Sources */,
 				E7066F1E1961BD4E009C3F30 /* AnimationEntry.m in Sources */,
 				E71E28D21823BAAE00F5C5B9 /* XMLNode.m in Sources */,
 				E7D202D81889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm in Sources */,
+				E70BFB9627B6F2D000768EC0 /* SVG_path.m in Sources */,
+				E70BFB9827B6F2D000768EC0 /* SVGTransform.m in Sources */,
 				E767B7291A3890F20048C6BA /* GraphicOtherController.mm in Sources */,
+				E70BFB9B27B6F2D000768EC0 /* SVG_defs.m in Sources */,
 				E79458B51C66085F00FA88A8 /* SceneView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

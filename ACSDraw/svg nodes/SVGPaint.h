@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alan Smith. All rights reserved.
 //
 
-@import AppKit;
+#import <Cocoa/Cocoa.h>
 
 enum
 {

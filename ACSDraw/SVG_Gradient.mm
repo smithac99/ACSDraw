@@ -6,13 +6,13 @@
 //
 //
 
-#import "SVGGradient.h"
+#import "SVG_Gradient.h"
 #import "SVGWriter.h"
 #import "GradientElement.h"
 #import "geometry.h"
 #import "ACSDGraphic.h"
 
-@implementation SVGGradient
+@implementation SVG_Gradient
 
 -(id)init
 {
@@ -25,7 +25,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-	SVGGradient *g =  [super copyWithZone:zone];
+	SVG_Gradient *g =  [super copyWithZone:zone];
 	[g.attrs addEntriesFromDictionary:self.attrs];
     return g;
 }

@@ -11,7 +11,7 @@
 
 @implementation SVGShape
 
-NSInteger lineCapFromString(NSString* s)
+static NSInteger lineCapFromString(NSString* s)
 {
     if ([s isEqualToString:@"round"])
         return NSLineCapStyleRound;
@@ -22,7 +22,7 @@ NSInteger lineCapFromString(NSString* s)
     return 0;
 }
 
-NSInteger lineJoinFromString(NSString* s)
+static NSInteger lineJoinFromString(NSString* s)
 {
     if ([s isEqualToString:@"round"])
         return NSLineJoinStyleRound;
