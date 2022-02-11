@@ -1812,7 +1812,7 @@ NSString* Creator()
 			float compressionQuality = [[exportImageSettings objectForKey:@"compressionQuality"]floatValue];
 			[self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
 			CGImageRef cgr = [[self frontmostMainWindowController]cgImageFromCurrentPageOfSize:sz];
-			CGImageRetain(cgr);
+			//CGImageRetain(cgr);
 			CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)[sp URL],(CFStringRef)[_exportImageController uti],1,nil);
 			NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:compressionQuality],kCGImageDestinationLossyCompressionQuality,
 								   [NSNumber numberWithInt:resolution],kCGImagePropertyDPIHeight,[NSNumber numberWithInt:resolution],kCGImagePropertyDPIWidth,nil];
