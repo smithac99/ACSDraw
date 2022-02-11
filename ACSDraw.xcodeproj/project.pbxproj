@@ -295,6 +295,64 @@
 		E7066F1D1961BD4E009C3F30 /* AnimationEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationEntry.m; sourceTree = "<group>"; };
 		E7066F1F19669281009C3F30 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E7066F21196692CB009C3F30 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		E70BFB4C27B6F14E00768EC0 /* SVG_defs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_defs.h; sourceTree = "<group>"; };
+		E70BFB4D27B6F14E00768EC0 /* SVG_polygon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_polygon.h; sourceTree = "<group>"; };
+		E70BFB4E27B6F14E00768EC0 /* SVG_stop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_stop.h; sourceTree = "<group>"; };
+		E70BFB4F27B6F14E00768EC0 /* SVG_use.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_use.h; sourceTree = "<group>"; };
+		E70BFB5027B6F14E00768EC0 /* SVG_rect.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_rect.m; sourceTree = "<group>"; };
+		E70BFB5127B6F14E00768EC0 /* SVGContainer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGContainer.m; sourceTree = "<group>"; };
+		E70BFB5227B6F14E00768EC0 /* SVG_style.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_style.h; sourceTree = "<group>"; };
+		E70BFB5327B6F14E00768EC0 /* SVG_svg.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_svg.m; sourceTree = "<group>"; };
+		E70BFB5427B6F14E00768EC0 /* SVG_circle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_circle.h; sourceTree = "<group>"; };
+		E70BFB5527B6F14E00768EC0 /* SVG_symbol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_symbol.h; sourceTree = "<group>"; };
+		E70BFB5627B6F14E00768EC0 /* SVG_path.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_path.h; sourceTree = "<group>"; };
+		E70BFB5727B6F14E00768EC0 /* SVGDimension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGDimension.h; sourceTree = "<group>"; };
+		E70BFB5827B6F14E00768EC0 /* SVG_clipPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_clipPath.h; sourceTree = "<group>"; };
+		E70BFB5927B6F14E00768EC0 /* SVGGraphicalObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGGraphicalObject.m; sourceTree = "<group>"; };
+		E70BFB5A27B6F14E00768EC0 /* SVG_radialGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_radialGradient.h; sourceTree = "<group>"; };
+		E70BFB5B27B6F14E00768EC0 /* SVG_text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_text.h; sourceTree = "<group>"; };
+		E70BFB5C27B6F14E00768EC0 /* SVG_polyline.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_polyline.m; sourceTree = "<group>"; };
+		E70BFB5D27B6F14E00768EC0 /* SVGGradient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGGradient.m; sourceTree = "<group>"; };
+		E70BFB5E27B6F14E00768EC0 /* SVGShape.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGShape.m; sourceTree = "<group>"; };
+		E70BFB5F27B6F14E00768EC0 /* SVGPaint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGPaint.h; sourceTree = "<group>"; };
+		E70BFB6027B6F14E00768EC0 /* SVG_line.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_line.m; sourceTree = "<group>"; };
+		E70BFB6127B6F14E00768EC0 /* SVGPaintServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGPaintServer.h; sourceTree = "<group>"; };
+		E70BFB6227B6F14E00768EC0 /* SVGDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGDocument.h; sourceTree = "<group>"; };
+		E70BFB6327B6F14E00768EC0 /* SVG_ellipse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_ellipse.m; sourceTree = "<group>"; };
+		E70BFB6427B6F14E00768EC0 /* SVG_g.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_g.m; sourceTree = "<group>"; };
+		E70BFB6527B6F14E00768EC0 /* SVGTransform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGTransform.h; sourceTree = "<group>"; };
+		E70BFB6627B6F14E00768EC0 /* SVG_linearGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_linearGradient.h; sourceTree = "<group>"; };
+		E70BFB6727B6F14E00768EC0 /* SVG_pattern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_pattern.h; sourceTree = "<group>"; };
+		E70BFB6827B6F14E00768EC0 /* SVGNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGNode.m; sourceTree = "<group>"; };
+		E70BFB6927B6F14E00768EC0 /* SVG_symbol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_symbol.m; sourceTree = "<group>"; };
+		E70BFB6A27B6F14E00768EC0 /* SVG_circle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_circle.m; sourceTree = "<group>"; };
+		E70BFB6B27B6F14E00768EC0 /* SVG_svg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_svg.h; sourceTree = "<group>"; };
+		E70BFB6C27B6F14E00768EC0 /* SVG_style.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_style.m; sourceTree = "<group>"; };
+		E70BFB6D27B6F14E00768EC0 /* SVG_rect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_rect.h; sourceTree = "<group>"; };
+		E70BFB6E27B6F14E00768EC0 /* SVGContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGContainer.h; sourceTree = "<group>"; };
+		E70BFB6F27B6F14E00768EC0 /* SVG_polygon.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_polygon.m; sourceTree = "<group>"; };
+		E70BFB7027B6F14E00768EC0 /* SVG_stop.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_stop.m; sourceTree = "<group>"; };
+		E70BFB7127B6F14E00768EC0 /* SVG_use.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_use.m; sourceTree = "<group>"; };
+		E70BFB7227B6F14E00768EC0 /* SVG_defs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_defs.m; sourceTree = "<group>"; };
+		E70BFB7327B6F14E00768EC0 /* SVGPaint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGPaint.m; sourceTree = "<group>"; };
+		E70BFB7427B6F14E00768EC0 /* SVGShape.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGShape.h; sourceTree = "<group>"; };
+		E70BFB7527B6F14E00768EC0 /* SVGGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGGradient.h; sourceTree = "<group>"; };
+		E70BFB7627B6F14E00768EC0 /* SVG_polyline.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_polyline.h; sourceTree = "<group>"; };
+		E70BFB7727B6F14E00768EC0 /* SVG_text.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_text.m; sourceTree = "<group>"; };
+		E70BFB7827B6F14E00768EC0 /* SVG_radialGradient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_radialGradient.m; sourceTree = "<group>"; };
+		E70BFB7927B6F14E00768EC0 /* SVGDimension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGDimension.m; sourceTree = "<group>"; };
+		E70BFB7A27B6F14E00768EC0 /* SVG_clipPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_clipPath.m; sourceTree = "<group>"; };
+		E70BFB7B27B6F14E00768EC0 /* SVGGraphicalObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGGraphicalObject.h; sourceTree = "<group>"; };
+		E70BFB7C27B6F14E00768EC0 /* SVG_path.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_path.m; sourceTree = "<group>"; };
+		E70BFB7D27B6F14F00768EC0 /* SVG_ellipse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_ellipse.h; sourceTree = "<group>"; };
+		E70BFB7E27B6F14F00768EC0 /* SVGDocument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGDocument.m; sourceTree = "<group>"; };
+		E70BFB7F27B6F14F00768EC0 /* SVGPaintServer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGPaintServer.m; sourceTree = "<group>"; };
+		E70BFB8027B6F14F00768EC0 /* SVG_line.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_line.h; sourceTree = "<group>"; };
+		E70BFB8127B6F14F00768EC0 /* SVGNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGNode.h; sourceTree = "<group>"; };
+		E70BFB8227B6F14F00768EC0 /* SVG_pattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_pattern.m; sourceTree = "<group>"; };
+		E70BFB8327B6F14F00768EC0 /* SVG_linearGradient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_linearGradient.m; sourceTree = "<group>"; };
+		E70BFB8427B6F14F00768EC0 /* SVGTransform.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGTransform.m; sourceTree = "<group>"; };
+		E70BFB8527B6F14F00768EC0 /* SVG_g.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_g.h; sourceTree = "<group>"; };
 		E70E81C5249E5D27003CDF0D /* scale.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scale.tiff; path = tiffs/scale.tiff; sourceTree = "<group>"; };
 		E70E81C6249E5D27003CDF0D /* scalealt.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scalealt.tiff; path = tiffs/scalealt.tiff; sourceTree = "<group>"; };
 		E71E28CD1823BAAE00F5C5B9 /* XMLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLManager.h; sourceTree = "<group>"; };
@@ -767,6 +825,71 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E70BFB4B27B6F14E00768EC0 /* svg nodes */ = {
+			isa = PBXGroup;
+			children = (
+				E70BFB4C27B6F14E00768EC0 /* SVG_defs.h */,
+				E70BFB4D27B6F14E00768EC0 /* SVG_polygon.h */,
+				E70BFB4E27B6F14E00768EC0 /* SVG_stop.h */,
+				E70BFB4F27B6F14E00768EC0 /* SVG_use.h */,
+				E70BFB5027B6F14E00768EC0 /* SVG_rect.m */,
+				E70BFB5127B6F14E00768EC0 /* SVGContainer.m */,
+				E70BFB5227B6F14E00768EC0 /* SVG_style.h */,
+				E70BFB5327B6F14E00768EC0 /* SVG_svg.m */,
+				E70BFB5427B6F14E00768EC0 /* SVG_circle.h */,
+				E70BFB5527B6F14E00768EC0 /* SVG_symbol.h */,
+				E70BFB5627B6F14E00768EC0 /* SVG_path.h */,
+				E70BFB5727B6F14E00768EC0 /* SVGDimension.h */,
+				E70BFB5827B6F14E00768EC0 /* SVG_clipPath.h */,
+				E70BFB5927B6F14E00768EC0 /* SVGGraphicalObject.m */,
+				E70BFB5A27B6F14E00768EC0 /* SVG_radialGradient.h */,
+				E70BFB5B27B6F14E00768EC0 /* SVG_text.h */,
+				E70BFB5C27B6F14E00768EC0 /* SVG_polyline.m */,
+				E70BFB5D27B6F14E00768EC0 /* SVGGradient.m */,
+				E70BFB5E27B6F14E00768EC0 /* SVGShape.m */,
+				E70BFB5F27B6F14E00768EC0 /* SVGPaint.h */,
+				E70BFB6027B6F14E00768EC0 /* SVG_line.m */,
+				E70BFB6127B6F14E00768EC0 /* SVGPaintServer.h */,
+				E70BFB6227B6F14E00768EC0 /* SVGDocument.h */,
+				E70BFB6327B6F14E00768EC0 /* SVG_ellipse.m */,
+				E70BFB6427B6F14E00768EC0 /* SVG_g.m */,
+				E70BFB6527B6F14E00768EC0 /* SVGTransform.h */,
+				E70BFB6627B6F14E00768EC0 /* SVG_linearGradient.h */,
+				E70BFB6727B6F14E00768EC0 /* SVG_pattern.h */,
+				E70BFB6827B6F14E00768EC0 /* SVGNode.m */,
+				E70BFB6927B6F14E00768EC0 /* SVG_symbol.m */,
+				E70BFB6A27B6F14E00768EC0 /* SVG_circle.m */,
+				E70BFB6B27B6F14E00768EC0 /* SVG_svg.h */,
+				E70BFB6C27B6F14E00768EC0 /* SVG_style.m */,
+				E70BFB6D27B6F14E00768EC0 /* SVG_rect.h */,
+				E70BFB6E27B6F14E00768EC0 /* SVGContainer.h */,
+				E70BFB6F27B6F14E00768EC0 /* SVG_polygon.m */,
+				E70BFB7027B6F14E00768EC0 /* SVG_stop.m */,
+				E70BFB7127B6F14E00768EC0 /* SVG_use.m */,
+				E70BFB7227B6F14E00768EC0 /* SVG_defs.m */,
+				E70BFB7327B6F14E00768EC0 /* SVGPaint.m */,
+				E70BFB7427B6F14E00768EC0 /* SVGShape.h */,
+				E70BFB7527B6F14E00768EC0 /* SVGGradient.h */,
+				E70BFB7627B6F14E00768EC0 /* SVG_polyline.h */,
+				E70BFB7727B6F14E00768EC0 /* SVG_text.m */,
+				E70BFB7827B6F14E00768EC0 /* SVG_radialGradient.m */,
+				E70BFB7927B6F14E00768EC0 /* SVGDimension.m */,
+				E70BFB7A27B6F14E00768EC0 /* SVG_clipPath.m */,
+				E70BFB7B27B6F14E00768EC0 /* SVGGraphicalObject.h */,
+				E70BFB7C27B6F14E00768EC0 /* SVG_path.m */,
+				E70BFB7D27B6F14F00768EC0 /* SVG_ellipse.h */,
+				E70BFB7E27B6F14F00768EC0 /* SVGDocument.m */,
+				E70BFB7F27B6F14F00768EC0 /* SVGPaintServer.m */,
+				E70BFB8027B6F14F00768EC0 /* SVG_line.h */,
+				E70BFB8127B6F14F00768EC0 /* SVGNode.h */,
+				E70BFB8227B6F14F00768EC0 /* SVG_pattern.m */,
+				E70BFB8327B6F14F00768EC0 /* SVG_linearGradient.m */,
+				E70BFB8427B6F14F00768EC0 /* SVGTransform.m */,
+				E70BFB8527B6F14F00768EC0 /* SVG_g.h */,
+			);
+			path = "svg nodes";
+			sourceTree = "<group>";
+		};
 		E74054B215B1ED040040F590 = {
 			isa = PBXGroup;
 			children = (
@@ -818,6 +941,7 @@
 				E7E1B46E16F475AA0090AB26 /* Panel Controllers */,
 				E7E1B46D16F475910090AB26 /* Categories */,
 				E7E1B46C16F475840090AB26 /* Graphics Objects */,
+				E70BFB4B27B6F14E00768EC0 /* svg nodes */,
 				E7E1B46B16F475660090AB26 /* Main UI */,
 				E740553815B1EF2D0040F590 /* BackingView.h */,
 				E740553915B1EF2D0040F590 /* BackingView.mm */,
