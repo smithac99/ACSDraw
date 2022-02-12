@@ -7,6 +7,7 @@
 //
 
 #import "SVGDocument.h"
+#import "XMLManager.h"
 
 @interface SVGDocument ()
 
@@ -20,7 +21,7 @@
 {
     if (self = [self init])
     {
-        self.backgroundColour = [NSColor whiteColor];
+        self.backgroundColour = [NSColor clearColor];
         if ([xmlNode.nodeName isEqualToString:@"svg"])
         {
             self.context = [NSMutableDictionary dictionary];
@@ -35,6 +36,15 @@
     return self;
 }
 
+-(instancetype)initWithData:(NSData*)data
+{
+	if (self = [self initWithXMLNode:[[[XMLManager alloc]init]parseData:data]])
+	{
+		self.svgData = data;
+	}
+	return self;
+}
+
 +(NSDictionary*)defaultDocumentAttributes
 {
     return @{
@@ -45,6 +55,11 @@
         @"stroke-width":@"1.0",
         @"stroke-opacity":@"1.0"
     };
+}
+
+-(NSSize)size
+{
+	return NSMakeSize(self.svgNode.width, self.svgNode.height);
 }
 
 -(void)drawInRect:(NSRect)destRect

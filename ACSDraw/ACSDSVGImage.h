@@ -10,8 +10,9 @@
 
 @interface ACSDSVGImage : ACSDImage
 
-@property NSData *svgData;
-@property SVGDocument *svgDocument;
+@property (retain) SVGDocument *svgDocument;
+
+-(id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l document:(SVGDocument*)svgDoc;
 
 @end
 

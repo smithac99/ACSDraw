@@ -12,9 +12,9 @@
 
 @interface SVGTransform : NSObject
 
-@property NSAffineTransform *nativeTransform;
-@property NSString *function;
-@property NSArray<NSNumber*> *numbers;
+@property (retain) NSAffineTransform *nativeTransform;
+@property (retain) NSString *function;
+@property (retain) NSArray<NSNumber*> *numbers;
 
 -(instancetype)initWithFunction:(NSString*)function numbers:(NSArray*)numbers;
 +(NSArray*)transformsForInputString:(NSString*)inputString;

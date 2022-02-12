@@ -8,7 +8,7 @@
 
 #import "SVG_style.h"
 
-NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
+static NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     NSScanner *scanner = [NSScanner scannerWithString:cssstr];

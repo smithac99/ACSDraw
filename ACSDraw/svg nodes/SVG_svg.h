@@ -13,6 +13,7 @@
 @interface SVG_svg : SVGContainer
 
 @property NSRect viewBox;
+@property float width,height;
 
 @end
 

@@ -24,14 +24,16 @@
 -(void)extractViewBox:(NSMutableDictionary*)context
 {
     id vb = self.buildAttributes[@"viewBox"];
+	float iw = [context[@"_vwidth"]floatValue];
+	float ih = [context[@"_vheight"]floatValue];
     if (vb == nil)
     {
-        float iw = [context[@"_vwidth"]floatValue];
-        float ih = [context[@"_vheight"]floatValue];
         float x = [[self processDimension:@"x" defaultValue:0 size:iw]resolveValue:@{}];
         float y = [[self processDimension:@"y" defaultValue:0 size:ih]resolveValue:@{}];
         float w = [[self processDimension:@"width" defaultValue:iw size:iw]resolveValue:@{}];;
         float h = [[self processDimension:@"height" defaultValue:ih size:ih]resolveValue:@{}];
+		self.width = w;
+		self.height = h;
         self.viewBox = NSMakeRect(x, y, w, h);
     }
     else
@@ -39,6 +41,8 @@
         if ([vb isKindOfClass:[NSString class]])
         {
             self.viewBox = [self getViewBoxFromString:vb];
+			self.width = [[self processDimension:@"width" defaultValue:self.viewBox.size.width size:iw]resolveValue:@{}];;
+			self.height = [[self processDimension:@"height" defaultValue:self.viewBox.size.height size:ih]resolveValue:@{}];
         }
     }
     self.buildAttributes[@"_viewbox"] = [NSValue valueWithRect:self.viewBox];

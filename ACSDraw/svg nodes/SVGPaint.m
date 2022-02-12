@@ -28,7 +28,7 @@
     return self;
 }
 
-NSColor *colorFromRGBString(NSString* str)
+static NSColor *colorFromRGBString(NSString* str)
 {
     static NSMutableDictionary *colourLiteralDictionary = nil;
     if ([str isEqualToString:@"none"])

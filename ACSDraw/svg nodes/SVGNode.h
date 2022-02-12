@@ -15,10 +15,10 @@
 
 @interface SVGNode : NSObject<NSCopying>
 
-@property NSMutableDictionary *buildAttributes;
-@property NSMutableDictionary *processedAttributes;
-@property NSMutableDictionary *resolvedAttributes;
-@property NSMutableArray<SVGNode*> *children;
+@property (retain) NSMutableDictionary *buildAttributes;
+@property (retain) NSMutableDictionary *processedAttributes;
+@property (retain) NSMutableDictionary *resolvedAttributes;
+@property (retain) NSMutableArray<SVGNode*> *children;
 @property (weak) SVGNode *parent;
 @property BOOL resolved,processed;
 

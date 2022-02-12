@@ -8,7 +8,7 @@
 
 #import "SVGTransform.h"
 
-NSArray *componentsOfTransformString(NSString *inputString)
+static NSArray *componentsOfTransformString(NSString *inputString)
 {
     static NSMutableCharacterSet *skippers = nil;
     if (skippers == nil)

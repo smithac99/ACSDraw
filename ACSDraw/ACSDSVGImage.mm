@@ -16,14 +16,11 @@
 
 @implementation ACSDSVGImage
 
--(id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l svgData:(NSData*)svgData
+-(id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l document:(SVGDocument*)svgDoc
 {
 	if ((self = [super initWithName:n fill:f stroke:str rect:r layer:l image:nil]))
 	{
-		self.svgData = svgData;
-		XMLManager *xmlMan = [[XMLManager alloc]init];
-		XMLNode *xmlRoot = [xmlMan parseData:svgData];
-		self.svgDocument = [[SVGDocument alloc]initWithXMLNode:xmlRoot];
+		self.svgDocument = svgDoc;
 		NSRect rect = self.svgDocument.svgNode.viewBox;
 		frame.origin = NSMakePoint(0.0,0.0);
 		frame.size = rect.size;
@@ -34,15 +31,15 @@
 - (void)encodeWithCoder:(NSCoder*)coder
 {
 	[super encodeWithCoder:coder];
-	[coder encodeObject:self.svgData forKey:@"svgData"];
+	[coder encodeObject:self.svgDocument.svgData forKey:@"svgData"];
 }
 
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super initWithCoder:coder];
-	self.svgData = [coder decodeObjectForKey:@"svgData"];
+	NSData *svgData = [coder decodeObjectForKey:@"svgData"];
 	XMLManager *xmlMan = [[XMLManager alloc]init];
-	XMLNode *xmlRoot = [xmlMan parseData:self.svgData];
+	XMLNode *xmlRoot = [xmlMan parseData:svgData];
 	self.svgDocument = [[SVGDocument alloc]initWithXMLNode:xmlRoot];
 	return self;
 }
@@ -50,10 +47,8 @@
 - (id)copyWithZone:(NSZone *)zone
 {
 	ACSDSVGImage *obj = [super copyWithZone:zone];
-	obj.svgData = self.svgData;
-	XMLManager *xmlMan = [[XMLManager alloc]init];
-	XMLNode *xmlRoot = [xmlMan parseData:obj.svgData];
-	obj.svgDocument = [[SVGDocument alloc]initWithXMLNode:xmlRoot];
+	NSData *svgData = self.svgDocument.svgData;
+	obj.svgDocument = [[SVGDocument alloc]initWithData:svgData];
 	[obj invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
 	return obj;
 }

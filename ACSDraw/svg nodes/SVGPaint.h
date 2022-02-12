@@ -18,7 +18,7 @@ enum
 @interface SVGPaint : NSObject
 
 @property int paintType;
-@property id ref;
+@property (retain) id ref;
 
 -(instancetype)initWithObj:(id)obj;
 -(instancetype)initWithString:(NSString*)attrstr;

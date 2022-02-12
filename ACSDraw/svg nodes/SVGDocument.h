@@ -11,11 +11,15 @@
 
 @interface SVGDocument : SVGNode
 
-@property XMLNode *rootXMLNode;
-@property SVG_svg *svgNode;
-@property NSColor *backgroundColour;
-@property NSMutableDictionary *context;
+@property (retain) XMLNode *rootXMLNode;
+@property (retain) SVG_svg *svgNode;
+@property (retain) NSData *svgData;
+@property (retain) NSColor *backgroundColour;
+@property (retain) NSMutableDictionary *context;
+@property (retain) NSURL *fileURL;
 -(instancetype)initWithXMLNode:(XMLNode*)xmlNode;
+-(instancetype)initWithData:(NSData*)data;
+-(NSSize)size;
 -(void)drawInRect:(NSRect)destRect;
 @end
 
