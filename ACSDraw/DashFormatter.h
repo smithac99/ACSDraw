@@ -10,7 +10,5 @@
 
 
 @interface DashFormatter :  NSFormatter 
-   {
-   }
 
 @end

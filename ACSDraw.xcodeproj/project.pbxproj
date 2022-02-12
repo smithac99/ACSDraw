@@ -48,7 +48,7 @@
 		E71E28D21823BAAE00F5C5B9 /* XMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = E71E28D01823BAAE00F5C5B9 /* XMLNode.m */; };
 		E7291DA51A2E63BB0082EDA9 /* ACSDFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = E7291DA41A2E63BB0082EDA9 /* ACSDFieldEditor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E73184BF1A71BEC30011A1BB /* eye3.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E73184BE1A71BEC30011A1BB /* eye3.tiff */; };
-		E73BDA9B1A7D428900557A74 /* FillView.m in Sources */ = {isa = PBXBuildFile; fileRef = E73BDA9A1A7D428900557A74 /* FillView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E73BDA9B1A7D428900557A74 /* FillView.m in Sources */ = {isa = PBXBuildFile; fileRef = E73BDA9A1A7D428900557A74 /* FillView.m */; };
 		E73BDA9E1A7D44C100557A74 /* SelView.m in Sources */ = {isa = PBXBuildFile; fileRef = E73BDA9D1A7D44C100557A74 /* SelView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74054C215B1ED040040F590 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E74054C115B1ED040040F590 /* Cocoa.framework */; };
 		E74054CC15B1ED040040F590 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E74054CA15B1ED040040F590 /* InfoPlist.strings */; };
@@ -108,7 +108,7 @@
 		E740566715B1EF2E0040F590 /* ContainerTab.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740554D15B1EF2D0040F590 /* ContainerTab.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740566815B1EF2E0040F590 /* ContainerTabSubview.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740554F15B1EF2D0040F590 /* ContainerTabSubview.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740566915B1EF2E0040F590 /* ContainerTabView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740555115B1EF2D0040F590 /* ContainerTabView.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		E740566A15B1EF2E0040F590 /* DashFormatter.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740555315B1EF2D0040F590 /* DashFormatter.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740566A15B1EF2E0040F590 /* DashFormatter.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740555315B1EF2D0040F590 /* DashFormatter.mm */; };
 		E740566B15B1EF2E0040F590 /* DocController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740555515B1EF2D0040F590 /* DocController.mm */; };
 		E740566E15B1EF2E0040F590 /* FaceTableSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740555B15B1EF2D0040F590 /* FaceTableSource.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740567015B1EF2E0040F590 /* FillsController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740555F15B1EF2D0040F590 /* FillsController.mm */; };
@@ -156,8 +156,8 @@
 		E74056A315B1EF2E0040F590 /* MarkerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055C615B1EF2D0040F590 /* MarkerView.mm */; };
 		E74056A415B1EF2E0040F590 /* MasterListTableSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055C815B1EF2D0040F590 /* MasterListTableSource.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056A615B1EF2E0040F590 /* ObjectAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055CC15B1EF2D0040F590 /* ObjectAdditions.mm */; };
-		E74056A715B1EF2E0040F590 /* ObjectPDFData.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055CE15B1EF2D0040F590 /* ObjectPDFData.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		E74056A815B1EF2E0040F590 /* ObjectView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055D015B1EF2D0040F590 /* ObjectView.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E74056A715B1EF2E0040F590 /* ObjectPDFData.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055CE15B1EF2D0040F590 /* ObjectPDFData.mm */; };
+		E74056A815B1EF2E0040F590 /* ObjectView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055D015B1EF2D0040F590 /* ObjectView.mm */; };
 		E74056A915B1EF2E0040F590 /* PageListTableSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055D215B1EF2D0040F590 /* PageListTableSource.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056AA15B1EF2E0040F590 /* PagesController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055D415B1EF2D0040F590 /* PagesController.mm */; };
 		E74056AC15B1EF2E0040F590 /* PalletteViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055D815B1EF2D0040F590 /* PalletteViewController.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -171,7 +171,7 @@
 		E74056B615B1EF2E0040F590 /* RotateSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = E74055EC15B1EF2D0040F590 /* RotateSheetController.m */; };
 		E74056B715B1EF2E0040F590 /* SelCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055EE15B1EF2D0040F590 /* SelCell.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056B815B1EF2E0040F590 /* SelectedElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055F015B1EF2D0040F590 /* SelectedElement.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		E74056B915B1EF2E0040F590 /* SelectionSet.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055F215B1EF2D0040F590 /* SelectionSet.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E74056B915B1EF2E0040F590 /* SelectionSet.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055F215B1EF2D0040F590 /* SelectionSet.mm */; };
 		E74056BB15B1EF2E0040F590 /* ShadowCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055F615B1EF2D0040F590 /* ShadowCell.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056BC15B1EF2E0040F590 /* ShadowListTableSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055F815B1EF2D0040F590 /* ShadowListTableSource.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056BE15B1EF2E0040F590 /* ShadowsController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055FC15B1EF2D0040F590 /* ShadowsController.mm */; };
@@ -184,7 +184,7 @@
 		E74056C715B1EF2E0040F590 /* StyleWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740560E15B1EF2D0040F590 /* StyleWindowController.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056C815B1EF2E0040F590 /* SubSegment.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561015B1EF2D0040F590 /* SubSegment.mm */; };
 		E74056C915B1EF2E0040F590 /* SVGWriter.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561215B1EF2D0040F590 /* SVGWriter.mm */; };
-		E74056CA15B1EF2E0040F590 /* TableSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561415B1EF2D0040F590 /* TableSource.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E74056CA15B1EF2E0040F590 /* TableSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561415B1EF2D0040F590 /* TableSource.mm */; };
 		E74056CB15B1EF2E0040F590 /* TextController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561715B1EF2D0040F590 /* TextController.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056CD15B1EF2E0040F590 /* TextStyleHolder.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561B15B1EF2D0040F590 /* TextStyleHolder.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E74056CE15B1EF2E0040F590 /* TextSubstitution.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740561D15B1EF2D0040F590 /* TextSubstitution.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -210,7 +210,7 @@
 		E740570415B1EF950040F590 /* StylePanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056F215B1EF950040F590 /* StylePanel.nib */; };
 		E740570515B1EF950040F590 /* TocPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056F415B1EF950040F590 /* TocPanel.nib */; };
 		E740570615B1EF950040F590 /* ToolPalette.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056F615B1EF950040F590 /* ToolPalette.nib */; };
-		E740570915B2ACB00040F590 /* SnapLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740570815B2ACAF0040F590 /* SnapLine.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740570915B2ACB00040F590 /* SnapLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740570815B2ACAF0040F590 /* SnapLine.mm */; };
 		E740573315B2B18C0040F590 /* XXAffineTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740572415B2B18C0040F590 /* XXAffineTransform.mm */; };
 		E740573415B2B18C0040F590 /* XXAffineTransformAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740572615B2B18C0040F590 /* XXAffineTransformAdditions.mm */; };
 		E740573515B2B18C0040F590 /* XXAttributedString.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740572815B2B18C0040F590 /* XXAttributedString.mm */; };

@@ -10,11 +10,9 @@
 #import "ACSDGraphic.h"
 
 @interface ObjectPDFData : NSObject 
-   {
-	NSPoint offset;
-	NSData *pdfData;
-	NSRect bounds;
-   }
+@property NSPoint offset;
+@property (retain) NSData *pdfData;
+@property NSRect bounds;
 
 - (id)initWithObject:(ACSDGraphic*)object;
 - (NSPoint)offset;

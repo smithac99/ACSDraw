@@ -10,9 +10,9 @@
 
 
 @interface SelectionSet : NSObject 
-   {
+{
 	NSMutableSet *objects;
-   }
+}
 
 - (id)initWithCapacity:(unsigned)numItems;
 - (NSArray*)allObjects;

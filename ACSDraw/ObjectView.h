@@ -12,10 +12,10 @@
 
 
 @interface ObjectView : FlippableView
-   {
+{
 	ACSDGraphic *graphic;
 	float xOffset,yOffset;
-   }
+}
 
 - (id)initWithObject:(ACSDGraphic*)object;
 - (NSPoint)offset;

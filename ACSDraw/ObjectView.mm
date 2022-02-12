@@ -12,7 +12,7 @@
 @implementation ObjectView
 
 - (id)initWithObject:(ACSDGraphic*)object
-   {
+{
 	NSRect displayBounds = [object displayBounds];
 	graphic = object;
 	xOffset = displayBounds.origin.x;
@@ -21,20 +21,20 @@
 	displayBounds.origin.y = 0.0;
     self = [super initWithFrame:displayBounds];
     return self;
-   }
+}
 
 - (void)drawRect:(NSRect)rect
-   {
+{
 	NSAffineTransform *tf = [NSAffineTransform transform];
 	[tf translateXBy:-xOffset yBy:-yOffset];
 	[tf concat];
 	[graphic drawObject:rect view:nil options:nil];
-   }
+}
 
 - (NSPoint)offset
-   {
+{
 	return NSMakePoint(xOffset,yOffset);
-   }	
+}	
 
 
 @end

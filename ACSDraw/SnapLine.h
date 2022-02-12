@@ -10,20 +10,20 @@
 
 
 enum
-   {
+{
 	SNAPLINE_HORIZONTAL,
 	SNAPLINE_VERTICAL
-   };
+};
 
 @interface SnapLine : NSObject 
-   {
+{
 	NSView *graphicView;
 	float location;
 	int orientation;
 	BOOL visible;
 	NSColor *colour;
 	NSRect displayRect;
-   }
+}
 
 -(id)initWithGraphicView:(NSView*)gView orientation:(int)orn;
 -(void)setLocation:(float)loc;
