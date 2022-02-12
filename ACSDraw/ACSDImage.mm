@@ -1058,15 +1058,18 @@ CGContextRef CreateArgbContext(int width,int height)
 
 -(void)createHistogram
 {
-	NSSize sz = [image size];
-	CGContextRef context = CreateArgbContext(sz.width, sz.height);
-	[NSGraphicsContext saveGraphicsState];
-	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
-	[image drawAtPoint:NSMakePoint(0.0,0.0) fromRect:NSMakeRect(0.0,0.0,sz.width,sz.height) operation:NSCompositeSourceOver fraction:1.0];
-	[NSGraphicsContext restoreGraphicsState];
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		[self doHistogramWithContext:context width:sz.width height:sz.height];
-	});
+	if (image)
+	{
+		NSSize sz = [image size];
+		CGContextRef context = CreateArgbContext(sz.width, sz.height);
+		[NSGraphicsContext saveGraphicsState];
+		[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
+		[image drawAtPoint:NSMakePoint(0.0,0.0) fromRect:NSMakeRect(0.0,0.0,sz.width,sz.height) operation:NSCompositeSourceOver fraction:1.0];
+		[NSGraphicsContext restoreGraphicsState];
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			[self doHistogramWithContext:context width:sz.width height:sz.height];
+		});
+	}
 }
 
 -(float*)histogram
