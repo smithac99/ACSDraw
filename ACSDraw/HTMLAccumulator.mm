@@ -39,16 +39,6 @@ HTMLAccumulator *_sharedHTMLAccumulator = nil;
 	return self;
 }
 
--(void)dealloc
-{
-	[htmlDict release];
-	[queue release];
-	[HTMLSearchStrings release];
-	[name release];
-	[cLock release];
-	[super dealloc];
-}
-
 -(void)awakeFromNib
 {
 	_sharedHTMLAccumulator = self;
@@ -138,7 +128,7 @@ HTMLAccumulator *_sharedHTMLAccumulator = nil;
 {
 	if (!HTMLSearchStrings)
 	{
-		HTMLSearchStrings = [[NSArray arrayWithObjects:@"infobox geography vcard",@"infobox geography",@"infobox vcard",@"infobox",nil]retain];
+		HTMLSearchStrings = [NSArray arrayWithObjects:@"infobox geography vcard",@"infobox geography",@"infobox vcard",@"infobox",nil];
 		if (!HTMLSearchStrings)
 			return;
 	}

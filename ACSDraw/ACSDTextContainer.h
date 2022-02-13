@@ -10,10 +10,9 @@
 @class ACSDText;
 
 @interface ACSDTextContainer : NSTextContainer
-   {
+{
 	ACSDText *graphic;
-	
-   }
+}
 
 - (id)initWithContainerSize:(NSSize)aSize graphic:(ACSDText*)g;
 

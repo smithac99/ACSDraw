@@ -8,6 +8,7 @@
 
 #import "ContainerTabSubview.h"
 #import "ContainerPalletteController.h"
+
 @interface ContainerTabSubview()
 {
     ContainerPalletteController *createdcpc;
@@ -20,17 +21,10 @@
 {
     if (self = [super initWithFrame:frame])
 	{
-        title = [t retain];
-		cpController = cpc;
+        _title = t;
+		_cpController = cpc;
     }
     return self;
-}
-
--(void)dealloc
-{
-	if (title)
-		[title release];
-	[super dealloc];
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
@@ -40,7 +34,7 @@
 
 - (void)closeTab:(id)sender
 {
-	[cpController removeTab:self];
+	[_cpController removeTab:self];
 }
 
 -(void)allocCloseButton
@@ -48,11 +42,9 @@
 	NSRect r = [self bounds];
 	r.size.width = r.size.height;
 	r = NSInsetRect(r,3,3);
-	NSButton *b = [[[NSButton alloc]initWithFrame:r]autorelease];
+	NSButton *b = [[NSButton alloc]initWithFrame:r];
 	[b setButtonType:NSMomentaryPushInButton];
-//	[b setTitle:@""];
 	[b setBezelStyle:NSShadowlessSquareBezelStyle];
-//	[b setImagePosition:NSNoImage];
 	[b setImagePosition:NSImageOnly];
 	NSImage *im = [NSImage imageNamed:@"close"];
 	[b setImage:im];
@@ -62,14 +54,9 @@
 	[b setTarget:self];
 }
 
--(BOOL)active
-{
-	return active;
-}
-
 -(void)setActive:(BOOL)b
 {
-	active = b;
+	_active = b;
     [self setNeedsDisplay:YES];
 }
 
@@ -88,11 +75,11 @@
 {
 	if ([[self subviews] count] == 0)
 		[self allocCloseButton];
-	[[NSColor colorWithCalibratedWhite:0.2 alpha:(active)?1.0:0.5]set];
+	[[NSColor colorWithCalibratedWhite:0.2 alpha:(_active)?1.0:0.5]set];
 	NSBezierPath *p = [self path];
 	[p fill];
 	[[NSColor whiteColor]set];
-	NSAttributedString *string = [[NSAttributedString alloc]initWithString:title attributes:
+	NSAttributedString *string = [[NSAttributedString alloc]initWithString:_title attributes:
 		[NSDictionary dictionaryWithObjectsAndKeys:
 			[NSFont systemFontOfSize:[NSFont smallSystemFontSize]],NSFontAttributeName,
 			[NSColor whiteColor],NSForegroundColorAttributeName,
@@ -101,7 +88,6 @@
 	if (l < 0.0)
 		l = 0.0;
 	[string drawAtPoint:NSMakePoint(l,1.0)];
-	[string release];
 }
 
 -(void)mouseUp:(NSEvent *)event
@@ -142,16 +128,13 @@
 	r.size.width = r.size.height = 1.0;
 	r.origin = [theEvent locationInWindow];
 	dragOffset = [[self window]convertRectToScreen:r].origin;
-	//dragOffset = [[self window]convertBaseToScreen:[theEvent locationInWindow]];
-	[cpController tabHit:self];
+	[_cpController tabHit:self];
 	r.origin = dragOffset;
 	dragOffset = [[self window]convertRectFromScreen:r].origin;
 	//dragOffset = [[self window]convertScreenToBase:dragOffset];
 	if (([theEvent modifierFlags] & NSCommandKeyMask)!=0 && [theEvent window] == [self window])
     {
-		createdcpc = [cpController detachTab:self];
-        //ContainerTabSubview *tsv = [createdcpc tabSubviews][0];
-        //[tsv mouseDown:theEvent];
+		createdcpc = [_cpController detachTab:self];
         CGPoint pt = NSPointToCGPoint(NSEvent.mouseLocation);
         CGEventRef ev = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDown, pt, kCGMouseButtonLeft);
         CGEventPost(kCGAnnotatedSessionEventTap, ev);

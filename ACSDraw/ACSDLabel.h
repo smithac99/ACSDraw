@@ -12,13 +12,14 @@
 @class SVGWriter;
 
 @interface ACSDLabel : NSObject 
-   {
+{
 	ACSDGraphic *graphic;
-	NSTextStorage *contents;
-	float verticalPosition,
-		horizontalPosition;		//-1.0 to 1.0
-	BOOL flipped;
-   }
+}
+
+@property 	float verticalPosition,
+horizontalPosition;		//-1.0 to 1.0
+@property BOOL flipped;
+@property (retain) NSTextStorage *contents;
 
 - (id)initWithGraphic:(ACSDGraphic*)g;
 - (id)initWithGraphic:(ACSDGraphic*)g contents:(NSTextStorage*)c verticalPosition:(float)vP horizontalPosition:(float)hP flipped:(bool)flip;
@@ -26,13 +27,7 @@
 - (void)setContents:(NSTextStorage*)cont;
 - (void)setLabel:(NSTextStorage*)cont;
 
-- (float)verticalPosition;
-- (float)horizontalPosition;
 - (void)setGraphic:(ACSDGraphic*)g;
-- (void)setVerticalPosition:(float)vp;
-- (void)setHorizontalPosition:(float)hp;
-- (void)setFlipped:(BOOL)f;
-- (BOOL)flipped;
 - (void)drawForPath:(NSBezierPath*)bzP;
 -(float)paddingRequiredForPath:(NSBezierPath*)bzP;
 -(void)writeSVGData:(SVGWriter*)svgWriter;

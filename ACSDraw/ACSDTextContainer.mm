@@ -19,60 +19,60 @@ float minY(NSRect* rList,int count);
 @implementation ACSDTextContainer
 
 - (id)initWithContainerSize:(NSSize)aSize graphic:(ACSDText*)g
-   {
+{
 	if (self = [super initWithContainerSize:aSize])
 		graphic = g;
 	return self;
-   }
+}
 
 - (BOOL)isSimpleRectangularTextContainer
-   {
+{
 	return ([graphic flowMethod] == FLOW_METHOD_NONE) || ([[graphic objectsInTheWay]count] == 0) ;
-   }
+}
 
 void sortRectsByX(NSRect* rList,NSInteger count)
-   {
+{
 	BOOL changed = YES;
 	while (changed)
-	   {
+	{
 		changed = NO;
 		for (int i = 1;i < count;i++)
 			if (rList[i].origin.x < rList[i-1].origin.x)
-			   {
+			{
 				NSRect temp = rList[i];
 				rList[i] = rList[i-1];
 				rList[i-1] = temp;
 				changed = YES;
-			   }
-	   }
-   }
+			}
+	}
+}
 
 float minY(NSRect* rList,int count)
-   {
+{
 	if (count == 0)
 		return 0.0;
 	float minnY =  rList[0].origin.y;
 	for (int i = 1;i < count;i++)
-	   {
+	{
 		if (rList[i].origin.y < minnY)
 			minnY = rList[i].origin.y;
-	   }
+	}
 	return minnY;
-   }
+}
 
 -(NSRect)containerCoordsToGlobalCoords:(NSRect)r
-   {
+{
 	NSSize sz = [self containerSize];
 	r.origin.y = sz.height - (r.origin.y + r.size.height);
 	return NSOffsetRect(r,[graphic bounds].origin.x,[graphic bounds].origin.y);
-   }
+}
 
 -(NSRect)globalCoordsToContainerCoords:(NSRect)r
-   {
+{
 	r.origin.x -= [graphic bounds].origin.x;
 	r.origin.y = NSMaxY([graphic bounds]) - NSMaxY(r);
 	return r;
-   }
+}
 
 - (NSRect)lineFragmentRectForProposedRect:(NSRect)proposedRect sweepDirection:(NSLineSweepDirection)sweepDirection
                         movementDirection:(NSLineMovementDirection)movementDirection remainingRect:(NSRect *)remainingRect

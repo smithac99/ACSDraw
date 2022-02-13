@@ -16,184 +16,132 @@
 @implementation ACSDLabel
 
 - (id)init
-   {
+{
     if (self = [super init])
-       {
-        contents = [[NSTextStorage allocWithZone:[self zone]] init];
-		verticalPosition = 0.0;
-		horizontalPosition = 0.0;
-		flipped = NO;
+	{
+        _contents = [[NSTextStorage alloc]init];
+		_verticalPosition = 0.0;
+		_horizontalPosition = 0.0;
+		_flipped = NO;
 		graphic = nil;
-       }
+	}
     return self;
-   }
+}
 
 - (id)initWithGraphic:(ACSDGraphic*)g
-   {
+{
     if (self = [self init])
-       {
+	{
         graphic = g;
-       }
+	}
     return self;
-   }
+}
 
 - (id)initWithGraphic:(ACSDGraphic*)g contents:(NSTextStorage*)c verticalPosition:(float)vP horizontalPosition:(float)hP flipped:(bool)flip 
-   {
+{
     if (self = [super init])
-       {
+	{
         graphic = g;
-		contents = [c retain];
-		verticalPosition = vP;
-		horizontalPosition = hP;
-		flipped = flip;
-       }
+		_contents = c;
+		_verticalPosition = vP;
+		_horizontalPosition = hP;
+		_flipped = flip;
+	}
     return self;
-   }
-
--(void)dealloc
-   {
-	if (contents)
-		[contents release];
-	[super dealloc];
-   }
+}
 
 - (id)copyWithZone:(NSZone *)zone
-   {
+{
 	NSTextStorage *tCopy = [[NSTextStorage alloc]initWithAttributedString:[self contents]];
-    ACSDLabel *newObj = [[[self class] allocWithZone:zone]initWithGraphic:graphic contents:[tCopy autorelease] verticalPosition:verticalPosition
-									   horizontalPosition:horizontalPosition flipped:flipped];
+    ACSDLabel *newObj = [[[self class] allocWithZone:zone]initWithGraphic:graphic contents:tCopy verticalPosition:_verticalPosition
+									   horizontalPosition:_horizontalPosition flipped:_flipped];
     return newObj;
-   }
+}
 
 - (void) encodeWithCoder:(NSCoder*)coder
-   {
+{
 	[coder encodeConditionalObject:graphic forKey:@"ACSDLabel_graphic"];
 	[coder encodeObject:[self contents] forKey:@"ACSDLabel_contents"];
-	[coder encodeFloat:verticalPosition forKey:@"ACSDText_verticalPosition"];
-	[coder encodeFloat:horizontalPosition forKey:@"ACSDText_horizontalPosition"];
-	[coder encodeBool:flipped forKey:@"ACSDText_flipped"];
-   }
+	[coder encodeFloat:_verticalPosition forKey:@"ACSDText_verticalPosition"];
+	[coder encodeFloat:_horizontalPosition forKey:@"ACSDText_horizontalPosition"];
+	[coder encodeBool:_flipped forKey:@"ACSDText_flipped"];
+}
 
-- (id) initWithCoder:(NSCoder*)coder
-   {
+- (id)initWithCoder:(NSCoder*)coder
+{
 	self = [self init];
 	[self setGraphic:[coder decodeObjectForKey:@"ACSDLabel_graphic"]];
-	[self setContents:[[[NSTextStorage allocWithZone:[self zone]] initWithAttributedString:[coder decodeObjectForKey:@"ACSDLabel_contents"]]autorelease]];
-	verticalPosition = [coder decodeFloatForKey:@"ACSDText_verticalPosition"];
-	horizontalPosition = [coder decodeFloatForKey:@"ACSDText_horizontalPosition"];
-	flipped = [coder decodeBoolForKey:@"ACSDText_flipped"];
+	[self setContents:[[NSTextStorage alloc] initWithAttributedString:[coder decodeObjectForKey:@"ACSDLabel_contents"]]];
+	_verticalPosition = [coder decodeFloatForKey:@"ACSDText_verticalPosition"];
+	_horizontalPosition = [coder decodeFloatForKey:@"ACSDText_horizontalPosition"];
+	_flipped = [coder decodeBoolForKey:@"ACSDText_flipped"];
 	return self;
-   }
-
-- (NSTextStorage*)contents
-   {
-	return contents;
-   }
-
-- (void)setContents:(NSTextStorage*)cont
-   {
-    if (contents == cont)
-		return;
-    if (contents)
-		[contents release];
-	contents = [cont retain];
-   }
+}
 
 - (void)setLabel:(NSTextStorage*)cont
-   {
-	[contents setAttributedString:cont];
-   }
+{
+	[_contents setAttributedString:cont];
+}
 
 - (void)setGraphic:(ACSDGraphic*)g
-   {
+{
     graphic = g;
-   }
-
-- (float)verticalPosition
-   {
-    return verticalPosition;
-   }
-
-- (float)horizontalPosition
-   {
-    return horizontalPosition;
-   }
-
-
-- (void)setVerticalPosition:(float)vp
-   {
-    verticalPosition = vp;
-   }
-
-- (void)setHorizontalPosition:(float)hp
-   {
-    horizontalPosition = hp;
-   }
-
-- (void)setFlipped:(BOOL)f
-   {
-    flipped = f;
-   }
-
-- (BOOL)flipped
-   {
-    return flipped;
-   }
+}
 
 - (NSLayoutManager*)layoutmanagerForWidth:(float)width
-   {
+{
 	NSSize sz;
 	sz.width = width;
 	sz.height = 1.0e6;
 	NSArray *layoutManagers = [[self contents]layoutManagers];
 	NSLayoutManager *lm;
 	if ([layoutManagers count] == 0)
-	   {
-		lm = [[[NSLayoutManager alloc] init]autorelease];
-		[lm addTextContainer:[[[NSTextContainer alloc]initWithContainerSize:sz]autorelease]];
+	{
+		lm = [[NSLayoutManager alloc] init];
+		[lm addTextContainer:[[NSTextContainer alloc]initWithContainerSize:sz]];
 		[[self contents] addLayoutManager:lm];
-	   }
+	}
 	else
-	   {
+	{
 		lm = [layoutManagers objectAtIndex:0];
 		[[[lm textContainers] objectAtIndex:0] setContainerSize:sz];
-	   }
+	}
 	return lm;
-   }
+}
 
 - (NSSize)sizeOfLaidOutText
-   {
+{
 	NSLayoutManager *lm = [[[self contents]layoutManagers]objectAtIndex:0];
 	NSTextContainer *tc = [[lm textContainers] objectAtIndex:0];
 	[lm glyphRangeForTextContainer:tc];
 	NSRect r = [lm usedRectForTextContainer:tc];
 	return r.size;
-   }
+}
 
 
 -(float)paddingRequiredForPath:(NSBezierPath*)bzP
-   {
-	if ([contents length] == 0)
+{
+	if ([_contents length] == 0)
 		return 0.0;
 	NSMutableArray *gSubPaths = [gSubPath gSubPathsFromACSDSubPaths:[ACSDSubPath subPathsFromBezierPath:bzP]];
 	float len = 0.0;
     NSEnumerator *objEnum = [gSubPaths objectEnumerator];
     gSubPath *gel;
     while ((gel = [objEnum nextObject]) != nil)
-	   {
+	{
 		[gel setLengthFrom:len];
 		len += [gel length];
-	   }
+	}
 	[self layoutmanagerForWidth:len];
 	NSSize textSize = [self sizeOfLaidOutText];
-	return textSize.height + fabs(verticalPosition);
-   }
+	return textSize.height + fabs(_verticalPosition);
+}
 
 - (void)drawForPath:(NSBezierPath*)bzP
 {
-	if ([contents length] == 0)
+	if ([_contents length] == 0)
 		return;
-	if (flipped)
+	if (_flipped)
 		bzP = [bzP bezierPathByReversingPath];
 	NSMutableArray *gSubPaths = [gSubPath gSubPathsFromACSDSubPaths:[ACSDSubPath subPathsFromBezierPath:bzP]];
 	float len = 0.0;
@@ -206,7 +154,7 @@
 	}
 	NSLayoutManager *lm = [self layoutmanagerForWidth:len];
 	NSSize textSize = [self sizeOfLaidOutText];
-	float leftMargin = ((len - textSize.width) / 2) * (horizontalPosition + 1);
+	float leftMargin = ((len - textSize.width) / 2) * (_horizontalPosition + 1);
 	if (textSize.width == 0.0 || textSize.height == 0.0)
 		return;
 	NSTextContainer *tc = [[lm textContainers] objectAtIndex:0];
@@ -250,7 +198,7 @@
 			[tr translateXBy:0 yBy:-yOf];
 		}
 		else
-			[tr translateXBy:0 yBy:yOf-(layoutLocation.y * 2)+verticalPosition];
+			[tr translateXBy:0 yBy:yOf-(layoutLocation.y * 2)+_verticalPosition];
 		[tr concat];
 
 		[lm drawGlyphsForGlyphRange:NSMakeRange(glyphIndex, 1) atPoint:NSMakePoint(-(transformLocationX - leftMargin),0)];
@@ -265,13 +213,13 @@
 
 -(void)writeSVGData:(SVGWriter*)svgWriter
    {
-	if ([contents length] == 0)
+	if ([_contents length] == 0)
 		return;
 	NSSize docSize = [[svgWriter document] documentSize];
 	NSAffineTransform *t = [NSAffineTransform transform];
 	[t translateXBy:0 yBy:docSize.height];
 	[t scaleXBy:1 yBy:-1];
-	NSBezierPath *bzp = [[[graphic transformedBezierPath]copy]autorelease];
+	NSBezierPath *bzp = [[graphic transformedBezierPath]copy];
 	[bzp transformUsingAffineTransform:t];
 	NSMutableArray *gSubPaths = [gSubPath gSubPathsFromACSDSubPaths:[ACSDSubPath subPathsFromBezierPath:[graphic transformedBezierPath]]];
 	float len = 0.0;
@@ -286,7 +234,7 @@
 	NSSize textSize = [self sizeOfLaidOutText];
 	if (textSize.width == 0.0 || textSize.height == 0.0)
 		return;
-	float leftMargin = ((len - textSize.width) / 2) * (horizontalPosition + 1);
+	float leftMargin = ((len - textSize.width) / 2) * (_horizontalPosition + 1);
 	NSTextContainer *tc = [[lm textContainers] objectAtIndex:0];
 	NSRange glyphRange = [lm glyphRangeForTextContainer:tc];
 	if (glyphRange.length == 0)
@@ -306,7 +254,7 @@
 			NSPoint layoutLocation = [lm locationForGlyphAtIndex:glyphIndex];
 			yOf = (glyphRect.size.height - layoutLocation.y);
 		   }
-		NSAttributedString *lineString = [contents attributedSubstringFromRange:glyphRange];
+		NSAttributedString *lineString = [_contents attributedSubstringFromRange:glyphRange];
 		for (unsigned int i = 0;i < glyphRange.length;)
 		   {
 			NSRange attributeRange;
@@ -333,7 +281,7 @@
 			float offset = glyphRect.origin.y - yOf;
 			if (offset != oldOf)
 			   {
-				[[svgWriter contents] appendFormat:@"dy=\"%g\" ",offset-oldOf-verticalPosition];
+				[[svgWriter contents] appendFormat:@"dy=\"%g\" ",offset-oldOf-_verticalPosition];
 				oldOf = offset;
 			   }
 			[[svgWriter contents] appendFormat:@"font-family=\"%@\" font-size=\"%f\"",

@@ -12,23 +12,23 @@
 @implementation FlippableView
 
 - (id)initWithFrame:(NSRect)frameRect
-   {
+{
 	if (self = [super initWithFrame:frameRect])
-	   {
+	{
 		flipped = NO;
-	   }
+	}
 	return self;
-   }
+}
 
 - (BOOL)isFlipped
-   {
+{
 	return flipped;
-   }
+}
 
 -(void)setFlipped:(BOOL)f
-   {
+{
 	flipped = f;
-   }
+}
 
 
 @end

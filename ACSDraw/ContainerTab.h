@@ -9,11 +9,10 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface ContainerTab : NSObject 
-{
-	NSString *title;
-	NSRect frame;
-}
+@interface ContainerTab : NSObject
+
+@property (retain) NSString *title;
+@property NSRect frame;
 
 -(id)initWithTitle:(NSString*)t;
 

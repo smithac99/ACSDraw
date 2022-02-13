@@ -39,9 +39,9 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 	if ((self = [super init]))
 	{
 		nextLayer = 1;
-		layers = [[NSMutableArray arrayWithCapacity:10]retain];
-		[layers addObject:[[[ACSDLayer alloc]initWithName:@"Guide Layer" isGuideLayer:YES]autorelease]];
-		[layers addObject:[[[ACSDLayer alloc]initWithName:[self nextLayerName] isGuideLayer:NO]autorelease]];
+		_layers = [NSMutableArray arrayWithCapacity:10];
+		[_layers addObject:[[ACSDLayer alloc]initWithName:@"Guide Layer" isGuideLayer:YES]];
+		[_layers addObject:[[ACSDLayer alloc]initWithName:[self nextLayerName] isGuideLayer:NO]];
 		graphicViews = [[NSMutableSet alloc]initWithCapacity:2];
 		currentLayerInd = 1;
 		guideLayerInd = 0;
@@ -56,7 +56,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 	if ((self = [self init]))
 	{
 		document = d;
-		[document performSelector:@selector(registerObject:)withObjectsFromArray:layers];
+		[document performSelector:@selector(registerObject:)withObjectsFromArray:_layers];
 	}
 	return self;
 }
@@ -150,7 +150,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
                 svgPath = [[NSBundle mainBundle]pathForResource:@"noimagecross" ofType:@"svg"];
             
             NSData *d = [NSData dataWithContentsOfFile:svgPath];
-            ACSDrawDocument *adoc = [[[ACSDrawDocument alloc]init]autorelease];
+            ACSDrawDocument *adoc = [[ACSDrawDocument alloc]init];
             [adoc setFileURL:[NSURL fileURLWithPath:svgPath]];
             [adoc readFromData:d ofType:@"svg" error:nil];
             NSRect b = NSZeroRect;
@@ -175,7 +175,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
             NSImage *im = ImageFromFile(imPath);
             if (!im)
-                im = [[[NSImage alloc]initWithContentsOfFile:imPath]autorelease];
+                im = [[NSImage alloc]initWithContentsOfFile:imPath];
 
             NSSize iSize = [im size];
             NSRect r = NSZeroRect;
@@ -308,9 +308,9 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
     //ACSDPage *p = [[ACSDPage alloc]initWithDocument:document];
     ACSDPage *p = [super copy];
     p.document = document;
-	NSMutableArray *newLayers = [NSMutableArray arrayWithCapacity:[layers count]];
-	for (ACSDLayer *l in layers)
-		[newLayers addObject:[[l copy]autorelease]];
+	NSMutableArray *newLayers = [NSMutableArray arrayWithCapacity:[_layers count]];
+	for (ACSDLayer *l in _layers)
+		[newLayers addObject:[l copy]];
 	[p setLayers:newLayers];
 	[p setLayerPages];
     [p registerWithDocument:document];
@@ -327,22 +327,22 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 -(void)deRegisterWithDocument:(ACSDrawDocument*)doc
 {
 	[doc deRegisterObject:self];
-	[layers makeObjectsPerformSelector:@selector(deRegisterWithDocument:)withObject:doc];
+	[_layers makeObjectsPerformSelector:@selector(deRegisterWithDocument:)withObject:doc];
 }
 
 -(void)registerWithDocument:(ACSDrawDocument*)doc
 {
 	[doc registerObject:self];
-	[layers makeObjectsPerformSelector:@selector(registerWithDocument:)withObject:doc];
+	[_layers makeObjectsPerformSelector:@selector(registerWithDocument:)withObject:doc];
 }
 
 -(void)workOutIndexes
 {
 	currentLayerInd = -1;
 	guideLayerInd = -1;
-	for (NSInteger i = 0,count = [layers count];i < count && (guideLayerInd < 0 || currentLayerInd < 0);i++)
+	for (NSInteger i = 0,count = [_layers count];i < count && (guideLayerInd < 0 || currentLayerInd < 0);i++)
 	{
-		ACSDLayer *l = [layers objectAtIndex:i];
+		ACSDLayer *l = [_layers objectAtIndex:i];
 		if ([l isGuideLayer])
 			guideLayerInd = i;
 		else
@@ -352,29 +352,17 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 		currentLayerInd = 0;
 }
 
-- (void) dealloc
-{
-	[name release];
-	[pageTitle release];
-	[layers release];
-	[graphicViews release];
-	[backgroundColour release];
-	self.previouslyVisibleLayers = nil;
-	self.animations = nil;
-	[super dealloc];
-}
-
 - (void) encodeWithCoder:(NSCoder*)coder
 {
 	[super encodeWithCoder:coder];
 	NSArray *arr;
 	if ([(id)coder delegate] && [[(id)coder delegate]respondsToSelector:@selector(filterLayers:)])
 	{
-		NSIndexSet *ixs = [layers indexesOfObjectsPassingTest:^(id obj,NSUInteger i,BOOL *stop){return [obj exportable];}];
-		arr = [layers objectsAtIndexes:ixs];
+		NSIndexSet *ixs = [_layers indexesOfObjectsPassingTest:^(id obj,NSUInteger i,BOOL *stop){return [obj exportable];}];
+		arr = [_layers objectsAtIndexes:ixs];
 	}
 	else
-		arr = layers;
+		arr = _layers;
 	[coder encodeObject:arr forKey:@"ACSDPage_layers"];
 
 //	[coder encodeObject:layers forKey:@"ACSDPage_layers"];
@@ -395,17 +383,17 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 {
 	self = [super initWithCoder:coder];
 	graphicViews = [[NSMutableSet alloc]initWithCapacity:2];
-	layers = [[coder decodeObjectForKey:@"ACSDPage_layers"]retain];
-	backgroundColour = [[coder decodeObjectForKey:@"ACSDPage_backgroundColour"]retain];
+	_layers = [coder decodeObjectForKey:@"ACSDPage_layers"];
+	backgroundColour = [coder decodeObjectForKey:@"ACSDPage_backgroundColour"];
 	nextLayer = [coder decodeIntegerForKey:@"ACSDGraphic_nextLayer"];
-	name = [[coder decodeObjectForKey:@"ACSDPage_name"]retain];
-	pageTitle = [[coder decodeObjectForKey:@"ACSDPage_pageTitle"]retain];
+	name = [coder decodeObjectForKey:@"ACSDPage_name"];
+	pageTitle = [coder decodeObjectForKey:@"ACSDPage_pageTitle"];
 	pageType = [coder decodeIntForKey:@"ACSDGraphic_pageType"];
 	masterType = [coder decodeIntForKey:@"ACSDGraphic_masterType"];
 	useMasterType = [coder decodeIntForKey:@"ACSDGraphic_useMasterType"];
 	inactive = [coder decodeBoolForKey:@"ACSDPage_inactive"];
 	if (nextLayer == 0)
-		nextLayer = [layers count];
+		nextLayer = [_layers count];
 	[self workOutIndexes];
 	[self setLayerPages];
     self.animations = [coder decodeObjectForKey:@"ACSDPage_animations"];
@@ -427,34 +415,20 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
 -(void)setLayerPages
 {
-    NSEnumerator *lEnum = [layers objectEnumerator];
+    NSEnumerator *lEnum = [_layers objectEnumerator];
     ACSDLayer *layer;
     while ((layer = [lEnum nextObject]) != nil) 
 		[layer setPage:self];
 }
 
-- (NSMutableArray*)layers
-{
-	return layers;
-}
-
--(void)setLayers:(NSMutableArray*)arr
-{
-	if (arr != layers)
-	{
-		[layers release];
-		layers  = [arr retain];
-	}
-}
-
 - (ACSDLayer*)currentLayer
 {
-	return [layers objectAtIndex:currentLayerInd];
+	return _layers[currentLayerInd];
 }
 
 - (ACSDLayer*)guideLayer
 {
-	return [layers objectAtIndex:guideLayerInd];
+	return _layers[guideLayerInd];
 }
 
 -(void)setPageType:(int)pt
@@ -502,7 +476,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
 -(void)setCurrentLayer:(ACSDLayer*)l
 {
-	NSUInteger i = [layers indexOfObjectIdenticalTo:l];
+	NSUInteger i = [_layers indexOfObjectIdenticalTo:l];
 	[self setCurrentLayerInd:i];
 }
 
@@ -519,11 +493,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 {
 	if (backgroundColour == n)
 		return;
-	if (backgroundColour)
-		[backgroundColour release];
 	backgroundColour = n;
-	if (backgroundColour)
-		[backgroundColour retain];
 }
 
 -(BOOL)uSetBackgroundColour:(NSColor*)c
@@ -622,18 +592,18 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
 -(void)moveGraphicsByValue:(NSValue*)val
 {
-	[layers makeObjectsPerformSelector:@selector(moveGraphicsByValue:) withObject:val];
+	[_layers makeObjectsPerformSelector:@selector(moveGraphicsByValue:) withObject:val];
 }
 
 -(void)updateForStyle:(id)style oldAttributes:(NSDictionary*)oldAttrs
 {
-	[layers makeObjectsPerformSelector:@selector(updateForStyle:oldAttributes:)withObject:style andObject:oldAttrs];
+	[_layers makeObjectsPerformSelector:@selector(updateForStyle:oldAttributes:)withObject:style andObject:oldAttrs];
 }
 
 -(NSRect)unionGraphicBounds
 {
     NSRect r = NSZeroRect;
-    for (ACSDLayer *l in layers)
+    for (ACSDLayer *l in _layers)
         r = NSUnionRect(r,[l unionGraphicBounds]);
     return r;
 }
@@ -641,36 +611,36 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 -(NSRect)unionStrictGraphicBounds
 {
     NSRect r = NSZeroRect;
-    for (ACSDLayer *l in layers)
+    for (ACSDLayer *l in _layers)
         r = NSUnionRect(r,[l unionStrictGraphicBounds]);
     return r;
 }
 
 -(void)freePDFData
 {
-	for (ACSDLayer *l in layers)
+	for (ACSDLayer *l in _layers)
 		[l freePDFData];
 }
 
 -(void)buildPDFData
 {
-	for (ACSDLayer *l in layers)
+	for (ACSDLayer *l in _layers)
 		[l buildPDFData];
 }
 
 -(void)fixTextBoxLinks
 {
-	[layers makeObjectsPerformSelector:@selector(fixTextBoxLinks)];
+	[_layers makeObjectsPerformSelector:@selector(fixTextBoxLinks)];
 }
 
 -(BOOL)atLeastOneObjectExists
 {
-	return [layers orMakeObjectsPerformSelector:@selector(atLeastOneObjectExists)];
+	return [_layers orMakeObjectsPerformSelector:@selector(atLeastOneObjectExists)];
 }
 
 -(BOOL)containsImages
 {
-	return [layers orMakeObjectsPerformSelector:@selector(containsImages)];
+	return [_layers orMakeObjectsPerformSelector:@selector(containsImages)];
 }
 
 -(void)uAddMaster:(ACSDPage*)masterPage atIndex:(int)ind
@@ -724,7 +694,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 -(NSArray*)allTextObjectsOrderedByPosition
 {
 	NSMutableArray *textObjects = [NSMutableArray arrayWithCapacity:10];
-	for (ACSDLayer *l in layers)
+	for (ACSDLayer *l in _layers)
 	{
 		if (![l isGuideLayer])
 			[textObjects addObjectsFromArray:[l allTextObjects]]; 
@@ -831,8 +801,8 @@ NSString* stringForAlignment(int ali)
 	if (masters)
 		[masters makeObjectsPerformSelector:@selector(processHtmlObjectsOptions:)withObject:options];
 	NSSize sz = [document documentSize];
-	NSImage *im = [[[NSImage alloc]initWithSize:sz]autorelease];
-	GraphicView *graphicView = [[[GraphicView alloc]initWithFrame:NSMakeRect(0,0,sz.width,sz.height)]autorelease];
+	NSImage *im = [[NSImage alloc]initWithSize:sz];
+	GraphicView *graphicView = [[GraphicView alloc]initWithFrame:NSMakeRect(0,0,sz.width,sz.height)];
 	NSMutableDictionary *substitutions = [NSMutableDictionary dictionaryWithCapacity:5];
 	[im lockFocus];
 	CGContextSetInterpolationQuality((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort],kCGInterpolationHigh);
@@ -840,7 +810,7 @@ NSString* stringForAlignment(int ali)
                   options:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:@"overrideScale"]];
 	[im unlockFocus];
 	[options setObject:im forKey:@"pageImage"];
-	[layers reverseMakeObjectsPerformSelector:@selector(processHTMLOptions:)withObject:options];
+	[_layers reverseMakeObjectsPerformSelector:@selector(processHTMLOptions:)withObject:options];
 }
 
 -(NSString*)htmlRepresentationOptions:(NSMutableDictionary*)options
@@ -933,7 +903,7 @@ NSString* stringForAlignment(int ali)
     }
     [pageString appendString:@">\n"];
 	[options setObject:[indent stringByAppendingString:@"\t"] forKey:xmlIndent];
-	for (ACSDLayer *l in layers)
+	for (ACSDLayer *l in _layers)
 	{
 		if (l.exportable)
 			[pageString appendString:[l graphicXML:options]];
@@ -964,7 +934,7 @@ static int MasterLayerCount(ACSDPage *p)
 {
 	NSMutableString *pageString = [NSMutableString stringWithCapacity:200];
     float layerzidx = MasterLayerCount(self);
-    for (ACSDLayer *l in [layers reverseObjectEnumerator])
+    for (ACSDLayer *l in [_layers reverseObjectEnumerator])
 	{
 		if (l.exportable)
         {
@@ -1018,12 +988,12 @@ static int MasterLayerCount(ACSDPage *p)
 
 -(void)addLinksForPDFContext:(CGContextRef) context
 {
-	[layers makeObjectsPerformSelector:@selector(addLinksForPDFContext:)withObject:(__bridge id)context];
+	[_layers makeObjectsPerformSelector:@selector(addLinksForPDFContext:)withObject:(__bridge id)context];
 }
 
 -(void)permanentScale:(float)sc transform:(NSAffineTransform*)t
 {
-	for (ACSDLayer *l in layers)
+	for (ACSDLayer *l in _layers)
 		[l permanentScale:sc transform:t];
 }
 

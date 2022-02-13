@@ -10,9 +10,9 @@
 
 
 @interface FlippableView : NSView
-   {
+{
 	BOOL flipped;
-   }
+}
 
 -(void)setFlipped:(BOOL)f;
 -(BOOL)isFlipped;

@@ -10,8 +10,5 @@
 
 
 @interface ACSDTextView : NSTextView
-   {
-
-   }
 
 @end

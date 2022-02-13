@@ -19,18 +19,14 @@
 {
 	if ((self = [super init]))
 	{
-		title = [t retain];
+		title = t;
 	}
 	return self;
 }
 
 -(void)dealloc
 {
-	if (title)
-		[title release];
-	self.contentView = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[super dealloc];
 }
 
 -(void)changeAll

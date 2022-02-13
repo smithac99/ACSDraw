@@ -11,22 +11,13 @@
 	{
 		controller = cont;
 		[[NSBundle mainBundle]loadNibNamed:@"TocPanel" owner:self topLevelObjects:nil];
-		keepStyles = [[NSMutableArray arrayWithCapacity:10]retain];
+		keepStyles = [NSMutableArray arrayWithCapacity:10];
 	}
 	return self;
 }
 
--(void)dealloc
-{
-	[keepStyles release];
-	self.tocSheet = nil;
-	self.tocStyleSource = nil;
-	self.allStyleSource = nil;
-	[super dealloc];
-}
-	
 - (IBAction)mapMenuHitHit:(id)sender
-   {
+{
 	NSInteger row = [[_tocStyleSource tableView]selectedRow];
 	if (row == -1)
 		return;
@@ -37,7 +28,7 @@
 		[arr replaceObjectAtIndex:1 withObject:[keepStyles objectAtIndex:mRow]];
 		[[_tocStyleSource tableView]reloadData];
 	}	
-   }
+}
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification
 {
@@ -52,7 +43,7 @@
 }
 
 - (IBAction)allToTOCButtonHit:(id)sender
-   {
+{
 	NSInteger row = [[_allStyleSource tableView]selectedRow];
 	if (row == -1)
 		return;
@@ -63,10 +54,10 @@
 	[[_allStyleSource objectList]removeObjectAtIndex:row];
 	[[_allStyleSource tableView]reloadData];
 	[[_tocStyleSource tableView]reloadData];
-   }
+}
 
 - (IBAction)TOCToAllButtonHit:(id)sender
-   {
+{
 	NSInteger row = [[_tocStyleSource tableView]selectedRow];
 	if (row == -1)
 		return;
@@ -74,13 +65,13 @@
 	[[_tocStyleSource objectList]removeObjectAtIndex:row];
 	[[_allStyleSource tableView]reloadData];
 	[[_tocStyleSource tableView]reloadData];
-   }
+}
 
 - (IBAction)closeTOCSheet: (id)sender
-   {
+{
 	[controller generateTocUsingStyles:[_tocStyleSource objectList]];
 	[NSApp endSheet:_tocSheet returnCode:[sender tag]];
-   }
+}
 
 -(void)setStyles:(NSArray*)styles
 {

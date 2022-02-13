@@ -11,16 +11,13 @@
 	return self;
 }
 
-
 - (void)setArrowList:(NSMutableArray*)list
 {
 	if (_arrowList == list)
 		return;
-	[_arrowList release];
-	_arrowList = [list retain];
+	_arrowList = list;
 	[tableView reloadData];
 }
-
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn
             row:(int)rowIndex
@@ -60,10 +57,10 @@
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
-   {
+{
     if (_arrowList)
 		return [_arrowList count];
 	return 0;
-   }
+}
 
 @end

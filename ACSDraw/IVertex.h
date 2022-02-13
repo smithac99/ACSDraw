@@ -11,10 +11,10 @@
 @class ISegElement;
 
 @interface IVertex : NSObject 
-   {
-	float x,y;
-	NSMutableArray *segmentList;
-   }
+   
+@property float x,y;
+@property (retain)NSMutableArray *segmentList;
+   
 
 +(void)removeDuplicateSegmentsFromVertexDict:(NSDictionary*)vertexDict;
 +(IVertex*)vertexForPoint:(NSPoint) pt vertexDict:(NSMutableDictionary*)vertexDict;

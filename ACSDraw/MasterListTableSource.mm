@@ -18,8 +18,7 @@
 {
 	if (masterList == list)
 		return;
-	[masterList release];
-	masterList = [list retain];
+	masterList = list;
 	[tableView reloadData];
 }
 

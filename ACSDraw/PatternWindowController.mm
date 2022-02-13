@@ -239,6 +239,29 @@
 	[self setActionsDisabled:NO];
 }
 
+-(void)uSetUseCentrePattern:(BOOL)b
+{
+	if ([[self temporaryPattern] usePatternCentre] != b)
+		[[[self undoManager] prepareWithInvocationTarget:self] uSetUseCentrePattern:[temporaryPattern usePatternCentre]];
+	[[self temporaryPattern] setUsePatternCentre:b];
+	if (b != self.displayUsePatternCentre)
+		self.displayUsePatternCentre = b;
+	[patternPreview setNeedsDisplay:YES];
+	[[self undoManager]setActionName:@"Change Use Pattern Centre"];
+}
+
+-(void)setDisplayUsePatternCentre:(BOOL)b
+{
+	if (actionsDisabled)
+		return;
+	[self setActionsDisabled:YES];
+	if (b != self.displayUsePatternCentre)
+		_displayUsePatternCentre = b;
+	[self uSetUseCentrePattern:b];
+	[self setActionsDisabled:NO];
+}
+
+
 -(void)uSetRotation:(float)rot
 {
 	if ([[self temporaryPattern] rotation] != rot)
@@ -466,6 +489,7 @@
 	[pattern setPdfOffset:[pat pdfOffset]];
 	[pattern setBackgroundColour:[pat backgroundColour]];
     [pattern setPatternOrigin:[pat patternOrigin]];
+	pattern.usePatternCentre = pat.usePatternCentre;
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDFillAdded object:self];
 	[[self undoManager]removeAllActions];
 }

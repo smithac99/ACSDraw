@@ -10,14 +10,13 @@
 
 
 @interface ConditionalObject : NSObject 
-   {
-	id obj;
-   }
+
+@property (assign) id obj;
+
 
 + (ConditionalObject*)conditionalObject:(id)o;
 -(id)initWithObject:(id)o;
 -(void) encodeWithCoder:(NSCoder*)coder;
 -(id) initWithCoder:(NSCoder*)coder;
--(id)obj;
 
 @end

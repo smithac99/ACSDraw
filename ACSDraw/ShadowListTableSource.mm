@@ -10,21 +10,13 @@
 	return self;
    }
 
--(void)dealloc
-{
-	[shadowList release];
-	[super dealloc];
-}
-
 - (void)setShadowList:(NSMutableArray*)list
 {
 	if (shadowList == list)
 		return;
-	[shadowList release];
-	shadowList = [list retain];
+	shadowList = list;
 	[tableView reloadData];
 }
-
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn
 			row:(NSInteger)rowIndex

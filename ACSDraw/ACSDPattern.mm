@@ -116,7 +116,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	[o setClip:self.clip];
     [o setRotation:self.rotation];
     o.layoutMode = self.layoutMode;
-    o.patternOrigin = self.patternOrigin;
+	o.patternOrigin = self.patternOrigin;
+	o.usePatternCentre = self.usePatternCentre;
 	return o;
 }
 
@@ -132,6 +133,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	[coder encodeObject:self.backgroundColour forKey:@"ACSDPattern_backgroundColour"];
 	[ACSDGraphic encodeRect:self.patternBounds coder:coder forKey:@"ACSDPattern_patternBounds"];
 	[coder encodeBool:self.clip forKey:@"ACSDPattern_clip"];
+	[coder encodeBool:self.usePatternCentre forKey:@"ACSDPattern_usePatternCentre"];
     [coder encodeFloat:self.rotation forKey:@"ACSDPattern_rotation"];
     [coder encodeInt:self.layoutMode forKey:@"ACSDPattern_layoutMode"];
     [coder encodePoint:self.patternOrigin forKey:@"ACSDPattern_patternOrigin"];
@@ -150,6 +152,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	self.patternBounds = [ACSDGraphic decodeRectForKey:@"ACSDPattern_patternBounds" coder:coder];
 	self.backgroundColour = [coder decodeObjectForKey:@"ACSDPattern_backgroundColour"];
 	self.clip = [coder decodeBoolForKey:@"ACSDPattern_clip"];
+	self.usePatternCentre = [coder decodeBoolForKey:@"ACSDPattern_usePatternCentre"];
     self.rotation = [coder decodeFloatForKey:@"ACSDPattern_rotation"];
     self.layoutMode = [coder decodeIntForKey:@"ACSDPattern_layoutMode"];
     if ([coder decodeObjectForKey:@"ACSDPattern_patternOrigin"])
@@ -174,7 +177,6 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 {
 	return YES;
 }
-
 
 -(void)changeCache
 {
@@ -447,6 +449,11 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     float destHeight = patternHeight * self.scale;
     float ox = pathBounds.origin.x + _patternOrigin.x * pathBounds.size.width;
     float oy = pathBounds.origin.y + (1.0 - _patternOrigin.y) * pathBounds.size.height;
+	if (_usePatternCentre)
+	{
+		ox -= (patternWidth * self.scale * 0.5);
+		oy -= (patternHeight * self.scale * 0.5);
+	}
     while (ox > pathBounds.origin.x)
         ox -= xIncrement;
     while (oy > pathBounds.origin.y)
@@ -648,24 +655,35 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
     [[svgWriter defs]appendFormat:@"\t<pattern id=\"%@\" ",name];
     
-    float cx,cy;
+	float ox = _patternOrigin.x * objectBounds.size.width;
+	float oy = _patternOrigin.y * objectBounds.size.height;
+	if (_usePatternCentre)
+	{
+		ox = ox - patternWidth * _scale / 2.0;
+		oy = oy - patternHeight * _scale / 2.0;
+	}
+	else
+	{
+		ox = ox + self.spacing * patternWidth * _scale / 2.0;
+		oy = oy + self.spacing * patternHeight * _scale / 2.0;
+	}
     if (svgShouldUseBBUnits)
     {
-        cx = _patternOrigin.x + (self.spacing * patternWidth * _scale / objectBounds.size.width / 2);
-        cy = _patternOrigin.y + (self.spacing * patternHeight * _scale / objectBounds.size.height / 2);
+		ox = ox / objectBounds.size.width;
+		oy = oy / objectBounds.size.height;
         xIncrement = xIncrement  * _scale / objectBounds.size.width;
         yIncrement = yIncrement * _scale / objectBounds.size.height;
     }
-    else
+/*    else
     {
-        cx = NSMidX(objectBounds) / self.scale;
-        cy = NSMidY(objectBounds) / self.scale;
+		ox = NSMidX(objectBounds) / self.scale;
+		oy = NSMidY(objectBounds) / self.scale;
 
-    }
+    }*/
     if (xlink)
     {
         [[svgWriter defs]appendFormat:@" xlink:href=\"#%@\" ",xlink];
-        [[svgWriter defs]appendFormat:@"x=\"%g\" y=\"%g\"",cx,cy];
+        [[svgWriter defs]appendFormat:@"x=\"%g\" y=\"%g\"",ox,oy];
     }
     else
     {
@@ -675,7 +693,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         float spaceMultiplier = 1.0;
         if (self.spacing != 0)
             spaceMultiplier += self.spacing;
-        [[svgWriter defs]appendFormat:@"patternUnits=\"%@\" x=\"%g\" y=\"%g\" width=\"%0.03g\" height=\"%0.03g\"",coordType, cx,cy,xIncrement,yIncrement];
+        [[svgWriter defs]appendFormat:@"patternUnits=\"%@\" x=\"%g\" y=\"%g\" width=\"%0.03g\" height=\"%0.03g\"",coordType, ox,oy,xIncrement,yIncrement];
         [[svgWriter defs]appendFormat:@" viewBox=\"%g %g %g %g\"",patBounds.origin.x,patBounds.origin.y,patBounds.size.width * spaceMultiplier,patBounds.size.height * spaceMultiplier];
         if (!self.clip)
             [[svgWriter defs]appendString:@" overflow=\"visible\""];

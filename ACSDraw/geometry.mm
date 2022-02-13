@@ -12,7 +12,7 @@
 #include "gLine.h"
 
 NSRect RectFromPoint(NSPoint pt,float padding,float magnification)
-   {
+{
 	NSRect r;
 	r.origin = pt;
 	float pm = padding / magnification;
@@ -22,10 +22,10 @@ NSRect RectFromPoint(NSPoint pt,float padding,float magnification)
 	r.size.width = pm;
 	r.size.height = pm;
 	return r;
-   }
+}
 
 void quarter_rects(NSRect inRect,NSRect &blRect,NSRect &tlRect,NSRect &trRect,NSRect &brRect)
-   {
+{
 	blRect = inRect;
 	float w = blRect.size.width/2;
 	float h = blRect.size.height/2;
@@ -36,52 +36,52 @@ void quarter_rects(NSRect inRect,NSRect &blRect,NSRect &tlRect,NSRect &trRect,NS
 	trRect.origin.x += w;
 	brRect = blRect;
 	brRect.origin.x += w;
-   }
+}
 
 NSPoint top_left(NSRect r)
-   {
+{
 	return NSMakePoint(r.origin.x,r.origin.y + r.size.height);
-   }
+}
 
 NSPoint bottom_left(NSRect r)
-   {
+{
 	return r.origin;
-   }
+}
 
 NSPoint top_right(NSRect r)
-   {
+{
 	return NSMakePoint(r.origin.x + r.size.width,r.origin.y + r.size.height);
-   }
+}
 
 NSPoint bottom_right(NSRect r)
-   {  
+{
 	return NSMakePoint(r.origin.x + r.size.width,r.origin.y);
-   }
+}
 
 NSPoint diff_points(NSPoint pt2,NSPoint pt1)
-   {
+{
 	return NSMakePoint(pt2.x - pt1.x,pt2.y - pt1.y);
-   }
+}
 
 NSSize point_offset(NSPoint pt2,NSPoint pt1)
-   {
+{
 	return NSMakeSize(pt2.x - pt1.x,pt2.y - pt1.y);
-   }
+}
 
 NSPoint offset_point(NSPoint pt,NSPoint offset)
-   {
+{
 	return NSMakePoint(pt.x + offset.x,pt.y + offset.y);
-   }
+}
 
 NSPoint offset_point(NSPoint pt,NSSize offset)
-   {
+{
 	return NSMakePoint(pt.x + offset.width,pt.y + offset.height);
-   }
+}
 
 NSSize neg_size(NSSize sz)
-   {
+{
 	return NSMakeSize(-sz.width,-sz.height);
-   }
+}
 
 CGFloat dot_product(NSPoint pt1,NSPoint pt2)
    {

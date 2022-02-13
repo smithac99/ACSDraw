@@ -59,6 +59,7 @@ enum
 @property BOOL clip;
 @property NSPoint patternOrigin;
 @property (retain) NSString *tempName;
+@property BOOL usePatternCentre;
 
 +(ACSDPattern*)defaultPattern;
 +(ACSDPattern*)patternWithGraphic:(ACSDGraphic*)g;

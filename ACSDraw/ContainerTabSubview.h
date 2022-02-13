@@ -11,14 +11,14 @@
 
 @interface ContainerTabSubview : NSView 
 {
-	NSString *title;
 	NSPoint dragOffset;
-	BOOL active;
-	ContainerPalletteController *cpController;
 }
 
+@property (retain) NSString *title;
+@property (assign) ContainerPalletteController *cpController;
+@property (nonatomic) BOOL active;
+
+
 - (id)initWithFrame:(NSRect)frame title:(NSString*)t controller:(ContainerPalletteController*)cpc;
--(void)setActive:(BOOL)b;
--(BOOL)active;
 
 @end

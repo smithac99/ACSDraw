@@ -5,12 +5,13 @@
 #import "TableViewDelegate.h"
 
 @interface ACSDTableView : NSTableView
-   {
-	NSInteger oldSelectedRow;
+{
 	NSUInteger modifierFlags;
 	NSInteger clickedRow;
 	NSInteger selectedRowPriorToClick;
-   }
+}
+
+@property 	NSInteger oldSelectedRow;
 
 -(void)reDisplayRow:(NSInteger)row;
 -(void)reDisplayRow:(NSInteger)row column:(NSInteger)col;

@@ -25,7 +25,8 @@
     IBOutlet id backgroundColourWell;
     IBOutlet NSTextField *originXText;
     IBOutlet NSTextField *originYText;
-    __weak IBOutlet NSPopUpButton *layoutPopUp;
+	__weak IBOutlet NSButton *usePatternCentreCB;
+	__weak IBOutlet NSPopUpButton *layoutPopUp;
     ACSDPattern *pattern;
 	NSMutableArray *pages;
 	GraphicRulerView *horizontalRuler,*verticalRuler;
@@ -37,6 +38,7 @@
 
 @property (nonatomic) BOOL displayClip;
 @property (nonatomic) float displayRotation;
+@property (nonatomic) BOOL displayUsePatternCentre;
 
 - (id)initWithPattern:(ACSDPattern*)p;
 - (GraphicView*)graphicView;

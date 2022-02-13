@@ -12,36 +12,31 @@
 @implementation ConditionalObject
 
 + (ConditionalObject*)conditionalObject:(id)o
-   {
-	ConditionalObject *co = [[[ConditionalObject alloc]initWithObject:o]autorelease];
+{
+	ConditionalObject *co = [[ConditionalObject alloc]initWithObject:o];
 	return co;
-   }
+}
 
 -(id)initWithObject:(id)o
-   {
+{
 	if (self = [super init])
-		obj = o;
+		_obj = o;
 	return self;
-   }
+}
 
 NSString *conditionalObjectKey = @"coKey";
 
 - (void) encodeWithCoder:(NSCoder*)coder
-   {
-	if (obj)
-		[coder encodeConditionalObject:obj forKey:conditionalObjectKey];
-   }
+{
+	if (_obj)
+		[coder encodeConditionalObject:_obj forKey:conditionalObjectKey];
+}
 
 - (id) initWithCoder:(NSCoder*)coder
-   {
+{
 	self = [self init];
-	obj = [coder decodeObjectForKey:conditionalObjectKey];
+	_obj = [coder decodeObjectForKey:conditionalObjectKey];
 	return self;
-   }
-
--(id)obj
-   {
-	return obj;
-   }
+}
 
 @end

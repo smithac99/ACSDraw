@@ -5,53 +5,43 @@
 
 @implementation ACSDTableView
 
--(NSInteger)oldSelectedRow
-   {
-	return oldSelectedRow;
-   }
-
--(void)setOldSelectedRow:(NSInteger)row
-   {
-	oldSelectedRow = row;
-   }
-
 - (void)rightMouseDown:(NSEvent *)theEvent
-   {
+{
 	if ([self delegate] && [[self delegate] respondsToSelector:@selector(setRowForContextualMenu:)])
-	   {
+	{
 		NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		NSInteger i = [self rowAtPoint:curPoint];
 		[(id)[self delegate]setRowForContextualMenu:(int)i];
 		[(id)[self delegate]setTableViewForContextualMenu:self];
-	   }
+	}
 	[super rightMouseDown:theEvent];
-   }
+}
 
 -(NSInteger)modifierFlags
-   {
+{
 	return modifierFlags;
-   }
+}
 
 -(NSInteger)clickedRow
-   {
+{
 	//return clickedRow;
-       return [super clickedRow];
-   }
+	return [super clickedRow];
+}
 
 -(NSInteger)selectedRowPriorToClick
-   {
+{
 	return selectedRowPriorToClick;
-   }
+}
 
 - (void)mouseDown:(NSEvent *)theEvent
-   {
+{
 	modifierFlags = [theEvent modifierFlags];
 	selectedRowPriorToClick = [self selectedRow];
 	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	clickedRow = [self rowAtPoint:curPoint];
 	if (!([self delegate] && [[self delegate]respondsToSelector:@selector(handleClickAtPoint:inTableView:)] && [(id<TableViewDelegate>)[self delegate]handleClickAtPoint:curPoint inTableView:self]))
 		[super mouseDown:theEvent];
-   }
+}
 
 -(void)reloadRowAtIndex:(NSInteger)rowIndex
 {
@@ -59,23 +49,23 @@
 }
 
 -(void)reDisplayRow:(NSInteger)row
-   {
+{
 	NSRect r = NSZeroRect;
 	for (int i = 0;i < [self numberOfColumns];i++)
 		r = NSUnionRect(r,[self frameOfCellAtColumn:i row:row]);
 	[self setNeedsDisplayInRect:r];
-   }
+}
 
 -(void)reDisplayRow:(NSInteger)row column:(NSInteger)col
-   {
+{
 	[self setNeedsDisplayInRect:[self frameOfCellAtColumn:col row:row]];
-   }
+}
 
 - (void)drawRow:(NSInteger)rowIndex clipRect:(NSRect)clipRect
-   {
+{
 	[super drawRow:rowIndex clipRect:clipRect];
 	if ([self delegate] && [[self delegate] respondsToSelector:@selector(displayRowForContextualMenu)])
-	   {
+	{
 		int row = [(id<TableViewDelegate>)[self delegate] displayRowForContextualMenu];
 		if (row != rowIndex)
 			return;
@@ -84,15 +74,15 @@
 		[NSBezierPath setDefaultLineWidth:4.0];
 		[NSBezierPath strokeRect:r];
 		
-	   }
-   }
+	}
+}
 
 -(void)refreshSelectionIndicatorForRow:(NSInteger)row
-   {
+{
 	NSInteger col = [self columnWithIdentifier:@"sel"];
 	if (col > -1 && row > -1)
 		[self reDisplayRow:row column:col];
-   }
+}
 
 #pragma mark -
 

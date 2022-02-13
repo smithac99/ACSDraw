@@ -17,33 +17,31 @@
 extern NSString *ACSDPageAttributeChanged;
 
 enum
-   {
+{
 	PAGE_TYPE_NORMAL=0,
 	PAGE_TYPE_MASTER
-   };
+};
 
 enum
-   {
+{
 	MASTER_TYPE_ALL=0,
 	MASTER_TYPE_ODD,
 	MASTER_TYPE_EVEN,
 	MASTER_TYPE_NONE
-   };
+};
 
 enum
-   {
+{
 	USE_MASTER_DEFAULT=0,
 	USE_MASTER_NONE,
 	USE_MASTER_LIST
-   };
+};
 
 @interface ACSDPage : KeyedObject<NSCoding>
-   {
-	NSMutableArray *layers;
+{
 	NSString *name;
 	NSMutableSet *graphicViews;
-	ACSDrawDocument *document;
-	NSInteger currentLayerInd,guideLayerInd,pageNo,nextLayer;
+	NSInteger nextLayer;
 	int pageType;
 	int masterType;
 	int useMasterType;
@@ -51,9 +49,9 @@ enum
 	NSString *pageTitle;
 	NSColor *backgroundColour;
 	NSMutableSet *linkedObjects;
-	BOOL inactive;
-   }
+}
 
+@property (retain) NSMutableArray *layers;
 @property (copy) NSString *name,*pageTitle,*xmlEventName;
 @property (assign) ACSDrawDocument *document;
 @property BOOL inactive;
@@ -65,7 +63,6 @@ enum
 -(id)initWithDocument:(ACSDrawDocument*)d;
 -(id)initWithXMLNode:(XMLNode*)pageNode document:(ACSDrawDocument*)doc settingsStack:(NSMutableArray*)settingsStack objectDict:(NSMutableDictionary*)objectDict;
 -(NSString*)nextLayerName;
-- (NSMutableArray*)layers;
 - (ACSDLayer*)currentLayer;
 - (ACSDLayer*)guideLayer;
 -(void)setLayerPages;
