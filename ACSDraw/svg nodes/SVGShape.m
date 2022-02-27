@@ -55,7 +55,7 @@ static NSInteger lineJoinFromString(NSString* s)
 				if (n >= 1)
 				{
 					int idx = n - 1;
-					if (idx < [subs count] - 1)
+					if (idx < [subs count])
 					{
 						col = subs[idx];
 					}

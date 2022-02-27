@@ -33,16 +33,14 @@
 - (void)encodeWithCoder:(NSCoder*)coder
 {
 	[super encodeWithCoder:coder];
-	[coder encodeObject:self.svgDocument.svgData forKey:@"svgData"];
+	[coder encodeObject:self.svgDocument.svgData forKey:@"ACSDSVGImage_svgData"];
 }
 
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super initWithCoder:coder];
-	NSData *svgData = [coder decodeObjectForKey:@"svgData"];
-	XMLManager *xmlMan = [[XMLManager alloc]init];
-	XMLNode *xmlRoot = [xmlMan parseData:svgData];
-	self.svgDocument = [[SVGDocument alloc]initWithXMLNode:xmlRoot];
+	NSData *svgData = [coder decodeObjectForKey:@"ACSDSVGImage_svgData"];
+	self.svgDocument = [[SVGDocument alloc]initWithData:svgData];
 	[self setUpSubstitutionColours:[self fill]];
 	return self;
 }
@@ -95,7 +93,7 @@
 		else
 			_svgDocument.substitutionColours = nil;
 	}
-	else if ([fill isMemberOfClass:[ACSDGradient class]])
+	else if ([fill isKindOfClass:[ACSDGradient class]])
 	{
 		NSMutableArray *cols = [NSMutableArray array];
 		NSArray<GradientElement*>*ges = [((ACSDGradient*)fill) gradientElements];
