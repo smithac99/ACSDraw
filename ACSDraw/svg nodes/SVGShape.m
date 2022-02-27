@@ -33,9 +33,46 @@ static NSInteger lineJoinFromString(NSString* s)
     return 0;
 }
 
+-(id)finalFill:(NSMutableDictionary*)context
+{
+	NSString *idattr = self.buildAttributes[@"id"];
+	if (context[@"_substitutioncolours"] && [idattr hasPrefix:@"col"])
+	{
+		id subs = context[@"_substitutioncolours"];
+		NSColor *col = nil;
+		if ([subs isKindOfClass:[NSColor class]])
+		{
+			col = subs;
+		}
+		else if ([subs isKindOfClass:[NSArray class]])
+		{
+			NSInteger hyphenloc = [idattr rangeOfString:@"-"].location;
+			if (hyphenloc != NSNotFound && hyphenloc >= 4)
+			{
+				NSString *substr = [idattr substringToIndex:hyphenloc];
+				substr = [substr substringFromIndex:3];
+				int n = [substr intValue];
+				if (n >= 1)
+				{
+					int idx = n - 1;
+					if (idx < [subs count] - 1)
+					{
+						col = subs[idx];
+					}
+				}
+			}
+		}
+		if (col)
+		{
+			return [[SVGPaint alloc]initWithObj:col];
+		}
+	}
+	return self.processedAttributes[@"fill"];;
+}
+
 -(void)strokeAndFillPath:(NSBezierPath*)path context:(NSMutableDictionary*)context
 {
-    SVGPaint *fill = self.processedAttributes[@"fill"];
+    SVGPaint *fill = [self finalFill:context];
     if (fill && fill.paintType != PAINTTYPE_NONE)
     {
         if (fill.paintType == PAINTTYPE_COLOUR)

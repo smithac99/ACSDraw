@@ -17,6 +17,15 @@
 
 @implementation SVGDocument
 
+-(void)buildSVGFromXMLNode:(XMLNode*)xmlNode
+{
+	self.context = [NSMutableDictionary dictionary];
+	self.context[@"objectdict"] = self.objectDict = [NSMutableDictionary dictionary];
+	self.context[@"styledict"] = [NSMutableDictionary dictionary];
+	self.context[@"defaultattrs"] = [SVGDocument defaultDocumentAttributes];
+	self.svgNode = [[SVG_svg alloc]initWithXMLNode:xmlNode context:self.context];
+}
+
 -(instancetype)initWithXMLNode:(XMLNode*)xmlNode
 {
     if (self = [self init])
@@ -24,11 +33,7 @@
         self.backgroundColour = [NSColor clearColor];
         if ([xmlNode.nodeName isEqualToString:@"svg"])
         {
-            self.context = [NSMutableDictionary dictionary];
-            self.context[@"objectdict"] = self.objectDict = [NSMutableDictionary dictionary];
-            self.context[@"styledict"] = [NSMutableDictionary dictionary];
-            self.context[@"defaultattrs"] = [SVGDocument defaultDocumentAttributes];
-            self.svgNode = [[SVG_svg alloc]initWithXMLNode:xmlNode context:self.context];
+			[self buildSVGFromXMLNode:xmlNode];
         }
         else
             return nil;
@@ -43,6 +48,11 @@
 		self.svgData = data;
 	}
 	return self;
+}
+
+-(void)rebuild
+{
+	[self buildSVGFromXMLNode:[[[XMLManager alloc]init]parseData:self.svgData]];
 }
 
 +(NSDictionary*)defaultDocumentAttributes
@@ -80,6 +90,10 @@
         [self.backgroundColour set];
         NSRectFill(NSMakeRect(xoffset, yoffset, newWidth, newHeight));
     }
+	if (_substitutionColours == nil)
+		[_context removeObjectForKey:@"_substitutioncolours"];
+	else
+		_context[@"_substitutioncolours"] = _substitutionColours;
     [[NSGraphicsContext currentContext]saveGraphicsState];
     NSAffineTransform *t = [NSAffineTransform transform];
     [t translateXBy:0 yBy:NSMaxY(frame)];

@@ -13,6 +13,8 @@
 #import "ACSDPrefsController.h"
 #import "XMLManager.h"
 #import "SVGDocument.h"
+#import "ACSDGradient.h"
+#import "GradientElement.h"
 
 @implementation ACSDSVGImage
 
@@ -41,6 +43,7 @@
 	XMLManager *xmlMan = [[XMLManager alloc]init];
 	XMLNode *xmlRoot = [xmlMan parseData:svgData];
 	self.svgDocument = [[SVGDocument alloc]initWithXMLNode:xmlRoot];
+	[self setUpSubstitutionColours:[self fill]];
 	return self;
 }
 
@@ -69,6 +72,7 @@
 	{
 		options[@"subfill"] = fill;
 	}
+	[self setUpSubstitutionColours:fill];
 	[self.svgDocument drawInRect:[self bounds]];
 	
 	[options removeObjectForKey:@"subfill"];
@@ -76,4 +80,35 @@
 	[NSGraphicsContext restoreGraphicsState];
 }
 
+-(void)setUpSubstitutionColours:(ACSDFill*)fill
+{
+	if (fill == nil)
+	{
+		_svgDocument.substitutionColours = nil;
+		return;
+	}
+	if ([fill isMemberOfClass:[ACSDFill class]])
+	{
+		NSColor *col = [fill colour];
+		if (col)
+			_svgDocument.substitutionColours = col;
+		else
+			_svgDocument.substitutionColours = nil;
+	}
+	else if ([fill isMemberOfClass:[ACSDGradient class]])
+	{
+		NSMutableArray *cols = [NSMutableArray array];
+		NSArray<GradientElement*>*ges = [((ACSDGradient*)fill) gradientElements];
+		for (GradientElement *ge in ges)
+		{
+			[cols addObject:[ge colour]];
+		}
+		_svgDocument.substitutionColours = cols;
+	}}
+
+-(void)setFill:(ACSDFill*)fill
+{
+	[super setFill:fill];
+	[self setUpSubstitutionColours:fill];
+}
 @end

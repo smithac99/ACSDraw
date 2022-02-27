@@ -17,8 +17,11 @@
 @property (retain) NSColor *backgroundColour;
 @property (retain) NSMutableDictionary *context;
 @property (retain) NSURL *fileURL;
+@property (retain) id substitutionColours;
+
 -(instancetype)initWithXMLNode:(XMLNode*)xmlNode;
 -(instancetype)initWithData:(NSData*)data;
+-(void)rebuild;
 -(NSSize)size;
 -(void)drawInRect:(NSRect)destRect;
 @end
