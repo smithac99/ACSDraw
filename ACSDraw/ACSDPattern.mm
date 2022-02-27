@@ -440,7 +440,10 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         xIncrement = patternWidth;
         yIncrement = patternHeight;
         xoffsetamount = 0;
-
+		if (_offsetMode == OFFSET_MODE_X)
+		{
+			xoffsetamount = _offset * xIncrement;
+		}
     }
     xIncrement = xIncrement * self.scale * (1.0 + self.spacing);
     yIncrement = yIncrement * self.scale * (1.0 + self.spacing);
@@ -630,6 +633,120 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 -(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray*)allPatterns bounds:(NSRect)objectBounds name:(NSString*)pname
 {
+	if ([pname isEqualToString:self.tempNameOffset])
+		[self writeSVGPatternDef:svgWriter allPatterns:allPatterns bounds:objectBounds name:pname offsetRun:1];
+	else
+		[self writeSVGPatternDef:svgWriter allPatterns:allPatterns bounds:objectBounds name:pname offsetRun:0];
+}
+
+-(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray*)allPatterns bounds:(NSRect)objectBounds name:(NSString*)pname offsetRun:(int)offsetRun
+{
+	NSString *xlink = nil;
+	for (NSDictionary *d in allPatterns)
+	{
+		ACSDPattern *other = d[@"pattern"];
+		if (other == self)
+		{
+			NSString *othername = d[@"name"];
+			if (othername != pname)
+				xlink = othername;
+			break;
+		}
+	}
+	NSRect viewBox = [self patternBounds];
+	if (svgWriter.shouldInvertSVGCoords)
+		viewBox = [svgWriter invertRect:viewBox];
+	float patternWidth = viewBox.size.width;
+	float patternHeight = viewBox.size.height;
+	float xShift = 0, yShift = 0;
+
+	[[svgWriter defs]appendFormat:@"\t<pattern id=\"%@\" ",pname];
+
+	if (self.spacing != 0)
+	{
+		float extraSpaceX = self.spacing * patternWidth;
+		float extraSpaceY = self.spacing * patternHeight;
+		xShift = extraSpaceX;
+		yShift = extraSpaceY;
+		viewBox.origin.x -= extraSpaceX;
+		viewBox.origin.y -= extraSpaceY;
+		viewBox.size.width += (2 * extraSpaceX);
+		viewBox.size.height += (2 * extraSpaceY);
+	}
+	float pwidth = self.scale * viewBox.size.width;
+	float pheight = self.scale * viewBox.size.height;
+	float ox = _patternOrigin.x * objectBounds.size.width;
+	float oy = _patternOrigin.y * objectBounds.size.height;
+	if (_offsetMode)
+	{
+		if (offsetRun & 1)
+		{
+			if (_offsetMode == OFFSET_MODE_X)
+			{
+				ox += _offset * pwidth;
+				oy += pheight;
+			}
+			else
+			{
+				oy += _offset * pheight;
+				ox += pwidth;
+			}
+		}
+		if (_offsetMode == OFFSET_MODE_X)
+		{
+			viewBox.size.height *= 2;
+			pheight *= 2;
+		}
+		else
+		{
+			viewBox.size.width *= 2;
+			pwidth *= 2;
+		}
+	}
+	if (svgShouldUseBBUnits)
+	{
+		ox = ox / objectBounds.size.width;
+		oy = oy / objectBounds.size.height;
+		pwidth = pwidth / objectBounds.size.width;
+		pheight = pheight / objectBounds.size.height;
+	}
+	if (xlink)
+	{
+		[[svgWriter defs]appendFormat:@" xlink:href=\"#%@\" ",xlink];
+		[[svgWriter defs]appendFormat:@"x=\"%g\" y=\"%g\"",ox,oy];
+	}
+	else
+	{
+		NSString *coordType=@"userSpaceOnUse";
+		if (svgShouldUseBBUnits)
+			coordType = @"objectBoundingBox";
+		[[svgWriter defs]appendFormat:@"patternUnits=\"%@\" x=\"%g\" y=\"%g\" width=\"%0.03g\" height=\"%0.03g\"",coordType, ox,oy,pwidth,pheight];
+		[[svgWriter defs]appendFormat:@" viewBox=\"%g %g %g %g\"",viewBox.origin.x,viewBox.origin.y,viewBox.size.width,viewBox.size.height];
+		if (!self.clip)
+			[[svgWriter defs]appendString:@" overflow=\"visible\""];
+		NSMutableString *transString = [NSMutableString string];
+		if (self.rotation != 0.0)
+			[transString appendFormat:@"rotate(%g)",self.rotation];
+		if ([transString length] > 0)
+			[[svgWriter defs]appendFormat:@" patternTransform=\"%@\"",transString];
+	}
+	[[svgWriter defs]appendString:@">\n"];
+	if (xlink == nil)
+	{
+		[svgWriter saveContents];
+		[svgWriter indentDef];
+		[self.graphic writeSVGData:svgWriter];
+		[svgWriter outdentDef];
+		[[svgWriter defs]appendString:[svgWriter contents]];
+		[svgWriter restoreContents];
+	}
+	[[svgWriter defs]appendString:@"\t</pattern>\n"];
+
+	
+}
+
+-(void)writeSVGPatternDefo:(SVGWriter*)svgWriter allPatterns:(NSArray*)allPatterns bounds:(NSRect)objectBounds name:(NSString*)pname offsetRun:(int)offsetRun
+{
     NSString *xlink = nil;
     for (NSDictionary *d in allPatterns)
     {
@@ -666,6 +783,26 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	{
 		ox = ox + self.spacing * patternWidth * _scale / 2.0;
 		oy = oy + self.spacing * patternHeight * _scale / 2.0;
+	}
+	if (_offsetMode)
+	{
+		if (offsetRun & 1)
+		{
+			if (_offsetMode == OFFSET_MODE_X)
+			{
+				ox += xIncrement * _offset;
+				oy += yIncrement;
+			}
+			else
+			{
+				ox += xIncrement;
+				oy += yIncrement * _offset;
+			}
+		}
+		if (_offsetMode == OFFSET_MODE_X)
+			yIncrement *= 2;
+		else
+			xIncrement *= 2;
 	}
     if (svgShouldUseBBUnits)
     {
@@ -782,8 +919,6 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 -(void)writeSVGData:(SVGWriter*)svgWriter
 {
-    //NSString *name = [self svgName:[svgWriter document]];
-    //[[svgWriter contents]appendFormat:@"fill=\"url(#%@)\" ",name];
     [[svgWriter contents]appendFormat:@"fill=\"url(#%@)\" ",self.tempName];
 }
 

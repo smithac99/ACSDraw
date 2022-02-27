@@ -112,10 +112,11 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
         else
             f = [settings[@"parentrect"]rectValue];
         
-        NSAffineTransform *t = [[NSAffineTransform alloc]initWithTransform:[settings objectForKey:@"transform"]];
-        [t scaleXBy:f.size.width yBy:f.size.height];
-        [t translateXBy:f.origin.x yBy:f.origin.y];
-        settings[@"transform"] = t;
+		//NSAffineTransform *t = [[NSAffineTransform alloc]initWithTransform:[settings objectForKey:@"transform"]];
+		//NSAffineTransform *t = [[NSAffineTransform alloc]init];
+        //[t scaleXBy:f.size.width yBy:f.size.height];
+        //[t translateXBy:f.origin.x yBy:f.origin.y];
+        //settings[@"transform"] = t;
         [settingsStack addObject:settings];
         settings = [settings mutableCopy];
         NSMutableSet *unusedAttrs = [[doc getAttributesFromSVGNode:objNode settings:settings]mutableCopy];
@@ -123,6 +124,10 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
         ACSDGraphic *g = nil;
         if ([[objNode nodeName]isEqualToString:@"path"])
         {
+			NSAffineTransform *t = [[NSAffineTransform alloc]init];
+			[t scaleXBy:f.size.width yBy:f.size.height];
+			[t translateXBy:f.origin.x yBy:f.origin.y];
+			settings[@"transform"] = t;
             ACSDPath *p = [ACSDPath pathWithSVGNode:objNode settingsStack:settingsStack];
             g = p;
             [unusedAttrs removeObject:@"d"];

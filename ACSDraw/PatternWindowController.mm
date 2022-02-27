@@ -109,6 +109,7 @@
     [originXText setFloatValue:pattern.patternOrigin.x];
     [originYText setFloatValue:pattern.patternOrigin.y];
 	[backgroundColourWell setColor:[pattern backgroundColour]];
+	[layoutPopUp selectItemAtIndex:[pattern layoutMode]];
     self.displayClip = pattern.clip;
     self.displayRotation = pattern.rotation;
 	[graphicView resizeHandleBits];
@@ -489,6 +490,7 @@
 	[pattern setPdfOffset:[pat pdfOffset]];
 	[pattern setBackgroundColour:[pat backgroundColour]];
     [pattern setPatternOrigin:[pat patternOrigin]];
+	[pattern setLayoutMode:[pat layoutMode]];
 	pattern.usePatternCentre = pat.usePatternCentre;
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDFillAdded object:self];
 	[[self undoManager]removeAllActions];
@@ -562,6 +564,7 @@
     pat.backgroundColour = pattern.backgroundColour;
     pat.clip = pattern.clip;
     pat.rotation = pattern.rotation;
+	pat.layoutMode = pattern.layoutMode;
 	[[self undoManager] enableUndoRegistration];
 	return pat;
 }

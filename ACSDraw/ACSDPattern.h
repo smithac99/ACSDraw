@@ -58,7 +58,7 @@ enum
 @property NSRect patternBounds;
 @property BOOL clip;
 @property NSPoint patternOrigin;
-@property (retain) NSString *tempName;
+@property (retain) NSString *tempName,*tempNameOffset;
 @property BOOL usePatternCentre;
 
 +(ACSDPattern*)defaultPattern;
@@ -85,5 +85,6 @@ enum
 -(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray*)allPatterns bounds:(NSRect)bnds name:(NSString*)pname;
 -(NSString*)graphicXMLForEvent:(NSMutableDictionary*)options;
 -(NSString*)svgName:(ACSDrawDocument*)doc;
+-(void)writeSVGPatternDef:(SVGWriter*)svgWriter allPatterns:(NSArray*)allPatterns bounds:(NSRect)objectBounds name:(NSString*)pname offsetRun:(int)offsetRun;
 
 @end
