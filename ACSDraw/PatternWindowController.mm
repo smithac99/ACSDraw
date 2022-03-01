@@ -101,8 +101,10 @@
 	[offsetSlider setFloatValue:[pattern offset]];
 	[scaleText setFloatValue:[pattern scale]];
 	[scaleSlider setFloatValue:log10([pattern scale])];
-	[spacingText setFloatValue:[pattern spacing]];
-	[spacingSlider setFloatValue:([pattern spacing])];
+	[xSpacingText setFloatValue:[pattern xSpacing]];
+	[xSpacingSlider setFloatValue:([pattern xSpacing])];
+	[ySpacingText setFloatValue:[pattern ySpacing]];
+	[ySpacingSlider setFloatValue:([pattern ySpacing])];
 	[offsetTypeRBMatrix selectCellAtRow:0 column:[pattern offsetMode]];
 	[opacityText setFloatValue:[pattern alpha]];
 	[opacitySlider setFloatValue:[pattern alpha]];
@@ -147,42 +149,80 @@
 		[[self window]zoom:self];
 }
 
--(void)uSetSpacing:(float)v text:(BOOL)text slider:(BOOL)slider
+-(void)uSetXSpacing:(float)v text:(BOOL)text slider:(BOOL)slider
 {
-	if ([[self temporaryPattern] spacing] != v)
-		[[[self undoManager] prepareWithInvocationTarget:self] uSetSpacing:[temporaryPattern spacing]text:YES slider:YES];
+	if ([[self temporaryPattern] xSpacing] != v)
+		[[[self undoManager] prepareWithInvocationTarget:self] uSetXSpacing:[temporaryPattern xSpacing]text:YES slider:YES];
 	if (text)
-		[spacingText setFloatValue:v];
+		[xSpacingText setFloatValue:v];
 	if (slider)
 	{
 		//float scale10 = log10(v);
 		//[spacingSlider setFloatValue:scale10];
-		[spacingSlider setFloatValue:v];
+		[xSpacingSlider setFloatValue:v];
 	}
-	[[self temporaryPattern] setSpacing:v];
-	[patternPreview setNeedsDisplay:YES];	
-	[[self undoManager]setActionName:@"Change Spacing"];
+	[[self temporaryPattern] setXSpacing:v];
+	[patternPreview setNeedsDisplay:YES];
+	[[self undoManager]setActionName:@"Change X Spacing"];
+}
+
+-(void)uSetYSpacing:(float)v text:(BOOL)text slider:(BOOL)slider
+{
+	if ([[self temporaryPattern] ySpacing] != v)
+		[[[self undoManager] prepareWithInvocationTarget:self] uSetYSpacing:[temporaryPattern ySpacing]text:YES slider:YES];
+	if (text)
+		[ySpacingText setFloatValue:v];
+	if (slider)
+	{
+		//float scale10 = log10(v);
+		//[spacingSlider setFloatValue:scale10];
+		[ySpacingSlider setFloatValue:v];
+	}
+	[[self temporaryPattern] setYSpacing:v];
+	[patternPreview setNeedsDisplay:YES];
+	[[self undoManager]setActionName:@"Change Y Spacing"];
 }
 
 
-- (IBAction)spacingSliderHit:(id)sender
+- (IBAction)xSpacingSliderHit:(id)sender
 {
 	if (actionsDisabled)
 		return;
 	[self setActionsDisabled:YES];
 	float spacing = [sender floatValue];
 	//float spacing = pow(10,spacing10);
-	[self uSetSpacing:spacing text:YES slider:NO];
+	[self uSetXSpacing:spacing text:YES slider:NO];
 	[self setActionsDisabled:NO];
 }
 
-- (IBAction)spacingTextHit:(id)sender
+- (IBAction)ySpacingSliderHit:(id)sender
 {
 	if (actionsDisabled)
 		return;
 	[self setActionsDisabled:YES];
 	float spacing = [sender floatValue];
-	[self uSetSpacing:spacing text:NO slider:YES];
+	//float spacing = pow(10,spacing10);
+	[self uSetYSpacing:spacing text:YES slider:NO];
+	[self setActionsDisabled:NO];
+}
+
+- (IBAction)xSpacingTextHit:(id)sender
+{
+	if (actionsDisabled)
+		return;
+	[self setActionsDisabled:YES];
+	float spacing = [sender floatValue];
+	[self uSetXSpacing:spacing text:NO slider:YES];
+	[self setActionsDisabled:NO];
+}
+
+- (IBAction)ySpacingTextHit:(id)sender
+{
+	if (actionsDisabled)
+		return;
+	[self setActionsDisabled:YES];
+	float spacing = [sender floatValue];
+	[self uSetYSpacing:spacing text:NO slider:YES];
 	[self setActionsDisabled:NO];
 }
 
@@ -478,7 +518,8 @@
 	ACSDPattern *pat = [self temporaryPattern];
 	[pattern changeGraphic:[pat graphic] view:nil];
 	[pattern changeScale:[pat scale] view:nil];
-	[pattern changeSpacing:[pat spacing] view:nil];
+	[pattern changeXSpacing:[pat xSpacing] view:nil];
+	[pattern changeYSpacing:[pat ySpacing] view:nil];
 	[pattern changeOffset:[pat offset]view:nil];
 	[pattern setAlpha:[pat alpha]];
 	[pattern setMode:[pat mode]];
@@ -521,7 +562,8 @@
 {
 	ACSDPattern *temp = [self temporaryPattern];
 	[temp setScale:[scaleText floatValue]];
-	[temp setSpacing:[spacingText floatValue]];
+	[temp setXSpacing:[xSpacingText floatValue]];
+	[temp setYSpacing:[ySpacingText floatValue]];
 	[temp setOffset:[offsetText floatValue]];
 	[temp setOffsetMode:(int)[offsetTypeRBMatrix selectedColumn]];
 	return temp;
@@ -557,7 +599,7 @@
 	float yOffset = [verticalRuler originOffset];
 	NSRect pBounds = NSMakeRect(xOffset,yOffset,[verticalLimitLine location] - xOffset,[horizontalLimitLine location] - yOffset);
 	ACSDPattern *pat = [ACSDPattern patternWithGraphic:g scale:[scaleText floatValue] 
-											   spacing:[spacingText floatValue] offset:[offsetText floatValue]
+											  xSpacing:[xSpacingText floatValue] ySpacing:[ySpacingText floatValue] offset:[offsetText floatValue]
 											offsetMode:(int)[offsetTypeRBMatrix selectedColumn] alpha:1.0 
 												  mode:(int)[patternModeRBMatrix selectedColumn] 
 										 patternBounds:pBounds];

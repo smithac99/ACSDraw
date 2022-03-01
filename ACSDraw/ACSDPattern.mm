@@ -47,13 +47,13 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	ACSDPath *ap = [[ACSDPath alloc]initWithName:@"DefaultPattern" fill:[[ACSDFill alloc]initWithColour:[NSColor blackColor]]
 										  stroke:nil rect:NSZeroRect layer:nil
 									  bezierPath:path];
-	return [[ACSDPattern alloc] initWithGraphic:ap scale:1.0 spacing:0.2 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
+	return [[ACSDPattern alloc] initWithGraphic:ap scale:1.0 xSpacing:0.2 ySpacing:0.2 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
 								   patternBounds:[ap bounds]];
 }
 
-+(ACSDPattern*)patternWithGraphic:(ACSDGraphic*)g scale:(float)sc spacing:(float)sp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r
++(ACSDPattern*)patternWithGraphic:(ACSDGraphic*)g scale:(float)sc xSpacing:(float)xsp ySpacing:(float)ysp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r
 {
-	return [[ACSDPattern alloc] initWithGraphic:g scale:sc spacing:sp offset:o offsetMode:om alpha:al mode:m
+	return [[ACSDPattern alloc] initWithGraphic:g scale:sc xSpacing:xsp ySpacing:ysp offset:o offsetMode:om alpha:al mode:m
 								   patternBounds:r];
 }
 
@@ -80,12 +80,12 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         bnds = [foundrect bounds];
     else
         bnds = [g bounds];
-	ACSDPattern *pat = [[ACSDPattern alloc] initWithGraphic:g scale:1.0 spacing:0.0 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
+	ACSDPattern *pat = [[ACSDPattern alloc] initWithGraphic:g scale:1.0 xSpacing:0.0 ySpacing:0.0 offset:0.0 offsetMode:OFFSET_MODE_NONE alpha:1.0 mode:ACSD_PATTERN_SINGLE
 								   patternBounds:bnds];
     return pat;
 }
 
--(id)initWithGraphic:(ACSDGraphic*)g scale:(float)sc spacing:(float)sp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r
+-(id)initWithGraphic:(ACSDGraphic*)g scale:(float)sc xSpacing:(float)xsp ySpacing:(float)ysp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r
 {
 	if (self = [super initWithColour:[[NSColor whiteColor]colorWithAlphaComponent:al]])
 	{
@@ -96,7 +96,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 		self.scale = sc;
 		self.offset = o;
 		self.offsetMode = om;
-		self.spacing = sp;
+		self.xSpacing = xsp;
+		self.ySpacing = ysp;
 		self.alpha = al;
 		self.mode = m;
 		self.patternBounds = r;
@@ -110,7 +111,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 - (id)copyWithZone:(NSZone *)zone 
 {
-    ACSDPattern *o = [[[self class] allocWithZone:zone] initWithGraphic:[self.graphic copy] scale:self.scale spacing:self.spacing offset:self.offset offsetMode:self.offsetMode alpha:self.alpha
+    ACSDPattern *o = [[[self class] allocWithZone:zone] initWithGraphic:[self.graphic copy] scale:self.scale xSpacing:self.xSpacing ySpacing:self.ySpacing offset:self.offset offsetMode:self.offsetMode alpha:self.alpha
 														 mode:self.mode patternBounds:[self patternBounds]];
 	[o setBackgroundColour:self.backgroundColour];
 	[o setClip:self.clip];
@@ -125,7 +126,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 {
 	[coder encodeObject:self.graphic forKey:@"ACSDPattern_graphic"];
 	[coder encodeObject:[NSNumber numberWithFloat:self.scale]forKey:@"ACSDPattern_scale"];
-	[coder encodeObject:[NSNumber numberWithFloat:self.spacing]forKey:@"ACSDPattern_spacing"];
+	[coder encodeObject:[NSNumber numberWithFloat:self.xSpacing]forKey:@"ACSDPattern_xspacing"];
+	[coder encodeObject:[NSNumber numberWithFloat:self.ySpacing]forKey:@"ACSDPattern_yspacing"];
 	[coder encodeObject:[NSNumber numberWithFloat:self.offset]forKey:@"ACSDPattern_offset"];
 	[coder encodeObject:[NSNumber numberWithInt:self.offsetMode]forKey:@"ACSDPattern_offsetMode"];
 	[coder encodeObject:[NSNumber numberWithFloat:self.alpha]forKey:@"ACSDPattern_alpha"];
@@ -144,7 +146,18 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	self = [super init];
 	self.graphic = [coder decodeObjectForKey:@"ACSDPattern_graphic"];
 	self.scale = [[coder decodeObjectForKey:@"ACSDPattern_scale"]floatValue];
-	self.spacing = [[coder decodeObjectForKey:@"ACSDPattern_spacing"]floatValue];
+	id osp = [coder decodeObjectForKey:@"ACSDPattern_xspacing"];
+	if (osp == nil)
+	{
+		self.xSpacing = [[coder decodeObjectForKey:@"ACSDPattern_spacing"]floatValue];
+		self.ySpacing = self.xSpacing;
+	}
+	else
+	{
+		self.xSpacing = [osp floatValue];
+		self.ySpacing = [[coder decodeObjectForKey:@"ACSDPattern_yspacing"]floatValue];
+	}
+	//self.spacing = [[coder decodeObjectForKey:@"ACSDPattern_spacing"]floatValue];
 	self.offset = [[coder decodeObjectForKey:@"ACSDPattern_offset"]floatValue];
 	self.offsetMode = [[coder decodeObjectForKey:@"ACSDPattern_offsetMode"]intValue];
 	self.alpha = [[coder decodeObjectForKey:@"ACSDPattern_alpha"]floatValue];
@@ -187,8 +200,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	bpad = b.origin.y - dr.origin.y;
 	rpad = (dr.origin.x + dr.size.width) - (b.origin.x + b.size.width);
 	tpad = (dr.origin.y + dr.size.height) - (b.origin.y + b.size.height);*/
-	b.size.width *= (1.0 + self.spacing);
-	b.size.height *= (1.0 + self.spacing);
+	b.size.width *= (1.0 + self.xSpacing);
+	b.size.height *= (1.0 + self.ySpacing);
 	if (self.mode > ACSD_PATTERN_SINGLE)
 		b.size.width *= 2;
 	if (self.mode > ACSD_PATTERN_DOUBLE_MIRROR)
@@ -219,10 +232,18 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	[self invalidateGraphicsRefreshCache:YES];
 }
 
--(void)changeSpacing:(float)sp view:(GraphicView*)gView
+-(void)changeXSpacing:(float)sp view:(GraphicView*)gView
 {
 	[self invalidateGraphicsRefreshCache:NO];
-	[self setSpacing:sp];
+	[self setXSpacing:sp];
+	[self changeCache];
+	[self invalidateGraphicsRefreshCache:YES];
+}
+
+-(void)changeYSpacing:(float)sp view:(GraphicView*)gView
+{
+	[self invalidateGraphicsRefreshCache:NO];
+	[self setYSpacing:sp];
 	[self changeCache];
 	[self invalidateGraphicsRefreshCache:YES];
 }
@@ -384,12 +405,12 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	if (self.offsetMode == OFFSET_MODE_X)
 	{
 		if (self.offset != 0.0 && ODD(i))
-			[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:destRect.size.width * (1.0 + self.spacing) * self.offset yBy:0]];
+			[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:destRect.size.width * (1.0 + self.xSpacing) * self.offset yBy:0]];
 	}
 	else if (self.offsetMode == OFFSET_MODE_Y)
 	{
 		if (self.offset != 0.0 && ODD(j))
-			[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:0 yBy:destRect.size.height * (1.0 + self.spacing) * self.offset]];
+			[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:0 yBy:destRect.size.height * (1.0 + self.ySpacing) * self.offset]];
 	}
 	return aff;
 }
@@ -445,9 +466,9 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 			xoffsetamount = _offset * xIncrement;
 		}
     }
-    xIncrement = xIncrement * self.scale * (1.0 + self.spacing);
-    yIncrement = yIncrement * self.scale * (1.0 + self.spacing);
-    xoffsetamount = xoffsetamount * self.scale * (1.0 + self.spacing);
+    xIncrement = xIncrement * self.scale * (1.0 + self.xSpacing);
+    yIncrement = yIncrement * self.scale * (1.0 + self.ySpacing);
+    xoffsetamount = xoffsetamount * self.scale * (1.0 + self.xSpacing);
     float destWidth = patternWidth * self.scale;
     float destHeight = patternHeight * self.scale;
     float ox = pathBounds.origin.x + _patternOrigin.x * pathBounds.size.width;
@@ -515,8 +536,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	float patternHeight = graphicBounds.size.height;
 	float scaledPatternWidth = patternWidth * self.scale;
 	float scaledPatternHeight = patternHeight * self.scale;
-	float xIncrement = scaledPatternWidth * (1.0 + self.spacing);
-	float yIncrement = scaledPatternHeight * (1.0 + self.spacing);
+	float xIncrement = scaledPatternWidth * (1.0 + self.xSpacing);
+	float yIncrement = scaledPatternHeight * (1.0 + self.ySpacing);
 	NSRect destRect = NSZeroRect;
 	destRect.size.width = scaledPatternWidth;
 	destRect.size.height = scaledPatternHeight;
@@ -597,8 +618,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     float patternHeight = graphicBounds.size.height;
     float scaledPatternWidth = patternWidth * self.scale;
     float scaledPatternHeight = patternHeight * self.scale;
-    float xIncrement = scaledPatternWidth * (1.0 + self.spacing);
-    float yIncrement = scaledPatternHeight * (1.0 + self.spacing);
+    float xIncrement = scaledPatternWidth * (1.0 + self.xSpacing);
+    float yIncrement = scaledPatternHeight * (1.0 + self.ySpacing);
 
     [graphicString appendString:@"<pattern"];
     if (xlink)
@@ -662,10 +683,10 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 	[[svgWriter defs]appendFormat:@"\t<pattern id=\"%@\" ",pname];
 
-	if (self.spacing != 0)
+	if (self.xSpacing != 0 || self.ySpacing != 0)
 	{
-		float extraSpaceX = self.spacing * patternWidth;
-		float extraSpaceY = self.spacing * patternHeight;
+		float extraSpaceX = self.xSpacing * patternWidth;
+		float extraSpaceY = self.ySpacing * patternHeight;
 		xShift = extraSpaceX;
 		yShift = extraSpaceY;
 		viewBox.origin.x -= extraSpaceX;
@@ -767,8 +788,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         patBounds = [svgWriter invertRect:patBounds];
     float patternWidth = patBounds.size.width;
     float patternHeight = patBounds.size.height;
-    float xIncrement = patternWidth * (1.0 + self.spacing);
-    float yIncrement = patternHeight * (1.0 + self.spacing);
+    float xIncrement = patternWidth * (1.0 + self.xSpacing);
+    float yIncrement = patternHeight * (1.0 + self.ySpacing);
 
     [[svgWriter defs]appendFormat:@"\t<pattern id=\"%@\" ",name];
     
@@ -781,8 +802,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	}
 	else
 	{
-		ox = ox + self.spacing * patternWidth * _scale / 2.0;
-		oy = oy + self.spacing * patternHeight * _scale / 2.0;
+		ox = ox + self.xSpacing * patternWidth * _scale / 2.0;
+		oy = oy + self.ySpacing * patternHeight * _scale / 2.0;
 	}
 	if (_offsetMode)
 	{
@@ -828,8 +849,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         if (svgShouldUseBBUnits)
             coordType = @"objectBoundingBox";
         float spaceMultiplier = 1.0;
-        if (self.spacing != 0)
-            spaceMultiplier += self.spacing;
+        if (self.xSpacing != 0)
+            spaceMultiplier += self.xSpacing;
         [[svgWriter defs]appendFormat:@"patternUnits=\"%@\" x=\"%g\" y=\"%g\" width=\"%0.03g\" height=\"%0.03g\"",coordType, ox,oy,xIncrement,yIncrement];
         [[svgWriter defs]appendFormat:@" viewBox=\"%g %g %g %g\"",patBounds.origin.x,patBounds.origin.y,patBounds.size.width * spaceMultiplier,patBounds.size.height * spaceMultiplier];
         if (!self.clip)
@@ -878,8 +899,8 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
     //float scaledPatternHeight = patternHeight * self.scale;
     //float xIncrement = scaledPatternWidth * (1.0 + self.spacing);
     //float yIncrement = scaledPatternHeight * (1.0 + self.spacing);
-    float xIncrement = patternWidth * (1.0 + self.spacing);
-    float yIncrement = patternHeight * (1.0 + self.spacing);
+    float xIncrement = patternWidth * (1.0 + self.xSpacing);
+    float yIncrement = patternHeight * (1.0 + self.ySpacing);
 
 	[[svgWriter defs]appendString:@"<pattern"];
 	if (xlink)
@@ -934,7 +955,9 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 		return NO;
 	if ([pat scale] != self.scale)
 		return NO;
-	if ([pat spacing] != self.spacing)
+	if ([pat xSpacing] != self.xSpacing)
+		return NO;
+	if ([pat ySpacing] != self.ySpacing)
 		return NO;
 	if ([pat offset] != self.offset)
 		return NO;

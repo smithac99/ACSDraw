@@ -208,8 +208,8 @@ enum
 			[patternDisplay setPattern:(ACSDPattern*)fill];
 			[scaleTextField setFloatValue:[(ACSDPattern*)fill scale]];
 			[scaleSlider setFloatValue:log10([(ACSDPattern*)fill scale])];
-			[spacingTextField setFloatValue:[(ACSDPattern*)fill spacing]];
-			[spacingSlider setFloatValue:log10([(ACSDPattern*)fill spacing])];
+			[spacingTextField setFloatValue:[(ACSDPattern*)fill xSpacing]];
+			[spacingSlider setFloatValue:log10([(ACSDPattern*)fill xSpacing])];
 			[offsetTextField setFloatValue:[(ACSDPattern*)fill offset]];
 			[offsetSlider setFloatValue:[(ACSDPattern*)fill offset]];
 			[offsetTypeRBMatrix selectCellAtRow:0 column:[(ACSDPattern*)fill offsetMode]];
@@ -475,9 +475,9 @@ enum
 	float spacing;
 	spacing = pow(10,spacing10);
 	ACSDPattern *pattern = [fillList objectAtIndex:idx];
-	if (spacing != [pattern spacing])
+	if (spacing != [pattern xSpacing])
 	{
-		[pattern changeSpacing:spacing view:[self inspectingGraphicView]];
+		[pattern changeXSpacing:spacing view:[self inspectingGraphicView]];
 		[fillTableView reloadRowAtIndex:idx];
 		[patternDisplay setNeedsDisplay:YES];
 		[spacingTextField setFloatValue:spacing];
@@ -551,9 +551,9 @@ enum
 	float spacing = [sender floatValue];
 	float spacing10 = log10(spacing);
 	ACSDPattern *pattern = [fillList objectAtIndex:idx];
-	if (spacing != [pattern spacing])
+	if (spacing != [pattern xSpacing])
 	{
-		[pattern changeSpacing:spacing view:[self inspectingGraphicView]];
+		[pattern changeXSpacing:spacing view:[self inspectingGraphicView]];
 		[fillTableView reloadRowAtIndex:idx];
 		[patternDisplay setNeedsDisplay:YES];
 		[spacingSlider setFloatValue:spacing10];

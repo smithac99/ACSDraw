@@ -10,8 +10,10 @@
 
 @interface PatternWindowController : NSWindowController
 {
-    IBOutlet id spacingText;
-    IBOutlet id spacingSlider;
+	IBOutlet id xSpacingText;
+	IBOutlet id xSpacingSlider;
+	IBOutlet id ySpacingText;
+	IBOutlet id ySpacingSlider;
     IBOutlet id offsetTypeRBMatrix;
     IBOutlet id patternModeRBMatrix;
     IBOutlet id graphicView;

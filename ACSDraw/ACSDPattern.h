@@ -48,7 +48,7 @@ enum
 @property (retain) NSColor *backgroundColour;
 @property (retain) ACSDGraphic *graphic;
 @property float scale;
-@property float spacing;
+@property float xSpacing,ySpacing;
 @property float offset;
 @property float alpha;
 @property float rotation;
@@ -63,11 +63,12 @@ enum
 
 +(ACSDPattern*)defaultPattern;
 +(ACSDPattern*)patternWithGraphic:(ACSDGraphic*)g;
-+(ACSDPattern*)patternWithGraphic:(ACSDGraphic*)g scale:(float)sc spacing:(float)sp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r;
--(id)initWithGraphic:(ACSDGraphic*)g scale:(float)sc spacing:(float)sp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r;
++(ACSDPattern*)patternWithGraphic:(ACSDGraphic*)g scale:(float)sc xSpacing:(float)xsp ySpacing:(float)ysp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r;
+-(id)initWithGraphic:(ACSDGraphic*)g scale:(float)sc xSpacing:(float)xsp ySpacing:(float)ysp offset:(float)o offsetMode:(int)om alpha:(float)al mode:(int)m patternBounds:(NSRect)r;
 -(void)changeCache;
 -(void)changeScale:(float)sc view:(GraphicView*)gView;
--(void)changeSpacing:(float)sp view:(GraphicView*)gView;
+-(void)changeXSpacing:(float)sp view:(GraphicView*)gView;
+-(void)changeYSpacing:(float)sp view:(GraphicView*)gView;
 -(void)changeOffset:(float)f view:(GraphicView*)gView;
 -(void)changeOffsetMode:(int)om view:(GraphicView*)gView;
 -(void)changeMode:(int)m view:(GraphicView*)gView;
