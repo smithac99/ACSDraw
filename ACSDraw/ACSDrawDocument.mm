@@ -264,7 +264,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 	if (!pages)
 	   {
 		pages = [[NSMutableArray arrayWithCapacity:5]retain];
-		[pages addObject:[self registerObject:[[[ACSDPage alloc]initWithDocument:self]autorelease]]];
+		[pages addObject:(ACSDPage*)[self registerObject:[[[ACSDPage alloc]initWithDocument:self]autorelease]]];
 	   }
     return pages;
    }

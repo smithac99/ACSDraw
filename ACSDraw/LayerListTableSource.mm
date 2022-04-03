@@ -16,12 +16,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	[layerList release];
-	[super dealloc];
-}
-
 -(NSArray*)layerList
    {
 	return layerList;
@@ -31,11 +25,9 @@
 {
 	if (layerList == list)
 		return;
-	[layerList release];
-	layerList = [list retain];
+	layerList = list;
 	[tableView reloadData];
 }
-
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
@@ -47,7 +39,7 @@
 			if ([l isGuideLayer])
 			{
 				NSDictionary *dict = [NSDictionary dictionaryWithObject:[[ACSDPrefsController sharedACSDPrefsController:nil]guideColour] forKey:NSForegroundColorAttributeName];
-				return [[[NSAttributedString alloc]initWithString:[l name] attributes:dict]autorelease];
+				return [[NSAttributedString alloc]initWithString:[l name] attributes:dict];
 			}
 			else
 				return [l name];

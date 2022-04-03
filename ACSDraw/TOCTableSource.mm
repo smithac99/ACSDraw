@@ -13,10 +13,10 @@
 
 @implementation TOCTableSource
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
    {
-    NSParameterAssert(rowIndex >= 0 && rowIndex < (int)[objectList count]);
-	NSArray *arr = [objectList objectAtIndex:rowIndex];
+    NSParameterAssert(rowIndex >= 0 && rowIndex < [self.objectList count]);
+	NSArray *arr = [self.objectList objectAtIndex:rowIndex];
 	if ([[aTableColumn identifier]isEqualTo:@"style"])
 		return [[arr objectAtIndex:0]name];
 	if ([[aTableColumn identifier]isEqualTo:@"map"])
@@ -25,10 +25,10 @@
    }
 
 - (void)tableView:(NSTableView *)aTableView setObjectValue:anObject forTableColumn:(NSTableColumn *)aTableColumn
-			  row:(int)rowIndex
+			  row:(NSInteger)rowIndex
    {
-    NSParameterAssert(rowIndex >= 0 && rowIndex < (int)[objectList count]);
-	ACSDStyle *st = [objectList objectAtIndex:rowIndex];
+    NSParameterAssert(rowIndex >= 0 && rowIndex < [self.objectList count]);
+	ACSDStyle *st = [self.objectList objectAtIndex:rowIndex];
 	if ([anObject length] > 0)
 		[windowController uSetStyle:st name:anObject];
    }

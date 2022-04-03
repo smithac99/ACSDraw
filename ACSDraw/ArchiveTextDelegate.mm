@@ -17,7 +17,7 @@
 +(ArchiveTextDelegate*)archiveTextDelegateWithType:(int)ty styleMatching:(int)stm styles:(id)sts document:(ACSDrawDocument*)doc enclosingGraphic:(ACSDGraphic*)eg;
    {
 	ArchiveTextDelegate *a = [[ArchiveTextDelegate alloc]initWithType:ty styleMatching:stm styles:sts document:doc enclosingGraphic:eg];
-	return [a autorelease];
+	return a;
    }
 
 -(id)initWithType:(int)ty styleMatching:(int)stm styles:(id)sts document:(ACSDrawDocument*)doc enclosingGraphic:(ACSDGraphic*)eg;
@@ -54,11 +54,6 @@
 	   {
 		id o = [self matchStyle:object];
 		//NSLog(@"ACSDStyle substitute %x for %x",(unsigned)o,object);
-		if (o != object)
-		   {
-			[object release];
-			[o retain];
-		   }
 		return o;
 	   }
 	if ([object isKindOfClass:[ACSDLink class]])
@@ -70,11 +65,6 @@
 			id o = [self matchLink:object];
 			if (!o)
 				return object;
-			if (o != object)
-			   {
-				[object release];
-				[o retain];
-			   }
 			return o;
 			//			return [self matchLink:object];
 		   }

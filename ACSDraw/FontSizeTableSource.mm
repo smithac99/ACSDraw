@@ -4,8 +4,8 @@
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
-	if (rowIndex >= 0 && rowIndex < [objectList count])
-		return [objectList objectAtIndex:rowIndex];
+	if (rowIndex >= 0 && rowIndex < [self.objectList count])
+		return self.objectList[rowIndex];
 	return nil;
 }
 

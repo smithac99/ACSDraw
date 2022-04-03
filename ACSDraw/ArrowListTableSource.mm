@@ -16,8 +16,7 @@
 {
 	if (_arrowList == list)
 		return;
-	[_arrowList release];
-	_arrowList = [list retain];
+	_arrowList = list;
 	[tableView reloadData];
 }
 

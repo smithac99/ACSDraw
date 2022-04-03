@@ -12,7 +12,7 @@
 #import "GraphicView.h"
 #import "PagesController.h"
 #import "LayerTableView.h"
-
+#import "SelectionSet.h"
 
 @implementation PageListTableSource
 - (id)init
@@ -22,18 +22,11 @@
 	return self;
    }
 
--(void)dealloc
-{
-	[pageList release];
-	[super dealloc];
-}
-
 - (void)setPageList:(NSMutableArray*)list
 {
 	if (pageList == list)
 		return;
-	[pageList release];
-	pageList = [list retain];
+	pageList = list;
 	[tableView reloadData];
 }
 

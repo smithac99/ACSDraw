@@ -11,19 +11,9 @@
 
 @implementation ACSDrawTextAttachmentCell
 
--(void)dealloc
-{
-	if (graphic)
-		[graphic release];
-	[super dealloc];
-}
-
 - (void)setAttachment:(NSTextAttachment *)anAttachment
 {
 	[super setAttachment:anAttachment];
-	if (graphic)
-		[graphic release];
-//	NSData* serialisedData = [[anAttachment fileWrapper]serializedRepresentation];
 }
 
 @end

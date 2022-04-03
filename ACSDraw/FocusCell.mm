@@ -25,7 +25,7 @@
 	if (fillInd < 0)
 		return;
 	id dataSource = [(ACSDTableView*)controlView dataSource];
-	if ([[dataSource tableView:nil objectValueForTableColumn:nil row:fillInd]pointerValue] == [[self objectValue]pointerValue])
+	if ([[dataSource tableView:(ACSDTableView*)controlView objectValueForTableColumn:nil row:fillInd]pointerValue] == [[self objectValue]pointerValue])
 	   {
 		[[NSColor blueColor] set];
 		[NSBezierPath setDefaultLineWidth:4.0];
