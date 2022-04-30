@@ -564,7 +564,6 @@ NSString *ACSDrawDocumentKey = @"documentKey";
         return;
     NSString *currStyles = child.attributes[@"styles"];
     NSMutableString *styles = [[NSMutableString alloc]initWithString:currStyles?currStyles:@""];
-    NSMutableDictionary *mdict = nil;
     NSDictionary *definedStyles = settings[@"css"];
     NSArray *cssclasses = [child.attributes[@"class"] componentsSeparatedByString:@" "];
     BOOL changed = NO;
