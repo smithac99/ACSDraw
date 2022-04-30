@@ -21,12 +21,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	self.sourcePath = nil;
-	self.toolTip = nil;
-	[super dealloc];
-}
 -(void)awakeFromNib
 {
 	[super awakeFromNib];
@@ -196,8 +190,7 @@
 {
 	if (![toolTip isEqualToString:_toolTip])
 	{
-		[_toolTip release];
-		_toolTip = [toolTip retain];
+		_toolTip = toolTip;
 		[self updateObjects:[[[self inspectingGraphicView] selectedGraphics]allObjects] withValue:toolTip forKey:@"toolTip" changeid:TC_TOOL_TIP_CHANGE	invalidateFlags:0 actionName:@"Change Tooltip"];
 	}
 }
@@ -208,8 +201,7 @@
         return;
 	if (![sourcePath isEqualToString:_sourcePath])
 	{
-		[_sourcePath release];
-		_sourcePath = [sourcePath retain];
+		_sourcePath = sourcePath;
 		[self updateObjects:[[[self inspectingGraphicView] selectedGraphics]allObjects] withValue:sourcePath forKey:@"sourcePath" changeid:TC_SOURCE_CHANGE	invalidateFlags:0 actionName:@"Change Source"];
         if ([NSEvent modifierFlags] & NSCommandKeyMask)
             [[self inspectingGraphicView] reloadImages:[[[self inspectingGraphicView] selectedGraphics]allObjects]];
@@ -290,7 +282,7 @@
 
 -(void)zeroTextLabelStuff
 {
-	[[textLabel textStorage]setAttributedString:[[[NSAttributedString alloc]initWithString:@""]autorelease]];
+	[[textLabel textStorage]setAttributedString:[[NSAttributedString alloc]initWithString:@""]];
 	[textLabel setEditable:NO];
 	[vLabelText setStringValue:@""];
 	[vLabelText setEnabled:NO];

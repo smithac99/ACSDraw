@@ -6,11 +6,9 @@
    {
     IBOutlet NSTableView *tableView;
     IBOutlet id windowController;
-	NSMutableArray *objectList;
    }
+@property (nonatomic) NSMutableArray *objectList;
 
-- (void)setObjectList:(NSMutableArray*)list;
 -(NSTableView*)tableView;
--(NSMutableArray*)objectList;
 
 @end

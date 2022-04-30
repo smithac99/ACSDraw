@@ -8,6 +8,7 @@
 
 #import "ContainerTabSubview.h"
 #import "ContainerPalletteController.h"
+
 @interface ContainerTabSubview()
 {
     ContainerPalletteController *createdcpc;
@@ -20,17 +21,10 @@
 {
     if (self = [super initWithFrame:frame])
 	{
-        title = [t retain];
+        title = [t copy];
 		cpController = cpc;
     }
     return self;
-}
-
--(void)dealloc
-{
-	if (title)
-		[title release];
-	[super dealloc];
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
@@ -48,11 +42,9 @@
 	NSRect r = [self bounds];
 	r.size.width = r.size.height;
 	r = NSInsetRect(r,3,3);
-	NSButton *b = [[[NSButton alloc]initWithFrame:r]autorelease];
+	NSButton *b = [[NSButton alloc]initWithFrame:r];
 	[b setButtonType:NSMomentaryPushInButton];
-//	[b setTitle:@""];
 	[b setBezelStyle:NSShadowlessSquareBezelStyle];
-//	[b setImagePosition:NSNoImage];
 	[b setImagePosition:NSImageOnly];
 	NSImage *im = [NSImage imageNamed:@"close"];
 	[b setImage:im];
@@ -101,7 +93,6 @@
 	if (l < 0.0)
 		l = 0.0;
 	[string drawAtPoint:NSMakePoint(l,1.0)];
-	[string release];
 }
 
 -(void)mouseUp:(NSEvent *)event
@@ -121,13 +112,11 @@
 	r.size.width = r.size.height = 1.0;
 	r.origin = [theEvent locationInWindow];
 	NSPoint currentLocation = [[self window]convertRectToScreen:r].origin;
-    //NSPoint currentLocation = [[self window]convertBaseToScreen:[theEvent locationInWindow]];
 	NSPoint newOrigin;
     newOrigin.x = currentLocation.x - dragOffset.x;
     newOrigin.y = currentLocation.y - dragOffset.y;
 	NSRect  screenFrame = [[NSScreen mainScreen]visibleFrame];
 	NSRect  windowFrame = [[self window]frame];
-	
 	
     if( (newOrigin.y+windowFrame.size.height) > (screenFrame.origin.y+screenFrame.size.height) )
 	{
@@ -142,16 +131,12 @@
 	r.size.width = r.size.height = 1.0;
 	r.origin = [theEvent locationInWindow];
 	dragOffset = [[self window]convertRectToScreen:r].origin;
-	//dragOffset = [[self window]convertBaseToScreen:[theEvent locationInWindow]];
 	[cpController tabHit:self];
 	r.origin = dragOffset;
 	dragOffset = [[self window]convertRectFromScreen:r].origin;
-	//dragOffset = [[self window]convertScreenToBase:dragOffset];
 	if (([theEvent modifierFlags] & NSCommandKeyMask)!=0 && [theEvent window] == [self window])
     {
 		createdcpc = [cpController detachTab:self];
-        //ContainerTabSubview *tsv = [createdcpc tabSubviews][0];
-        //[tsv mouseDown:theEvent];
         CGPoint pt = NSPointToCGPoint(NSEvent.mouseLocation);
         CGEventRef ev = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDown, pt, kCGMouseButtonLeft);
         CGEventPost(kCGAnnotatedSessionEventTap, ev);

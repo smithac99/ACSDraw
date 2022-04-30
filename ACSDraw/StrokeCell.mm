@@ -15,55 +15,48 @@
 @implementation StrokeCell
 
 +(NSDictionary*)fontDictionary
-   {
-	static NSDictionary *dict = nil;
-	if (! dict)
-	   {
-		NSFont *f = [NSFont systemFontOfSize:9];
-		dict = [[NSDictionary dictionaryWithObject:f forKey:NSFontAttributeName]retain];
-	   }
-	return dict;
-   }
+{
+    static NSDictionary *dict = nil;
+    if (! dict)
+    {
+           dict = @{NSFontAttributeName:[NSFont systemFontOfSize:9]};
+    }
+    return dict;
+}
 
 +(float)textMarginSize
-   {
+{
 	NSSize sz = [@"000.00" sizeWithAttributes:[StrokeCell fontDictionary]];
 	return sz.width + 4;
-   }
+}
 
 - (id)init
-   {
+{
 	if ((self = [super init]))
-	   {
+    {
 		textMarginSize = [StrokeCell textMarginSize];
-	   }
+    }
 	return self;
-   }
-
-- (void)dealloc
-   {
-	[super dealloc];
-   }
+}
 
 - (NSCellType)type
-   {
+{
     return NSNullCellType;
-   }
+}
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
-   {
+{
     NSPoint pt1,pt2;
 	NSRect colRect = cellFrame;
 	[NSGraphicsContext saveGraphicsState];
 	[NSBezierPath clipRect:cellFrame];
-	   //id obj = (id)[[self objectValue]pointerValue];
-	   id obj = [self objectValue];
+    id obj = [self objectValue];
 	if ([obj isKindOfClass:[ACSDStroke class]])
-	   {
+    {
 		stroke = obj;
-	   }
+    }
 	if (stroke && [stroke colour])
-	   {
+    {
 		[[stroke colour]set];
 		pt1 = colRect.origin;
 		pt1.y += (colRect.size.height / 2.0);
@@ -73,7 +66,7 @@
 		ACSDLineEnding *le1 = [stroke lineStart];
 		ACSDLineEnding *le2 = [stroke lineEnd];
 		if (le1 && [le1 graphic])
-		   {
+        {
 		    float lw = [stroke lineWidth];
 			float yscale = lw * [le1 scale];
 			float xscale = yscale * [le1 aspect];
@@ -97,9 +90,9 @@
 			[tf concat];
 			[[le1 graphic]drawObject:NSZeroRect view:nil options:nil];
 			[NSGraphicsContext restoreGraphicsState];
-		   }
+        }
 		if (le2 && [le2 graphic])
-		   {
+        {
 		    float lw = [stroke lineWidth];
 			float yscale = lw * [le2 scale];
 			float xscale = yscale * [le2 aspect];
@@ -123,13 +116,13 @@
 			[tf concat];
 			[[le2 graphic]drawObject:NSZeroRect view:nil options:nil];
 			[NSGraphicsContext restoreGraphicsState];
-		   }
+        }
 		[path moveToPoint:pt1];
 		[path lineToPoint:pt2];
 		[stroke strokePath:path];
-	   }
+    }
 	else
-	   {
+    {
 		[[NSColor cyanColor] set];
 		[NSBezierPath setDefaultLineWidth:1.0];
 		[NSBezierPath strokeRect:colRect];
@@ -143,12 +136,12 @@
 		pt1.y = pt2.y;
 		pt2.y = temp;
 		[NSBezierPath strokeLineFromPoint:pt1 toPoint:pt2];
-	   }
+    }
 	[NSGraphicsContext restoreGraphicsState];
-   }
+}
 
 - (BOOL)isEditable
-   {
+{
     return NO;
-   }
+}
 @end

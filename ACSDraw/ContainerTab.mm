@@ -15,16 +15,9 @@
 {
 	if (self = [super init])
 	{
-		title = [t retain];
+		title = [t copy];
 	}
 	return self;
-}
-
--(void)dealloc
-{
-	if (title)
-		[title release];
-	[super dealloc];
 }
 
 -(void)setFrame:(NSRect)r

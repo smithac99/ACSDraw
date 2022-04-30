@@ -91,7 +91,7 @@ NSString *triggerEventStrings[] =
 	NSInteger i = [tableView selectedRow];
 	if (i < 0)
 		return;
-	NSMutableDictionary *t = [objectList objectAtIndex:i];
+	NSMutableDictionary *t = [self.objectList objectAtIndex:i];
 	if (!t)
 		return;
 	[self uRemoveTrigger:t fromGraphic:g];
@@ -111,9 +111,9 @@ NSString *triggerEventStrings[] =
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-    if(rowIndex >= 0 && rowIndex < (NSInteger)[objectList count])
+    if(rowIndex >= 0 && rowIndex < [self.objectList count])
 	{
-		NSDictionary *d = [objectList objectAtIndex:rowIndex];
+		NSDictionary *d = [self.objectList objectAtIndex:rowIndex];
 		if ([[aTableColumn identifier] isEqual:@"layer"])
 		{
 			ACSDLayer *l = [d objectForKey:@"layer"];
@@ -124,19 +124,19 @@ NSString *triggerEventStrings[] =
 				return nil;
 			return [NSNumber numberWithInteger:i];
 		}
-		return [[objectList objectAtIndex:rowIndex]objectForKey:[aTableColumn identifier]];
+		return [self.objectList[rowIndex]objectForKey:[aTableColumn identifier]];
 	}
 	return nil;
 }
 
 - (void)tableView:(NSTableView *)aTableView setObjectValue:anObject forTableColumn:(NSTableColumn *)aTableColumn
-			  row:(int)rowIndex
+			  row:(NSInteger)rowIndex
    {
-    NSParameterAssert(rowIndex >= 0 && rowIndex < (int)[objectList count]);
-	NSMutableDictionary *d = [objectList objectAtIndex:rowIndex];
+    NSParameterAssert(rowIndex >= 0 && rowIndex < [self.objectList count]);
+	NSMutableDictionary *d = self.objectList[rowIndex];
 	if ([[aTableColumn identifier] isEqual:@"layer"])
 	{
-		ACSDLayer *lnew = [layerList objectAtIndex:[anObject intValue]];
+		ACSDLayer *lnew = layerList[[anObject intValue]];
 		ACSDLayer *lold = [d objectForKey:@"layer"];
 		if (lnew != lold)
 		{

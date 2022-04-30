@@ -7105,6 +7105,30 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		[editor setTypingAttributes:[style textAndStyleAttributes]];
    }
 
+-(CGImageRef)cgImageFromCurrentPageOfSize:(NSSize)sz
+{
+    NSRect b = [self bounds];
+    CGColorSpaceRef space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+    int width = ceil(sz.width);
+    int height = ceil(sz.height);
+    NSInteger bytesPerRow = (width * 4 + 15) & ~15;
+    CGContextRef context = CGBitmapContextCreate(NULL,width,height,8,bytesPerRow,space,kCGImageAlphaPremultipliedLast);
+    CFRelease(space);
+    NSGraphicsContext *currContext = [NSGraphicsContext currentContext];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:YES]];
+    [[NSAffineTransform transformWithScaleXBy:  width/b.size.width yBy: height/b.size.height]concat];
+    //[[NSAffineTransform transformWithTranslateXBy:0 yBy:b.size.height]concat];
+    //[[NSAffineTransform transformWithScaleXBy:1.0 yBy:-1.0]concat];
+    [self drawPage:[self currentPage] rect:b drawingToScreen:NO drawMarkers:NO
+             drawingToPDF:nil substitutions:[NSMutableDictionary dictionaryWithCapacity:5]
+                  options:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:width/b.size.width] forKey:@"overrideScale"]];
+
+    [NSGraphicsContext setCurrentContext:currContext];
+    CGImageRef newImage = CGBitmapContextCreateImage(context);
+    CGContextRelease(context);
+    return newImage;
+}
+
 -(NSImage*)imageFromCurrentPageOfSize:(NSSize)sz
 {
 	NSBitmapImageRep *bm = newBitmap(sz.width,sz.height);

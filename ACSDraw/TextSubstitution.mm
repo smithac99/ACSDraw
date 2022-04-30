@@ -15,7 +15,7 @@ NSString *TextSubstitutionAttribute = @"TextSub";
 
 +(id)textSubstitutionWithType:(int)sType
    {
-	return [[[TextSubstitution alloc]initWithType:sType]autorelease];
+	return [[TextSubstitution alloc]initWithType:sType];
    }
 
 -(id)initWithType:(int)n
@@ -37,15 +37,8 @@ NSString *TextSubstitutionAttribute = @"TextSub";
 - (id)initWithCoder:(NSCoder*)coder
    {
 	self = [self initWithType:[coder decodeIntForKey:@"TextSubstitution_substitutionType"]];
-	parameters = [[coder decodeObjectForKey:@"TextSubstitution_parameters"]retain];
+	parameters = [coder decodeObjectForKey:@"TextSubstitution_parameters"];
 	return self;
-   }
-
--(void)dealloc
-   {
-	if (parameters)
-		[parameters release];
-	[super dealloc];
    }
 
 -(int)substitutionType

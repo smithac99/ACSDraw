@@ -29,13 +29,6 @@
 	return self;
    }
 
--(void)dealloc
-   {
-	if (mutableAttributedString)
-		[mutableAttributedString release];
-	[super dealloc];
-   }
-
 - (NSString *)string
    {
 	return [mutableAttributedString string];

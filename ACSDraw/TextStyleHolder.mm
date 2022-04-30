@@ -16,12 +16,12 @@
 
 +(TextStyleHolder*)textStyleHolderWithFont:(NSFont*)f colour:(NSColor*)col paragraph:(NSParagraphStyle*)ps underline:(int)ul
    {
-	return [[[TextStyleHolder alloc]initWithFont:f colour:col paragraph:ps underline:ul]autorelease];
+	return [[TextStyleHolder alloc]initWithFont:f colour:col paragraph:ps underline:ul];
    }
 
 +(TextStyleHolder*)textStyleHolderWithFont:(NSFont*)f colour:(NSColor*)col paragraph:(NSParagraphStyle*)ps underline:(int)ul  lineHeight:(float)lh
 {
-	return [[[TextStyleHolder alloc]initWithFont:f colour:col paragraph:ps underline:ul lineHeight:lh]autorelease];
+	return [[TextStyleHolder alloc]initWithFont:f colour:col paragraph:ps underline:ul lineHeight:lh];
 }
 
 - (id)initWithFont:(NSFont*)f colour:(NSColor*)col paragraph:(NSParagraphStyle*)ps underline:(int)ul
@@ -93,16 +93,6 @@
 	return [[TextStyleHolder alloc]initWithFontFamilyName:fontFamilyName fontSize:fontSize leading:leading colour:colour underline:underline lineHeight:lineHeight
 		alignment:alignment firstLineIndent:firstLineIndent indent:indent afterSpace:afterSpace beforeSpace:beforeSpace];
    }
-
--(void)dealloc
-   {
-	if (fontFamilyName)
-		[fontFamilyName release];
-	if (colour)
-		[colour release];
-	[super dealloc];
-   }
-
 
 -(NSString*)fontFamilyName
    {

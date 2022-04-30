@@ -10,18 +10,11 @@
 	return self;
    }
 
--(void)dealloc
-{
-	[strokeList release];
-	[super dealloc];
-}
-
 - (void)setStrokeList:(NSMutableArray*)list
 {
 	if (strokeList == list)
 		return;
-	[strokeList release];
-	strokeList = [list retain];
+	strokeList = list;
 	[tableView reloadData];
 }
 

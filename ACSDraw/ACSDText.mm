@@ -79,7 +79,7 @@ NSString *substitute_characters(NSString* string)
 
 + (ACSDText*)dupAndFlowText:(ACSDText*)graphic
    {
-	ACSDText *gCopy = [[graphic copy]autorelease];
+	ACSDText *gCopy = [graphic copy];
 	[gCopy linkToText:graphic];
 	return gCopy;
    }
@@ -103,9 +103,7 @@ NSString *substitute_characters(NSString* string)
     float fontSize = 12;
     NSColor *textFill = [NSColor blackColor];
     NSFont *f = [NSFont fontWithName:fontFamily size:fontSize];
-    NSMutableAttributedString *mas = [[[NSMutableAttributedString alloc]initWithString:@"" attributes:@{NSFontAttributeName:f,
-                                                                                                        NSForegroundColorAttributeName:textFill
-                                                                                                        }]autorelease];
+    NSMutableAttributedString *mas = [[NSMutableAttributedString alloc]initWithString:@"" attributes:@{NSFontAttributeName:f,NSForegroundColorAttributeName:textFill}];
     for (XMLNode *xspan in [xmlnode childrenOfType:@"tspan"])
     {
         NSMutableDictionary *options = [NSMutableDictionary dictionary];
@@ -128,10 +126,9 @@ NSString *substitute_characters(NSString* string)
             textFill = fill;
             options[NSForegroundColorAttributeName] = fill;
         }
-        [mas appendAttributedString:[[[NSAttributedString alloc]initWithString:c attributes:options]autorelease]];
+        [mas appendAttributedString:[[NSAttributedString alloc]initWithString:c attributes:options]];
     }
-        NSTextStorage *contents = [[NSTextStorage allocWithZone:[self zone]] initWithAttributedString:mas];
-        //        contents = [[ACSDTextStorage allocWithZone:[self zone]] initWithAttributedString:astr];
+        NSTextStorage *contents = [[NSTextStorage alloc] initWithAttributedString:mas];
         [contents addLayoutManager:[t layoutManager]];
 
     [t setContents:contents];
@@ -144,7 +141,7 @@ NSString *substitute_characters(NSString* string)
        {
         previousText = nextText = nil;
 		overflow = NO;
-		contents = [[NSTextStorage allocWithZone:[self zone]] init];
+		contents = [[NSTextStorage alloc] init];
 		cornerRadius = 0.0;
 //		contents = [[ACSDTextStorage allocWithZone:[self zone]] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentsChanged:) 
@@ -168,7 +165,7 @@ NSString *substitute_characters(NSString* string)
 													 name:NSTextStorageDidProcessEditingNotification object:contents];
         previousText = nextText = nil;
 		overflow = NO;
-		contents = [cont retain];
+		contents = cont;
 		leftMargin = lm;
 		rightMargin = rm;
 		topMargin = tm;
@@ -183,23 +180,16 @@ NSString *substitute_characters(NSString* string)
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-	[contents release];
-	[objectsInTheWay release];
-	[objectsInFront release];
-	[pathInTheWay release];
-	if (layoutManager && !previousText)
-		[layoutManager release];
-    [super dealloc];
 }
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    NSTextStorage *c = [[[NSTextStorage alloc] initWithAttributedString:contents]autorelease];
+    NSTextStorage *c = [[NSTextStorage alloc] initWithAttributedString:contents];
 	id obj = [[ACSDText alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:layer
 									xScale:xScale yScale:yScale rotation:rotation shadowType:shadowType label:textLabel alpha:alpha contents:c
 								 topMargin:topMargin leftMargin:leftMargin bottomMargin:bottomMargin rightMargin:rightMargin verticalAlignment:verticalAlignment];
 	[(ACSDText*)obj setCornerRadius:cornerRadius];
-    [obj setAttributes:[[self.attributes mutableCopy]autorelease]];
+    [obj setAttributes:[self.attributes mutableCopy]];
 	return obj;
 }
 
@@ -239,8 +229,8 @@ NSString *substitute_characters(NSString* string)
 	NSAttributedString *astr = [coder decodeObjectForKey:@"ACSDText_contents"];
 	if (astr)
 	   {
-		contents = [[NSTextStorage allocWithZone:[self zone]] initWithAttributedString:astr];
-//		contents = [[ACSDTextStorage allocWithZone:[self zone]] initWithAttributedString:astr];
+		contents = [[NSTextStorage alloc] initWithAttributedString:astr];
+//		contents = [[ACSDTextStorage alloc] initWithAttributedString:astr];
 		[contents addLayoutManager:[self layoutManager]];
 	   }
 	else
@@ -270,7 +260,7 @@ NSString *substitute_characters(NSString* string)
     layoutManager = [[NSLayoutManager allocWithZone:NULL] init];
 //    textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
     [layoutManager addTextContainer:[self textContainer]];
-    [contents addLayoutManager:[layoutManager autorelease]];
+    [contents addLayoutManager:layoutManager];
 	[layoutManager setDelegate:self];
 	overflow = NO;
    }
@@ -300,14 +290,9 @@ NSString *substitute_characters(NSString* string)
    {
     if (cont == contents)
 		return;
-	if (contents)
-		[contents release];
 	contents = cont;
 	if (contents)
-	   {
-		[contents retain];
 		[self allocateTextSystemStuff];
-	   }
    }
 
 -(float)paddingRequired
@@ -379,8 +364,8 @@ NSString *substitute_characters(NSString* string)
    {
     if (cont != contents)
 	   {
-        NSAttributedString *contentsCopy = [[NSAttributedString allocWithZone:[self zone]] initWithAttributedString:contents];
-        [[[self undoManager] prepareWithInvocationTarget:self] setGraphicContents:[contentsCopy autorelease]];
+        NSAttributedString *contentsCopy = [[NSAttributedString alloc] initWithAttributedString:contents];
+        [[[self undoManager] prepareWithInvocationTarget:self] setGraphicContents:contentsCopy];
         // We are willing to accept either a string or an attributed string.
         if ([cont isKindOfClass:[NSAttributedString class]])
             [contents replaceCharactersInRange:NSMakeRange(0, [contents length]) withAttributedString:cont];
@@ -613,8 +598,7 @@ NSString *substitute_characters(NSString* string)
 	NSBezierPath *p = [self pathFromText];
 	if ([self stroke] && [[self stroke]colour])
 		[p appendBezierPath:[self bezierPath]];
-	ACSDGraphic *obj =  [[[ACSDPath alloc] initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:[self bounds]
-		layer:nil bezierPath:p]autorelease];
+	ACSDGraphic *obj =  [[ACSDPath alloc] initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:[self bounds] layer:nil bezierPath:p];
 	[obj setRotation:rotation];
 	if (rotation != 0.0)
 	   {
@@ -1088,7 +1072,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 		[ACSDLink uDeleteLinkForObject:self undoManager:[self undoManager]];
 	if (linkedObjects)
 	   {
-		NSSet *lo = [[linkedObjects copy]autorelease];
+		NSSet *lo = [linkedObjects copy];
 		for (ACSDLink *l in lo)
 			[ACSDLink uDeleteFromFromObjectLink:l undoManager:[self undoManager]];
 	   }
@@ -1235,7 +1219,6 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 					   }
 					[im unlockFocus];
 					[im drawInRect:b fromRect:NSMakeRect(0,0,[im size].width,[im size].height) operation:NSCompositeSourceOver fraction:1.0];
-					[im release];
 				   }
 				else
 				   {
@@ -1608,7 +1591,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	nextText = nil;
 	previousText = nil;
 //	contents = [[ACSDTextStorage allocWithZone:[self zone]] init];
-	contents = [[NSTextStorage allocWithZone:[self zone]] init];
+	contents = [[NSTextStorage alloc] init];
 	[self allocateTextSystemStuff];
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:YES notify:NO];
 	[nt invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:YES notify:NO];
@@ -1623,7 +1606,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
     layoutManager = [previousText layoutManager];
     textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
 	NSUInteger i = [[[self layoutManager] textContainers]indexOfObjectIdenticalTo:[previousText textContainer]];
-    [[self layoutManager] insertTextContainer:[textContainer autorelease]atIndex:i + 1];
+    [[self layoutManager] insertTextContainer:textContainer atIndex:i + 1];
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:YES notify:NO];
    }
 
@@ -1666,7 +1649,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	if (objectsInFrontValid)
 		return objectsInFront;
 	if (objectsInFront == nil)
-		objectsInFront = [[NSMutableSet setWithCapacity:10]retain];
+		objectsInFront = [NSMutableSet setWithCapacity:10];
 	else
 		[objectsInFront removeAllObjects];
 	[layer addGraphicsInFrontOfGraphic:self toSet:objectsInFront];
@@ -1693,7 +1676,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 		[pathArray addObject:g];*/
 		[pathArray addObject:[[objs objectAtIndex:i] wholeOutline]];
 	   }
-	pathInTheWay = [[ACSDSubPath unionPathFromPaths:pathArray]retain];
+	pathInTheWay = [ACSDSubPath unionPathFromPaths:pathArray];
 	pathInTheWayValid = true;
 	return pathInTheWay;	
    }
@@ -1703,7 +1686,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	if (objectsInTheWayValid)
 		return objectsInTheWay;
 	if (objectsInTheWay == nil)
-		objectsInTheWay = [[NSMutableSet setWithCapacity:10]retain];
+		objectsInTheWay = [NSMutableSet setWithCapacity:10];
 	else
 		[objectsInTheWay removeAllObjects];
     NSEnumerator *oEnum = [[self objectsInFront] objectEnumerator];
@@ -1736,7 +1719,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 -(NSTextContainer*)textContainer
    {
     if (textContainer == nil)
-		textContainer = [[[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self]autorelease];
+		textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
 	return textContainer;
    }
 
@@ -1896,25 +1879,25 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 					as = stripWhiteSpaceFromAttributedString(as);
 					if (as)
 					   {
-						NSMutableAttributedString *mas = [[as mutableCopy]autorelease];
+						NSMutableAttributedString *mas = [as mutableCopy];
 						[mas beginEditing];
 						[mas removeAttribute:StyleAttribute range:NSMakeRange(0,[[as string]length])];
 						[mas removeAttribute:NSLinkAttributeName range:NSMakeRange(0,[[as string]length])];
 						int anchor = [self assignAnchorForRange:longestRange];
 						ACSDLink *l = [ACSDLink linkFrom:target to:self anchorID:anchor substitutePageNo:NO changeAttributes:NO];
 						[mas addAttributes:[NSDictionary dictionaryWithObject:l forKey:NSLinkAttributeName] range:NSMakeRange(0,[[as string]length])];
-						[mas appendAttributedString:[[[NSAttributedString alloc]initWithString:@"\t"]autorelease]];
+						[mas appendAttributedString:[[NSAttributedString alloc]initWithString:@"\t"]];
 						if (![style nullStyle])
 							[mas addAttributes:[style textAndStyleAttributes] range:NSMakeRange(0,[mas length])];
 						[mas endEditing];
 						NSString *endBit = [NSString stringWithFormat:@"%ld",[[layer page]pageNo]];
-						NSMutableAttributedString *p = [[[NSMutableAttributedString alloc]initWithString:endBit]autorelease];
+						NSMutableAttributedString *p = [[NSMutableAttributedString alloc]initWithString:endBit];
 						l = [ACSDLink linkFrom:target to:self anchorID:anchor substitutePageNo:YES changeAttributes:NO];
 						[p addAttributes:[NSDictionary dictionaryWithObject:l forKey:NSLinkAttributeName] range:NSMakeRange(0,[[p string]length])];
 						[tocString beginEditing];
 						[tocString appendAttributedString:mas];
 						[tocString appendAttributedString:p];
-						[tocString appendAttributedString:[[[NSAttributedString alloc]initWithString:@"\n"]autorelease]];
+						[tocString appendAttributedString:[[NSAttributedString alloc]initWithString:@"\n"]];
 						[tocString endEditing];
 					   }
 				   }

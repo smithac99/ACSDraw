@@ -2,19 +2,11 @@
 
 @implementation TableSource
 
--(void)dealloc
-   {
-	if (objectList)
-		[objectList release];
-	[super dealloc];
-   }
-
 - (void)setObjectList:(NSMutableArray*)list
 {
-	if (objectList == list)
+	if (_objectList == list)
 		return;
-	[objectList release];
-	objectList = [list retain];
+	_objectList = list;
 	[tableView reloadData];
 }
 
@@ -30,10 +22,4 @@
 	return tableView;
    }
 	
--(NSMutableArray*)objectList
-   {
-	return objectList;
-   }
-
-
 @end

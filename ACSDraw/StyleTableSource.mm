@@ -4,21 +4,21 @@
 
 @implementation StyleTableSource
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
    {
-    if(rowIndex >= 0 && rowIndex < (int)[objectList count])
+    if(rowIndex >= 0 && rowIndex < [self.objectList count])
 	{
 		if ([[aTableColumn identifier]isEqualTo:@"style"])
-			return [[objectList objectAtIndex:rowIndex]name];
+			return [self.objectList[rowIndex]name];
 	}
 	return nil;
    }
 
 - (void)tableView:(NSTableView *)aTableView setObjectValue:anObject forTableColumn:(NSTableColumn *)aTableColumn
-			  row:(int)rowIndex
+			  row:(NSInteger)rowIndex
    {
-    NSParameterAssert(rowIndex >= 0 && rowIndex < (int)[objectList count]);
-	ACSDStyle *st = [objectList objectAtIndex:rowIndex];
+    NSParameterAssert(rowIndex >= 0 && rowIndex < [self.objectList count]);
+	ACSDStyle *st = self.objectList[rowIndex];
 	if ([anObject length] > 0)
 		[windowController uSetStyle:st name:anObject];
    }

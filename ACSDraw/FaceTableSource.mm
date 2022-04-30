@@ -2,10 +2,9 @@
 
 @implementation FaceTableSource
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
    {
-    //NSParameterAssert(rowIndex >= 0 && rowIndex < (int)[objectList count]);
-    return [[objectList objectAtIndex:rowIndex]objectAtIndex:1];
+    return [self.objectList[rowIndex]objectAtIndex:1];
    }
 
 
