@@ -42,6 +42,7 @@ extern NSString *ACSDGraphicAttributeChanged;
 extern NSString *ACSDRefreshShadowsNotification;
 extern NSString *ACSDRefreshStrokesNotification;
 extern NSString *ACSDrawAttributePasteboardType;
+extern NSString *ACSDInactivateFillWells;
 
 #define PASTE_CASCADE_DELTA 30
 

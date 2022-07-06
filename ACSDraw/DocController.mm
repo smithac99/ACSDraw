@@ -72,6 +72,12 @@
 	rowForContextualMenu = -1;
 	displayRowForContextualMenu = -1;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentChanged:) name:ACSDDocumentDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inactivateColourWells:) name:ACSDInactivateFillWells object:nil];
+}
+
+-(void)inactivateColourWells:(NSNotification *)notification
+{
+    [backgroundColour deactivate];
 }
 
 - (IBAction)backgroundColourHit:(id)sender

@@ -606,20 +606,6 @@
 		E740562D15B1EF2D0040F590 /* ViewProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewProtocols.h; sourceTree = "<group>"; };
 		E740563015B1EF2D0040F590 /* WindowAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowAdditions.h; sourceTree = "<group>"; };
 		E740563115B1EF2D0040F590 /* WindowAdditions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WindowAdditions.mm; sourceTree = "<group>"; };
-		E74056DB15B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/DocPadding.nib; sourceTree = "<group>"; };
-		E74056DD15B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/HTMLExport.nib; sourceTree = "<group>"; };
-		E74056DF15B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ImageController.xib; sourceTree = "<group>"; };
-		E74056E315B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/LineEndingWindow.nib; sourceTree = "<group>"; };
-		E74056E515B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/MainMenu.nib; sourceTree = "<group>"; };
-		E74056E715B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/MainWindow.nib; sourceTree = "<group>"; };
-		E74056E915B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/PallettePanel.xib; sourceTree = "<group>"; };
-		E74056EB15B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Pallettes.xib; sourceTree = "<group>"; };
-		E74056ED15B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/PatternWindow.nib; sourceTree = "<group>"; };
-		E74056EF15B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/PolySides.nib; sourceTree = "<group>"; };
-		E74056F115B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/RotationSheet.nib; sourceTree = "<group>"; };
-		E74056F315B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/StylePanel.nib; sourceTree = "<group>"; };
-		E74056F515B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/TocPanel.nib; sourceTree = "<group>"; };
-		E74056F715B1EF950040F590 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/ToolPalette.nib; sourceTree = "<group>"; };
 		E740570715B2ACAF0040F590 /* SnapLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnapLine.h; sourceTree = "<group>"; };
 		E740570815B2ACAF0040F590 /* SnapLine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SnapLine.mm; sourceTree = "<group>"; };
 		E740572315B2B18C0040F590 /* XXAffineTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XXAffineTransform.h; path = ACSDraw/SubstituteClasses/XXAffineTransform.h; sourceTree = "<group>"; };
@@ -737,6 +723,20 @@
 		E7A2E0E31A6A4C85009DD659 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		E7BB1B431BD8361C0053B9DE /* NSView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+Additions.h"; sourceTree = "<group>"; };
 		E7BB1B441BD8361C0053B9DE /* NSView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+Additions.m"; sourceTree = "<group>"; };
+		E7CF357627AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/DocPadding.nib; sourceTree = "<group>"; };
+		E7CF357727AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/HTMLExport.nib; sourceTree = "<group>"; };
+		E7CF357827AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ImageController.xib; sourceTree = "<group>"; };
+		E7CF357927AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/LineEndingWindow.nib; sourceTree = "<group>"; };
+		E7CF357A27AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		E7CF357B27AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainWindow.nib; sourceTree = "<group>"; };
+		E7CF357C27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PallettePanel.xib; sourceTree = "<group>"; };
+		E7CF357D27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Pallettes.xib; sourceTree = "<group>"; };
+		E7CF357E27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/PatternWindow.nib; sourceTree = "<group>"; };
+		E7CF357F27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/PolySides.nib; sourceTree = "<group>"; };
+		E7CF358027AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/RotationSheet.nib; sourceTree = "<group>"; };
+		E7CF358127AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/StylePanel.nib; sourceTree = "<group>"; };
+		E7CF358227AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/TocPanel.nib; sourceTree = "<group>"; };
+		E7CF358327AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/ToolPalette.nib; sourceTree = "<group>"; };
 		E7CFC2681C92C68600114E18 /* ACSDReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACSDReference.h; sourceTree = "<group>"; };
 		E7CFC2691C92C68600114E18 /* ACSDReference.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ACSDReference.mm; sourceTree = "<group>"; };
 		E7D18F0D1988EA67000664F6 /* gElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gElement.h; sourceTree = "<group>"; };
@@ -1349,11 +1349,11 @@
 			};
 			buildConfigurationList = E74054B715B1ED040040F590 /* Build configuration list for PBXProject "ACSDraw" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = E74054B215B1ED040040F590;
 			productRefGroup = E74054BE15B1ED040040F590 /* Products */;
@@ -1673,7 +1673,7 @@
 		E74056DA15B1EF950040F590 /* DocPadding.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056DB15B1EF950040F590 /* en */,
+				E7CF357627AE6D1A00DABEF9 /* Base */,
 			);
 			name = DocPadding.nib;
 			sourceTree = "<group>";
@@ -1681,7 +1681,7 @@
 		E74056DC15B1EF950040F590 /* HTMLExport.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056DD15B1EF950040F590 /* en */,
+				E7CF357727AE6D1A00DABEF9 /* Base */,
 			);
 			name = HTMLExport.nib;
 			sourceTree = "<group>";
@@ -1689,7 +1689,7 @@
 		E74056DE15B1EF950040F590 /* ImageController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056DF15B1EF950040F590 /* en */,
+				E7CF357827AE6D1A00DABEF9 /* Base */,
 			);
 			name = ImageController.xib;
 			sourceTree = "<group>";
@@ -1697,7 +1697,7 @@
 		E74056E215B1EF950040F590 /* LineEndingWindow.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056E315B1EF950040F590 /* en */,
+				E7CF357927AE6D1A00DABEF9 /* Base */,
 			);
 			name = LineEndingWindow.nib;
 			sourceTree = "<group>";
@@ -1705,7 +1705,7 @@
 		E74056E415B1EF950040F590 /* MainMenu.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056E515B1EF950040F590 /* en */,
+				E7CF357A27AE6D1A00DABEF9 /* Base */,
 			);
 			name = MainMenu.nib;
 			sourceTree = "<group>";
@@ -1713,7 +1713,7 @@
 		E74056E615B1EF950040F590 /* MainWindow.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056E715B1EF950040F590 /* en */,
+				E7CF357B27AE6D1A00DABEF9 /* Base */,
 			);
 			name = MainWindow.nib;
 			sourceTree = "<group>";
@@ -1721,7 +1721,7 @@
 		E74056E815B1EF950040F590 /* PallettePanel.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056E915B1EF950040F590 /* en */,
+				E7CF357C27AE6D1B00DABEF9 /* Base */,
 			);
 			name = PallettePanel.xib;
 			sourceTree = "<group>";
@@ -1729,7 +1729,7 @@
 		E74056EA15B1EF950040F590 /* Pallettes.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056EB15B1EF950040F590 /* en */,
+				E7CF357D27AE6D1B00DABEF9 /* Base */,
 			);
 			name = Pallettes.xib;
 			sourceTree = "<group>";
@@ -1737,7 +1737,7 @@
 		E74056EC15B1EF950040F590 /* PatternWindow.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056ED15B1EF950040F590 /* en */,
+				E7CF357E27AE6D1B00DABEF9 /* Base */,
 			);
 			name = PatternWindow.nib;
 			sourceTree = "<group>";
@@ -1745,7 +1745,7 @@
 		E74056EE15B1EF950040F590 /* PolySides.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056EF15B1EF950040F590 /* en */,
+				E7CF357F27AE6D1B00DABEF9 /* Base */,
 			);
 			name = PolySides.nib;
 			sourceTree = "<group>";
@@ -1753,7 +1753,7 @@
 		E74056F015B1EF950040F590 /* RotationSheet.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056F115B1EF950040F590 /* en */,
+				E7CF358027AE6D1B00DABEF9 /* Base */,
 			);
 			name = RotationSheet.nib;
 			sourceTree = "<group>";
@@ -1761,7 +1761,7 @@
 		E74056F215B1EF950040F590 /* StylePanel.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056F315B1EF950040F590 /* en */,
+				E7CF358127AE6D1B00DABEF9 /* Base */,
 			);
 			name = StylePanel.nib;
 			sourceTree = "<group>";
@@ -1769,7 +1769,7 @@
 		E74056F415B1EF950040F590 /* TocPanel.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056F515B1EF950040F590 /* en */,
+				E7CF358227AE6D1B00DABEF9 /* Base */,
 			);
 			name = TocPanel.nib;
 			sourceTree = "<group>";
@@ -1777,7 +1777,7 @@
 		E74056F615B1EF950040F590 /* ToolPalette.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E74056F715B1EF950040F590 /* en */,
+				E7CF358327AE6D1B00DABEF9 /* Base */,
 			);
 			name = ToolPalette.nib;
 			sourceTree = "<group>";

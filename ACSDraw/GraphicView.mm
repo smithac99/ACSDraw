@@ -73,6 +73,7 @@ NSString *ACSDExposureChangedNotification = @"ACSDExposureChanged";
 NSString *ACSDDimensionChangeNotification = @"ACSDDimensionChange";
 NSString *ACSDSizePanelParamChangeNotification = @"ACSDSizePanelParamChange";
 NSString *ACSDFillAdded = @"ACSDFillAdded";
+NSString *ACSDInactivateFillWells = @"ACSDInactFillWells";
 NSString *ACSDRefreshLineEndingsNotification = @"ACSDRefreshLineEndings";
 NSString *ACSDPageChanged = @"ACSDPageChanged";
 NSString *ACSDLayerSelectionChanged = @"ACSDLayerSelectionChanged";
@@ -286,9 +287,11 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
    }
 
 - (void)startEditingGraphic:(ACSDGraphic*)graphic withEvent:(NSEvent*)event
-   {
+{
+    if ([graphic isKindOfClass:[ACSDText class]])
+        [[NSNotificationCenter defaultCenter] postNotificationName:ACSDInactivateFillWells object:self];
     [graphic startEditingWithEvent:event inView:self];
-   }
+}
 
 - (void)endEditing
    {
