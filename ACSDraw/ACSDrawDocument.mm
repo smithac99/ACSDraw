@@ -1283,7 +1283,7 @@ NSString* Creator()
 	options[@"document"] = self;
 	options[xmlIndent] = @"\t";
 	[xmlString appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<events>\n"];
-    [xmlString appendFormat:@"<!--Exported from %@ by %@ using %@-->\n",[[self fileURL]lastPathComponent],NSFullUserName(),Creator()];
+    [xmlString appendFormat:@"<!--Exported from %@ by %@ using %@  on %@ -->\n",[[self fileURL]lastPathComponent],NSFullUserName(),Creator(),[NSDate date]];
 	for (ACSDPage *page in pages)
 		[xmlString appendString:[page graphicXMLForEvent:options]];
     [xmlString appendString:@"</events>"];
@@ -1611,7 +1611,7 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 NSError *err = nil;
              self.exportDirectory = [sp directoryURL];
