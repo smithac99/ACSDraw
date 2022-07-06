@@ -352,6 +352,8 @@ NSString *substitute_characters(NSString* string)
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
 	[self setCornerRadius:r];
 	[self invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:notify];
+    [self textContainer].exclusionPaths = [self exclusionPathsForCornerRadius];
+    [[self layoutManager]textContainerChangedGeometry:[self textContainer]];
 	return YES;
 }
 
@@ -1405,7 +1407,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 {
 	if (cornerRadius == 0.0)
 		return [NSBezierPath bezierPathWithRect:bounds];
-	NSBezierPath *path = [NSBezierPath bezierPath];
+	/*NSBezierPath *path = [NSBezierPath bezierPath];
 	NSRect iBounds = NSInsetRect(bounds,cornerRadius,cornerRadius);
 	[path moveToPoint:NSMakePoint(bounds.origin.x,iBounds.origin.y)];
 	[path appendBezierPathWithArcWithCenter:iBounds.origin radius:cornerRadius startAngle:180.0 endAngle:270.0 clockwise:NO];
@@ -1416,7 +1418,29 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	[path lineToPoint:NSMakePoint(NSMinX(iBounds),NSMaxY(bounds))];
 	[path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(iBounds),NSMaxY(iBounds)) radius:cornerRadius startAngle:90.0 endAngle:180.0 clockwise:NO];
 	[path closePath];
-    return path;
+    return path;*/
+    return [NSBezierPath bezierPathWithRoundedRect:bounds xRadius:cornerRadius yRadius:cornerRadius];
+}
+
+-(NSArray<NSBezierPath*>*)exclusionPathsForCornerRadius
+{
+    if (cornerRadius == 0.0)
+        return @[];
+    CGRect r = [self bounds];
+    r.origin = CGPointZero;
+    /*
+    NSBezierPath *p = [[NSBezierPath bezierPathWithRect:r]bezierPathByReversingPath];
+    [p appendBezierPath:[NSBezierPath bezierPathWithRoundedRect:r xRadius:cornerRadius yRadius:cornerRadius]];*/
+    NSMutableArray *paths = [NSMutableArray array];
+    NSRect iBounds = NSInsetRect(r,cornerRadius,cornerRadius);
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:CGPointMake(CGRectGetMinX(r),CGRectGetMaxY(iBounds))];
+    //[path appendBezierPathWithArcWithCenter:CGPointMake(CGRectGetMinX(iBounds),CGRectGetMaxY(iBounds)) radius:cornerRadius startAngle:180 endAngle:90 clockwise:YES];
+    [path lineToPoint:CGPointMake(CGRectGetMinX(iBounds),CGRectGetMaxY(r))];
+    [path lineToPoint:CGPointMake(CGRectGetMinX(r),CGRectGetMaxY(r))];
+    [path closePath];
+    [paths addObject:path];
+    return paths;
 }
 
 -(BOOL)isSameAs:(id)obj

@@ -22,11 +22,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	[super dealloc];
-}
-
 - (void)zeroControls
 {
 	[triggerTableSource setObjectList:nil];
@@ -84,7 +79,5 @@
 	[triggerTableSource deleteSelectedTriggerFromGraphic:g];
 
 }
-
-
 
 @end

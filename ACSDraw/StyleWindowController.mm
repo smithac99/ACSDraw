@@ -12,7 +12,7 @@
    {
     static StyleWindowController *sharedStyleWindowController = nil;
 	if (!sharedStyleWindowController)
-        sharedStyleWindowController = [[StyleWindowController allocWithZone:[self zone]] init];
+        sharedStyleWindowController = [[StyleWindowController alloc]init];
     return sharedStyleWindowController;
    }
 
@@ -35,10 +35,9 @@
    }
 
 - (void)dealloc
-   {
+{
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-    [super dealloc];
-   }
+}
 
 -(GraphicView*)inspectingGraphicView
    {
@@ -288,7 +287,7 @@
 	if (!st)
 		return;
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetAttributes:[st attributes] forStyle:st];
-	NSDictionary *copyAttr = [[[st attributes]copy]autorelease];
+	NSDictionary *copyAttr = [[st attributes]copy];
 	[st setAttributes:dict];
 	[self refreshControls];
 	if ([self inspectingGraphicView])
@@ -300,7 +299,7 @@
 	if (!st)
 		return;
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetStyle:st fontPointSize:[st fontPointSize]];
-	NSDictionary *copyAttr = [[[st attributes]copy]autorelease];
+	NSDictionary *copyAttr = [[st attributes]copy];
 	[st setFontPointSize:f];
 	[self refreshControls];
 	if ([self inspectingGraphicView])
@@ -327,7 +326,7 @@
 	if (!st)
 		return;
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetStyle:st fontFace:[st fontFace]];
-	NSDictionary *copyAttr = [[[st attributes]copy]autorelease];
+	NSDictionary *copyAttr = [[st attributes]copy];
 	[st setFontFace:f];
 	[self refreshControls];
 	if ([self inspectingGraphicView])
@@ -390,7 +389,7 @@
 	if (!st)
 		return;
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetStyle:st justification:[st textAlignment]];
-	NSDictionary *copyAttr = [[[st attributes]copy]autorelease];
+	NSDictionary *copyAttr = [[st attributes]copy];
 	[st setTextAlignment:a];
 //	[self refreshControls];
 	if ([self inspectingGraphicView])
@@ -402,7 +401,7 @@
 	if (!st)
 		return;
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetStyle:st attribute:attrName value:[st attributeForKey:attrName]];
-	NSDictionary *copyAttr = [[[st attributes]copy]autorelease];
+	NSDictionary *copyAttr = [[st attributes]copy];
 	[st setAttribute:value forKey:attrName];
 	if ([self inspectingGraphicView])
 		[[self inspectingGraphicView]updateForStyle:st oldAttributes:copyAttr];
@@ -480,7 +479,7 @@
 	if (!st)
 		return;
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetStyle:st basedOnStyle:[st basedOn]];
-	NSDictionary *copyAttr = [[[st attributes]copy]autorelease];
+	NSDictionary *copyAttr = [[st attributes]copy];
 	[st setBasedOn:bost];
 	[self refreshControls];
 	if ([self inspectingGraphicView])
@@ -505,7 +504,7 @@
 	if (!st)
 		return;
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetStyle:st foregroundColour:[st foregroundColour]];
-	NSDictionary *copyAttr = [[[st attributes]copy]autorelease];
+	NSDictionary *copyAttr = [[st attributes]copy];
 	[st setForegroundColour:col];
 	[self refreshControls];
 	if ([self inspectingGraphicView])
@@ -576,7 +575,7 @@
 	if (st == nil)
 		return;
 	[[[self undoManager] prepareWithInvocationTarget:self] uUpdateStyle:st withAttributes:[st attributes]];
-	NSDictionary *copyAttr = [[[st attributes]copy]autorelease];
+	NSDictionary *copyAttr = [[st attributes]copy];
 	[st setAttributes:attr];
 	[self refreshControls];
 	if ([self inspectingGraphicView])
@@ -598,7 +597,7 @@
 	NSInteger row = [[styleTableSource tableView] selectedRow];
 	if (row < 0)
 		return;
-	ACSDStyle *st = [[[self currentStyle]copy]autorelease];
+	ACSDStyle *st = [[self currentStyle]copy];
 	[[inspectingGraphicView document]registerObject:st];
 	[st setName:[[st name]stringByAppendingString:@" copy"]];
 	[self uInsertStyle:st atIndex:row+1];
@@ -675,7 +674,7 @@
 	if (!st)
 		return;
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetStyle:st fontFamily:[st fontFamily]];
-	NSDictionary *copyAttr = [[[st attributes]copy]autorelease];
+	NSDictionary *copyAttr = [[st attributes]copy];
 	NSInteger faceRow = [[faceTableSource tableView]selectedRow];
 	NSString *fontFace = [[[faceTableSource objectList]objectAtIndex:faceRow]objectAtIndex:0];
 	NSFont *font = [NSFont fontWithName:fontFace size:10];

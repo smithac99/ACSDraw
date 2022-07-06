@@ -2,12 +2,6 @@
 
 @implementation HtmlExportController
 
--(void)dealloc
-{
-	[_accessoryView release];
-	[super dealloc];
-}
-
 -(BOOL)clickThrough
    {
 	return [clickThroughCB state];

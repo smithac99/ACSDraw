@@ -30,18 +30,11 @@
 	{
 		NSArray *arr = nil;
 		[[NSBundle mainBundle] loadNibNamed:@"Pallettes" owner:self topLevelObjects:&arr];
-		topLevelObjects = [[NSArray arrayWithArray:arr]retain];
-		pallettePanels = [[NSMutableArray arrayWithCapacity:10]retain];
-		controllerDict = [[NSMutableDictionary dictionaryWithCapacity:10]retain];
+		topLevelObjects = [NSArray arrayWithArray:arr];
+		pallettePanels = [NSMutableArray arrayWithCapacity:10];
+		controllerDict = [NSMutableDictionary dictionaryWithCapacity:10];
 	}
 	return self;
-}
-
--(void)dealloc
-{
-	[pallettePanels release];
-	[controllerDict release];
-	[super dealloc];
 }
 
 -(ContainerPalletteController*)createPanel

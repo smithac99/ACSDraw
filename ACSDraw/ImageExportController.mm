@@ -17,40 +17,34 @@ NSMutableArray *_utis;
 NSMutableArray *_uti_descs;
 NSMutableArray *_suffixes;
 
--(void)dealloc
-{
-	[_accessoryView release];
-	[super dealloc];
-}
-
 -(NSArray*)utis
 {
 	if (!_utis)
 	{
 		CFArrayRef cfutis = CGImageDestinationCopyTypeIdentifiers();
 		NSArray *nsutis = (__bridge NSArray*)cfutis;
-		_suffixes = [[NSMutableArray arrayWithCapacity:[nsutis count]]retain];
-		_utis = [[NSMutableArray arrayWithCapacity:[nsutis count]]retain];
-		_uti_descs = [[NSMutableArray arrayWithCapacity:[_utis count]]retain];
+		_suffixes = [NSMutableArray arrayWithCapacity:[nsutis count]];
+		_utis = [NSMutableArray arrayWithCapacity:[nsutis count]];
+		_uti_descs = [NSMutableArray arrayWithCapacity:[_utis count]];
 		for (NSString *nsuti in nsutis)
 		{
 			[_utis addObject:nsuti];
 			CFStringRef cfty = UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)nsuti,kUTTagClassFilenameExtension);
             if (cfty)
             {
-                [_suffixes addObject:(NSString*)cfty];
+                [_suffixes addObject:(NSString*)CFBridgingRelease(cfty)];
                 CFRelease(cfty);
             }
             else
                 cfty = (CFStringRef)@"";
-			CFStringRef cfutidesc = UTTypeCopyDescription((CFStringRef)nsuti);
+            CFStringRef cfutidesc = UTTypeCopyDescription((__bridge CFStringRef)nsuti);
 			if (cfutidesc)
 			{
-				[_uti_descs addObject:[NSString stringWithFormat:@"%@ - %@",nsuti,(NSString*)cfutidesc]];
+                [_uti_descs addObject:[NSString stringWithFormat:@"%@ - %@",nsuti,(__bridge NSString*)cfutidesc]];
 				CFRelease(cfutidesc);
 			}
 			else
-				[_uti_descs addObject:(NSString*)cfty];
+                [_uti_descs addObject:(__bridge NSString*)cfty];
 		}
 		CFRelease(cfutis);
 	}
@@ -75,6 +69,7 @@ NSMutableArray *_suffixes;
 {
     return [self file_suffixes][selectedUTI];
 }
+
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel
 {
 	[fileTypeMenu removeAllItems];
