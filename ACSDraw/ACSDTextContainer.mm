@@ -74,9 +74,103 @@ float minY(NSRect* rList,int count)
 	return r;
    }
 
-- (NSRect)lineFragmentRectForProposedRect:(NSRect)proposedRect sweepDirection:(NSLineSweepDirection)sweepDirection
+- (NSRect)lineFragmentRectForProposedRectWithCornerRadius:(NSRect)proposedRect sweepDirection:(NSLineSweepDirection)sweepDirection
                         movementDirection:(NSLineMovementDirection)movementDirection remainingRect:(NSRect *)remainingRect
 {
+    CGFloat rad = [graphic cornerRadius];
+    NSRect b = [graphic bounds];
+    b.origin = NSZeroPoint;
+    NSRect interRect = NSIntersectionRect(proposedRect, b);
+    CGFloat minY = NSMinY(interRect);
+    CGFloat maxY = NSMaxY(interRect);
+    if (minY >= rad && maxY < b.size.height - rad)
+        return interRect;
+    CGFloat minX = NSMinX(interRect);
+    CGFloat maxX = NSMaxX(interRect);
+    CGFloat midX = NSMidX(interRect);
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:b xRadius:rad yRadius:rad];
+    path = [path bezierPathByFlatteningPath];
+    NSInteger elementCount = [path elementCount];
+    NSPoint points[3];
+    for (NSInteger i = 0;i < elementCount;i++)
+    {
+        NSBezierPathElement pe = [path elementAtIndex:i associatedPoints:points];
+        int idx = -1;
+        switch (pe)
+        {
+            case NSBezierPathElementMoveTo:
+            case NSBezierPathElementLineTo:
+                idx = 0;
+                break;
+            case NSBezierPathElementCurveTo:
+                idx = 2;
+                break;
+            default:
+                break;
+        }
+        if (idx >= 0)
+        {
+            NSPoint pt = points[idx];
+            if (pt.y >= minY && pt.y <= maxY)
+            {
+                if (pt.x < midX)
+                {
+                    if (pt.x > minX)
+                        minX = pt.x;
+                }
+                else
+                {
+                    if (pt.x < maxX)
+                        maxX = pt.x;
+                }
+            }
+        }
+    }
+    interRect.origin.x = minX;
+    interRect.size.width = maxX - minX;
+    return interRect;
+}
+
+- (NSRect)olineFragmentRectForProposedRectWithCornerRadius:(NSRect)proposedRect sweepDirection:(NSLineSweepDirection)sweepDirection
+                        movementDirection:(NSLineMovementDirection)movementDirection remainingRect:(NSRect *)remainingRect
+{
+    CGFloat rad = [graphic cornerRadius];
+    NSRect b = [graphic bounds];
+    b.origin = NSZeroPoint;
+    CGFloat boty = rad,leftx = rad;
+    CGFloat topy = b.size.height - rad;
+    CGFloat rightx = b.size.width - rad;
+    CGFloat rminx = proposedRect.origin.x;
+    CGFloat rminy = proposedRect.origin.y;
+    CGFloat rmaxx = NSMaxX(proposedRect);
+    CGFloat rmaxy = NSMaxY(proposedRect);
+    if (rminx > leftx && rmaxx < rightx)
+        return proposedRect;
+    rminx = MAX(rminx,NSMinX(b));
+    rmaxx = MIN(rmaxx,NSMaxX(b));
+    if (rminy > boty && rmaxy < topy)
+    {
+        proposedRect.origin.x = rminx;
+        proposedRect.size.width = rmaxx - rminx;
+        return proposedRect;
+    }
+    else
+    {
+        CGFloat lx = MAX(leftx, rminx);
+        CGFloat rx = MIN(rightx,rmaxx);
+        if (lx >= rx)
+            return NSZeroRect;
+        proposedRect.origin.x = lx;
+        proposedRect.size.width = rx - lx;
+    }
+    return proposedRect;
+}
+
+- (NSRect)lineFragmentRectForProposedRect:(NSRect)proposedRect sweepDirection:(NSLineSweepDirection)sweepDirection
+                     movementDirection:(NSLineMovementDirection)movementDirection remainingRect:(NSRect *)remainingRect
+{
+    if ([graphic cornerRadius] != 0.0)
+        return [self lineFragmentRectForProposedRectWithCornerRadius:proposedRect sweepDirection:sweepDirection movementDirection:movementDirection remainingRect:remainingRect];
     if (([graphic flowMethod] == FLOW_METHOD_NONE) || ([[graphic objectsInTheWay]count] == 0))
         return [super lineFragmentRectForProposedRect:proposedRect sweepDirection:sweepDirection movementDirection:movementDirection remainingRect:remainingRect];
     NSRect contRect,intersectRect;
