@@ -129,7 +129,7 @@ static NSPoint relativePositionInRect(CGPoint p,NSRect r)
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 NSURL *url = [(NSSavePanel*)sp URL];
 			 NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -165,7 +165,7 @@ static NSPoint relativePositionInRect(CGPoint p,NSRect r)
     [panel beginSheetModalForWindow:[self window]
                   completionHandler:^(NSInteger result)
      {
-         if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
          {
              for (NSURL *url in [panel URLs])
                  [self processImagesToPages:url];
@@ -242,4 +242,19 @@ static NSPoint relativePositionInRect(CGPoint p,NSRect r)
 
     }
 }
+
+- (IBAction)copyPageNamesFromClipboard:(id)menuItem
+{
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+    NSArray *strings = [pb readObjectsForClasses:@[[NSString class]] options:@{}];
+    NSMutableArray *splitStrings = [NSMutableArray array];
+    for (NSString *str in strings)
+    {
+        NSArray *arr = [str componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        [splitStrings addObjectsFromArray:arr];
+    }
+    if ([splitStrings count] > 0)
+        [[self document]createPagesFromStrings:splitStrings];
+}
+
 @end

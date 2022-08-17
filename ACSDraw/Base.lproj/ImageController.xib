@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -51,10 +51,10 @@
                                 <action selector="compressionQualitySliderHit:" target="1" id="21"/>
                             </connections>
                         </slider>
-                        <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3">
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="748" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                             <rect key="frame" x="209" y="0.0" width="113" height="19"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="113" id="hbG-uL-CTe"/>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="750" constant="113" id="hbG-uL-CTe"/>
                             </constraints>
                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="14">
                                 <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0.00" negativeFormat="-0.00" hasThousandSeparators="NO" thousandSeparator="," id="15">
@@ -83,7 +83,7 @@
                         <constraint firstItem="4" firstAttribute="top" secondItem="nCB-Vh-NGf" secondAttribute="top" constant="3" id="P50-5j-Iz6"/>
                         <constraint firstAttribute="bottom" secondItem="3" secondAttribute="bottom" id="PyH-jg-U3n"/>
                         <constraint firstItem="3" firstAttribute="leading" secondItem="5" secondAttribute="trailing" constant="8" symbolic="YES" id="ale-RH-VGE"/>
-                        <constraint firstItem="5" firstAttribute="leading" secondItem="4" secondAttribute="trailing" constant="8" symbolic="YES" id="nVG-m0-tXo"/>
+                        <constraint firstItem="5" firstAttribute="leading" secondItem="4" secondAttribute="trailing" priority="750" constant="8" symbolic="YES" id="nVG-m0-tXo"/>
                     </constraints>
                 </customView>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6">
@@ -199,7 +199,6 @@
                 <constraint firstItem="nCB-Vh-NGf" firstAttribute="top" secondItem="6" secondAttribute="bottom" constant="7" id="2aA-QM-DCe"/>
                 <constraint firstAttribute="trailing" secondItem="nCB-Vh-NGf" secondAttribute="trailing" id="2x9-Xt-ALk"/>
                 <constraint firstAttribute="trailing" secondItem="6" secondAttribute="trailing" priority="250" constant="39" id="7bM-LP-Y7U"/>
-                <constraint firstItem="nCB-Vh-NGf" firstAttribute="top" secondItem="6" secondAttribute="bottom" constant="7" id="Rcb-Lh-JI2"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="41" secondAttribute="trailing" priority="250" constant="50" id="XOP-3Y-NGh"/>
                 <constraint firstItem="41" firstAttribute="top" secondItem="nCB-Vh-NGf" secondAttribute="bottom" constant="29" id="dS6-Mw-Xbi"/>
                 <constraint firstItem="nCB-Vh-NGf" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="f56-IZ-5ww"/>

@@ -129,6 +129,7 @@ NSString* Creator();
 - (IBAction)cropToOpaque:(id)sender;
 -(NSArray*)svgBodyString;
 -(NSSet*)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings;
+-(void)createPagesFromStrings:(NSArray*)pageNames;
 
 @end
 

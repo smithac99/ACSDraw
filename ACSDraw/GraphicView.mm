@@ -2148,7 +2148,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[[self currentEditableLayer] graphics] addObject:g];
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
 }
-- (void)createImage:(NSImage*)im name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
+- (ACSDImage*)createImage:(NSImage*)im name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
 {
 	NSSize iSize = [im size];
 	NSSize vSize = [self bounds].size;
@@ -2177,6 +2177,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[self undoManager] setActionName:@"Import Picture"];
     [[self window] invalidateCursorRectsForView:self];
 	[image release];
+    return image;
 }
 
 - (NSRect)boundsForGraphics:(NSArray *)graphics
