@@ -8,6 +8,7 @@ extern NSString *ACSDrawGraphicPasteboardType;
 extern NSString *ACSDrawGraphicRefPasteboardType;
 
 @class ACSDGraphic;
+@class ACSDImage;
 @class ACSDrawDocument;
 @class ACSDStroke;
 @class ACSDFill;
@@ -161,7 +162,7 @@ enum GV_Cursor_Mode
 - (void)setHandleBitsH:(int)h v:(int)v;
 - (void)changeDocumentWidth:(float)f;
 - (void)changeDocumentHeight:(float)f;
-- (void)createImage:(NSImage*)im name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName;
+- (ACSDImage*)createImage:(NSImage*)im name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName;
 - (float)adjustHSmartGuide:(float)x tool:(int)selectedTool;
 - (float)adjustVSmartGuide:(float)y tool:(int)selectedTool;
 -(int)snapSize;

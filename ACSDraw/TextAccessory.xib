@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="ACSDrawDocument">
+            <connections>
+                <outlet property="textAccessoryLabel" destination="ehI-L8-44n" id="Tsq-JI-Xjd"/>
+                <outlet property="textAccessoryTextField" destination="0xi-ab-BhI" id="dni-xh-Fjz"/>
+                <outlet property="textAccessoryView" destination="c22-O7-iKe" id="xf2-h9-jLr"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="57"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ehI-L8-44n">
+                    <rect key="frame" x="20" y="20" width="81" height="16"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Event Name:" id="wWK-yq-FfH">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0xi-ab-BhI">
+                    <rect key="frame" x="107" y="18" width="231" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="9bO-Zu-LZ1"/>
+                        <constraint firstAttribute="width" priority="750" constant="231" id="egq-vx-6Oc"/>
+                    </constraints>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="Hci-OQ-9WI">
+                        <font key="font" usesAppearanceFont="YES"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="0xi-ab-BhI" secondAttribute="trailing" priority="250" constant="142" id="0Yj-Zz-3uS"/>
+                <constraint firstItem="0xi-ab-BhI" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="18" id="2vu-8E-3g4"/>
+                <constraint firstAttribute="bottom" secondItem="0xi-ab-BhI" secondAttribute="bottom" priority="750" constant="18" id="FeV-cr-d2l"/>
+                <constraint firstAttribute="bottom" secondItem="ehI-L8-44n" secondAttribute="bottom" constant="20" symbolic="YES" id="QY8-bc-EQq"/>
+                <constraint firstItem="ehI-L8-44n" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="22" id="Tfw-Vd-0w9"/>
+                <constraint firstItem="ehI-L8-44n" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="21" id="a4p-N1-Aet"/>
+                <constraint firstItem="0xi-ab-BhI" firstAttribute="leading" secondItem="ehI-L8-44n" secondAttribute="trailing" constant="8" symbolic="YES" id="gSr-LR-GGR"/>
+                <constraint firstItem="0xi-ab-BhI" firstAttribute="leading" secondItem="ehI-L8-44n" secondAttribute="trailing" constant="8" symbolic="YES" id="vaC-LC-8AK"/>
+            </constraints>
+            <point key="canvasLocation" x="113" y="28.5"/>
+        </customView>
+    </objects>
+</document>

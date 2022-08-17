@@ -1039,4 +1039,23 @@ static int MasterLayerCount(ACSDPage *p)
     return objs;;
 }
 
+-(NSArray*)layersWithName:(NSString*)nm
+{
+    if (nm == nil)
+        return @[];
+    NSMutableArray *objs = [NSMutableArray array];
+    NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:nm options:NSRegularExpressionCaseInsensitive error:nil];
+    if (regexp)
+    {
+        for (ACSDLayer *l in [self layers])
+        {
+            if ([l name])
+                if ([regexp numberOfMatchesInString:[l name] options:0 range:NSMakeRange(0, [[l name]length])] > 0)
+                    [objs addObject:l];
+        }
+    }
+    return objs;;
+}
+
+
 @end
