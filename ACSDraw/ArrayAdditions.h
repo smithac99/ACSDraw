@@ -27,6 +27,8 @@
 - (void)reverseMakeObjectsPerformSelector:(SEL)theSelector;
 - (void)reverseMakeObjectsPerformSelector:(SEL)theSelector withObject:(id)arg;
 -(id)objectAtReversedIndex:(NSUInteger)index;
+-(NSArray*)resultsFromApplying:(id(^)(id thing))handler;
+-(NSArray*)concatenatedResultsFromApplying:(id(^)(id thing))handler;
 
 
 @end

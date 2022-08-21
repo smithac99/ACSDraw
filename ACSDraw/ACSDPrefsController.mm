@@ -34,6 +34,10 @@ NSString *prefsDocRepeatScale = @"ACSDrawprefsDocRepeatScale";
 NSString *prefsDocSizeRow = @"ACSDrawprefsDocSizeRow";
 NSString *prefsDocSizeColumn = @"ACSDrawprefsDocSizeColumn";
 NSString *prefSVGInlineEmbedded = @"prefsSVGInlineEmbedded";
+NSString *prefsBatchScalePage = @"ACSDrawprefsBatchscalePage";
+NSString *prefsBatchScaleLayer = @"ACSDrawprefsBatchscaleLayer";
+NSString *prefsBatchScaleObject = @"ACSDrawprefsBatchscaleObject";
+NSString *prefsBatchScaleScale = @"ACSDrawprefsBatchscaleScale";
 
 NSString *ixPBType = @"indexpbtype";
 NSArray *arrayFromColour(NSColor *col);
