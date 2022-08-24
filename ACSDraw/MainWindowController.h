@@ -28,6 +28,13 @@ CGColorSpaceRef getRGBColorSpace();
 	IBOutlet NSTextField *genTextField,*genTextTitle;
 	IBOutlet NSTextField *renameTextField,*renameStartFromTextField;
 	IBOutlet NSTextField *regexpPattern,*regexpTemplate,*regexpMsg;
+    
+    IBOutlet NSTextField *pageRegexp;
+    IBOutlet NSTextField *layerRegexp;
+    IBOutlet NSTextField *objRegexp;
+    IBOutlet NSTextField *batchScale;
+    IBOutlet NSTextField *batchScaleMsg;
+    
     IBOutlet NSPopUpButton *regexpScope;
     IBOutlet NSMatrix *renameOrderByMatrix;
     IBOutlet NSButton *renameRowDescendingCB,*renameColDescendingCB;
@@ -40,6 +47,7 @@ CGColorSpaceRef getRGBColorSpace();
 }
 
 @property (retain) IBOutlet NSPanel *scaleSheet,*rotateSheet,*abslinkSheet,*docSizeSheet,*genTextSheet,*renameSheet,*renameRegexpSheet,*repeatSheet,*editPointSheet;
+@property (retain) IBOutlet NSPanel *batchScalePanel;
 @property (retain) IBOutlet GroupViewController *groupViewController;
 @property (retain) IBOutlet NSWindow *groupWindow;
 

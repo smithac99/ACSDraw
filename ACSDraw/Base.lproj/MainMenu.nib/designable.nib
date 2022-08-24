@@ -962,6 +962,12 @@ CA
                                     <action selector="showRegexpDialog:" target="-1" id="Lz0-rV-5fH"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Batch Scale…" id="PPS-pv-nqR">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="showBatchScaleDialog:" target="-1" id="CJ0-Hh-Zfi"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="953"/>
                             <menuItem title="Group" keyEquivalent="g" id="409">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>

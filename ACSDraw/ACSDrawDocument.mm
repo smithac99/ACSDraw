@@ -2057,6 +2057,7 @@ NSString* Creator()
                     [gview setCurrentEditableLayerIndex:[page.layers indexOfObject:layer] force:NO select:NO withUndo:YES];
                     ACSDImage *im = [gview createImage:imageDict[name][0] name:name location:&loc fileName:imageDict[name][1]];
                     [im setAlpha:0.6];
+                    [im setGraphicXScale:1.417 yScale:1.417 undo:NO];
                 }
             }
         }

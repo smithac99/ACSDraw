@@ -324,4 +324,29 @@
 {
     return [self objectAtIndex:[self count] - 1 - index];
 }
+
+-(NSArray*)resultsFromApplying:(id(^)(id thing))handler
+{
+    NSMutableArray *arr = [NSMutableArray array];
+    for (id x in self)
+    {
+        id res = handler(x);
+        if (res)
+            [arr addObject:res];
+    }
+    return arr;
+}
+
+-(NSArray*)concatenatedResultsFromApplying:(id(^)(id thing))handler
+{
+    NSMutableArray *arr = [NSMutableArray array];
+    for (id x in self)
+    {
+        id res = handler(x);
+        if (res)
+            [arr addObjectsFromArray:res];
+    }
+    return arr;
+}
+
 @end

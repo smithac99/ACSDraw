@@ -12,6 +12,7 @@
 #import "NSView+Additions.h"
 #import <QuartzCore/QuartzCore.h>
 #import "ACSDPathElement.h"
+#import "ArrayAdditions.h"
 
 NSRect ConstrainRectToRect(NSRect littleRect,NSRect bigRect);
 NSRect CentreRectInRect(NSRect movableRect,NSRect fixedRect);
@@ -888,6 +889,109 @@ static NSMutableArray *parseRenameString(NSString* str)
 #define SCOPE_PAGE 2
 #define SCOPE_GLOBAL 3
 
+-(NSArray<ACSDGraphic*>*)graphicsForPage:(NSString*)pageRegExp layer:(NSString*)layerRegExp graphic:(NSString*)graphicRegExp
+// returns @[page,layer,graphic]
+{
+    NSError *err;
+    if ([pageRegExp length] == 0 && [layerRegExp length] == 0 && [graphicRegExp length] == 0)
+    {
+        ACSDPage *p = [[self graphicView]currentPage];
+        ACSDLayer *l = [[self graphicView]currentEditableLayer];
+        return [[[[self graphicView] selectedGraphics]allObjects]resultsFromApplying:^id(id thing) {
+            return @[@[p,l,thing]];
+        }];
+    }
+    NSArray *pages = nil;
+    if ([pageRegExp length] == 0)
+    {
+        pages = @[[[self graphicView]currentPage]];
+    }
+    else
+    {
+        NSString *re = [NSString stringWithFormat:@"^%@$",pageRegExp];
+        NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:re options:0 error:&err];
+        if (regexp)
+        {
+            pages = [[[self graphicView]pages]resultsFromApplying:^id(ACSDPage *p) {
+                NSString *nm = p.pageTitle?p.pageTitle:@"";
+                if ([regexp numberOfMatchesInString:nm options:0 range:NSMakeRange(0, [nm length])] > 0)
+                    return p;
+                return nil;
+            }];
+        }
+        else
+        {
+            [batchScaleMsg setStringValue:[err localizedDescription]];
+            return nil;
+        }
+
+    }
+    
+    NSArray *pagelayers = [pages concatenatedResultsFromApplying:^id(ACSDPage *page) {
+        if ([layerRegExp length] == 0)
+        {
+            return [page.layers resultsFromApplying:^id(ACSDLayer *layer) {
+                return @[page,layer];
+            }];
+        }
+        else
+        {
+            NSString *re = [NSString stringWithFormat:@"^%@$",layerRegExp];
+            NSError *err;
+            NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:re options:0 error:&err];
+            if (regexp)
+            {
+                return [page.layers resultsFromApplying:^id(ACSDLayer *l) {
+                    if ([regexp numberOfMatchesInString:l.name options:0 range:NSMakeRange(0, [l.name length])] > 0)
+                        return @[page,l];
+                    return nil;
+                }];
+            }
+            else
+            {
+                [batchScaleMsg setStringValue:[err localizedDescription]];
+                return nil;
+            }
+
+            return nil;
+        }
+    }];
+    
+    
+    NSArray *pagelayergraphics = [pagelayers concatenatedResultsFromApplying:^id(NSArray *pagelayer) {
+        ACSDPage *page = pagelayer[0];
+        ACSDLayer *layer = pagelayer[1];
+        if ([graphicRegExp length] == 0)
+        {
+            return [layer.graphics resultsFromApplying:^id(ACSDGraphic *graphic) {
+                return @[page,layer,graphic];
+            }];
+        }
+        else
+        {
+            NSError *err;
+            NSString *re = [NSString stringWithFormat:@"^%@$",graphicRegExp];
+            NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:re options:0 error:&err];
+            if (regexp)
+            {
+                return [layer.graphics resultsFromApplying:^id(ACSDGraphic *graphic) {
+                    if ([regexp numberOfMatchesInString:graphic.name options:0 range:NSMakeRange(0, [graphic.name length])] > 0)
+                        return @[page,layer,graphic];
+                    return nil;
+                }];
+            }
+            else
+            {
+                [batchScaleMsg setStringValue:[err localizedDescription]];
+                return nil;
+            }
+            return nil;
+        }
+    }];
+
+    return pagelayergraphics;
+}
+
 -(NSArray<ACSDGraphic*>*)graphicsForScope:(int)scope
 {
     if (scope == SCOPE_SELECTION)
@@ -909,6 +1013,7 @@ static NSMutableArray *parseRenameString(NSString* str)
     }
     return graphics;
 }
+
 -(IBAction)previewRename:(id)sender
 {
     [self.renameRegexpSheet makeFirstResponder:nil];
@@ -1025,6 +1130,107 @@ static NSMutableArray *parseRenameString(NSString* str)
 		modalDelegate: self
 	   didEndSelector: @selector(regexpSheetDidEnd:returnCode:contextInfo:)
 		  contextInfo: nil];
+}
+
+-(NSArray*)processBatchScaleFields
+{
+    [self.batchScalePanel makeFirstResponder:nil];
+    NSString *pagePattern = [pageRegexp stringValue];
+    [[NSUserDefaults standardUserDefaults] setObject:pagePattern forKey:prefsBatchScalePage];
+    NSString *layerPattern = [layerRegexp stringValue];
+    [[NSUserDefaults standardUserDefaults] setObject:layerPattern forKey:prefsBatchScaleLayer];
+    NSString *graphicPattern = [objRegexp stringValue];
+    [[NSUserDefaults standardUserDefaults] setObject:graphicPattern forKey:prefsBatchScaleObject];
+    NSString *scaleString = [batchScale stringValue];
+    if ([scaleString length] == 0)
+    {
+        [batchScaleMsg setStringValue:@"Scale must be filled"];
+        return nil;
+    }
+    NSArray *pageLayerGraphics = [self graphicsForPage:pagePattern layer:layerPattern graphic:graphicPattern];
+    return pageLayerGraphics;
+}
+
+-(IBAction)previewBatchScale:(id)sender
+{
+    NSArray *pageLayerGraphics = [self processBatchScaleFields];
+    if (pageLayerGraphics)
+    {
+        float newscale = [batchScale floatValue];
+        NSMutableString *ms = [[NSMutableString alloc]init];
+        for (NSArray *pageLayerGraphic in pageLayerGraphics)
+        {
+            ACSDPage *page = pageLayerGraphic[0];
+            ACSDLayer *layer = pageLayerGraphic[1];
+            ACSDGraphic *graphic = pageLayerGraphic[2];
+            NSString *pathname = [NSString stringWithFormat:@"%@.%@.%@",page.pageTitle,layer.name,graphic.name];
+            NSString *oldScaleString = graphic.xScale == graphic.yScale?[NSString stringWithFormat:@"%g",graphic.xScale]:[NSString stringWithFormat:@"(%g/%g)",graphic.xScale,graphic.yScale];
+            [ms appendFormat:@"%@ %@ -> %g\n",pathname,oldScaleString,newscale];
+        }
+        [batchScaleMsg setStringValue:[NSString stringWithFormat:@"%d objects will be rescaled.\n%@",(int)[pageLayerGraphics count],ms]];
+    }
+}
+
+-(void)implementBatchScale
+{
+    NSArray *pageLayerGraphics = [self processBatchScaleFields];
+    if (pageLayerGraphics)
+    {
+        float newscale = [batchScale floatValue];
+        NSMutableString *ms = [[NSMutableString alloc]init];
+        for (NSArray *pageLayerGraphic in pageLayerGraphics)
+        {
+            ACSDPage *page = pageLayerGraphic[0];
+            ACSDLayer *layer = pageLayerGraphic[1];
+            ACSDGraphic *graphic = pageLayerGraphic[2];
+            NSString *pathname = [NSString stringWithFormat:@"%@.%@.%@",page.pageTitle,layer.name,graphic.name];
+            NSString *oldScaleString = graphic.xScale == graphic.yScale?[NSString stringWithFormat:@"%g",graphic.xScale]:[NSString stringWithFormat:@"(%g/%g)",graphic.xScale,graphic.yScale];
+            [ms appendFormat:@"%@ %@ -> %g\n",pathname,oldScaleString,newscale];
+            [graphic setGraphicXScale:newscale yScale:newscale undo:YES];
+            
+        }
+        [batchScaleMsg setStringValue:[NSString stringWithFormat:@"%d objects rescaled.\n%@",(int)[pageLayerGraphics count],ms]];
+        [[self undoManager]setActionName:@"Scale Graphics"];
+    }
+}
+
+- (IBAction)batchScaleDialogHit:(id)sender
+{
+    if ([sender tag] == 0)
+    {
+        [[self window]endSheet:self.batchScalePanel returnCode:NSModalResponseCancel];
+        return;
+    }
+    [self implementBatchScale];
+}
+
+- (IBAction)showBatchScaleDialog: (id)sender
+{
+    if (!_batchScalePanel)
+    {
+        [self loadSheetNib];
+        NSString *str = [[NSUserDefaults standardUserDefaults]objectForKey:prefsBatchScalePage];
+        if (str != nil)
+            [pageRegexp setStringValue:str];
+        str= [[NSUserDefaults standardUserDefaults]objectForKey:prefsBatchScaleLayer];
+        if (str != nil)
+            [layerRegexp setStringValue:str];
+        str= [[NSUserDefaults standardUserDefaults]objectForKey:prefsBatchScaleObject];
+        if (str != nil)
+            [objRegexp setStringValue:str];
+        str = [[NSUserDefaults standardUserDefaults]objectForKey:prefsBatchScaleScale];
+        if (str != nil)
+        {
+            float f = [[NSUserDefaults standardUserDefaults]floatForKey:prefsBatchScaleScale];
+            [batchScale setFloatValue:f];
+        }
+    }
+    [[self window]beginSheet:_batchScalePanel completionHandler:^(NSModalResponse returnCode) {
+        if (returnCode == NSModalResponseOK)
+        {
+            
+        }
+    }];
 }
 
 
