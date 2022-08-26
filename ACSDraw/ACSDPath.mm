@@ -572,6 +572,11 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 	return o0;
    }
 
+-(BOOL)needsRestrictTo45
+{
+    return YES;
+}
+
 +(ACSDPath*)intersectedSubPathsFromObjects:(NSMutableArray*)objectArray
 {
     NSInteger ct = [objectArray count];
