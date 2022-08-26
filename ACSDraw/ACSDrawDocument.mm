@@ -47,6 +47,14 @@ NSString *xmlDocHeight = @"xmlDocHeight";
 NSString *xmlIndent = @"xmlIndent";
 NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 
+@interface ACSDrawDocument ()
+{
+    IBOutlet NSTextField *textAccessoryLabel;
+    IBOutlet NSTextField *textAccessoryTextField;
+    IBOutlet NSView *textAccessoryView;
+}
+@end
+
 @implementation ACSDrawDocument
 
 - (id) init
@@ -1571,9 +1579,15 @@ NSString* Creator()
     [sp setTitle:@"Export Page Event XML"];
     [sp setDirectoryURL:[self exportDirectory]];
     [sp setNameFieldStringValue:fName];
+    
+    if (!textAccessoryView)
+        [[NSBundle mainBundle]loadNibNamed:@"TextAccessory" owner:self topLevelObjects:nil];
+    [sp setAccessoryView:textAccessoryView];
+
+    
     [sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
      {
-         if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
          {
              [self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
              NSURL *url = [(NSSavePanel*)sp URL];
@@ -1586,10 +1600,13 @@ NSString* Creator()
                  show_error_alert([NSString stringWithFormat:@"Error creating directory: %@, %@",[url path],[err localizedDescription]]);
                  return;
              }
+             NSString *evn = [textAccessoryTextField stringValue];
              for (ACSDPage *page in self.pages)
              {
                  if ([page pageType] == PAGE_TYPE_NORMAL)
                  {
+                     if ([evn length] > 0)
+                         page.xmlEventName = evn;
                      NSString *nm = [page.pageTitle stringByAppendingPathExtension:@"xml"];
                      NSURL *furl = [url URLByAppendingPathComponent:nm];
                      if (!([[self eventsXMLString:@[page]] writeToURL:furl atomically:YES encoding:NSUTF8StringEncoding error:&err]))
@@ -1681,7 +1698,7 @@ NSString* Creator()
     [sp setNameFieldStringValue:fName];
     [sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
      {
-         if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
          {
              int resolution = 72;
              [_exportImageController updateSettingsFromControls:exportImageSettings];
@@ -1909,6 +1926,25 @@ NSString* Creator()
     }
     return dict;
 }
+
+-(void)createPagesFromStrings:(NSArray*)pageNames
+{
+    NSInteger pageIdx = 0;
+    for (NSString *pageName in pageNames)
+    {
+        while (pageIdx < [pages count] && pages[pageIdx].pageType == PAGE_TYPE_MASTER)
+            pageIdx++;
+        ACSDPage *page;
+        while (pageIdx >= [pages count])
+        {
+            [[[self frontmostMainWindowController] graphicView]addNewPageAtIndex:[pages count]];
+        }
+        page = pages[pageIdx];
+        page.pageTitle = pageName;
+        pageIdx++;
+    }
+}
+
 -(void)updateWithBookXML:(XMLNode*)xmlNode
 {
     NSDictionary *pagesDict = [self pagesDict];
@@ -1927,6 +1963,7 @@ NSString* Creator()
                 int idx = 1;
                 for (XMLNode *para in paraNodes)
                 {
+                    NSString *text = [[para.contents componentsSeparatedByString:@"/"]componentsJoinedByString:@""];
                     NSString *textBoxName = [NSString stringWithFormat:@"t%d_1",idx];
                     NSArray<ACSDGraphic*>*graphics = [page graphicsWithName:textBoxName];
                     if ([graphics count] > 0)
@@ -1934,7 +1971,6 @@ NSString* Creator()
                         if ([graphics[0] isKindOfClass:[ACSDText class]])
                         {
                             ACSDText *t = (ACSDText*)graphics[0];
-                            NSString *text = para.contents;
                             if (t)
                             {
                                 NSTextStorage *ts = [t contents];
@@ -1954,7 +1990,7 @@ NSString* Creator()
                         NSFont *f = [NSFont fontWithName:@"onebillionreader-Regular" size:40];
                         if (f == nil)
                             f = [NSFont systemFontOfSize:40];
-                        NSAttributedString *mas = [[[NSAttributedString alloc]initWithString:para.contents attributes:@{NSFontAttributeName:f,NSForegroundColorAttributeName:textFill}]autorelease];
+                        NSAttributedString *mas = [[[NSAttributedString alloc]initWithString:text attributes:@{NSFontAttributeName:f,NSForegroundColorAttributeName:textFill}]autorelease];
                         NSTextStorage *contents = [[NSTextStorage alloc]initWithAttributedString:mas];
                         [contents addLayoutManager:[t layoutManager]];
                         [t setContents:contents];
@@ -1997,7 +2033,35 @@ NSString* Creator()
         l.name = @"image";
         [[[self frontmostMainWindowController] graphicView]setCurrentEditableLayerIndex:1 force:NO select:NO withUndo:NO];
     }
+    
+}
 
+-(void)insertPreviewImagesForBook:(NSDictionary*)imageDict
+{
+    GraphicView *gview = [[self frontmostMainWindowController] graphicView];
+    CGSize sz = [gview bounds].size;
+    NSPoint loc = NSMakePoint(sz.width/2.0, sz.height/2.0);
+    for (ACSDPage *page in pages)
+    {
+        NSString *name = [page pageTitle];
+        if (name)
+        {
+            if (imageDict[name])
+            {
+                NSArray<ACSDLayer*>*layers = [page layersWithName:@"preview"];
+                if ([layers count] > 0)
+                {
+                    ACSDLayer *layer = layers[0];
+                    NSInteger idx = [pages indexOfObject:page];
+                    [gview setCurrentPageIndex:idx force:NO withUndo:YES];
+                    [gview setCurrentEditableLayerIndex:[page.layers indexOfObject:layer] force:NO select:NO withUndo:YES];
+                    ACSDImage *im = [gview createImage:imageDict[name][0] name:name location:&loc fileName:imageDict[name][1]];
+                    [im setAlpha:0.6];
+                    [im setGraphicXScale:1.417 yScale:1.417 undo:NO];
+                }
+            }
+        }
+    }
 }
 
 - (IBAction)importBookXML:(id)sender
@@ -2007,7 +2071,7 @@ NSString* Creator()
     [panel beginSheetModalForWindow:[[self frontmostMainWindowController] window]
                   completionHandler:^(NSInteger result)
      {
-        if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
         {
             for (NSURL *url in [panel URLs])
             {
@@ -2028,7 +2092,7 @@ NSString* Creator()
     [panel beginSheetModalForWindow:[[self frontmostMainWindowController] window]
                   completionHandler:^(NSInteger result)
      {
-        if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
         {
             NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
             for (NSURL *url in [panel URLs])
@@ -2041,7 +2105,30 @@ NSString* Creator()
             [self insertImagesAsBook:imageDict];
         }
     }];
+}
 
+- (IBAction)importPreviewImagesForBook:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowsMultipleSelection:YES];
+    [panel setAllowedFileTypes:@[@"public.image"]];
+    [panel beginSheetModalForWindow:[[self frontmostMainWindowController] window]
+                  completionHandler:^(NSInteger result)
+     {
+        if (result == NSModalResponseOK)
+        {
+            NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
+            for (NSURL *url in [panel URLs])
+            {
+                NSString *path = [url path];
+                NSString *fn = [[url lastPathComponent]stringByDeletingPathExtension];
+                NSImage *im = [[[NSImage alloc]initWithContentsOfURL:url]autorelease];
+                imageDict[fn] = @[im,path];
+            }
+            [self insertPreviewImagesForBook:imageDict];
+        }
+    }];
+    
 }
 
 -(void)sizeToRect:(NSRect)r

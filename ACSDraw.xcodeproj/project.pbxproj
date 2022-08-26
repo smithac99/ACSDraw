@@ -283,6 +283,7 @@
 		E7CFC26A1C92C68600114E18 /* ACSDReference.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7CFC2691C92C68600114E18 /* ACSDReference.mm */; };
 		E7D18F0F1988EA67000664F6 /* gElement.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D18F0E1988EA67000664F6 /* gElement.m */; };
 		E7D202D81889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7D202D61889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm */; };
+		E7D218B52895974500B0ABEC /* TextAccessory.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7D218B42895974500B0ABEC /* TextAccessory.xib */; };
 		E7F50038179410A1009FEC7D /* NSString+StringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E7F50037179410A1009FEC7D /* NSString+StringAdditions.m */; };
 /* End PBXBuildFile section */
 
@@ -743,6 +744,7 @@
 		E7D18F0E1988EA67000664F6 /* gElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gElement.m; sourceTree = "<group>"; };
 		E7D202D61889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "GraphicView+GraphicViewAdditions.mm"; sourceTree = "<group>"; };
 		E7D202D71889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GraphicView+GraphicViewAdditions.h"; sourceTree = "<group>"; };
+		E7D218B42895974500B0ABEC /* TextAccessory.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextAccessory.xib; sourceTree = "<group>"; };
 		E7F50036179410A1009FEC7D /* NSString+StringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+StringAdditions.h"; sourceTree = "<group>"; };
 		E7F50037179410A1009FEC7D /* NSString+StringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+StringAdditions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -979,6 +981,7 @@
 				E74056E615B1EF950040F590 /* MainWindow.nib */,
 				E74056E815B1EF950040F590 /* PallettePanel.xib */,
 				E74056EA15B1EF950040F590 /* Pallettes.xib */,
+				E7D218B42895974500B0ABEC /* TextAccessory.xib */,
 				E74056EC15B1EF950040F590 /* PatternWindow.nib */,
 				E74056EE15B1EF950040F590 /* PolySides.nib */,
 				E74056F015B1EF950040F590 /* RotationSheet.nib */,
@@ -1377,6 +1380,7 @@
 				E74056F915B1EF950040F590 /* HTMLExport.nib in Resources */,
 				E74056FA15B1EF950040F590 /* ImageController.xib in Resources */,
 				E74056FC15B1EF950040F590 /* LineEndingWindow.nib in Resources */,
+				E7D218B52895974500B0ABEC /* TextAccessory.xib in Resources */,
 				E74056FD15B1EF950040F590 /* MainMenu.nib in Resources */,
 				E74056FE15B1EF950040F590 /* MainWindow.nib in Resources */,
 				E74056FF15B1EF950040F590 /* PallettePanel.xib in Resources */,
@@ -1884,12 +1888,12 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.042;
+				CURRENT_PROJECT_VERSION = 1.043;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACSDraw/ACSDraw-Prefix.pch";
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.042;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MARKETING_VERSION = 1.043;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -1903,12 +1907,12 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.042;
+				CURRENT_PROJECT_VERSION = 1.043;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACSDraw/ACSDraw-Prefix.pch";
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.042;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MARKETING_VERSION = 1.043;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

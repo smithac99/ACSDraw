@@ -2148,7 +2148,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[[self currentEditableLayer] graphics] addObject:g];
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
 }
-- (void)createImage:(NSImage*)im name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
+- (ACSDImage*)createImage:(NSImage*)im name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
 {
 	NSSize iSize = [im size];
 	NSSize vSize = [self bounds].size;
@@ -2177,6 +2177,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[self undoManager] setActionName:@"Import Picture"];
     [[self window] invalidateCursorRectsForView:self];
 	[image release];
+    return image;
 }
 
 - (NSRect)boundsForGraphics:(NSArray *)graphics
@@ -2328,8 +2329,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 				point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		point.y = [self adjustHSmartGuide:point.y tool:1];
 		point.x = [self adjustVSmartGuide:point.x tool:1];
-		//if ([g needsRestrictTo45] && ([theEvent modifierFlags] & NSShiftKeyMask))
-		//	restrictTo45(origPoint,&point);
+		if ([g needsRestrictTo45] && ([theEvent modifierFlags] & NSEventModifierFlagShift))
+			restrictTo45(origPoint,&point);
 		[g invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
 		[g trackMid:kd withEvent:theEvent point:point lastPoint:lastPoint selectedGraphics:selectedGraphics];
 		[g otherTrackKnobAdjustments];

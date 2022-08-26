@@ -248,6 +248,11 @@
                                                 <action selector="importImagesAsBook:" target="-1" id="9At-yW-yHc"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Preview Images For Book…" id="pLa-2R-gfi">
+                                            <connections>
+                                                <action selector="importPreviewImagesForBook:" target="-1" id="lMH-p1-dKe"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Book XML…" id="qv4-x5-CxR">
                                             <connections>
                                                 <action selector="importBookXML:" target="-1" id="bJi-Wy-yNH"/>
@@ -957,6 +962,12 @@ CA
                                     <action selector="showRegexpDialog:" target="-1" id="Lz0-rV-5fH"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Batch Scale…" id="PPS-pv-nqR">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="showBatchScaleDialog:" target="-1" id="CJ0-Hh-Zfi"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="953"/>
                             <menuItem title="Group" keyEquivalent="g" id="409">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
@@ -1303,6 +1314,12 @@ CA
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="importImagesToPages:" target="-1" id="X5U-2C-2wr"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Copy Page Names From Clipboard" id="xWA-1c-Xox">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="copyPageNamesFromClipboard:" target="-1" id="7Yo-Bj-bJl"/>
                                             </connections>
                                         </menuItem>
                                     </items>
