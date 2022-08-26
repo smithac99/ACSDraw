@@ -100,21 +100,21 @@ ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs)
     if (lc)
     {
         if ([lc isEqualToString:@"butt"])
-            [stroke setLineCap:NSButtLineCapStyle];
+            [stroke setLineCap:NSLineCapStyleButt];
         else if ([lc isEqualToString:@"round"])
-            [stroke setLineCap:NSRoundLineCapStyle];
+            [stroke setLineCap:NSLineCapStyleRound];
         else if ([lc isEqualToString:@"square"])
-            [stroke setLineCap:NSSquareLineCapStyle];
+            [stroke setLineCap:NSLineCapStyleSquare];
     }
     NSString *lj = [attrs objectForKey:@"stroke-linejoin"];
     if (lj)
     {
         if ([lj isEqualToString:@"miter"])
-            [stroke setLineJoin:NSMiterLineJoinStyle];
+            [stroke setLineJoin:NSLineJoinStyleMiter];
         else if ([lj isEqualToString:@"round"])
-            [stroke setLineJoin:NSRoundLineJoinStyle];
+            [stroke setLineJoin:NSLineJoinStyleRound];
         else if ([lj isEqualToString:@"bevel"])
-            [stroke setLineJoin:NSBevelLineJoinStyle];
+            [stroke setLineJoin:NSLineJoinStyleBevel];
     }
     float dashoffset = 1.0;
     n = [attrs objectForKey:@"stroke-dashoffset"];
@@ -407,18 +407,18 @@ NSString* string_from_path(NSBezierPath* path)
            NSBezierPathElement elementType = [path elementAtIndex:i associatedPoints:point];
            switch (elementType)
            {
-               case NSMoveToBezierPathElement:
+               case NSBezierPathElementMoveTo:
                    point[0] = adjust_point(point[0]);
                    if (i != ct - 1)
                        [str appendFormat:@"M%0.04g %0.04g",point[0].x,point[0].y];
                    currPoint = point[0];
                    break;
-               case NSLineToBezierPathElement:
+               case NSBezierPathElementLineTo:
                    point[0] = adjust_point(point[0]);
                    [str appendFormat:@"L%0.04g %0.04g",point[0].x,point[0].y];
                    currPoint = point[0];
                    break;
-               case NSCurveToBezierPathElement:
+               case NSBezierPathElementCurveTo:
                    //[str appendFormat:@"C%g %g %g %g %g %g",point[0].x,point[0].y,point[1].x,point[1].y,point[2].x,point[2].y];
                    [str appendString:@"c"];
                    for (int i = 0;i < 3;i++)
@@ -433,7 +433,7 @@ NSString* string_from_path(NSBezierPath* path)
                    }
                    currPoint = point[2];
                    break;
-               case NSClosePathBezierPathElement:
+               case NSBezierPathElementClosePath:
                    [str appendString:@"Z"];
                    break;
            }
@@ -453,16 +453,16 @@ NSString* canvas_string_from_path(NSBezierPath* path)
 		NSBezierPathElement elementType = [path elementAtIndex:i associatedPoints:point];
 		switch (elementType)
 		   {
-			case NSMoveToBezierPathElement:
+               case NSBezierPathElementMoveTo:
 				[str appendFormat:@"ctx.moveTo(%g,%g);",point[0].x,point[0].y];
 				break;
-			case NSLineToBezierPathElement:
+               case NSBezierPathElementLineTo:
 				[str appendFormat:@"ctx.lineTo(%g,%g);",point[0].x,point[0].y];
 				break;
-			case NSCurveToBezierPathElement:
+               case NSBezierPathElementCurveTo:
 				[str appendFormat:@"ctx.bezierCurveTo(%g,%g,%g,%g,%g,%g);",point[0].x,point[0].y,point[1].x,point[1].y,point[2].x,point[2].y];
 				break;
-			case NSClosePathBezierPathElement:
+               case NSBezierPathElementClosePath:
 				[str appendString:@"ctx.closePath();"];
 				break;
 		   }
