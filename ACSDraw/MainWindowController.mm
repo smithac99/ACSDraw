@@ -151,9 +151,9 @@ NSRect CentreRectInRect(NSRect movableRect,NSRect fixedRect)
 	[[self window]setAcceptsMouseMovedEvents:YES];
 	[graphicView resizeHandleBits];
     NSMutableArray *arr = [NSMutableArray arrayWithObjects:@"acsd",@"svg", nil];
-    [arr addObjectsFromArray:[NSPasteboard typesFilterableTo:NSTIFFPboardType]];
+    [arr addObjectsFromArray:[NSPasteboard typesFilterableTo:NSPasteboardTypeTIFF]];
     [arr addObject:NSFilenamesPboardType];
-    [arr addObject:NSURLPboardType];
+    [arr addObject:NSPasteboardTypeURL];
     [graphicView registerForDraggedTypes:arr];
 	/*[graphicView registerForDraggedTypes:[[[@[ACSDrawGraphicPasteboardType,ACSDrawGraphicRefPasteboardType,@"acsd",@"svg"]
 											arrayByAddingObjectsFromArray:[NSPasteboard typesFilterableTo:NSTIFFPboardType]]arrayByAddingObject:NSFilenamesPboardType]arrayByAddingObject:NSURLPboardType]];*/

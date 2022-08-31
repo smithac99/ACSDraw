@@ -2027,98 +2027,100 @@ selectedGraphics:(NSSet*)selectedGraphics
 }
 
 - (void)drawHandlesGuide:(BOOL)forGuide magnification:(float)mg options:(NSUInteger)options
-   {
-       [NSGraphicsContext saveGraphicsState];
-       if (moving)
-           [[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
-       if (transform)
-       {
-           [transform concat];
-       }
-       NSColor *mainCol = [self setHandleColour:forGuide];
-       NSColor *firstCol = mainCol;
-       if (options & DRAW_HANDLES_PATH_DIR)
-           firstCol = [NSColor blackColor];
-       float mag = fmax(xScale,yScale)*mg;
-       if (addingPoints)
-           [addingPointPath stroke];
-       else
-       {
-           [path setLineWidth:0.0];
-           [path stroke];
-       }
-       [NSBezierPath setDefaultLineWidth:0.0];
-       if (!forGuide)
-       {
-           for (int j = 0;j < (signed)[subPaths count];j++)
-           {
-               ACSDSubPath *subPath = [subPaths objectAtIndex:j];
-               NSInteger ct = [[subPath pathElements] count];
-               for (NSInteger i = 0;i < ct;i++)
-               {
-                   ACSDPathElement *pe = [[subPath pathElements] objectAtIndex:i];
-                   if (i == 0)
-                       [firstCol set];
-                   else
-                       [mainCol set];
-                   [self drawHandleAtPoint:[pe point]magnification:mag];
-                   [mainCol set];
-                   NSPoint pt;
-                   if ([pe hasPreControlPoint])
-                   {
-                       pt = [pe preControlPoint];
-                       [[NSBezierPath bezierPathWithOvalInRect:[self handleRect:pt magnification:mag]]fill];
-                       [NSBezierPath strokeLineFromPoint:pt toPoint:[pe point]];
-                   }
-                   if ([pe hasPostControlPoint])
-                   {
-                       pt = [pe postControlPoint];
-                       [[NSBezierPath bezierPathWithOvalInRect:[self handleRect:pt magnification:mag]]fill];
-                       [NSBezierPath strokeLineFromPoint:pt toPoint:[pe point]];
-                   }
-               }
-           }
-		[[NSColor redColor] set];
-		NSEnumerator *objEnum = [selectedElements objectEnumerator];
-		SelectedElement *el;
-		while ((el = [objEnum nextObject]) != nil) 
-		   {
-			KnobDescriptor kd = [el knobDescriptor];
-			ACSDPathElement *pe = [self pathElementForKnob:kd];
-			if ([el knobDescriptor].isLine)
-			   {
-				KnobDescriptor nextKd(kd.subPath,kd.knob+1,0,NO);
-				ACSDPathElement *nextPe = [self pathElementForKnob:nextKd];
-				if (nextPe)
-				   {
-					NSBezierPath *p = [NSBezierPath bezierPath];
-					[p moveToPoint:[pe point]];
-					if (![pe hasPostControlPoint] && ![nextPe hasPreControlPoint])
-						[p lineToPoint:[nextPe point]];
-					else
-					   {
-						NSPoint cp1,cp2;
-						if ([pe hasPostControlPoint])
-							cp1 = [pe postControlPoint];
-						else
-							cp1 = [pe point];
-						if ([nextPe hasPreControlPoint])
-							cp2 = [nextPe preControlPoint];
-						else
-							cp2 = [nextPe point];
-						[p curveToPoint:[nextPe point]controlPoint1:cp1 controlPoint2:cp2];
-					   }
-					[p stroke];
-				   }
-			   }
-			else
-				[self drawHandleAtPoint:[pe point]magnification:mag];
-		   }
-           if (options & DRAW_HANDLES_PATH_DIR)
-               [self drawDirectionSubpathsMagnification:mg];
-	   }
-	[NSGraphicsContext restoreGraphicsState];
-   }
+{
+    [NSGraphicsContext saveGraphicsState];
+    if (moving)
+        [[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
+    if (transform)
+    {
+        [transform concat];
+    }
+    NSColor *mainCol = [self setHandleColour:forGuide];
+    NSColor *firstCol = mainCol;
+    if (options & DRAW_HANDLES_PATH_DIR)
+        firstCol = [NSColor blackColor];
+    float mag = fmax(xScale,yScale)*mg;
+    if (addingPoints)
+        [addingPointPath stroke];
+    else
+    {
+        [path setLineWidth:0.0];
+        [path stroke];
+    }
+    [NSBezierPath setDefaultLineWidth:0.0];
+    if (!forGuide)
+    {
+        for (int j = 0;j < (signed)[subPaths count];j++)
+        {
+            ACSDSubPath *subPath = [subPaths objectAtIndex:j];
+            NSInteger ct = [[subPath pathElements] count];
+            for (NSInteger i = 0;i < ct;i++)
+            {
+                ACSDPathElement *pe = [[subPath pathElements] objectAtIndex:i];
+                if (i == 0)
+                    [firstCol set];
+                else
+                    [mainCol set];
+                [self drawHandleAtPoint:[pe point]magnification:mag];
+                [mainCol set];
+                NSPoint pt;
+                if ([pe hasPreControlPoint])
+                {
+                    pt = [pe preControlPoint];
+                    [[NSBezierPath bezierPathWithOvalInRect:[self handleRect:pt magnification:mag]]fill];
+                    [NSBezierPath strokeLineFromPoint:pt toPoint:[pe point]];
+                }
+                if ([pe hasPostControlPoint])
+                {
+                    pt = [pe postControlPoint];
+                    [[NSBezierPath bezierPathWithOvalInRect:[self handleRect:pt magnification:mag]]fill];
+                    [NSBezierPath strokeLineFromPoint:pt toPoint:[pe point]];
+                }
+            }
+        }
+        [[NSColor redColor] set];
+        NSEnumerator *objEnum = [selectedElements objectEnumerator];
+        SelectedElement *el;
+        while ((el = [objEnum nextObject]) != nil)
+        {
+            KnobDescriptor kd = [el knobDescriptor];
+            ACSDPathElement *pe = [self pathElementForKnob:kd];
+            if ([el knobDescriptor].isLine)
+            {
+                KnobDescriptor nextKd(kd.subPath,kd.knob+1,0,NO);
+                ACSDPathElement *nextPe = [self pathElementForKnob:nextKd];
+                if (nextPe)
+                {
+                    NSBezierPath *p = [NSBezierPath bezierPath];
+                    [p moveToPoint:[pe point]];
+                    if (![pe hasPostControlPoint] && ![nextPe hasPreControlPoint])
+                        [p lineToPoint:[nextPe point]];
+                    else
+                    {
+                        NSPoint cp1,cp2;
+                        if ([pe hasPostControlPoint])
+                            cp1 = [pe postControlPoint];
+                        else
+                            cp1 = [pe point];
+                        if ([nextPe hasPreControlPoint])
+                            cp2 = [nextPe preControlPoint];
+                        else
+                            cp2 = [nextPe point];
+                        [p curveToPoint:[nextPe point]controlPoint1:cp1 controlPoint2:cp2];
+                    }
+                    [p stroke];
+                }
+            }
+            else
+            {
+                [self drawHandleAtPoint:[pe point]magnification:mag];
+            }
+        }
+        if (options & DRAW_HANDLES_PATH_DIR)
+            [self drawDirectionSubpathsMagnification:mg];
+    }
+    [NSGraphicsContext restoreGraphicsState];
+}
 
 -(SelectedElement*)selectedElement
 {

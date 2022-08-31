@@ -114,7 +114,7 @@
            case NSTextAlignmentRight:
 			just = 2;
 			break;
-		case NSJustifiedTextAlignment:
+           case NSTextAlignmentJustified:
 			just = 3;
 			break;
 		default:

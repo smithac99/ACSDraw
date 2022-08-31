@@ -2379,12 +2379,15 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
         return NO;
     BOOL changed = NO;
     NSPoint origPoint, curPoint;
-    if (!([theEvent modifierFlags] & NSEventModifierFlagShift))
+    BOOL adding = ([theEvent modifierFlags] & NSEventModifierFlagShift) != 0;
+    BOOL subtracting = ([theEvent modifierFlags] & NSEventModifierFlagCommand) != 0;
+    if (!(adding || subtracting))
     {
         NSArray *arr = [[graphic selectedElements]allObjects];
         for (SelectedElement *se in arr)
             [graphic uDeselectElement:se];
     }
+    NSSet *originalSelection = [[graphic.selectedElements copy]autorelease];
     rubberbandIsDeselecting = (([theEvent modifierFlags] & NSEventModifierFlagCommand) ? YES : NO);
     origPoint = curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     rubberbandRect = NSZeroRect;
@@ -2417,6 +2420,29 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
                 rubberbandRect = newRubberbandRect;
                 [rubberbandKnobs release];
                 rubberbandKnobs = [[graphic knobsInRect:rubberbandRect]retain];
+                
+                [graphic.selectedElements removeAllObjects];
+                if (adding||subtracting)
+                {
+                    [graphic.selectedElements addObjectsFromArray:[originalSelection allObjects]];
+                    if (adding)
+                        [graphic.selectedElements unionSet:[NSSet setWithArray:rubberbandKnobs]];
+                    else
+                        [graphic.selectedElements minusSet:[NSSet setWithArray:rubberbandKnobs]];
+                }
+                else
+                {
+                    [graphic.selectedElements addObjectsFromArray:rubberbandKnobs];
+                }
+                
+                /*for (SelectedElement *se in rubberbandKnobs)
+                {
+                    if (rubberbandIsDeselecting)
+                        [graphic uDeselectElement:se];
+                    else
+                        [graphic uSelectElementFromKnob:se.knobDescriptor extend:YES];
+                }*/
+
                 [self setNeedsDisplayInRect:rubberbandRect];
                 [self invalidateGraphics:@[graphic]];
             }
@@ -2425,6 +2451,10 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
             break;
     }
     // Now select or deselect the points.
+
+    [graphic.selectedElements removeAllObjects];
+    [graphic.selectedElements addObjectsFromArray:[originalSelection allObjects]];
+
     for (SelectedElement *se in rubberbandKnobs)
     {
         if (rubberbandIsDeselecting)
@@ -3271,8 +3301,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	NSPoint curPoint;
     ACSDGraphic *graphic = nil;
     BOOL isSelected,selectionChanged=NO;
-    BOOL extending = (([theEvent modifierFlags] & NSShiftKeyMask) ? YES : NO);
-	BOOL altDown = (([theEvent modifierFlags] & NSAlternateKeyMask) ? YES : NO);
+    BOOL extending = (([theEvent modifierFlags] & NSEventModifierFlagShift) ? YES : NO);
+    BOOL altDown = (([theEvent modifierFlags] & NSEventModifierFlagOption) ? YES : NO);
     curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	ACSDGraphic *selGraphic = [self selectedShapeUnderPoint:curPoint];
 	ACSDGraphic *hitGraphic = [self graphicUnderPoint:curPoint extending:extending];

@@ -62,7 +62,7 @@
    {
 	NSArray *typeArray = [NSArray arrayWithObjects:ACSDrawPageIntPasteboardType,nil];
 	[pboard declareTypes:typeArray owner:self];
-	return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes] forType:ACSDrawPageIntPasteboardType];
+	return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes requiringSecureCoding:NO error:nil] forType:ACSDrawPageIntPasteboardType];
    }
 
 - (NSDragOperation)tableView:(NSTableView*)tabView validateDrop:(id <NSDraggingInfo>)info
