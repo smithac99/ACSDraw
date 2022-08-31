@@ -41,8 +41,8 @@
 			if (delegate && [delegate respondsToSelector:@selector(verticalRulerMovedToOffset:)])
 				[(id)delegate verticalRulerMovedToOffset:curPoint.y - offset];
 		   }
-        theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
-        if ([theEvent type] == NSLeftMouseUp)
+           theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
+           if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
 		curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
        }

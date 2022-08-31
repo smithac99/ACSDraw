@@ -108,10 +108,10 @@
 	int just;
 	switch(a)
 	   {
-		case NSCenterTextAlignment:
+           case NSTextAlignmentCenter:
 			just = 1;
 			break;
-		case NSRightTextAlignment:
+           case NSTextAlignmentRight:
 			just = 2;
 			break;
 		case NSJustifiedTextAlignment:
@@ -450,20 +450,20 @@
 - (IBAction)justifyMatrixHit:(id)sender
    {
 	int just = (int)[justifyMatrix selectedColumn];
-	NSTextAlignment align=NSLeftTextAlignment;
+	NSTextAlignment align=NSTextAlignmentLeft;
 	switch(just)
 	   {
 		case 0:
-			align = NSLeftTextAlignment;
+               align = NSTextAlignmentLeft;
 			break;
 		case 1:
-			align = NSCenterTextAlignment;
+               align = NSTextAlignmentCenter;
 			break;
 		case 2:
-			align = NSRightTextAlignment;
+               align = NSTextAlignmentRight;
 			break;
 		case 3:
-			align = NSJustifiedTextAlignment;
+               align = NSTextAlignmentJustified;
 			break;
 	   }
 	ACSDStyle *st = [self currentStyle];
@@ -628,7 +628,7 @@
 
 - (IBAction)tableClicked:(id)sender
    {
-	if (([sender selectedRowPriorToClick] == [sender clickedRow]) && ([sender modifierFlags] & NSAlternateKeyMask))
+       if (([sender selectedRowPriorToClick] == [sender clickedRow]) && ([sender modifierFlags] & NSEventModifierFlagOption))
 	   {
 		[self forceCurrentParaToStyle:[self currentStyle]];
 	   }
@@ -645,29 +645,29 @@
    }
 
 - (void)styleTableSelectionChange:(NSInteger)row
-   {
-	BOOL altDown = ([(ACSDTableView*)[styleTableSource tableView] modifierFlags] & NSAlternateKeyMask);
-	[self refreshControls];
-	if ([self inspectingGraphicView])
-	   {
-		ACSDGraphic *edg = [[self inspectingGraphicView]editingGraphic];
-		if (edg)
-		   {
-			ACSDStyle *style = [self currentStyle];
-			NSTextView *textView = [[self inspectingGraphicView]editor];
-			NSArray *ranges = [textView rangesForUserParagraphAttributeChange];
-			for (unsigned i = 0;i < [ranges count];i++)
-			   {
-				NSRange r = [[ranges objectAtIndex:i]rangeValue];
-				if (altDown)
-					[(ACSDText*)edg forceUpdateRange:r forStyle:style];
-				else
-					[(ACSDText*)edg updateRange:r forNewStyle:style];
-			   }
-			[textView setTypingAttributes:[style textAndStyleAttributes]];
-		   }
-	   }
-   }
+{
+    BOOL altDown = ([(ACSDTableView*)[styleTableSource tableView] modifierFlags] & NSEventModifierFlagOption);
+    [self refreshControls];
+    if ([self inspectingGraphicView])
+    {
+        ACSDGraphic *edg = [[self inspectingGraphicView]editingGraphic];
+        if (edg)
+        {
+            ACSDStyle *style = [self currentStyle];
+            NSTextView *textView = [[self inspectingGraphicView]editor];
+            NSArray *ranges = [textView rangesForUserParagraphAttributeChange];
+            for (unsigned i = 0;i < [ranges count];i++)
+            {
+                NSRange r = [[ranges objectAtIndex:i]rangeValue];
+                if (altDown)
+                    [(ACSDText*)edg forceUpdateRange:r forStyle:style];
+                else
+                    [(ACSDText*)edg updateRange:r forNewStyle:style];
+            }
+            [textView setTypingAttributes:[style textAndStyleAttributes]];
+        }
+    }
+}
 
 -(void)uSetStyle:(ACSDStyle*)st fontFamily:(NSString*)ff
    {

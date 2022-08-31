@@ -901,12 +901,12 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
    {
     while (1)
 	   {
-        theEvent = [[view window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
-        if ([theEvent type] == NSLeftMouseUp)
+           theEvent = [[view window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
+           if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
        }
 	ACSDPathElement *firstEl = [[self pathElements] objectAtIndex:0];
-	if ([theEvent modifierFlags] & NSAlternateKeyMask)
+       if ([theEvent modifierFlags] & NSEventModifierFlagOption)
 		if ([firstEl hasPostControlPoint])
 		   {
 			[firstEl setPreCPFromPostCP];
@@ -928,7 +928,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 	[self setActualAddingPoint:origPoint];
 	NSPoint lastPt=NSZeroPoint;
 	[self lastPoint:&lastPt];
-	if ([theEvent modifierFlags] & NSShiftKeyMask)
+       if ([theEvent modifierFlags] & NSEventModifierFlagShift)
 	   {
 		restrictTo45(lastPt,&origPoint);
 	   }
@@ -946,9 +946,9 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 	[[self pathElements] addObject:[el autorelease]];
     while (1)
 	   {
-        theEvent = [[view window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
+           theEvent = [[view window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
         NSPoint currPoint = [view convertPoint:[theEvent locationInWindow] fromView:nil];
-		if ([theEvent modifierFlags] & NSShiftKeyMask)
+           if ([theEvent modifierFlags] & NSEventModifierFlagShift)
 		   {
 			restrictTo45(lastPt,&currPoint);
 		   }
@@ -974,7 +974,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 									  nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:ACSDMouseDidMoveNotification object:self userInfo:dict2];
 		   }
-        if ([theEvent type] == NSLeftMouseUp)
+           if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
        }
 	if (NSEqualPoints([el point],[el postControlPoint]))
@@ -1378,24 +1378,24 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 			can = YES;
 			break;
 		}
-		theEvent = [[view window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask | NSFlagsChangedMask | NSKeyDownMask | NSPeriodicMask)];
-		if ([theEvent type] == NSKeyDown)
+        theEvent = [[view window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp | NSEventMaskFlagsChanged | NSEventMaskKeyDown | NSEventMaskPeriodic)];
+        if ([theEvent type] == NSEventTypeKeyDown)
 		{
 			[view keyDown:theEvent];
 			continue;
 		}
-		if ([theEvent type] == NSPeriodic)
+        if ([theEvent type] == NSEventTypePeriodic)
 		{
 			[view scrollRectToVisible:RectFromPoint(point,30.0,[view magnification])];
 			point = [view convertPoint:[[view window] mouseLocationOutsideOfEventStream] fromView:nil];
 		}
 		else
-			if ([theEvent type] != NSFlagsChanged)
+            if ([theEvent type] != NSEventTypeFlagsChanged)
 				point = [view convertPoint:[theEvent locationInWindow] fromView:nil];
         
 		point.y = [view adjustHSmartGuide:point.y tool:1];
 		point.x = [view adjustVSmartGuide:point.x tool:1];
-        if (([theEvent modifierFlags] & NSShiftKeyMask)!=0)
+        if (([theEvent modifierFlags] & NSEventModifierFlagShift)!=0)
             restrictToStraight(&point, trackingOriginalPoint, trackingPreviousPoint);
 		if (!NSEqualPoints(point,lastPoint))
 		{
@@ -1448,7 +1448,7 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 			[self setOutlinePathValid:NO];
 		}
 		periodicStarted = [view scrollIfNecessaryPoint:point periodicStarted:periodicStarted];
-		if ([theEvent type] == NSLeftMouseUp)
+        if ([theEvent type] == NSEventTypeLeftMouseUp)
 			break;
 	}
 	if (periodicStarted)
@@ -1468,7 +1468,7 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 	    *success = [self trackControlPointForKnob:kd withEvent:theEvent inView:view mirrorLengths:NO];
 		return YES;
 	}
-	if ([theEvent modifierFlags] & NSCommandKeyMask)
+    if ([theEvent modifierFlags] & NSEventModifierFlagCommand)
 	{
 	    KnobDescriptor k(kd.subPath,kd.knob,1);
 		*success = [self trackControlPointForKnob:k withEvent:theEvent inView:view mirrorLengths:YES];
@@ -1484,8 +1484,8 @@ selectedGraphics:(NSSet*)selectedGraphics
 	if (selectedGraphics)
 		[selectedGraphics makeObjectsPerformSelector:@selector(moveSelectedElementsBy:) withObject:[NSValue valueWithPoint:movement]];
 	else
-		[self resizeByMovingKnob:kd toPoint:point event:theEvent constrain:(([theEvent modifierFlags] & NSShiftKeyMask)!=0)
-					aroundCentre:(([theEvent modifierFlags] & NSAlternateKeyMask)!=0)];
+        [self resizeByMovingKnob:kd toPoint:point event:theEvent constrain:(([theEvent modifierFlags] & NSEventModifierFlagShift)!=0)
+                    aroundCentre:(([theEvent modifierFlags] & NSEventModifierFlagOption)!=0)];
 }
 
 - (float)roughArea
@@ -1744,6 +1744,29 @@ selectedGraphics:(NSSet*)selectedGraphics
         el = [[subPath pathElements] objectAtIndex:kd.knob];
     }
     return el.point;
+}
+
+-(NSArray<SelectedElement*>*)knobsInRect:(NSRect)rect
+{
+    NSMutableArray *knobs = [NSMutableArray array];
+    for (unsigned int j = 0;j < [subPaths count];j++)
+    {
+        ACSDSubPath *subPath = [subPaths objectAtIndex:j];
+        NSInteger ct = [[subPath pathElements] count];
+        for (NSInteger i = ct - 1;i >= 0;i--)
+        {
+            ACSDPathElement *el = [[subPath pathElements] objectAtIndex:i];
+            NSPoint point = el.point;
+            if (transform)
+                point = [self invertPoint:point];
+            if (NSPointInRect(point,rect))
+            {
+                SelectedElement *se = [[[SelectedElement alloc]initWithKnobDescriptor:KnobDescriptor(j,i,0)]autorelease];
+                [knobs addObject:se];
+            }
+        }
+    }
+    return knobs;
 }
 
 - (KnobDescriptor)knobUnderPoint:(NSPoint)point view:(GraphicView*)gView

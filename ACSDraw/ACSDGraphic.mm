@@ -2813,18 +2813,18 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 			[view keyDown:theEvent];
 			continue;
 		}
-        if ([theEvent type] == NSPeriodic)
+        if ([theEvent type] == NSEventTypePeriodic)
 		{
 			[view scrollRectToVisible:RectFromPoint(currPoint,30.0,[view magnification])];
 			currPoint = [view convertPoint:[[view window] mouseLocationOutsideOfEventStream] fromView:nil];
 		}
-		else if ([theEvent type] == NSFlagsChanged)
+        else if ([theEvent type] == NSEventTypeFlagsChanged)
 			currPoint = [view convertPoint:[[view window] mouseLocationOutsideOfEventStream] fromView:nil];
 		else
 			currPoint = [view convertPoint:[theEvent locationInWindow] fromView:nil];
-		if ([self needsRestrictTo45] && ([theEvent modifierFlags] & NSShiftKeyMask))
+        if ([self needsRestrictTo45] && ([theEvent modifierFlags] & NSEventModifierFlagShift))
 			restrictTo45(anchorPoint,&currPoint);
-		if (!NSEqualPoints(currPoint, lastPoint) || [theEvent type] == NSFlagsChanged)
+        if (!NSEqualPoints(currPoint, lastPoint) || [theEvent type] == NSEventTypeFlagsChanged)
 		{
 			currPoint.y = [view adjustHSmartGuide:currPoint.y tool:1];
 			currPoint.x = [view adjustVSmartGuide:currPoint.x tool:1];
@@ -2836,7 +2836,7 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 			lastPoint = currPoint;
 		}
 		periodicStarted = [view scrollIfNecessaryPoint:currPoint periodicStarted:periodicStarted];
-        if ([theEvent type] == NSLeftMouseUp)
+        if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
 	}
 	if (periodicStarted)

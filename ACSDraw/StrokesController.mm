@@ -98,7 +98,7 @@
 	else
 	   {
 		flag = [stroke colour] != nil;
-		[strokeSwitch setState:(flag ? NSOnState : NSOffState)];
+           [strokeSwitch setState:(flag ? NSControlStateValueOn : NSControlStateValueOff)];
 		[strokeWell setColor:(flag ? [stroke colour] : [NSColor clearColor])];
 		float lw = [stroke lineWidth];
 		float eLineWidth = log(lw);
@@ -209,9 +209,9 @@
 		{
 			NSCell *c = [matrixStrokeRB cellAtRow:i column:0];
 			if (i == rb)
-				[c setState:NSOnState];
+                [c setState:NSControlStateValueOn];
 			else
-				[c setState:NSOffState];
+                [c setState:NSControlStateValueOff];
 		}
 	   }
 	else
@@ -240,9 +240,9 @@
 {
 	if ([matrixStrokeBox superview])
 	   {
-		if ([[matrixStrokeRB cellAtRow:0 column:0]state] == NSOnState)
+           if ([[matrixStrokeRB cellAtRow:0 column:0]state] == NSControlStateValueOn)
 			return 0;
-		else if ([[matrixStrokeRB cellAtRow:1 column:0]state] == NSOnState)
+           else if ([[matrixStrokeRB cellAtRow:1 column:0]state] == NSControlStateValueOn)
 			return 1;
 		else
 			return 0;
@@ -600,7 +600,7 @@
 -(IBAction)showStrokeUsers:(id)sender
 {
     NSUInteger modifierFlags = [[[arrowTableView window]currentEvent]modifierFlags];
-    BOOL extend = (modifierFlags & NSShiftKeyMask) != 0;
+    BOOL extend = (modifierFlags & NSEventModifierFlagShift) != 0;
     NSArray *strokeList = [self strokeList];
     ACSDStroke *stroke = [strokeList objectAtIndex:rowForContextualMenu];
     [[self inspectingGraphicView]selectGraphicsInCurrentLayerFromSet:[stroke graphics]extend:extend];

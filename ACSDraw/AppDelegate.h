@@ -4,7 +4,7 @@
 
 @interface AppDelegate : NSObject
    {
-	NSCalendarDate *appKey;
+	NSDate *appKey;
     IBOutlet id textMenu;
 	BOOL toolsVisible,inspectorVisible;
    }

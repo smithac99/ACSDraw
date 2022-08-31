@@ -16,7 +16,7 @@ BOOL show_error_alert(NSString *msg1)
 {
 	if (self = [super init])
     {
-		appKey = [NSCalendarDate calendarDate];
+		appKey = [NSDate date];
 		[ACSDImageRep class];
         self.copiedScreens = [NSMutableArray arrayWithCapacity:5];
     }

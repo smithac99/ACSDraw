@@ -59,7 +59,7 @@ NSString* Creator();
 	int maxViewNumber;
 	NSSet *linkGraphics;
 	NSArray *linkRanges;
-	NSCalendarDate *documentKey;
+	//NSCalendarDate *documentKey;
 	unsigned nextObjectKey;
 	NSMutableDictionary *keyedObjects;
 }
@@ -67,6 +67,7 @@ NSString* Creator();
 @property (retain) HtmlExportController *exportHTMLController;
 @property (retain) ImageExportController *exportImageController;
 @property (retain) IBOutlet NSPanel *paddingSheet,*selectNameSheet;
+@property (retain) NSDate *documentKey;
 
 
 -(NSSize)documentSize;
@@ -82,7 +83,6 @@ NSString* Creator();
 -(NSMutableDictionary*)miscValues;
 - (NSMutableArray<ACSDPage*>*)pages;
 - (NSMutableArray*)systemLineEndings;
--(NSCalendarDate*)documentKey;
 -(unsigned)nextObjectKey;
 -(void)deRegisterObject:(KeyedObject*)ko;
 -(KeyedObject*)registerObject:(KeyedObject*)ko;

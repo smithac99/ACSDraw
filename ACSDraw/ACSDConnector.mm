@@ -235,13 +235,13 @@
 			can = YES;
 			break;
 		   }
-        theEvent = [[view window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask | NSKeyDownMask | NSPeriodicMask)];
-		if ([theEvent type] == NSKeyDown)
+           theEvent = [[view window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp | NSEventMaskKeyDown | NSEventMaskPeriodic)];
+           if ([theEvent type] == NSEventTypeKeyDown)
 		   {
 			[view keyDown:theEvent];
 			continue;
 		   }		
-        if ([theEvent type] == NSPeriodic)
+           if ([theEvent type] == NSEventTypePeriodic)
 		   {
 			[view scrollRectToVisible:RectFromPoint(actualPoint,40.0,[view magnification])];
 			actualPoint = [view convertPoint:[[view window] mouseLocationOutsideOfEventStream] fromView:nil];
@@ -262,7 +262,7 @@
 		[self postChangeOfBounds];
 		[ACSDGraphic postChangeFromAnchorPoint:[self fromPt] toPoint:[self toPt]];
 		periodicStarted = [view scrollIfNecessaryPoint:point periodicStarted:periodicStarted];
-        if ([theEvent type] == NSLeftMouseUp)
+           if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
        }
 	if (periodicStarted)
@@ -286,7 +286,7 @@
 		constantGraphic = [self fromGraphic];
     while (1)
 	   {
-        theEvent = [[view window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
+           theEvent = [[view window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
 		actualPoint = [view convertPoint:[theEvent locationInWindow] fromView:nil];
 		ACSDGraphic *changingGraphic;
 		if ((changingGraphic = [view shapeUnderPoint:actualPoint extending:NO]) && (changingGraphic != constantGraphic))
@@ -307,7 +307,7 @@
 		[self reformConnector];
 		[self postChangeOfBounds];
 		[ACSDGraphic postChangeFromAnchorPoint:[self fromPt] toPoint:[self toPt]];
-        if ([theEvent type] == NSLeftMouseUp)
+           if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
        }
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDShowCoordinatesNotification object:self
@@ -317,7 +317,7 @@
 
 -(BOOL)trackInit:(KnobDescriptor&)kd withEvent:(NSEvent *)theEvent inView:(GraphicView*)view ok:(BOOL*)success
 {
-	if ([theEvent modifierFlags] & NSCommandKeyMask)
+    if ([theEvent modifierFlags] & NSEventModifierFlagCommand)
 	{
 		NSPoint point = [view convertPoint:[theEvent locationInWindow] fromView:nil];
 		if (kd.knob == 0)

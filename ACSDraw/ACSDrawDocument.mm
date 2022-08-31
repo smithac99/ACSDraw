@@ -76,7 +76,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
            [self styles];
            exportDirectory = nil;
            maxViewNumber = -1;
-           documentKey = [[NSCalendarDate calendarDate]retain];
+           self.documentKey = [NSDate date];
        }
     return self;
 }
@@ -103,7 +103,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 	[_selectNameSheet release];
 	[linkGraphics release];
 	[linkRanges release];
-	[documentKey release];
+	self.documentKey = nil;
 	[keyedObjects release];
 	[super dealloc];
 }
@@ -132,20 +132,6 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
     return documentSize;
    }
 	
--(NSCalendarDate*)documentKey
-   {
-    return documentKey;
-   }
-
--(void)setDocumentKey:(NSCalendarDate*)d
-   {
-	if (d == documentKey)
-		return;
-	if (documentKey)
-		[documentKey release];
-	documentKey = [d retain];
-   }
-
 -(NSColor*)backgroundColour
    {
 	if (backgroundColour == nil)
@@ -468,7 +454,7 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	if (lineEndings)
 		[dictionary setObject:lineEndings forKey:lineEndingsKey];
 	[dictionary setObject:nameCounts forKey:nameCountsKey];
-	[dictionary setObject:documentKey forKey:ACSDrawDocumentKey];
+	[dictionary setObject:self.documentKey forKey:ACSDrawDocumentKey];
 	if (styles)
 		[dictionary setObject:styles forKey:stylesKey];
 	if (docTitle)

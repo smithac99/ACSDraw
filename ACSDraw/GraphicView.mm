@@ -1123,7 +1123,7 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 {
 //	if (l == [self currentEditableLayer])
 //		[self clearSelection];
-	if ((modifierFlags & NSAlternateKeyMask)!=0)
+    if ((modifierFlags & NSEventModifierFlagOption)!=0)
 	{
 		if ([l visible])
 		{
@@ -1994,18 +1994,18 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 			[self keyDown:theEvent];
 			continue;
 		}
-        if ([theEvent type] == NSPeriodic)
+        if ([theEvent type] == NSEventTypePeriodic)
 		{
 			[self scrollRectToVisible:RectFromPoint(currPoint,30.0,[self magnification])];
 			currPoint = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
 		}
-		else if ([theEvent type] == NSFlagsChanged)
+        else if ([theEvent type] == NSEventTypeFlagsChanged)
 			currPoint = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
 		else
 			currPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-		if ([g needsRestrictTo45] && ([theEvent modifierFlags] & NSShiftKeyMask))
+        if ([g needsRestrictTo45] && ([theEvent modifierFlags] & NSEventModifierFlagShift))
 			restrictTo45(anchorPoint,&currPoint);
-		if (!NSEqualPoints(currPoint, lastPoint) || [theEvent type] == NSFlagsChanged)
+        if (!NSEqualPoints(currPoint, lastPoint) || [theEvent type] == NSEventTypeFlagsChanged)
 		{
 			currPoint.y = [self adjustHSmartGuide:currPoint.y tool:1];
 			currPoint.x = [self adjustVSmartGuide:currPoint.x tool:1];
@@ -2017,7 +2017,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 			lastPoint = currPoint;
 		}
 		periodicStarted = [self scrollIfNecessaryPoint:currPoint periodicStarted:periodicStarted];
-        if ([theEvent type] == NSLeftMouseUp)
+        if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
 	}
 	if (periodicStarted)
@@ -2313,13 +2313,13 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 			[g setOpCancelled:NO];
 			break;
 		}
-        theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask | NSFlagsChangedMask | NSKeyDownMask | NSPeriodicMask)];
-		if ([theEvent type] == NSKeyDown)
+        theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp | NSEventMaskFlagsChanged | NSEventMaskKeyDown | NSEventMaskPeriodic)];
+        if ([theEvent type] == NSEventTypeKeyDown)
 		{
 			[self keyDown:theEvent];
 			continue;
 		}
-        if ([theEvent type] == NSPeriodic)
+        if ([theEvent type] == NSEventTypePeriodic)
 		{
 			[self scrollRectToVisible:RectFromPoint(point,30.0,[self magnification])];
 			point = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
@@ -2369,70 +2369,144 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[self window] invalidateCursorRectsForView:self];
    }
 
-- (BOOL)rubberbandSelectWithEvent:(NSEvent *)theEvent
-   {
+- (BOOL)rubberbandPointSelectWithEvent:(NSEvent *)theEvent
+{
+    NSArray *gs = [[self selectedGraphics]allObjects];
+    if ([gs count]!= 1)
+        return NO;
+    ACSDPath *graphic = gs[0];
+    if (!(graphic && [graphic isMemberOfClass:[ACSDPath class]]))
+        return NO;
     BOOL changed = NO;
-	NSPoint origPoint, curPoint;
-    rubberbandIsDeselecting = (([theEvent modifierFlags] & NSCommandKeyMask) ? YES : NO);
+    NSPoint origPoint, curPoint;
+    if (!([theEvent modifierFlags] & NSEventModifierFlagShift))
+    {
+        for (SelectedElement *se in [graphic selectedElements])
+            [graphic uDeselectElement:se];
+    }
+    rubberbandIsDeselecting = (([theEvent modifierFlags] & NSEventModifierFlagCommand) ? YES : NO);
     origPoint = curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     rubberbandRect = NSZeroRect;
-	rubberbandGraphics = nil;
+    NSArray<SelectedElement*> *rubberbandKnobs = nil;
     while (1)
-	   {
-        theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
+    {
+        theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
         curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         if (NSEqualPoints(origPoint, curPoint))
-		   {
+        {
             if (!NSEqualRects(rubberbandRect, NSZeroRect))
-			   {
+            {
                 [self setNeedsDisplayInRect:rubberbandRect];
-				[self invalidateGraphics:[rubberbandGraphics allObjects]];
-               }
+                [self invalidateGraphics:@[graphic]];
+            }
             rubberbandRect = NSZeroRect;
-			if (rubberbandGraphics)
-			   {
-				[rubberbandGraphics release];
-				rubberbandGraphics = nil;
-			   }
-           }
-		else
-		   {
+            if (rubberbandKnobs)
+            {
+                [rubberbandKnobs release];
+                rubberbandKnobs = nil;
+            }
+        }
+        else
+        {
             NSRect newRubberbandRect = rectFromPoints(origPoint, curPoint);
             if (!NSEqualRects(rubberbandRect, newRubberbandRect))
-			   {
+            {
                 [self setNeedsDisplayInRect:rubberbandRect];
-				[self invalidateGraphics:[rubberbandGraphics allObjects]];
+                [self invalidateGraphics:@[graphic]];
+                rubberbandRect = newRubberbandRect;
+                [rubberbandKnobs release];
+                rubberbandKnobs = [[graphic knobsInRect:rubberbandRect]retain];
+                [self setNeedsDisplayInRect:rubberbandRect];
+                [self invalidateGraphics:@[graphic]];
+            }
+        }
+        if ([theEvent type] == NSEventTypeLeftMouseUp)
+            break;
+    }
+    // Now select or deselect the points.
+    for (SelectedElement *se in rubberbandKnobs)
+    {
+        if (rubberbandIsDeselecting)
+            [graphic uDeselectElement:se];
+        else
+            [graphic uSelectElementFromKnob:se.knobDescriptor extend:YES];
+    }
+    if (!NSEqualRects(rubberbandRect, NSZeroRect))
+        [self setNeedsDisplayInRect:rubberbandRect];
+    rubberbandRect = NSZeroRect;
+    if (rubberbandKnobs)
+    {
+        [rubberbandKnobs release];
+        rubberbandKnobs = nil;
+    }
+    [[self window] invalidateCursorRectsForView:self];
+    return changed;
+}
+
+- (BOOL)rubberbandSelectWithEvent:(NSEvent *)theEvent
+{
+    BOOL changed = NO;
+    NSPoint origPoint, curPoint;
+    rubberbandIsDeselecting = (([theEvent modifierFlags] & NSEventModifierFlagCommand) ? YES : NO);
+    origPoint = curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    rubberbandRect = NSZeroRect;
+    rubberbandGraphics = nil;
+    while (1)
+    {
+        theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
+        curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        if (NSEqualPoints(origPoint, curPoint))
+        {
+            if (!NSEqualRects(rubberbandRect, NSZeroRect))
+            {
+                [self setNeedsDisplayInRect:rubberbandRect];
+                [self invalidateGraphics:[rubberbandGraphics allObjects]];
+            }
+            rubberbandRect = NSZeroRect;
+            if (rubberbandGraphics)
+            {
+                [rubberbandGraphics release];
+                rubberbandGraphics = nil;
+            }
+        }
+        else
+        {
+            NSRect newRubberbandRect = rectFromPoints(origPoint, curPoint);
+            if (!NSEqualRects(rubberbandRect, newRubberbandRect))
+            {
+                [self setNeedsDisplayInRect:rubberbandRect];
+                [self invalidateGraphics:[rubberbandGraphics allObjects]];
                 rubberbandRect = newRubberbandRect;
                 [rubberbandGraphics release];
                 rubberbandGraphics = [[self graphicsIntersectingRect:rubberbandRect]retain];
                 [self setNeedsDisplayInRect:rubberbandRect];
-				[self invalidateGraphics:[rubberbandGraphics allObjects]];
-               }
-           }
-        if ([theEvent type] == NSLeftMouseUp)
+                [self invalidateGraphics:[rubberbandGraphics allObjects]];
+            }
+        }
+        if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
-       }
+    }
     // Now select or deselect the rubberbanded graphics.
     NSEnumerator *objEnum = [rubberbandGraphics objectEnumerator];
     ACSDGraphic *curGraphic;
-    while ((curGraphic = [objEnum nextObject]) != nil) 
-	   {
+    while ((curGraphic = [objEnum nextObject]) != nil)
+    {
         if (rubberbandIsDeselecting)
             [self deselectGraphic:curGraphic] || changed;
-		else
+        else
             [self selectGraphic:curGraphic] || changed;
-       }
+    }
     if (!NSEqualRects(rubberbandRect, NSZeroRect))
-        [self setNeedsDisplayInRect:rubberbandRect];   
-	rubberbandRect = NSZeroRect;
-	if (rubberbandGraphics)
-       {
-		[rubberbandGraphics release];
-		rubberbandGraphics = nil;
-	   }
+        [self setNeedsDisplayInRect:rubberbandRect];
+    rubberbandRect = NSZeroRect;
+    if (rubberbandGraphics)
+    {
+        [rubberbandGraphics release];
+        rubberbandGraphics = nil;
+    }
     [[self window] invalidateCursorRectsForView:self];
-	return changed;
-   }
+    return changed;
+}
 
 -(void)moveSelectedGraphicsBy:(NSPoint)pt
    {
@@ -2787,10 +2861,10 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 													  userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"vis"]];
     while (1)
 	{
-        theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask | NSKeyDownMask | NSPeriodicMask)];
-        if ([theEvent type] == NSLeftMouseUp)
+        theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp | NSEventMaskKeyDown | NSEventMaskPeriodic)];
+        if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
-        if ([theEvent type] == NSKeyDown)
+        if ([theEvent type] == NSEventTypeKeyDown)
 		{
 			if ([[theEvent charactersIgnoringModifiers]isEqualToString:@"s"])
 				[self toggleShowSelection:self];
@@ -2801,14 +2875,14 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 				break;
 			}
 		}
-        if ([theEvent type] == NSPeriodic)
+        if ([theEvent type] == NSEventTypePeriodic)
 		{
 			[self scrollRectToVisible:RectFromPoint(curPoint,30.0,magnification)];
 			curPoint = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
 		}
 		else
 			curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-		if ([theEvent modifierFlags] & NSShiftKeyMask)
+        if ([theEvent modifierFlags] & NSEventModifierFlagShift)
 			restrictTo45(origPoint,&curPoint);
 		else if (snapping)
 		{
@@ -3048,59 +3122,60 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
    }
 
 - (void)selectPathElementAndTrackMouseWithEvent:(NSEvent *)theEvent
-   {
+{
     BOOL selectionChanged=NO,isSelected=NO;
-    BOOL extending = (([theEvent modifierFlags] & NSShiftKeyMask) ? YES : NO);
-    BOOL altDown = (([theEvent modifierFlags] & NSAlternateKeyMask) ? YES : NO);
+    BOOL extending = (([theEvent modifierFlags] & NSEventModifierFlagShift) ? YES : NO);
+    BOOL altDown = (([theEvent modifierFlags] & NSEventModifierFlagOption) ? YES : NO);
     NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     ACSDGraphic *graphic = [self graphicUnderPoint:curPoint extending:extending];
-	if (!(graphic && [graphic isMemberOfClass:[ACSDPath class]]))
-	   {
-		[self rubberbandPathSelectWithEvent:theEvent];
+    if (!(graphic && [graphic isMemberOfClass:[ACSDPath class]]))
+    {
+        [self rubberbandPointSelectWithEvent:theEvent];
+        //[self rubberbandPathSelectWithEvent:theEvent];
 		return;
-	   }
-	ACSDPath *path = (ACSDPath*)graphic;
-	if ([self graphicIsSelected:path])
-	   {
-		KnobDescriptor knobDescriptor = [path knobOrLineUnderPoint:curPoint view:self];
-		if (knobDescriptor.knob == NoKnob)
-		   {
-			[self rubberbandPathSelectWithEvent:theEvent];
-			return;
-		   }
-		else
-		   {
-			BOOL knobIsSelected = [path knobIsSelected:knobDescriptor];
-			if (extending)
-			   {
-				if (knobIsSelected)
-					[path uDeselectElementFromKnob:knobDescriptor];
-				else
-				   {
-					[path uSelectElementFromKnob:knobDescriptor extend:YES];
-					isSelected = YES;
-				   }
-			   }
-			else
-			   {
-				isSelected = YES;
-				if (!knobIsSelected)
-				   {
-					selectionChanged = [[[self selectedGraphics]allObjects]orMakeAllObjectsPerformSelector:@selector(uClearSelectedElements)] || selectionChanged;
-					[path uSelectElementFromKnob:knobDescriptor extend:YES];
-				   }
-				if (altDown && !knobDescriptor.isLine)
-				   {
-					[path uDeselectElementFromKnob:knobDescriptor];
-					knobDescriptor = [(ACSDPath*)graphic uDuplicateKnob:knobDescriptor];
-					[path uSelectElementFromKnob:knobDescriptor extend:extending];
-				   }
-			   }
-		   }
-		if (isSelected)
-			[self trackKnob:knobDescriptor ofGraphic:graphic withEvent:theEvent];
-	   }
-   }
+    }
+    ACSDPath *path = (ACSDPath*)graphic;
+    if ([self graphicIsSelected:path])
+    {
+        KnobDescriptor knobDescriptor = [path knobOrLineUnderPoint:curPoint view:self];
+        if (knobDescriptor.knob == NoKnob)
+        {
+            [self rubberbandPathSelectWithEvent:theEvent];
+            return;
+        }
+        else
+        {
+            BOOL knobIsSelected = [path knobIsSelected:knobDescriptor];
+            if (extending)
+            {
+                if (knobIsSelected)
+                    [path uDeselectElementFromKnob:knobDescriptor];
+                else
+                {
+                    [path uSelectElementFromKnob:knobDescriptor extend:YES];
+                    isSelected = YES;
+                }
+            }
+            else
+            {
+                isSelected = YES;
+                if (!knobIsSelected)
+                {
+                    selectionChanged = [[[self selectedGraphics]allObjects]orMakeAllObjectsPerformSelector:@selector(uClearSelectedElements)] || selectionChanged;
+                    [path uSelectElementFromKnob:knobDescriptor extend:YES];
+                }
+                if (altDown && !knobDescriptor.isLine)
+                {
+                    [path uDeselectElementFromKnob:knobDescriptor];
+                    knobDescriptor = [(ACSDPath*)graphic uDuplicateKnob:knobDescriptor];
+                    [path uSelectElementFromKnob:knobDescriptor extend:extending];
+                }
+            }
+        }
+        if (isSelected)
+            [self trackKnob:knobDescriptor ofGraphic:graphic withEvent:theEvent];
+    }
+}
 
 - (BOOL)layer1:(ACSDLayer*)l1 isInFrontOfLayer2:(ACSDLayer*)l2
    {
@@ -3331,17 +3406,17 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	float lastAngle = getAngleForPoints(rotationPoint,anglePoint);
 	NSArray *selection = [[self selectedGraphics]allObjects];
 	NSInteger ct = [selection count];
-	if (([theEvent modifierFlags] & NSAlternateKeyMask)!=0)
+       if (([theEvent modifierFlags] & NSEventModifierFlagOption)!=0)
 	{
 		drawGrid = YES;
 		[self setNeedsDisplay:YES];
 	}
 	while (1)
 	   {
-		theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask | NSFlagsChangedMask)];
-		if ([theEvent type] == NSFlagsChanged)
+           theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp | NSEventMaskFlagsChanged)];
+           if ([theEvent type] == NSEventTypeFlagsChanged)
 		{
-			if ((([theEvent modifierFlags] & NSAlternateKeyMask)!=0)!= drawGrid)
+            if ((([theEvent modifierFlags] & NSEventModifierFlagOption)!=0)!= drawGrid)
 			{
 				drawGrid = !drawGrid;
 				[self setNeedsDisplay:YES];
@@ -3433,7 +3508,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
                  }
              }
          }
-        if ([theEvent type] == NSLeftMouseUp)
+            if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
     }
 }
@@ -3443,7 +3518,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	NSPoint anchorPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil],dragPoint = anchorPoint;
 	while (1)
 	   {
-		theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
+           theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
 		dragPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		NSRect newRubberbandRect = rectFromPoints(anchorPoint, dragPoint);
 		if (!NSEqualRects(rubberbandRect, newRubberbandRect))
@@ -3778,7 +3853,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 
 - (void)mouseDown:(NSEvent *)theEvent
    {
-	if ((([theEvent modifierFlags] & NSAlternateKeyMask)!=0) && spaceDown)
+       if ((([theEvent modifierFlags] & NSEventModifierFlagOption)!=0) && spaceDown)
 	   {
 		[self magnifyWithEvent:theEvent];
 		return;
@@ -3806,26 +3881,26 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		return;
 	   }
 	if (cursorMode == GV_ROTATION_AWAITING_CLICK)
-	   {
-		if (([theEvent modifierFlags] & NSCommandKeyMask)!=0)
+    {
+        if (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0)
 		{
 			[self selectAndTrackMouseWithEvent:theEvent commandDown:NO];
 			return;
 		}
 		rotationPoint = curPoint;
-		if (([theEvent modifierFlags] & NSAlternateKeyMask)==0)
+        if (([theEvent modifierFlags] & NSEventModifierFlagOption)==0)
 			cursorMode = GV_ROTATION_AWAITING_ROTATE;
 		else
-		   {
+        {
 			cursorMode = GV_ROTATION_SHOWING_DIALOG;
 			[[[self window]windowController] showRotateDialog];
-		   }
+        }
 		[[self window] invalidateCursorRectsForView:self];
 		return;
-	   }
+    }
 	if (cursorMode == GV_ROTATION_AWAITING_ROTATE)
-	   {
-		if (([theEvent modifierFlags] & NSCommandKeyMask)!=0)
+    {
+        if (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0)
 		{
 			[self selectAndTrackMouseWithEvent:theEvent commandDown:NO];
 			cursorMode = GV_ROTATION_AWAITING_CLICK;
@@ -3833,69 +3908,69 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		else
 			[self trackRotationWithEvent:theEvent];
 		return;
-	   }
+    }
     if ([self editingGraphic])
         [self endEditing];
-	if ((selectedTool == ACSD_POLYGON_TOOL) && (([theEvent modifierFlags] & NSAlternateKeyMask)!=0))
-	   {
+    if ((selectedTool == ACSD_POLYGON_TOOL) && (([theEvent modifierFlags] & NSEventModifierFlagOption)!=0))
+    {
 		[self showPolygonDialog];
 		return;
-	   }
+    }
 
 	if ((selectedTool == ACSD_PEN_TOOL) && creatingPath)
-	   {
+    {
 		[(ACSDPath*)creatingPath trackAndAddPointWithEvent:theEvent inView:self];
 		return;
-	   }
+    }
     if (selectedTool == ACSD_SCALE_TOOL)
     {
         [self trackScaleWithEvent:theEvent];
         return;
     }
 	if (selectedTool == ACSD_WHITE_ARROW_TOOL)
-	   {
+    {
 		[self selectPathElementAndTrackMouseWithEvent:theEvent];
 		return;
-	   }
+    }
     if (selectedTool == ACSD_SPLIT_POINT_TOOL)
-       {
+    {
         [self splitAndTrackMouseWithEvent:theEvent];
         return;
-       }
+    }
     if (selectedTool == ACSD_SCALE_TOOL)
-       {
+    {
         [self splitAndTrackMouseWithEvent:theEvent];
         return;
-       }
+    }
     if ([theEvent clickCount] > 1)
-	   {
+    {
 		[self emptyRepeatQueue];
         ACSDGraphic *graphic = [self graphicUnderPoint:curPoint extending:NO];
         if (graphic && [graphic isEditable])
-		   {
+        {
             [self startEditingGraphic:graphic withEvent:theEvent];
             return;
-           }
-       }
+        }
+    }
     if (selectedTool)
-	   {
+    {
 		showSelection = YES;
         [self clearSelection];
         [self createGraphic:selectedTool withEvent:theEvent];
-       }
+    }
 	else
-        [self selectAndTrackMouseWithEvent:theEvent commandDown:([theEvent modifierFlags] & NSCommandKeyMask)!=0];
+        [self selectAndTrackMouseWithEvent:theEvent commandDown:([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0];
    }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
-   {
+{
     return YES;
-   }
+}
 
 - (void)snapButtonDidChange:(NSNotification *)notification
-   {
-	snap = ([[[ToolWindowController sharedToolWindowController:nil]snapButton]state] == NSOnState);
-   }
+{
+    snap = ([[[ToolWindowController sharedToolWindowController:nil]snapButton]state] == NSControlStateValueOn);
+}
 
 - (void)selectedToolDidChange:(NSNotification *)notification
 {
@@ -4328,7 +4403,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	}
 	else
 	{
-		if ((modifierFlags & NSAlternateKeyMask)!=0)
+        if ((modifierFlags & NSEventModifierFlagOption)!=0)
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor arrowPlusCursor]];
 		else
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor arrowCursor]];
@@ -6280,7 +6355,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		   }
 	   }
 	ACSDGraphic *modelObject = [[graphics objectAtIndex:0]retain];
-	if (!([sender keyEquivalentModifierMask] & NSAlternateKeyMask))
+       if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
 	[modelObject release];
@@ -6411,7 +6486,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
     if ([arr count] != 1)
         return;
     ACSDPath *g;
-    if ([sender keyEquivalentModifierMask] & NSAlternateKeyMask)
+    if ([sender keyEquivalentModifierMask] & NSEventModifierFlagOption)
         g = [[[arr objectAtIndex:0]copy]autorelease];
     else
         g = [arr objectAtIndex:0];
@@ -6461,7 +6536,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         [a addObject:subPath];
     }
 
-    if ([sender keyEquivalentModifierMask] & NSAlternateKeyMask)
+    if ([sender keyEquivalentModifierMask] & NSEventModifierFlagOption)
 	   {
            [self clearSelection];
            [[[self currentEditableLayer] graphics] addObject:g];
@@ -6480,7 +6555,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
     if ([arr count] != 1)
         return;
     ACSDPath *g;
-    if ([sender keyEquivalentModifierMask] & NSAlternateKeyMask)
+    if ([sender keyEquivalentModifierMask] & NSEventModifierFlagOption)
         g = [[[arr objectAtIndex:0]copy]autorelease];
     else
         g = [arr objectAtIndex:0];
@@ -6506,7 +6581,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         [subPath applyTransform:transform];
         [a addObject:subPath];
     }
-    if ([sender keyEquivalentModifierMask] & NSAlternateKeyMask)
+    if ([sender keyEquivalentModifierMask] & NSEventModifierFlagOption)
     {
         [self clearSelection];
         [[[self currentEditableLayer] graphics] addObject:g];
@@ -6529,7 +6604,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		return;
 	NSMutableArray *subPaths = [[ACSDPath aNotBSubPathsFromObjects:pathArray]subPaths];
 	ACSDGraphic *modelObject = [[arr objectAtIndex:0]retain];
-	if (!([sender keyEquivalentModifierMask] & NSAlternateKeyMask))
+       if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
 	[modelObject release];
@@ -6546,7 +6621,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		return;
 	NSMutableArray *subPaths = [[ACSDPath intersectedSubPathsFromObjects:pathArray]subPaths];
 	ACSDGraphic *modelObject = [[arr objectAtIndex:0]retain];
-	if (!([sender keyEquivalentModifierMask] & NSAlternateKeyMask))
+       if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
 	[modelObject release];
@@ -6563,7 +6638,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		return;
 	NSMutableArray *subPaths = [[ACSDPath unionSubPathsFromObjects:pathArray]subPaths];
 	ACSDGraphic *modelObject = [[arr objectAtIndex:0]retain];
-	if (!([sender keyEquivalentModifierMask] & NSAlternateKeyMask))
+       if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
 	[modelObject release];
@@ -6580,7 +6655,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		return;
 	NSMutableArray *subPaths = [[ACSDPath xorSubPathsFromObjects:pathArray]subPaths];
 	ACSDGraphic *modelObject = [[arr objectAtIndex:0]retain];
-	if (!([sender keyEquivalentModifierMask] & NSAlternateKeyMask))
+       if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
 	[modelObject release];
@@ -6697,20 +6772,20 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 			ACSDGraphic *g = [arr objectAtIndex:0];
 			if ([g graphicMode] == GRAPHIC_MODE_NORMAL)
 			{
-				if ([(NSMenuItem*)menuItem state]!= NSOnState)
-					[menuItem setState:NSOnState];
+                if ([(NSMenuItem*)menuItem state]!= NSControlStateValueOn)
+                    [menuItem setState:NSControlStateValueOn];
 			}
 			else
-				if ([(NSMenuItem*)menuItem state]!= NSOffState)
-					[menuItem setState:NSOffState];
+                if ([(NSMenuItem*)menuItem state]!= NSControlStateValueOff)
+                    [menuItem setState:NSControlStateValueOff];
 		}
 		else if (ct == 0)
 		{
-			if ([(NSMenuItem*)menuItem state]!= NSOffState)
-				[menuItem setState:NSOffState];
+            if ([(NSMenuItem*)menuItem state]!= NSControlStateValueOff)
+                [menuItem setState:NSControlStateValueOff];
 		}
 		else
-			[menuItem setState:NSMixedState];
+            [menuItem setState:NSControlStateValueMixed];
 		return YES;
 	}
 	if (action == @selector(setGraphicModeOutline:))
@@ -6722,27 +6797,27 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 			ACSDGraphic *g = [arr objectAtIndex:0];
 			if ([g graphicMode] == GRAPHIC_MODE_OUTLINE)
 			{
-				if ([(NSMenuItem*)menuItem state]!= NSOnState)
-					[menuItem setState:NSOnState];
+                if ([(NSMenuItem*)menuItem state]!= NSControlStateValueOn)
+                    [menuItem setState:NSControlStateValueOn];
 			}
 			else
-				if ([(NSMenuItem*)menuItem state]!= NSOffState)
-					[menuItem setState:NSOffState];
+                if ([(NSMenuItem*)menuItem state]!= NSControlStateValueOff)
+                    [menuItem setState:NSControlStateValueOff];
 		}
 		else if (ct == 0)
 		{
-			if ([(NSMenuItem*)menuItem state]!= NSOffState)
-				[menuItem setState:NSOffState];
+            if ([(NSMenuItem*)menuItem state]!= NSControlStateValueOff)
+                [menuItem setState:NSControlStateValueOff];
 		}
 		else
-			[menuItem setState:NSMixedState];
+            [menuItem setState:NSControlStateValueMixed];
 		return YES;
 	}
 	if (action == @selector(setMask:))
 	{
 		if ([[self selectedGraphics] count] < 1)
 		{
-			[menuItem setState:NSOffState];
+            [menuItem setState:NSControlStateValueOff];
 			return NO;
 		}
 		if ([[[self selectedGraphics]allObjects]andMakeObjectsPerformSelector:@selector(canBeMask)])
@@ -6762,14 +6837,14 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 						allOn = NO;
 					if (!allOn && !allOff)
 					{
-						[menuItem setState:NSMixedState];
+                        [menuItem setState:NSControlStateValueMixed];
 						return YES;
 					}
 				}
 				if (allOn)
-					[menuItem setState:NSOnState];
+                    [menuItem setState:NSControlStateValueOn];
 				else
-					[menuItem setState:NSOffState];
+                    [menuItem setState:NSControlStateValueOff];
 			}
 			return YES;
 		}
@@ -6781,7 +6856,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		return [self linkForTextSelection] != nil;
 	if (action == @selector(toggleShowSelection:))
 	{
-		[menuItem setState:(showSelection)?NSOnState:NSOffState];
+        [menuItem setState:(showSelection)?NSControlStateValueOn:NSControlStateValueOff];
 		return YES;
 	}
     if (action == @selector(editPoint:))
@@ -6803,7 +6878,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	   {
 		[creatingPath invalidateInView];
 	    NSPoint pt1,pt2=[creatingPath actualAddingPoint];
-		if ([theEvent modifierFlags] & NSShiftKeyMask)
+           if ([theEvent modifierFlags] & NSEventModifierFlagShift)
 		   {
 			if ([((ACSDPath*)creatingPath) lastPoint:&pt1])
 				restrictTo45(pt1,&pt2);
@@ -6821,7 +6896,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	if ([str isEqualToString:@" "])
 	   {
 	    spaceDown = NO;
-		if ([event modifierFlags] & NSAlternateKeyMask)
+           if ([event modifierFlags] & NSEventModifierFlagOption)
 			[[self window] invalidateCursorRectsForView:self];
 	   }
    }
@@ -6894,7 +6969,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	if ([str isEqualToString:@" "])
 	{
 	    spaceDown = YES;
-		if ([event modifierFlags] & NSAlternateKeyMask)
+        if ([event modifierFlags] & NSEventModifierFlagOption)
 			[[self window] invalidateCursorRectsForView:self];
 	} 
 	else if ([str isEqualToString:@"s"])
