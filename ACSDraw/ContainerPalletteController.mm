@@ -18,7 +18,7 @@
 
 +(ContainerPalletteController*)palletteControllerWithIdentifier:(int)i
 {
-	return [[(ContainerPalletteController*)[ContainerPalletteController alloc]initWithIdentifier:i]autorelease];
+	return [(ContainerPalletteController*)[ContainerPalletteController alloc]initWithIdentifier:i];
 }
 
 -(id)initWithIdentifier:(int)i
@@ -27,22 +27,13 @@
 	{
 		NSArray *objs;
 		[[NSBundle mainBundle]loadNibNamed:@"PallettePanel" owner:self topLevelObjects:&objs];
-		topLevelObjects = [[NSArray arrayWithArray:objs]retain];
-		viewControllers = [[NSMutableArray arrayWithCapacity:3]retain];
-		tabSubviews = [[NSMutableArray arrayWithCapacity:3]retain];
+		topLevelObjects = [NSArray arrayWithArray:objs];
+		viewControllers = [NSMutableArray arrayWithCapacity:3];
+		tabSubviews = [NSMutableArray arrayWithCapacity:3];
 		currentItem = -1;
 		identifier = i;
 	}
 	return self;
-}
-
--(void)dealloc
-{
-	[viewControllers release];
-	[tabSubviews release];
-	[topLevelObjects release];
-	[_fieldEditor release];
-	[super dealloc];
 }
 
 -(int)identifier
@@ -81,18 +72,8 @@
 		[[[containerContentView subviews]objectAtIndex:0]removeFromSuperview];
 	if (v == nil)
 		return;
-/*	NSRect wf = [[containerContentView window]frame];
-	NSRect ccvf = [containerContentView frame];
-	NSRect vf = [v frame];
-	float hDiff = ccvf.size.height - vf.size.height;
-	wf.size.height -= hDiff;
-	wf.origin.y += hDiff;
-	ccvf.size.height -= hDiff;
-	[[containerContentView window]setFrame:wf display:NO];*/
 	[self adjustWindowForContainerView:v];
 	[containerContentView addSubview:v];
-//	[[containerContentView window]invalidateShadow];
-//	[[containerContentView window]update];
 }
 
 -(void)sortOutTabViews
@@ -178,7 +159,7 @@
 	if (ui == NSNotFound)
 	{
 		[viewControllers addObject:vc];
-		ContainerTabSubview *tsv = [[[ContainerTabSubview alloc]initWithFrame:[containerTabView bounds] title:[vc title] controller:self]autorelease];
+		ContainerTabSubview *tsv = [[ContainerTabSubview alloc]initWithFrame:[containerTabView bounds] title:[vc title] controller:self];
 		[tabSubviews addObject:tsv];
 		[containerTabView addSubview:tsv];
 		[self sortOutTabViews];
@@ -194,7 +175,7 @@
 	{
 		if (!self.fieldEditor)
         {
-			self.fieldEditor = [[[ACSDFieldEditor alloc] init]autorelease];
+			self.fieldEditor = [[ACSDFieldEditor alloc] init];
 			[self.fieldEditor setFieldEditor:YES];
 		}
 		return self.fieldEditor;
@@ -203,7 +184,7 @@
     {
         if (!self.tableFieldEditor)
         {
-            self.tableFieldEditor = [[[SMTextView alloc] init]autorelease];
+            self.tableFieldEditor = [[SMTextView alloc] init];
             [self.tableFieldEditor setFieldEditor:YES];
         }
         self.tableFieldEditor.tableView = anObject;

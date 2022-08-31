@@ -18,7 +18,6 @@
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
     self.backingColour = nil;
-    [super dealloc];
 }
 -(void)awakeFromNib
 {

@@ -33,7 +33,6 @@
 	   {
 		v = [[IVertex alloc]initWithX:pt.x y:pt.y];
 		[vertexDict setObject:v forKey:val];
-		[v release];
 	   }
 	return v;
    }
@@ -58,13 +57,6 @@
 		segmentList = [[NSMutableArray alloc]initWithCapacity:2];
 	   }
 	return self;
-   }
-
--(void)dealloc
-   {
-	if (segmentList)
-		[segmentList release];
-	[super dealloc];
    }
 
 - (NSString *)description
@@ -94,9 +86,7 @@
    {
 	if (arr == segmentList)
 		return;
-	if (segmentList)
-		[segmentList release];
-	segmentList = [arr retain];
+	segmentList = arr;
    }
 
 - (void)addSegment:(ISegElement*)is

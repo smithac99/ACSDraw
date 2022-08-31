@@ -21,16 +21,16 @@
 	NSColor *col5 = [NSColor colorWithCalibratedWhite:0.0 alpha:0.5];
 	NSColor *col7 = [NSColor colorWithCalibratedWhite:0.0 alpha:0.7];
 	NSColor *col8 = [NSColor colorWithCalibratedWhite:0.0 alpha:0.8];
-	[arr addObject:[[[ShadowType alloc]init]autorelease]];
-	[arr addObject:[[[ShadowType alloc]initWithBlurRadius:3 xOffset:5 yOffset:-5 colour:[NSColor blackColor]]autorelease]];
-	[arr addObject:[[[ShadowType alloc]initWithBlurRadius:3 xOffset:10 yOffset:-10 colour:col8]autorelease]];
-	[arr addObject:[[[ShadowType alloc]initWithBlurRadius:3 xOffset:15 yOffset:-15 colour:col8]autorelease]];
-	[arr addObject:[[[ShadowType alloc]initWithBlurRadius:3 xOffset:15 yOffset:15 colour:col8]autorelease]];
-	[arr addObject:[[[ShadowType alloc]initWithBlurRadius:5 xOffset:7 yOffset:-7 colour:col8]autorelease]];
-	[arr addObject:[[[ShadowType alloc]initWithBlurRadius:5 xOffset:25 yOffset:-25 colour:col5]autorelease]];
-	[arr addObject:[[[ShadowType alloc]initWithBlurRadius:7 xOffset:17 yOffset:17 colour:col5]autorelease]];
-	[arr addObject:[[[ShadowType alloc]initWithBlurRadius:9 xOffset:15 yOffset:15 colour:col7]autorelease]];
-	[arr addObject:[[[ShadowType alloc]initWithBlurRadius:7 xOffset:-10 yOffset:-10 colour:[NSColor redColor]]autorelease]];
+	[arr addObject:[[ShadowType alloc]init]];
+	[arr addObject:[[ShadowType alloc]initWithBlurRadius:3 xOffset:5 yOffset:-5 colour:[NSColor blackColor]]];
+	[arr addObject:[[ShadowType alloc]initWithBlurRadius:3 xOffset:10 yOffset:-10 colour:col8]];
+	[arr addObject:[[ShadowType alloc]initWithBlurRadius:3 xOffset:15 yOffset:-15 colour:col8]];
+	[arr addObject:[[ShadowType alloc]initWithBlurRadius:3 xOffset:15 yOffset:15 colour:col8]];
+	[arr addObject:[[ShadowType alloc]initWithBlurRadius:5 xOffset:7 yOffset:-7 colour:col8]];
+	[arr addObject:[[ShadowType alloc]initWithBlurRadius:5 xOffset:25 yOffset:-25 colour:col5]];
+	[arr addObject:[[ShadowType alloc]initWithBlurRadius:7 xOffset:17 yOffset:17 colour:col5]];
+	[arr addObject:[[ShadowType alloc]initWithBlurRadius:9 xOffset:15 yOffset:15 colour:col7]];
+	[arr addObject:[[ShadowType alloc]initWithBlurRadius:7 xOffset:-10 yOffset:-10 colour:[NSColor redColor]]];
     return arr;
    }
 
@@ -63,15 +63,6 @@
 	else
 		obj =  [[[self class] allocWithZone:zone]init];
 	return obj;
-   }
-
--(void)dealloc
-   {
-	if (itsShadow)
-		[itsShadow release];
-	if (scaledShadow)
-		[scaledShadow release];
-	[super dealloc];
    }
 
 - (void) encodeWithCoder:(NSCoder*)coder
