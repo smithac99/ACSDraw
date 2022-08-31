@@ -2381,7 +2381,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     NSPoint origPoint, curPoint;
     if (!([theEvent modifierFlags] & NSEventModifierFlagShift))
     {
-        for (SelectedElement *se in [graphic selectedElements])
+        NSArray *arr = [[graphic selectedElements]allObjects];
+        for (SelectedElement *se in arr)
             [graphic uDeselectElement:se];
     }
     rubberbandIsDeselecting = (([theEvent modifierFlags] & NSEventModifierFlagCommand) ? YES : NO);
