@@ -16,69 +16,62 @@
 @implementation ACSDLabel
 
 - (id)init
-   {
+{
     if (self = [super init])
-       {
-        contents = [[NSTextStorage allocWithZone:[self zone]] init];
-		verticalPosition = 0.0;
-		horizontalPosition = 0.0;
-		flipped = NO;
-		graphic = nil;
-       }
+    {
+        contents = [[NSTextStorage alloc] init];
+        verticalPosition = 0.0;
+        horizontalPosition = 0.0;
+        flipped = NO;
+        graphic = nil;
+    }
     return self;
-   }
+}
 
 - (id)initWithGraphic:(ACSDGraphic*)g
-   {
+{
     if (self = [self init])
-       {
+    {
         graphic = g;
-       }
+    }
     return self;
-   }
+}
 
 - (id)initWithGraphic:(ACSDGraphic*)g contents:(NSTextStorage*)c verticalPosition:(float)vP horizontalPosition:(float)hP flipped:(bool)flip 
-   {
+{
     if (self = [super init])
-       {
+    {
         graphic = g;
-		contents = [c retain];
-		verticalPosition = vP;
-		horizontalPosition = hP;
-		flipped = flip;
-       }
+        contents = c;
+        verticalPosition = vP;
+        horizontalPosition = hP;
+        flipped = flip;
+    }
     return self;
-   }
-
--(void)dealloc
-   {
-	if (contents)
-		[contents release];
-	[super dealloc];
-   }
+}
 
 - (id)copyWithZone:(NSZone *)zone
-   {
-	NSTextStorage *tCopy = [[NSTextStorage alloc]initWithAttributedString:[self contents]];
-    ACSDLabel *newObj = [[[self class] allocWithZone:zone]initWithGraphic:graphic contents:[tCopy autorelease] verticalPosition:verticalPosition
-									   horizontalPosition:horizontalPosition flipped:flipped];
+{
+    NSTextStorage *tCopy = [[NSTextStorage alloc]initWithAttributedString:[self contents]];
+    ACSDLabel *newObj = [[[self class] alloc]initWithGraphic:graphic contents:tCopy verticalPosition:verticalPosition
+                                          horizontalPosition:horizontalPosition flipped:flipped];
     return newObj;
-   }
+}
 
 - (void) encodeWithCoder:(NSCoder*)coder
-   {
-	[coder encodeConditionalObject:graphic forKey:@"ACSDLabel_graphic"];
-	[coder encodeObject:[self contents] forKey:@"ACSDLabel_contents"];
-	[coder encodeFloat:verticalPosition forKey:@"ACSDText_verticalPosition"];
-	[coder encodeFloat:horizontalPosition forKey:@"ACSDText_horizontalPosition"];
-	[coder encodeBool:flipped forKey:@"ACSDText_flipped"];
-   }
+{
+    [coder encodeConditionalObject:graphic forKey:@"ACSDLabel_graphic"];
+    [coder encodeObject:[self contents] forKey:@"ACSDLabel_contents"];
+    [coder encodeFloat:verticalPosition forKey:@"ACSDText_verticalPosition"];
+    [coder encodeFloat:horizontalPosition forKey:@"ACSDText_horizontalPosition"];
+    [coder encodeBool:flipped forKey:@"ACSDText_flipped"];
+}
 
 - (id) initWithCoder:(NSCoder*)coder
    {
 	self = [self init];
 	[self setGraphic:[coder decodeObjectForKey:@"ACSDLabel_graphic"]];
-	[self setContents:[[[NSTextStorage allocWithZone:[self zone]] initWithAttributedString:[coder decodeObjectForKey:@"ACSDLabel_contents"]]autorelease]];
+	[self setContents:[[NSTextStorage alloc] initWithAttributedString:[coder decodeObjectForKey:@"ACSDLabel_contents"]]];
 	verticalPosition = [coder decodeFloatForKey:@"ACSDText_verticalPosition"];
 	horizontalPosition = [coder decodeFloatForKey:@"ACSDText_horizontalPosition"];
 	flipped = [coder decodeBoolForKey:@"ACSDText_flipped"];
@@ -94,9 +87,7 @@
    {
     if (contents == cont)
 		return;
-    if (contents)
-		[contents release];
-	contents = [cont retain];
+	contents = cont;
    }
 
 - (void)setLabel:(NSTextStorage*)cont
@@ -149,8 +140,8 @@
 	NSLayoutManager *lm;
 	if ([layoutManagers count] == 0)
 	   {
-		lm = [[[NSLayoutManager alloc] init]autorelease];
-		[lm addTextContainer:[[[NSTextContainer alloc]initWithContainerSize:sz]autorelease]];
+		lm = [[NSLayoutManager alloc] init];
+		[lm addTextContainer:[[NSTextContainer alloc]initWithContainerSize:sz]];
 		[[self contents] addLayoutManager:lm];
 	   }
 	else
@@ -271,7 +262,7 @@
 	NSAffineTransform *t = [NSAffineTransform transform];
 	[t translateXBy:0 yBy:docSize.height];
 	[t scaleXBy:1 yBy:-1];
-	NSBezierPath *bzp = [[[graphic transformedBezierPath]copy]autorelease];
+	NSBezierPath *bzp = [[graphic transformedBezierPath]copy];
 	[bzp transformUsingAffineTransform:t];
 	NSMutableArray *gSubPaths = [gSubPath gSubPathsFromACSDSubPaths:[ACSDSubPath subPathsFromBezierPath:[graphic transformedBezierPath]]];
 	float len = 0.0;

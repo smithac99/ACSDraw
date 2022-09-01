@@ -36,7 +36,7 @@
 		E740563B15B1EF2D0040F590 /* ACSDGroup.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F415B1EF2D0040F590 /* ACSDGroup.mm */; };
 		E740563C15B1EF2D0040F590 /* ACSDImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F615B1EF2D0040F590 /* ACSDImage.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740563D15B1EF2D0040F590 /* ACSDImageRep.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F815B1EF2D0040F590 /* ACSDImageRep.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		E740563E15B1EF2D0040F590 /* ACSDLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FA15B1EF2D0040F590 /* ACSDLabel.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740563E15B1EF2D0040F590 /* ACSDLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FA15B1EF2D0040F590 /* ACSDLabel.mm */; };
 		E740563F15B1EF2D0040F590 /* ACSDLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FC15B1EF2D0040F590 /* ACSDLayer.mm */; };
 		E740564015B1EF2D0040F590 /* ACSDLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FE15B1EF2D0040F590 /* ACSDLine.mm */; };
 		E740564115B1EF2D0040F590 /* ACSDLineEnding.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550015B1EF2D0040F590 /* ACSDLineEnding.mm */; };

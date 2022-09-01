@@ -198,7 +198,7 @@
 -(void)createMid:(NSPoint)anchorPoint currentPoint:(NSPoint*)currPoint event:(NSEvent*)theEvent
 {
 	pt1 = *currPoint;
-	if (([theEvent modifierFlags] & NSAlternateKeyMask)==0)
+    if (([theEvent modifierFlags] & NSEventModifierFlagOption)==0)
 		pt0 = anchorPoint;
 	else
 		[self computePt0FromCentrePoint:anchorPoint];

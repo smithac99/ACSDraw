@@ -169,13 +169,13 @@
 		point = [self invertPoint:point];
 	if (kd.knob == 0)
 	   {
-		if (([theEvent modifierFlags] & NSShiftKeyMask)!=0)
+           if (([theEvent modifierFlags] & NSEventModifierFlagShift)!=0)
 			restrictTo45(self.toPt,&point);
 		[self uSetFromPt:point];
 	   }
 	else
 	   {
-		if (([theEvent modifierFlags] & NSShiftKeyMask)!=0)
+           if (([theEvent modifierFlags] & NSEventModifierFlagShift)!=0)
 			restrictTo45(self.fromPt,&point);
 		[self uSetToPt:point];
 	   }

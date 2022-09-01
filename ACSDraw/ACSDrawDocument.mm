@@ -1193,7 +1193,7 @@ NSString *xHTMLString2 = @"<html>\n";
 
 - (void)htmlSavePanelDidEnd:(NSWindow *)sp returnCode:(int)runResult contextInfo:(void  *)contextInfo
 {
-	if (runResult == NSOKButton)
+    if (runResult == NSModalResponseOK)
 	{
 		[self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
 		NSURL *url = [(NSSavePanel*)sp URL];
@@ -1295,7 +1295,7 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 [animationsController recordAnimationsToURL:[sp URL]];
 		 }
@@ -1314,7 +1314,7 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
 			 [dictionary setObject:lineEndings forKey:lineEndingsKey];
@@ -1452,10 +1452,10 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 [[self frontmostMainWindowController] writePDFRepresentationToURL:[sp URL]];
-			 if ([[[ACSDPrefsController sharedACSDPrefsController:nil]openAfterExportCB]state] == NSOnState)
+             if ([[[ACSDPrefsController sharedACSDPrefsController:nil]openAfterExportCB]state] == NSControlStateValueOn)
 				 [[NSWorkspace sharedWorkspace] performSelector:@selector(openURL:) withObject:[(NSSavePanel*)sp URL] afterDelay:0.02];
 		 }
 	 }
@@ -1649,7 +1649,7 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 NSData *tiff  = [[self frontmostMainWindowController] tiffRepresentation];
 			 [self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
@@ -1743,7 +1743,7 @@ NSString* Creator()
     [sp setAllowedFileTypes:nil];
     [sp setTitle:@"Export Image"];
     [sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result) {
-        if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
         {
             NSURL *dirURL = [(NSSavePanel*)sp URL];
             NSFileManager *fileManager = [NSFileManager defaultManager];

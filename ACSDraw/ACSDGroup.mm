@@ -327,7 +327,7 @@
     [aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
     [aff invert];
     point = [aff transformPoint:point];
-    BOOL altDown = (([theEvent modifierFlags] & NSAlternateKeyMask)!=0);
+    BOOL altDown = (([theEvent modifierFlags] & NSEventModifierFlagOption)!=0);
     point.x -= [self bounds].origin.x;
     point.y -= [self bounds].origin.y;
     if (point.x < 0.0)
@@ -434,13 +434,13 @@
 
 - (KnobDescriptor)resizeByMovingKnobn:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain aroundCentre:(BOOL)aroundCentre
 {
-    if ([theEvent type] == NSFlagsChanged)
+    if ([theEvent type] == NSEventTypeFlagsChanged)
     {
         bounds = originalBounds;
         frame = originalFrame;
         [self setGraphicXScale:originalXScale yScale:originalYScale undo:NO];
     }
-    BOOL commandDown = (([theEvent modifierFlags] & NSCommandKeyMask)!=0);
+    BOOL commandDown = (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0);
     if (commandDown)
         return [self resizeFrameByMovingKnob:kd toPoint:point event:theEvent constrain:(BOOL)constrain];
     if (rotation != 0.0)
@@ -451,7 +451,7 @@
         [aff invert];
         point = [aff transformPoint:point];
     }
-    BOOL altDown = (([theEvent modifierFlags] & NSAlternateKeyMask)!=0);
+    BOOL altDown = (([theEvent modifierFlags] & NSEventModifierFlagOption)!=0);
     NSRect tBounds = [self bounds],tFrame = frame;
     tFrame.origin.x += tBounds.origin.x;
     tFrame.origin.y += tBounds.origin.y;
@@ -566,7 +566,7 @@
                ACSDGraphic *clipg = [graphics objectAtIndex:ct - 1];
                //[[clipg clipPath]addClip];
                CGImageRef alphaMask = [self createMaskImage:aRect object:clipg];
-               CGContextClipToMask((CGContextRef)[[NSGraphicsContext currentContext]graphicsPort], NSRectToCGRect(aRect), alphaMask);
+               CGContextClipToMask([[NSGraphicsContext currentContext]CGContext], NSRectToCGRect(aRect), alphaMask);
            }
            for (int i = 0;i < ct - 1;i++)
                [[graphics objectAtIndex:i]draw:aRect inView:nil selected:NO isGuide:NO cacheDrawing:NO options:options];

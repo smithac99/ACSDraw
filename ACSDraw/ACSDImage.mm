@@ -209,7 +209,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	NSRect newRect = NSMakeRect(0,0,w,newH);
 	[[NSColor whiteColor]set];
 	NSRectFill(oldRect);
-	[ciImage drawInRect:oldRect fromRect:oldRect operation:NSCompositeSourceOver fraction:1.0];
+    [ciImage drawInRect:oldRect fromRect:oldRect operation:NSCompositingOperationSourceOver fraction:1.0];
 	
 	newBitmapRep = createRGBBitmap(w,newH);
 	[newBitmapRep setSize:NSMakeSize(w,newH)];
@@ -217,7 +217,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	[[NSColor whiteColor]set];
 	NSRectFill(newRect);
 	oldRect = NSMakeRect(0,(oldH-newH)/2,w,newH);
-	[tempBitmapRep drawInRect:newRect fromRect:oldRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:NO hints:nil];
+    [tempBitmapRep drawInRect:newRect fromRect:oldRect operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:NO hints:nil];
 	[NSGraphicsContext setCurrentContext:oldContext];
 	CGImageRef cgr = [newBitmapRep CGImage];
 	NSImage *newImage = [[NSImage alloc]initWithCGImage:cgr size:NSZeroSize];
@@ -264,7 +264,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	NSBitmapImageRep *tempBitmapRep = createRGBBitmap(w,newH);
 	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:tempBitmapRep]];
 	CGRect destR = CGRectMake(0.0,0.0,w,oldH);
-	CGContextDrawImage((CGContext*)[[NSGraphicsContext currentContext]graphicsPort],destR,cgImage);
+    CGContextDrawImage([[NSGraphicsContext currentContext]CGContext],destR,cgImage);
 	if (_wideCylinderHalfUnwrapFilter == nil)
 		_wideCylinderHalfUnwrapFilter = [[CIFilter filterWithName:@"WideCylinderHalfUnwrapFilter"]retain];
 	CIImage *ciImage = [CIImage imageWithCGImage:[tempBitmapRep CGImage]];
@@ -275,7 +275,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:newBitmapRep]];
 	[[NSColor redColor]set];
 	NSRectFill(NSMakeRect(0,0,w,newH));
-	[ciImage drawAtPoint:NSMakePoint(0.0,0.0) fromRect:NSMakeRect(0.0,0.0,w,newH) operation:/*NSCompositeCopy*/NSCompositeSourceOver fraction:1.0];
+    [ciImage drawAtPoint:NSMakePoint(0.0,0.0) fromRect:NSMakeRect(0.0,0.0,w,newH) operation:/*NSCompositeCopy*/NSCompositingOperationSourceOver fraction:1.0];
 	[NSGraphicsContext setCurrentContext:oldContext];
 	[newImage addRepresentation:newBitmapRep];
 	return [newImage autorelease];
@@ -423,7 +423,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	[NSGraphicsContext saveGraphicsState];
 	[spareImage lockFocus];
 	NSRect nDestRect = NSMakeRect(0.0,0.0,[image size].width,[imageRep size].height);
-	[resultImage drawInRect:nDestRect fromRect:nDestRect operation:NSCompositeCopy fraction:1.0];
+    [resultImage drawInRect:nDestRect fromRect:nDestRect operation:NSCompositingOperationCopy fraction:1.0];
 	[spareImage unlockFocus];
 	[NSGraphicsContext restoreGraphicsState];
 }
@@ -445,7 +445,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	[NSGraphicsContext saveGraphicsState];
 	[spareImage lockFocus];
 	NSRect nDestRect = NSMakeRect(0.0,0.0,[image size].width,[imageRep size].height);
-	[resultImage drawInRect:nDestRect fromRect:nDestRect operation:NSCompositeCopy fraction:1.0];
+    [resultImage drawInRect:nDestRect fromRect:nDestRect operation:NSCompositingOperationCopy fraction:1.0];
 	[spareImage unlockFocus];
 	[NSGraphicsContext restoreGraphicsState];
 }
@@ -644,7 +644,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
 	[aff invert];
 	point = [aff transformPoint:point];
-    BOOL altDown = (([theEvent modifierFlags] & NSAlternateKeyMask)!=0);
+    BOOL altDown = (([theEvent modifierFlags] & NSEventModifierFlagOption)!=0);
 	point.x -= [self bounds].origin.x;
 	point.y -= [self bounds].origin.y;
 	if (point.x < 0.0)
@@ -704,13 +704,13 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 
 - (KnobDescriptor)resizeByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain aroundCentre:(BOOL)aroundCentre
 {
-	if ([theEvent type] == NSFlagsChanged)
+    if ([theEvent type] == NSEventTypeFlagsChanged)
 	{
 		bounds = originalBounds;
 		frame = originalFrame;
 		[self setGraphicXScale:originalXScale yScale:originalYScale undo:NO];
 	}
-    BOOL commandDown = (([theEvent modifierFlags] & NSCommandKeyMask)!=0);
+    BOOL commandDown = (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0);
 	if (commandDown)
 		return [self resizeFrameByMovingKnob:kd toPoint:point event:theEvent constrain:(BOOL)constrain];
 	if (rotation != 0.0)
@@ -721,7 +721,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 		[aff invert];
 		point = [aff transformPoint:point];
 	   }
-    BOOL altDown = (([theEvent modifierFlags] & NSAlternateKeyMask)!=0);
+    BOOL altDown = (([theEvent modifierFlags] & NSEventModifierFlagOption)!=0);
     NSRect tBounds = [self bounds],tFrame = frame;
 	tFrame.origin.x += tBounds.origin.x;
 	tFrame.origin.y += tBounds.origin.y;
@@ -903,7 +903,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	[im lockFocus];
 	[[shadowType itsShadow]set];
 	[t concat];
-	CGContextSetInterpolationQuality((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort],kCGInterpolationHigh);
+    CGContextSetInterpolationQuality([[NSGraphicsContext currentContext] CGContext],kCGInterpolationHigh);
 	if ([self hasAFilter])
 	   {
 		[self drawFilteredImage];
@@ -1062,7 +1062,7 @@ CGContextRef CreateArgbContext(int width,int height)
 	CGContextRef context = CreateArgbContext(sz.width, sz.height);
 	[NSGraphicsContext saveGraphicsState];
 	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
-	[image drawAtPoint:NSMakePoint(0.0,0.0) fromRect:NSMakeRect(0.0,0.0,sz.width,sz.height) operation:NSCompositeSourceOver fraction:1.0];
+    [image drawAtPoint:NSMakePoint(0.0,0.0) fromRect:NSMakeRect(0.0,0.0,sz.width,sz.height) operation:NSCompositingOperationSourceOver fraction:1.0];
 	[NSGraphicsContext restoreGraphicsState];
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 		[self doHistogramWithContext:context width:sz.width height:sz.height];

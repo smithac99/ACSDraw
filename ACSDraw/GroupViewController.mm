@@ -315,9 +315,9 @@ int totalChildDepth(SCNNode* node)
 		[result.textField setEditable:YES];
 		NSButton *cb = [result viewWithTag:37];
 		if ([item hidden])
-			[cb setState:NSOffState];
+            [cb setState:NSControlStateValueOff];
 		else
-			[cb setState:NSOnState];
+            [cb setState:NSControlStateValueOn];
 		[cb setTarget:self];
 		[cb setAction:@selector(hiddenCbHit:)];
 		return result;
@@ -355,7 +355,7 @@ int totalChildDepth(SCNNode* node)
 {
 	NSInteger row = [self.outlineView rowForView:sender];
 	ACSDGraphic *g = [self.outlineView itemAtRow:row];
-	[g setGraphicHidden:[sender state]==NSOffState];
+    [g setGraphicHidden:[sender state]==NSControlStateValueOff];
 	SCNNode *node = [self nodeForGraphic:g];
 	if (node)
 		node.hidden = [g hidden];

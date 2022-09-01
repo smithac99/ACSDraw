@@ -1766,7 +1766,7 @@ float normalisedAngle(float ang)
 	[NSGraphicsContext saveGraphicsState];
 	if (graphicCache && useCache)
 	   {
-		CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+           CGContextRef currentContext = [[NSGraphicsContext currentContext] CGContext];
 		if (shadowType && [shadowType itsShadow])
 			[[shadowType shadowWithScale:[[options objectForKey:@"scale"]floatValue]]set];
 		CGContextBeginTransparencyLayer (currentContext, NULL);
@@ -1807,7 +1807,7 @@ float normalisedAngle(float ang)
 				[[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
 			if (shadowType && [shadowType itsShadow])
 				[[shadowType shadowWithScale:[[options objectForKey:@"scale"]floatValue]]set];
-			CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+               CGContextRef currentContext = [[NSGraphicsContext currentContext] CGContext];
 			CGContextBeginTransparencyLayer (currentContext, NULL);
 			if (alpha < 1.0)
 				CGContextSetAlpha(currentContext,alpha);
@@ -2342,8 +2342,8 @@ BOOL rightKnob(NSInteger knob)
 -(void)trackMid:(KnobDescriptor&)kd withEvent:(NSEvent *)theEvent point:(NSPoint)point lastPoint:(NSPoint)lastPoint
 	selectedGraphics:(NSSet*)selectedGraphics
 {
-	kd = [self resizeByMovingKnob:kd toPoint:point event:theEvent constrain:(([theEvent modifierFlags] & NSShiftKeyMask)!=0)
-					 aroundCentre:(([theEvent modifierFlags] & NSAlternateKeyMask)!=0)];
+    kd = [self resizeByMovingKnob:kd toPoint:point event:theEvent constrain:(([theEvent modifierFlags] & NSEventModifierFlagShift)!=0)
+                     aroundCentre:(([theEvent modifierFlags] & NSEventModifierFlagOption)!=0)];
 }
 
 /*- (BOOL)trackKnob:(KnobDescriptor&)kd withEvent:(NSEvent *)theEvent inView:(GraphicView*)view selectedGraphics:(NSSet*)selectedGraphics
@@ -2776,8 +2776,8 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 -(void)createMid:(NSPoint)anchorPoint currentPoint:(NSPoint*)currPoint event:(NSEvent*)theEvent
 {
 	[self setBounds:[self rectFromAnchorPoint:anchorPoint movingPoint:*currPoint constrainedPoint:currPoint 
-							   dragFromCentre:(([theEvent modifierFlags] & NSAlternateKeyMask)!=0)
-									constrain:(([theEvent modifierFlags] & NSShiftKeyMask)!=0)]];
+                               dragFromCentre:(([theEvent modifierFlags] & NSEventModifierFlagOption)!=0)
+                                    constrain:(([theEvent modifierFlags] & NSEventModifierFlagShift)!=0)]];
 }
 
 -(BOOL)createCleanUp:(BOOL)cancelled
@@ -2807,8 +2807,8 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 			can = YES;
 			break;
 		}
-        theEvent = [[view window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask | NSFlagsChangedMask | NSKeyDownMask | NSPeriodicMask)];
-		if ([theEvent type] == NSKeyDown)
+        theEvent = [[view window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp | NSEventMaskFlagsChanged | NSEventMaskKeyDown | NSEventMaskPeriodic)];
+        if ([theEvent type] == NSEventTypeKeyDown)
 		{
 			[view keyDown:theEvent];
 			continue;
@@ -3225,7 +3225,7 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 	NSRect b = NSIntegralRect([self displayBounds]);
 	NSImage *im = [[[NSImage alloc]initWithSize:b.size]autorelease];
 	[im lockFocus];
-	[pageImage drawInRect:NSMakeRect(0,0,b.size.width,b.size.height) fromRect:b operation:NSCompositeSourceOver fraction:1.0];
+       [pageImage drawInRect:NSMakeRect(0,0,b.size.width,b.size.height) fromRect:b operation:NSCompositingOperationSourceOver fraction:1.0];
 	[im unlockFocus];
 	return im;
    }

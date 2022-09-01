@@ -752,16 +752,16 @@ NSString* stringForAlignment(int ali)
 	NSString *str;
 	switch(ali)
 	{
-		case NSLeftTextAlignment:
+        case NSTextAlignmentLeft:
 			str = @"left";
 			break;
-		case NSRightTextAlignment:
+        case NSTextAlignmentRight:
 			str = @"right";
 			break;
-		case NSCenterTextAlignment:
+        case NSTextAlignmentCenter:
 			str = @"center";
 			break;
-		case NSJustifiedTextAlignment:
+        case NSTextAlignmentJustified:
 			str = @"justify";
 			break;
 		default:
@@ -835,7 +835,7 @@ NSString* stringForAlignment(int ali)
 	GraphicView *graphicView = [[[GraphicView alloc]initWithFrame:NSMakeRect(0,0,sz.width,sz.height)]autorelease];
 	NSMutableDictionary *substitutions = [NSMutableDictionary dictionaryWithCapacity:5];
 	[im lockFocus];
-	CGContextSetInterpolationQuality((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort],kCGInterpolationHigh);
+    CGContextSetInterpolationQuality([[NSGraphicsContext currentContext] CGContext],kCGInterpolationHigh);
 	[graphicView drawPage:self rect:NSMakeRect(0,0,sz.width,sz.height) drawingToScreen:NO drawMarkers:NO drawingToPDF:nil substitutions:substitutions
                   options:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:@"overrideScale"]];
 	[im unlockFocus];
@@ -925,7 +925,7 @@ NSString* stringForAlignment(int ali)
     if (backgroundColour && ![backgroundColour isEqual:[NSColor whiteColor]])
     {
         CGFloat r,g,b,a;
-        [[backgroundColour colorUsingColorSpaceName:NSCalibratedRGBColorSpace device:nil]getRed:&r green:&g blue:&b alpha:&a];
+        [[backgroundColour colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
         r *= 255;
         g *= 255;
         b *= 255;
@@ -998,7 +998,7 @@ static int MasterLayerCount(ACSDPage *p)
     if (backgroundColour && ![backgroundColour isEqual:[NSColor whiteColor]])
     {
         CGFloat r,g,b,a;
-        [[backgroundColour colorUsingColorSpaceName:NSDeviceRGBColorSpace device:nil]getRed:&r green:&g blue:&b alpha:&a];
+        [[backgroundColour colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
         r *= 255;
         g *= 255;
         b *= 255;

@@ -1002,7 +1002,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 
 -(void)drawHighlightRect:(NSRect)r colour:(NSColor*)col hotPoint:(NSPoint)hotPoint modifiers:(NSUInteger)modifiers
    {
-	if ((modifiers & NSCommandKeyMask) == 0)
+       if ((modifiers & NSEventModifierFlagCommand) == 0)
 		{
 		NSRect b = [self bounds];
 		b = NSInsetRect(b,4,4);
