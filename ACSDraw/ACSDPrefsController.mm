@@ -340,7 +340,7 @@ NSColor *colourFromArray(NSArray* arr)
     [panel beginSheetModalForWindow:[self.openAfterExportCB window]
                   completionHandler:^(NSInteger result)
      {
-         if (result == NSFileHandlingPanelOKButton)
+         if (result == NSModalResponseOK)
          {
              for (NSURL *url in [panel URLs])
                  libs[row] = [url path];

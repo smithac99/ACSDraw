@@ -1338,7 +1338,7 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 NSData *data  = [self dataRepresentationWithSubstitutedClasses];
 			 [self setExportDirectory:[sp directoryURL]];
@@ -1480,7 +1480,7 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 [self setExportDirectory:[sp directoryURL]];
 			 SVGWriter *svgWriter = [[[SVGWriter alloc]initWithSize:documentSize document:self page:[[[self frontmostMainWindowController] graphicView]currentPageInd]]autorelease];
@@ -1504,7 +1504,7 @@ NSString* Creator()
     [sp setNameFieldStringValue:fName];
     [sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
      {
-        if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
         {
             [self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
             NSURL *url = [(NSSavePanel*)sp URL];
@@ -1805,7 +1805,7 @@ NSString* Creator()
 	[_exportImageController prepareSavePanel:sp];
 	[sp setTitle:@"Export Image"];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result) {
-		if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		{
 			int resolution = 72;
 			[_exportImageController updateSettingsFromControls:exportImageSettings];
@@ -1855,7 +1855,7 @@ NSString* Creator()
 	[sp setDirectoryURL:[self exportDirectory]];
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result) {
-		if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		{
 			int resolution = 72;
 			[_exportImageController updateSettingsFromControls:exportImageSettings];
@@ -1886,7 +1886,7 @@ NSString* Creator()
 	[panel beginSheetModalForWindow:[[self frontmostMainWindowController] window] 
 				  completionHandler:^(NSInteger result) 
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 for (NSURL *url in [panel URLs])
 				 [[self frontmostMainWindowController] importImage:[url path]];
@@ -2216,7 +2216,7 @@ NSString* Creator()
 
 - (IBAction)sizeToObjects:(id)sender
    {
-	if ([sender keyEquivalentModifierMask] & NSAlternateKeyMask)
+       if ([sender keyEquivalentModifierMask] & NSEventModifierFlagOption)
 		[self sizeToObjectsWithDialog];
 	else
 		[self sizeToObjectsHPad:0 vPad:0];

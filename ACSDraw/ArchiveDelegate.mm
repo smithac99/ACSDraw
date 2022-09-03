@@ -23,7 +23,7 @@ int findSame(id obj,NSArray *arr);
 +(ArchiveDelegate*)archiveDelegateWithType:(int)ty document:(ACSDrawDocument*)doc
 {
 	ArchiveDelegate *a = [[ArchiveDelegate alloc]initWithType:ty document:doc];
-	return [a autorelease];
+	return a;
 }
 
 -(id)initWithType:(int)ty document:(ACSDrawDocument*)doc
@@ -34,13 +34,6 @@ int findSame(id obj,NSArray *arr);
 		document = doc;
 	}
 	return self;
-}
-
--(void)dealloc
-{
-	[super dealloc];
-	if (newFills)
-		[newFills release];
 }
 
 -(int)archiveType
@@ -56,28 +49,28 @@ int findSame(id obj,NSArray *arr);
 -(NSMutableSet*)newFills
 {
 	if (!newFills)
-		newFills = [[NSMutableSet setWithCapacity:20]retain];
+		newFills = [NSMutableSet setWithCapacity:20];
 	return newFills;
 }
 
 -(NSMutableSet*)newStrokes
 {
 	if (!newStrokes)
-		newStrokes = [[NSMutableSet setWithCapacity:20]retain];
+		newStrokes = [NSMutableSet setWithCapacity:20];
 	return newStrokes;
 }
 
 -(NSMutableSet*)newShadows
 {
 	if (!newShadows)
-		newShadows = [[NSMutableSet setWithCapacity:20]retain];
+		newShadows = [NSMutableSet setWithCapacity:20];
 	return newShadows;
 }
 
 -(NSMutableSet*)newLineEndings
 {
 	if (!newLineEndings)
-		newLineEndings = [[NSMutableSet setWithCapacity:20]retain];
+		newLineEndings = [NSMutableSet setWithCapacity:20];
 	return newLineEndings;
 }
 

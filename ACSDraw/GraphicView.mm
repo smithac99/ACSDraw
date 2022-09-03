@@ -1873,8 +1873,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	float sc;
 	NSMutableDictionary *substitutions = [NSMutableDictionary dictionaryWithCapacity:5];
 	BOOL drawingToScreen = [NSGraphicsContext currentContextDrawingToScreen];
-	CGContextSetFillColorSpace((CGContextRef)[[NSGraphicsContext currentContext]graphicsPort],getRGBColorSpace());
-	CGContextSetStrokeColorSpace((CGContextRef)[[NSGraphicsContext currentContext]graphicsPort],getRGBColorSpace());
+    CGContextSetFillColorSpace([[NSGraphicsContext currentContext]CGContext],getRGBColorSpace());
+    CGContextSetStrokeColorSpace([[NSGraphicsContext currentContext]CGContext],getRGBColorSpace());
 	ACSDPage *page;
 	if (drawingToScreen)
 	{
@@ -1988,8 +1988,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 			can = YES;
 			break;
 		}
-        theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask | NSFlagsChangedMask | NSKeyDownMask | NSPeriodicMask)];
-		if ([theEvent type] == NSKeyDown)
+        theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp | NSEventMaskFlagsChanged | NSEventMaskKeyDown | NSEventMaskPeriodic)];
+        if ([theEvent type] == NSEventTypeKeyDown)
 		{
 			[self keyDown:theEvent];
 			continue;
@@ -2262,7 +2262,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		BOOL hasLastPoint = [((ACSDPath*)creatingPath) lastPoint:&lastPt];
 		[creatingPath invalidateInView];
 		[creatingPath setActualAddingPoint:coord];
-		if ([theEvent modifierFlags] & NSShiftKeyMask)
+           if ([theEvent modifierFlags] & NSEventModifierFlagShift)
 		   {
 			if (hasLastPoint)
 				restrictTo45(lastPt,&coord);
@@ -2325,7 +2325,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 			point = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
 		}
 		else
-			if ([theEvent type] != NSFlagsChanged)
+            if ([theEvent type] != NSEventTypeFlagsChanged)
 				point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		point.y = [self adjustHSmartGuide:point.y tool:1];
 		point.x = [self adjustVSmartGuide:point.x tool:1];
@@ -2342,7 +2342,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		[g otherTrackKnobNotifiesView:self];
 		periodicStarted = [self scrollIfNecessaryPoint:point periodicStarted:periodicStarted];
 		[NSApp updateWindows];
-        if ([theEvent type] == NSLeftMouseUp)
+        if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
 	}
 	if (periodicStarted)
@@ -3017,9 +3017,9 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		KnobDescriptor kd = [graphic knobUnderPoint:curPoint view:self];
 		if (kd.knob == NoKnob)
 		{
-			if (([theEvent modifierFlags] & NSCommandKeyMask)!=0)
+            if (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0)
 				[((ACSDPath*)graphic) removePathElementWithEvent:theEvent inView:self];
-			else if ([((ACSDPath*)graphic) splitPathWithEvent:theEvent copy:(([theEvent modifierFlags] & NSAlternateKeyMask)!=0) inView:self])
+            else if ([((ACSDPath*)graphic) splitPathWithEvent:theEvent copy:(([theEvent modifierFlags] & NSEventModifierFlagOption)!=0) inView:self])
 				[[self undoManager] setActionName:@"Add Point"];
 		}
 		else
@@ -3028,7 +3028,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 			ACSDPath *path = (ACSDPath*)graphic;
 			ACSDSubPath *copysp = [[[[path subPaths] objectAtIndex:kd.subPath]copy]autorelease];
 			[[[self undoManager] prepareWithInvocationTarget:path] uReplaceSubPathsInRange:NSMakeRange(kd.subPath,1)withSubPaths:[NSArray arrayWithObject:copysp]];
-			[((ACSDPath*)graphic) trackSplitKnob:kd withEvent:theEvent copy:(([theEvent modifierFlags] & NSAlternateKeyMask)!=0) inView:self];
+            [((ACSDPath*)graphic) trackSplitKnob:kd withEvent:theEvent copy:(([theEvent modifierFlags] & NSEventModifierFlagOption)!=0) inView:self];
 			[graphic stopBoundsManipulation];
 			[[self window] invalidateCursorRectsForView:self];
 			[[self undoManager] setActionName:@"Split Point"];
@@ -3038,8 +3038,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	else 
 		while (1)
 		{
-			theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
-			if ([theEvent type] == NSLeftMouseUp)
+            theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
+            if ([theEvent type] == NSEventTypeLeftMouseUp)
 				break;
 		}
 }
@@ -3135,7 +3135,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 - (void)pathSelectAndTrackMouseWithEvent:(NSEvent *)theEvent
    {
 	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];;
-    BOOL extending = (([theEvent modifierFlags] & NSShiftKeyMask) ? YES : NO);
+       BOOL extending = (([theEvent modifierFlags] & NSEventModifierFlagShift) ? YES : NO);
     ACSDGraphic *graphic = [self graphicUnderPoint:curPoint extending:extending];
 	KnobDescriptor knobDescriptor = [graphic knobUnderPoint:curPoint view:self];
 	if (knobDescriptor.knob != NoKnob)
@@ -3353,7 +3353,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 				if (knobDescriptor.knob == previousTextKnob)
 				{
 					if ([(ACSDText*)graphic previousText])
-						if (([theEvent modifierFlags] & NSCommandKeyMask))
+                        if (([theEvent modifierFlags] & NSEventModifierFlagCommand))
 							[self unlinkText:(ACSDText*)graphic];
 						else
 							[self goToGraphic:[(ACSDText*)graphic previousText]];
@@ -3402,8 +3402,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     // If we got here then there must be nothing else to do.  Just track until mouseUp:.
     while (1)
 	{
-        theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
-        if ([theEvent type] == NSLeftMouseUp)
+        theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
+        if ([theEvent type] == NSEventTypeLeftMouseUp)
             break;
 	}
     [[self window] invalidateCursorRectsForView:self];
@@ -3469,7 +3469,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 				   }
 			lastAngle = angle;
 		}
-		if ([theEvent type] == NSLeftMouseUp)
+           if ([theEvent type] == NSEventTypeLeftMouseUp)
 			break;
 	   }
 	if (drawGrid)
@@ -3502,8 +3502,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
         return;
      while (1)
         {
-         theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask | NSFlagsChangedMask)];
-         if ([theEvent type] == NSFlagsChanged)
+            theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp | NSEventMaskFlagsChanged)];
+            if ([theEvent type] == NSEventTypeFlagsChanged)
          {
          }
          else
@@ -3561,7 +3561,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 			rubberbandRect = NSInsetRect(rubberbandRect,-1,-1);
 			[self setNeedsDisplayInRect:rubberbandRect];
 		   }
-		if ([theEvent type] == NSLeftMouseUp)
+           if ([theEvent type] == NSEventTypeLeftMouseUp)
 			break;
 	   }	
 	NSRect r = rubberbandRect;
@@ -3583,7 +3583,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	{
 		while (1)
 		{
-			theEvent = [[self window] nextEventMatchingMask:(NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
+            theEvent = [[self window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
 			dragPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
             NSRect newRubberbandRect = rectFromPoints(anchorPoint, dragPoint);
             if (!NSEqualRects(rubberbandRect, newRubberbandRect))
@@ -3592,13 +3592,13 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
                 rubberbandRect = newRubberbandRect;
                 [self setNeedsDisplayInRect:rubberbandRect];
 			}
-			if ([theEvent type] == NSLeftMouseUp)
+            if ([theEvent type] == NSEventTypeLeftMouseUp)
 				break;
 		}	
 		NSRect dragRect = rectFromPoints(anchorPoint,dragPoint);
 		if ((dragRect.size.width < 1.0) || (dragRect.size.height < 1.0))
 		{
-			if (([theEvent modifierFlags] & NSShiftKeyMask)!=0)
+            if (([theEvent modifierFlags] & NSEventModifierFlagShift)!=0)
 				magnification = magnification / 2.0;
 			else
 				magnification = magnification * 2.0;
@@ -3793,7 +3793,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	int anchorID = -1;
     NSEnumerator *fEnum = [fromObjects objectEnumerator];
 	NSRange charRange = {0,0};
-	if ([toObject isKindOfClass:[ACSDText class]] && ((modifiers & NSCommandKeyMask)==0))
+       if ([toObject isKindOfClass:[ACSDText class]] && ((modifiers & NSEventModifierFlagCommand)==0))
 	   {
 		charRange = [toObject characterRangeUnderPoint:[self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil]];
 		anchorID = [toObject assignAnchorForRange:charRange];
@@ -4379,7 +4379,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	}
 	if (cursorMode == GV_ROTATION_AWAITING_CLICK)
 	{
-		if ((modifierFlags & NSCommandKeyMask)!=0)
+        if ((modifierFlags & NSEventModifierFlagCommand)!=0)
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor arrowCursor]];
 		else
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor rotateCrossCursor]];
@@ -4387,7 +4387,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	}
 	if (cursorMode == GV_ROTATION_AWAITING_ROTATE)
 	{
-		if ((modifierFlags & NSCommandKeyMask)!=0)
+        if ((modifierFlags & NSEventModifierFlagCommand)!=0)
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor arrowCursor]];
 		else
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor rotateCursor]];
@@ -4398,9 +4398,9 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		[self addCursorRect:[self visibleRect] cursor:[NSCursor pointingHandCursor]];
 		return;
 	}
-	if (((modifierFlags & NSAlternateKeyMask)!=0) && spaceDown)
+    if (((modifierFlags & NSEventModifierFlagOption)!=0) && spaceDown)
 	{
-		if ((modifierFlags & NSShiftKeyMask)!=0)
+        if ((modifierFlags & NSEventModifierFlagShift)!=0)
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor magMinusCursor]];
 		else
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor magPlusCursor]];
@@ -4409,7 +4409,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     int selectedTool = [[ToolWindowController sharedToolWindowController:nil] currentTool];
     if (selectedTool == ACSD_WHITE_ARROW_TOOL)
 	{
-		if ((modifierFlags & NSAlternateKeyMask)==0)
+        if ((modifierFlags & NSEventModifierFlagOption)==0)
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor whiteArrowCursor]];
 		else
 			[self addCursorRect:[self visibleRect] cursor:[NSCursor whiteArrowPlusCursor]];
@@ -6348,7 +6348,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 			startInd = 1;
 	   }
 	ACSDGraphic *modelObject = [[graphics objectAtIndex:0]retain];
-	if (!([sender keyEquivalentModifierMask] & NSAlternateKeyMask))
+       if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
 	[modelObject release];

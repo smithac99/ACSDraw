@@ -53,13 +53,13 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
 	}
 	[[[layerTableView tableColumns]objectAtIndex:3] setDataCell:[[SelCell alloc]init]];
 	NSButtonCell *bc = [[NSButtonCell alloc]init];
-	[bc setButtonType:NSToggleButton];
+    [bc setButtonType:NSButtonTypeToggle];
 	[bc setImage:[NSImage imageNamed:@"eye2"]];
 	[bc setAlternateImage:[NSImage imageNamed:@"eye"]];
 	[bc setBordered:NO];
 	[[[layerTableView tableColumns]objectAtIndex:0] setDataCell:bc];
 	bc = [[NSButtonCell alloc]init];
-	[bc setButtonType:NSToggleButton];
+    [bc setButtonType:NSButtonTypeToggle];
 	[bc setImage:[NSImage imageNamed:@"lock2"]];
 	[bc setAlternateImage:[NSImage imageNamed:@"lock"]];
 	[bc setBordered:NO];

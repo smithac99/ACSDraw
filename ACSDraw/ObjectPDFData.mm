@@ -13,38 +13,30 @@
 @implementation ObjectPDFData
 
 - (id)initWithObject:(ACSDGraphic*)object
-   {
+{
     self = [super init];
-	ObjectView *objectView = [[ObjectView alloc]initWithObject:object];
-	FlippableView *tempV = [object setCurrentDrawingDestination:objectView]; 
-	pdfData = [[objectView dataWithPDFInsideRect:[objectView bounds]]retain];
-	[object setCurrentDrawingDestination:tempV];
-	offset = [objectView offset];
-	bounds = [objectView bounds];
-	[objectView release];
+    ObjectView *objectView = [[ObjectView alloc]initWithObject:object];
+    FlippableView *tempV = [object setCurrentDrawingDestination:objectView];
+    pdfData = [objectView dataWithPDFInsideRect:[objectView bounds]];
+    [object setCurrentDrawingDestination:tempV];
+    offset = [objectView offset];
+    bounds = [objectView bounds];
     return self;
-   }
-
--(void)dealloc
-   {
-	if (pdfData)
-		[pdfData release];
-	[super dealloc];
-   }
+}
 
 - (NSPoint)offset
-   {
-	return offset;
-   }
+{
+    return offset;
+}
 
 - (NSData*)pdfData
-   {
-	return pdfData;
-   }
+{
+    return pdfData;
+}
 
 - (NSRect)bounds
-   { 
-	return bounds;
-   }
+{
+    return bounds;
+}
 
 @end

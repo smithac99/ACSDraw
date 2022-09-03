@@ -1850,7 +1850,7 @@ float normalisedAngle(float ang)
 	FlippableView *temp = [self setCurrentDrawingDestination:(GraphicView*)[graphicCache image]];
 	if (transform)
 		[transform concat];
-	CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+       CGContextRef currentContext = [[NSGraphicsContext currentContext] CGContext];
 	if (alpha < 1.0)
 		CGContextSetAlpha(currentContext,alpha);
 	CGContextBeginTransparencyLayer (currentContext, NULL);

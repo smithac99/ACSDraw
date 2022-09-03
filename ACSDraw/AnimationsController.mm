@@ -51,12 +51,7 @@ void DoBlockOnMain(void (^block)())
 
 - (void)dealloc
 {
-    self.animationList = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-    [speechSynthesizer release];
-    [speechLock release];
-    self.tempDirectory = nil;
-    [super dealloc];
 }
 
 - (void)zeroControls
@@ -286,7 +281,7 @@ static NSArray *decomposed(NSString *command)
     if (self.currentPage == nil)
         return;
     self.pageBounds = [[self inspectingGraphicView] bounds];
-    AnimationEntry *ae = [[[AnimationEntry alloc]init]autorelease];
+    AnimationEntry *ae = [[AnimationEntry alloc]init];
     ae.name = @"snapshot";
     ae.text = [self snapshotString];
     ae.flags = AE_IS_SNAPSHOT;
@@ -402,7 +397,7 @@ static NSArray *decomposed(NSString *command)
     NSInteger rowIndex = [self significantRow];
     if (rowIndex < 0)
         return;
-    AnimationEntry *ae = [[[AnimationEntry alloc]init]autorelease];
+    AnimationEntry *ae = [[AnimationEntry alloc]init];
     ae.name =nm;
     ae.text = text;
 	[self addAnimation:ae atIndex:rowIndex+1];
@@ -413,7 +408,7 @@ static NSArray *decomposed(NSString *command)
     NSInteger rowIndex = [self significantRow];
     if (rowIndex < 0)
         return;
-    AnimationEntry *ae = [[_animationList[rowIndex]copy]autorelease];
+    AnimationEntry *ae = [_animationList[rowIndex]copy];
 	[self addAnimation:ae atIndex:rowIndex+1];
 }
 
@@ -456,7 +451,7 @@ static NSArray *decomposed(NSString *command)
             if ([opDict[[g name]]floatValue]!= [g alpha])
                 [mstr appendFormat:@"opacity(%@,%@)\n",[g name],opDict[[g name]]];
     }
-    AnimationEntry *ae = [[[AnimationEntry alloc]init]autorelease];
+    AnimationEntry *ae = [[AnimationEntry alloc]init];
     ae.name = @"opacity";
     ae.text = mstr;
 	[self addAnimation:ae];
@@ -471,7 +466,7 @@ static NSArray *decomposed(NSString *command)
 {
 	if (_animationList == nil)
         return;
-    AnimationEntry *ae = [[[AnimationEntry alloc]init]autorelease];
+    AnimationEntry *ae = [[AnimationEntry alloc]init];
     ae.name = @"move";
     ae.text = [self moveStringForGraphics:graphics time:1.0];
 	[self addAnimation:ae];
@@ -540,10 +535,9 @@ static NSArray *decomposed(NSString *command)
 	else
 	{
 		//[[[self undoManager] prepareWithInvocationTarget:self] moveLayerFromIndex:toInd toIndex:fromInd+1];
-		id obj = [_animationList[fromInd]retain];
+		id obj = _animationList[fromInd];
 		[_animationList removeObjectAtIndex:fromInd];
 		[_animationList insertObject:obj atIndex:toInd];
-		[obj release];
         return toInd;
 	}
 	//[[self undoManager] setActionName:@"Move Layer"];
@@ -582,7 +576,7 @@ static NSArray *decomposed(NSString *command)
 
 -(void)waitForSecs:(NSTimeInterval)secs
 {
-	NSConditionLock *lock = [[[NSConditionLock alloc]initWithCondition:PROCESS_NOT_DONE]autorelease];
+	NSConditionLock *lock = [[NSConditionLock alloc]initWithCondition:PROCESS_NOT_DONE];
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, secs * NSEC_PER_SEC);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 		[lock lock];
@@ -623,7 +617,7 @@ static NSArray *decomposed(NSString *command)
 	{
 		return;
 	}
-	NSMutableArray *originalSubPaths = [[[g subPaths]retain]autorelease];
+	NSMutableArray *originalSubPaths = [g subPaths];
 	NSArray *gSubPaths = [gSubPath gSubPathsFromACSDSubPaths:originalSubPaths];
     NSTimeInterval starttime = [NSDate timeIntervalSinceReferenceDate];
     float duration = secs;
@@ -902,12 +896,12 @@ static NSArray *decomposed(NSString *command)
 
 -(NSSpeechSynthesizer*)speechSynthesizer
 {
-    if (speechSynthesizer == nil)
+    if (_speechSynthesizer == nil)
 	{
-        speechSynthesizer = [[NSSpeechSynthesizer alloc]initWithVoice:nil];
-		speechSynthesizer.delegate = self;
+        _speechSynthesizer = [[NSSpeechSynthesizer alloc]initWithVoice:nil];
+		_speechSynthesizer.delegate = self;
 	}
-    return speechSynthesizer;
+    return _speechSynthesizer;
 }
 
 #define SPEECH_NOT_FINISHED 1
@@ -915,10 +909,9 @@ static NSArray *decomposed(NSString *command)
 
 -(id)say:(NSString*)paramstring
 {
-    [speechLock lock];
-    [speechLock unlock];
-    [speechLock release];
-    speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
+    [self.speechLock lock];
+    [self.speechLock unlock];
+    self.speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
     DoBlockOnMain(^{
 		[[self speechSynthesizer]startSpeakingString:paramstring];
 	});
@@ -927,8 +920,8 @@ static NSArray *decomposed(NSString *command)
 
 -(id)waitspeech:(NSString*)paramstring
 {
-    [speechLock lockWhenCondition:SPEECH_FINISHED];
-    [speechLock unlock];
+    [self.speechLock lockWhenCondition:SPEECH_FINISHED];
+    [self.speechLock unlock];
     return @YES;
 }
 
@@ -937,29 +930,27 @@ static NSArray *decomposed(NSString *command)
 
 - (void)speechSynthesizer:(NSSpeechSynthesizer *)sender didFinishSpeaking:(BOOL)success
 {
-    [speechLock lockWhenCondition:SPEECH_NOT_FINISHED];
-    [speechLock unlockWithCondition:SPEECH_FINISHED];
+    [self.speechLock lockWhenCondition:SPEECH_NOT_FINISHED];
+    [self.speechLock unlockWithCondition:SPEECH_FINISHED];
 }
 
 -(NSURL*)writeSpeech:(NSString*)speech toFileName:(NSString*)filename
 {
-    [speechLock lock];
-    [speechLock unlock];
-    [speechLock release];
-    speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
+    [self.speechLock lock];
+    [self.speechLock unlock];
+    self.speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
     NSURL *url = [NSURL fileURLWithPath:filename];
     dispatch_async(dispatch_get_main_queue(), ^{
         BOOL success = [[self speechSynthesizer] startSpeakingString:speech toURL:url];
         if (success == NO)
         {
             NSLog(@"write speech %d url:%@",success,url);
-            [self speechSynthesizer:speechSynthesizer didFinishSpeaking:NO];
+            [self speechSynthesizer:self.speechSynthesizer didFinishSpeaking:NO];
         }
     });
-    [speechLock lockWhenCondition:SPEECH_FINISHED];
-    [speechLock unlock];
-    [speechLock release];
-    speechLock = nil;
+    [self.speechLock lockWhenCondition:SPEECH_FINISHED];
+    [self.speechLock unlock];
+    self.speechLock = nil;
     return url;
 }
 
@@ -1054,7 +1045,7 @@ static BOOL VisualCommand(NSString* str)
             }
             else if ([decomp[0]isEqualToString:@"move"])
             {
-                NSMutableDictionary *moveDict = [[[self moveParams:decomp[1]]mutableCopy]autorelease];
+                NSMutableDictionary *moveDict = [[self moveParams:decomp[1]]mutableCopy];
                 NSRect r;
                 if (moveDict[@"rname"] == nil)
                     r = self.pageBounds;
@@ -1082,8 +1073,8 @@ static BOOL VisualCommand(NSString* str)
     }
     [writerInput markAsFinished];
     [videoWriter finishWritingWithCompletionHandler:^{
-        [speechLock lockWhenCondition:SPEECH_NOT_FINISHED];
-        [speechLock unlockWithCondition:SPEECH_FINISHED];
+        [self.speechLock lockWhenCondition:SPEECH_NOT_FINISHED];
+        [self.speechLock unlockWithCondition:SPEECH_FINISHED];
     }];
     return url;
 }
@@ -1149,7 +1140,7 @@ static BOOL VisualCommand(NSString* str)
 {
     AVMutableComposition *mutableComposition = [AVMutableComposition composition];
     AVMutableCompositionTrack *videoCompositionTrack = [mutableComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVURLAsset *videoAsset = [[[AVURLAsset alloc] initWithURL:videoURL options:@{ AVURLAssetPreferPreciseDurationAndTimingKey : @YES }]autorelease];
+    AVURLAsset *videoAsset = [[AVURLAsset alloc] initWithURL:videoURL options:@{ AVURLAssetPreferPreciseDurationAndTimingKey : @YES }];
     AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
     [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero,videoAssetTrack.timeRange.duration) ofTrack:videoAssetTrack atTime:kCMTimeZero error:nil];
     AVMutableCompositionTrack *audioCompositionTrack = [mutableComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
@@ -1160,7 +1151,7 @@ static BOOL VisualCommand(NSString* str)
         {
             NSTimeInterval starttime = [ae.settings[@"starttime"]floatValue];
             //NSTimeInterval dur = [ae.settings[@"duration"]floatValue];
-            AVURLAsset *audioAsset = [[[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:filename] options:@{ AVURLAssetPreferPreciseDurationAndTimingKey : @YES }]autorelease];
+            AVURLAsset *audioAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:filename] options:@{ AVURLAssetPreferPreciseDurationAndTimingKey : @YES }];
             [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero,videoAssetTrack.timeRange.duration) ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0] atTime:CMTimeMake(starttime * 1000, 1000) error:nil];
         }
     }
@@ -1170,8 +1161,8 @@ static BOOL VisualCommand(NSString* str)
     exporter.shouldOptimizeForNetworkUse = YES;
     //exporter.videoComposition = mutableComposition;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
-        [speechLock lockWhenCondition:SPEECH_NOT_FINISHED];
-        [speechLock unlockWithCondition:SPEECH_FINISHED];
+        [self.speechLock lockWhenCondition:SPEECH_NOT_FINISHED];
+        [self.speechLock unlockWithCondition:SPEECH_FINISHED];
     }];
 }
 
@@ -1190,29 +1181,25 @@ static BOOL VisualCommand(NSString* str)
     [[NSFileManager defaultManager]createDirectoryAtPath:audDir withIntermediateDirectories:NO attributes:nil error:&err];
     if (err)
         NSLog(@"%@",[err localizedDescription]);
-    [speechLock lock];
-    [speechLock unlock];
-    [speechLock release];
-    //speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
+    [self.speechLock lock];
+    [self.speechLock unlock];
+    //self.speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self writeAudioToTempDirectory:audDir];
         [self determineStartTimes];
-        [speechLock lock];
-        [speechLock unlock];
-        [speechLock release];
-        speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
+        [self.speechLock lock];
+        [self.speechLock unlock];
+        self.speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self writeImagesToVideoURL];
         });
-        [speechLock lockWhenCondition:SPEECH_FINISHED];
-        [speechLock unlock];
-        [speechLock release];
-        speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
+        [self.speechLock lockWhenCondition:SPEECH_FINISHED];
+        [self.speechLock unlock];
+        self.speechLock = [[NSConditionLock alloc]initWithCondition:SPEECH_NOT_FINISHED];
         [self writeMovieToURL:url videoURL:[NSURL fileURLWithPath:[[self.tempDirectory stringByAppendingPathComponent:@"tempvid"]stringByAppendingPathExtension:@"mov"]]];
-        [speechLock lockWhenCondition:SPEECH_FINISHED];
-        [speechLock unlock];
-        [speechLock release];
-        speechLock = nil;
+        [self.speechLock lockWhenCondition:SPEECH_FINISHED];
+        [self.speechLock unlock];
+        self.speechLock = nil;
         self.status = AC_STATUS_IDLE;
 	});
 }

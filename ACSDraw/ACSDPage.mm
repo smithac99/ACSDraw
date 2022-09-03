@@ -39,9 +39,9 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 	if ((self = [super init]))
 	{
 		nextLayer = 1;
-		layers = [[NSMutableArray arrayWithCapacity:10]retain];
-		[layers addObject:[[[ACSDLayer alloc]initWithName:@"Guide Layer" isGuideLayer:YES]autorelease]];
-		[layers addObject:[[[ACSDLayer alloc]initWithName:[self nextLayerName] isGuideLayer:NO]autorelease]];
+		layers = [NSMutableArray arrayWithCapacity:10];
+		[layers addObject:[[ACSDLayer alloc]initWithName:@"Guide Layer" isGuideLayer:YES]];
+		[layers addObject:[[ACSDLayer alloc]initWithName:[self nextLayerName] isGuideLayer:NO]];
 		graphicViews = [[NSMutableSet alloc]initWithCapacity:2];
 		currentLayerInd = 1;
 		guideLayerInd = 0;
@@ -150,7 +150,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
                 svgPath = [[NSBundle mainBundle]pathForResource:@"noimagecross" ofType:@"svg"];
             
             NSData *d = [NSData dataWithContentsOfFile:svgPath];
-            ACSDrawDocument *adoc = [[[ACSDrawDocument alloc]init]autorelease];
+            ACSDrawDocument *adoc = [[ACSDrawDocument alloc]init];
             [adoc setFileURL:[NSURL fileURLWithPath:svgPath]];
             [adoc readFromData:d ofType:@"svg" error:nil];
             NSRect b = NSZeroRect;
@@ -175,7 +175,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
             NSImage *im = ImageFromFile(imPath);
             if (!im)
-                im = [[[NSImage alloc]initWithContentsOfFile:imPath]autorelease];
+                im = [[NSImage alloc]initWithContentsOfFile:imPath];
 
             NSSize iSize = [im size];
             NSRect r = NSZeroRect;
@@ -310,7 +310,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
     p.document = document;
 	NSMutableArray *newLayers = [NSMutableArray arrayWithCapacity:[layers count]];
 	for (ACSDLayer *l in layers)
-		[newLayers addObject:[[l copy]autorelease]];
+		[newLayers addObject:[l copy]];
 	[p setLayers:newLayers];
 	[p setLayerPages];
     [p registerWithDocument:document];
@@ -352,18 +352,6 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 		currentLayerInd = 0;
 }
 
-- (void) dealloc
-{
-	[name release];
-	[pageTitle release];
-	[layers release];
-	[graphicViews release];
-	[backgroundColour release];
-	self.previouslyVisibleLayers = nil;
-	self.animations = nil;
-	[super dealloc];
-}
-
 - (void) encodeWithCoder:(NSCoder*)coder
 {
 	[super encodeWithCoder:coder];
@@ -395,11 +383,11 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 {
 	self = [super initWithCoder:coder];
 	graphicViews = [[NSMutableSet alloc]initWithCapacity:2];
-	layers = [[coder decodeObjectForKey:@"ACSDPage_layers"]retain];
-	backgroundColour = [[coder decodeObjectForKey:@"ACSDPage_backgroundColour"]retain];
+	layers = [coder decodeObjectForKey:@"ACSDPage_layers"];
+	backgroundColour = [coder decodeObjectForKey:@"ACSDPage_backgroundColour"];
 	nextLayer = [coder decodeIntegerForKey:@"ACSDGraphic_nextLayer"];
-	name = [[coder decodeObjectForKey:@"ACSDPage_name"]retain];
-	pageTitle = [[coder decodeObjectForKey:@"ACSDPage_pageTitle"]retain];
+	name = [coder decodeObjectForKey:@"ACSDPage_name"];
+	pageTitle = [coder decodeObjectForKey:@"ACSDPage_pageTitle"];
 	pageType = [coder decodeIntForKey:@"ACSDGraphic_pageType"];
 	masterType = [coder decodeIntForKey:@"ACSDGraphic_masterType"];
 	useMasterType = [coder decodeIntForKey:@"ACSDGraphic_useMasterType"];
@@ -442,8 +430,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 {
 	if (arr != layers)
 	{
-		[layers release];
-		layers  = [arr retain];
+		layers  = arr;
 	}
 }
 
@@ -519,11 +506,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 {
 	if (backgroundColour == n)
 		return;
-	if (backgroundColour)
-		[backgroundColour release];
 	backgroundColour = n;
-	if (backgroundColour)
-		[backgroundColour retain];
 }
 
 -(BOOL)uSetBackgroundColour:(NSColor*)c
@@ -831,8 +814,8 @@ NSString* stringForAlignment(int ali)
 	if (masters)
 		[masters makeObjectsPerformSelector:@selector(processHtmlObjectsOptions:)withObject:options];
 	NSSize sz = [document documentSize];
-	NSImage *im = [[[NSImage alloc]initWithSize:sz]autorelease];
-	GraphicView *graphicView = [[[GraphicView alloc]initWithFrame:NSMakeRect(0,0,sz.width,sz.height)]autorelease];
+	NSImage *im = [[NSImage alloc]initWithSize:sz];
+	GraphicView *graphicView = [[GraphicView alloc]initWithFrame:NSMakeRect(0,0,sz.width,sz.height)];
 	NSMutableDictionary *substitutions = [NSMutableDictionary dictionaryWithCapacity:5];
 	[im lockFocus];
     CGContextSetInterpolationQuality([[NSGraphicsContext currentContext] CGContext],kCGInterpolationHigh);

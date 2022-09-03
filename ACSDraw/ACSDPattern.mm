@@ -512,7 +512,7 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 	destRect.size.height = scaledPatternHeight;
 	if (self.alpha < 1.0)
 	{
-		CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+        CGContextRef currentContext = [[NSGraphicsContext currentContext] CGContext];
 		CGContextSetAlpha(currentContext,self.alpha);
 	}
     float ox = pathBounds.origin.x + _patternOrigin.x * pathBounds.size.width;

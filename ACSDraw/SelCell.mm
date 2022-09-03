@@ -32,7 +32,7 @@
 		NSRect r;
 		r.origin = NSMakePoint(0.0,0.0);
 		r.size = sz;
-		[im drawAtPoint:NSMakePoint(cellFrame.origin.x + xdiff,cellFrame.origin.y + ydiff) fromRect:r operation:NSCompositeSourceOver fraction:1.0];
+           [im drawAtPoint:NSMakePoint(cellFrame.origin.x + xdiff,cellFrame.origin.y + ydiff) fromRect:r operation:NSCompositingOperationSourceOver fraction:1.0];
 		[NSGraphicsContext restoreGraphicsState];
 	   }
    }

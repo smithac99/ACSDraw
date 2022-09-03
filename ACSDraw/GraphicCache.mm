@@ -17,146 +17,137 @@ NSInteger blockedSize(float inputSize,int blockSize);
 
 - (id)initWithWidth:(float)w height:(float)h
 {
-	if ((self = [super init]))
-	{
-		magnification = 1.0;
-		valid = NO;
-		requestedWidth = w;
-		requestedHeight = h;
-		allocatedWidth = allocatedHeight = 0.0;
-		[self resizeToWidth:w height:h];
-	}
-	return self;
-}
-
--(void)dealloc
-{
-	[image release];
-	[bitmap release];
-	[timeLastResized release];
-	[super dealloc];
+    if ((self = [super init]))
+    {
+        magnification = 1.0;
+        valid = NO;
+        requestedWidth = w;
+        requestedHeight = h;
+        allocatedWidth = allocatedHeight = 0.0;
+        [self resizeToWidth:w height:h];
+    }
+    return self;
 }
 
 -(NSImage*)image
-   {
-	return image;
-   }
+{
+    return image;
+}
 
 NSInteger blockedSize(float inputSize,int blockSize)
-   {
-	int iw = (int)ceil(inputSize);
-	iw = ((iw + (blockSize - 1)) / blockSize) * blockSize;
-	if (iw == 0)
-		iw = blockSize;
-	return iw;
-   }
+{
+    int iw = (int)ceil(inputSize);
+    iw = ((iw + (blockSize - 1)) / blockSize) * blockSize;
+    if (iw == 0)
+        iw = blockSize;
+    return iw;
+}
 
 -(void)allocImageWidth:(float)aw height:(float)ah
 {
-	aw = blockedSize(aw,256);
-	ah = blockedSize(ah,64);
-	//BOOL flipped = NO;
-	if (image)
-		if (aw == allocatedWidth && ah == allocatedHeight)
-			return;
-		else
-		{
-			//flipped = [image isFlipped];
-			[image release];
-			self.bitmap = nil;
-		}
-	[self setValid:NO];
-	allocatedWidth = aw;
-	allocatedHeight = ah;
-	self.bitmap = newBitmap(aw, ah);
-	image = [[NSImage alloc]initWithSize:NSMakeSize(allocatedWidth,allocatedHeight)];
-	[image addRepresentation:bitmap];
-	//[image setFlipped:flipped];
+    aw = blockedSize(aw,256);
+    ah = blockedSize(ah,64);
+    //BOOL flipped = NO;
+    if (image)
+        if (aw == allocatedWidth && ah == allocatedHeight)
+            return;
+        else
+        {
+            //flipped = [image isFlipped];
+            self.bitmap = nil;
+        }
+    [self setValid:NO];
+    allocatedWidth = aw;
+    allocatedHeight = ah;
+    self.bitmap = newBitmap(aw, ah);
+    image = [[NSImage alloc]initWithSize:NSMakeSize(allocatedWidth,allocatedHeight)];
+    [image addRepresentation:bitmap];
+    //[image setFlipped:flipped];
 }
-   
+
 -(void)resizeRegardlessToWidth:(float)w height:(float)h
-   {
-	requestedWidth = w;
-	requestedHeight = h;
-	[self allocImageWidth:[self magnifiedImageWidth] height:[self magnifiedImageHeight]];
-   }
-   
+{
+    requestedWidth = w;
+    requestedHeight = h;
+    [self allocImageWidth:[self magnifiedImageWidth] height:[self magnifiedImageHeight]];
+}
+
 -(void)resizeToWidth:(float)w height:(float)h
-   {
-	if (w == requestedWidth && h == requestedHeight && image != nil)
-		return;
-	[self resizeRegardlessToWidth:w height:h];
-   }
-   
+{
+    if (w == requestedWidth && h == requestedHeight && image != nil)
+        return;
+    [self resizeRegardlessToWidth:w height:h];
+}
+
 -(float)imageWidth
-   {
-	return requestedWidth;
-   }
-   
+{
+    return requestedWidth;
+}
+
 -(float)imageHeight
-   {
-	return requestedHeight;
-   }
-   
+{
+    return requestedHeight;
+}
+
 -(float)magnifiedImageWidth
-   {
-	return [self imageWidth] * magnification;
-   }
-   
+{
+    return [self imageWidth] * magnification;
+}
+
 -(float)magnifiedImageHeight
-   {
-	return [self imageHeight] * magnification;
-   }
+{
+    return [self imageHeight] * magnification;
+}
 
 -(BOOL)valid
-   {
-	return valid;
-   }
-   
+{
+    return valid;
+}
+
 -(void)setValid:(BOOL)v
-   {
-	valid = v;
-   }
+{
+    valid = v;
+}
 
 -(NSRect)imageBounds
-   {
-	return NSMakeRect(0.0,0.0,[self imageWidth],[self imageHeight]);
-   }
+{
+    return NSMakeRect(0.0,0.0,[self imageWidth],[self imageHeight]);
+}
 
 -(NSRect)magnifiedImageBounds
-   {
-	return NSMakeRect(0.0,0.0,[self magnifiedImageWidth],[self magnifiedImageHeight]);
-   }
+{
+    return NSMakeRect(0.0,0.0,[self magnifiedImageWidth],[self magnifiedImageHeight]);
+}
 
 -(NSRect)allocatedBounds
-   {
-	return NSMakeRect(0.0,0.0,allocatedWidth,allocatedHeight);
-   }
+{
+    return NSMakeRect(0.0,0.0,allocatedWidth,allocatedHeight);
+}
 
 -(NSRect)requestedBounds
-   {
-	return NSMakeRect(0.0,0.0,requestedWidth,requestedHeight);
-   }
+{
+    return NSMakeRect(0.0,0.0,requestedWidth,requestedHeight);
+}
 
 - (double)magnification
-   {
+{
     return magnification;
-   }
+}
 
 - (void)setMagnification:(double)mag
-   {
-	if (mag == magnification)
-		return;
-	magnification = mag;
-	valid = NO;
-	[self resizeRegardlessToWidth:requestedWidth height:requestedHeight];
-   }
+{
+    if (mag == magnification)
+        return;
+    magnification = mag;
+    valid = NO;
+    [self resizeRegardlessToWidth:requestedWidth height:requestedHeight];
+}
 
 - (void)checkAndSetMagnification:(double)mag
-   {
-	if (mag != magnification)
-		[self setMagnification:mag];
-   }
+{
+    if (mag != magnification)
+        [self setMagnification:mag];
+}
 
 -(BOOL)hitTestX:(int)x y:(int)y
 {

@@ -31,14 +31,14 @@
 
 + (id)imageRepWithData:(NSData*)data
 {
-	return [[[ACSDImageRep alloc]initWithData:data]autorelease];
+	return [[ACSDImageRep alloc]initWithData:data];
 }
 
 - (id)initWithData:(NSData*)d
 {
 	if ((self = [super init]))
 	{
-		data = [d retain];
+		data = d;
 		document = [[ACSDrawDocument alloc]init];
 		[document readFromData:data ofType:@"acsd" error:nil];
 		NSRect r;
@@ -60,18 +60,6 @@
 {
 	[super encodeWithCoder:coder];
 	[coder encodeObject:data forKey:@"ACSDImageRep_data"];
-}
-
-
--(void)dealloc
-{
-	if (document)
-		[document release];
-	if (data)
-		[data release];
-	if (graphicView)
-		[graphicView release];
-	[super dealloc];
 }
 
 - (BOOL)drawAtPoint:(NSPoint)aPoint

@@ -18,15 +18,9 @@
 	if (self = [super init])
 	{
 		position = pos;
-		object = [obj retain];
+		object = obj;
 	}
 	return self;
-}
-
-- (void)dealloc
-{
-	[object release];
-	[super dealloc];
 }
 
 - (void) encodeWithCoder:(NSCoder*)coder
@@ -38,7 +32,7 @@
 - (id) initWithCoder:(NSCoder*)coder
 {
 	position = [coder decodeIntegerForKey:@"PositionalObject_Position"];
-	object = [[coder decodeObjectForKey:@"PositionalObject_Object"]retain];
+	object = [coder decodeObjectForKey:@"PositionalObject_Object"];
 	return self;
 }
 

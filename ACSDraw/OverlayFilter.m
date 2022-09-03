@@ -29,7 +29,7 @@ static CIKernel *_filterKernel = nil;
 {
     CIFilter  *filter;
     filter = [[self alloc] init];
-    return [filter autorelease];
+    return filter;
 }
 
 - (id)init
@@ -42,7 +42,7 @@ static CIKernel *_filterKernel = nil;
 		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"OverlayFilter" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 		
-		_filterKernel = [[kernels objectAtIndex:0] retain];
+		_filterKernel = [kernels objectAtIndex:0];
     }
     return [super init];
 }

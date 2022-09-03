@@ -13,6 +13,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ACSDPathElement.h"
 #import "ArrayAdditions.h"
+#import "SelectionSet.h"
 
 NSRect ConstrainRectToRect(NSRect littleRect,NSRect bigRect);
 NSRect CentreRectInRect(NSRect movableRect,NSRect fixedRect);
@@ -26,23 +27,12 @@ int orientationOfSource(NSDictionary *properties);
 	if ((self = [super initWithWindowNibName:@"MainWindow"]))
 	   {
 		[self setShouldCloseDocument:YES];
-		pages = [list retain];
+		pages = list;
 		printing = NO;
 		viewNumber = -1;
 	   }
 	return self;
    }
-
-- (void)dealloc
-{
-	[pages release];
-	[_scaleSheet release];
-	[_rotateSheet release];
-	[_abslinkSheet release];
-	[_docSizeSheet release];
-	[_genTextSheet release];
-	[super dealloc];
-}
 
 -(void)setViewNumber:(int)vn
    {
@@ -105,7 +95,7 @@ NSRect CentreRectInRect(NSRect movableRect,NSRect fixedRect)
     NSSize gvScale = [graphicView scale];
     gvSize.width *= gvScale.width;
     gvSize.height *= gvScale.height;
-	NSSize frameS = [NSScrollView frameSizeForContentSize:gvSize horizontalScrollerClass:[NSScroller class] verticalScrollerClass:[NSScroller class] borderType:[scrollView borderType] controlSize:NSRegularControlSize scrollerStyle:[[scrollView horizontalScroller]scrollerStyle]];
+    NSSize frameS = [NSScrollView frameSizeForContentSize:gvSize horizontalScrollerClass:[NSScroller class] verticalScrollerClass:[NSScroller class] borderType:[scrollView borderType] controlSize:NSControlSizeRegular scrollerStyle:[[scrollView horizontalScroller]scrollerStyle]];
 /*	NSSize frameS = [NSScrollView frameSizeForContentSize:([graphicView frame].size)
 									hasHorizontalScroller:[scrollView hasHorizontalScroller]
 									  hasVerticalScroller: [scrollView hasVerticalScroller]
@@ -350,7 +340,6 @@ CGColorSpaceRef getRGBColorSpace()
 	NSMutableDictionary *substitutions = [NSMutableDictionary dictionaryWithCapacity:5];
 	NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
 	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:pdfContext flipped:YES]];
-	CIContext *ciContext = [[[NSGraphicsContext currentContext]CIContext]retain];
 	checkSet = [NSMutableSet setWithCapacity:100];
 	for (unsigned i = 0;i < [pages count];i++)
 	   {
@@ -370,7 +359,6 @@ CGColorSpaceRef getRGBColorSpace()
 		   }
 	   }
 	[NSGraphicsContext setCurrentContext:currentContext];
-	[ciContext release];
 	CGContextRelease (pdfContext);
    }
 
@@ -384,7 +372,7 @@ NSBitmapImageRep *newBitmap(int width,int height)
 															  colorSpaceName:NSCalibratedRGBColorSpace
 																 bytesPerRow:0 
 																bitsPerPixel:0];
-	return [bm autorelease];
+	return bm;
 }
 
 -(CGImageRef)cgImageFromCurrentPageOfSize:(NSSize)sz
@@ -402,7 +390,7 @@ NSBitmapImageRep *newBitmap(int width,int height)
 {
     NSRect r = [self rectCroppedToOpaqueSelectionOnly:YES drawSelectionOnly:drawSelectionOnly];
     r = NSZeroRect;
-    for (ACSDGraphic *g in [[graphicView currentEditableLayer]selectedGraphics])
+    for (ACSDGraphic *g in [[[graphicView currentEditableLayer]selectedGraphics]objects])
     {
         NSRect b = [g bounds];
         if (NSEqualRects(r,NSZeroRect))
@@ -412,7 +400,7 @@ NSBitmapImageRep *newBitmap(int width,int height)
     }
     NSSize sz = r.size;
 	NSBitmapImageRep *bm = newBitmap(sz.width,sz.height);
-	NSImage *im = [[[NSImage alloc]initWithSize:sz]autorelease];
+	NSImage *im = [[NSImage alloc]initWithSize:sz];
 	[im addRepresentation:bm];
 	[im lockFocusFlipped:YES];
 	NSRect b = [graphicView bounds];
@@ -490,7 +478,7 @@ NSBitmapImageRep *newBitmap(int width,int height)
 {
 	NSSize sz = [[self document]documentSize];
 	NSBitmapImageRep *bm = [graphicView bitmapImageRepForCachingDisplayInRect:[graphicView bounds]];
-	NSImage *im = [[[NSImage alloc]initWithSize:sz]autorelease];
+	NSImage *im = [[NSImage alloc]initWithSize:sz];
 	[im addRepresentation:bm];
 	//[im setFlipped:YES];
 	[im lockFocusFlipped:YES];
@@ -540,7 +528,7 @@ NSImage *ImageFromFileCG(NSString* str)
     size_t originalWidth,originalHeight,newWidth,newHeight;
     newWidth = originalWidth = CGImageGetWidth(originalImage);
     newHeight = originalHeight = CGImageGetHeight(originalImage);
-    NSImage *im = [[[NSImage alloc]initWithCGImage:originalImage size:NSMakeSize(newWidth, newHeight)]autorelease];
+    NSImage *im = [[NSImage alloc]initWithCGImage:originalImage size:NSMakeSize(newWidth, newHeight)];
     CGImageRelease(originalImage);
     CFRelease(source);
     return im;
@@ -557,7 +545,7 @@ NSImage *ImageFromFile(NSString* str)
 		return nil;
 	}
 	CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(source,0,nil);
-	NSDictionary *dict = (NSDictionary*)properties;
+    NSDictionary *dict = (__bridge NSDictionary*)properties;
 	//	resolution = [[dict objectForKey:(NSString*)kCGImagePropertyDPIWidth]intValue];
 	//	if (resolution < 10)
 	//		resolution = 72;
@@ -567,7 +555,7 @@ NSImage *ImageFromFile(NSString* str)
 	newHeight = originalHeight = CGImageGetHeight(originalImage);
 	NSBitmapImageRep *bm;
 	if (orientation == 1)
-		bm = [[[NSBitmapImageRep alloc]initWithCGImage:originalImage]autorelease];
+		bm = [[NSBitmapImageRep alloc]initWithCGImage:originalImage];
 	else
 	{
 		if (orientation == 6 || orientation == 8 || orientation == 7 || orientation == 5)
@@ -586,11 +574,11 @@ NSImage *ImageFromFile(NSString* str)
 		CGContextDrawImage(context,destR,originalImage);
 		CGContextRestoreGState(context);		
 		CGImageRef newImage = CGBitmapContextCreateImage(context);
-		bm = [[[NSBitmapImageRep alloc]initWithCGImage:newImage]autorelease];
+		bm = [[NSBitmapImageRep alloc]initWithCGImage:newImage];
 		CGImageRelease(newImage);
 		CGContextRelease(context);
 	}
-	NSImage *im = [[[NSImage alloc]initWithSize:NSMakeSize(newWidth,newHeight)]autorelease];
+	NSImage *im = [[NSImage alloc]initWithSize:NSMakeSize(newWidth,newHeight)];
 	[im lockFocus];
 	[bm draw];
 	[im unlockFocus];
@@ -605,7 +593,7 @@ NSImage *ImageFromFile(NSString* str)
 {
 	NSImage *im = ImageFromFile(str);
 	if (!im)
-		im = [[[NSImage alloc]initWithContentsOfFile:str]autorelease];
+		im = [[NSImage alloc]initWithContentsOfFile:str];
 	if (im)
 	{
 		[graphicView createImage:im name:str location:NULL fileName:nil];
@@ -1286,7 +1274,7 @@ static NSMutableArray *parseRenameString(NSString* str)
 	NSRect r = [graphicView bounds];
 	r = NSInsetRect(r,20,20);
 	ACSDText *t = [[ACSDText alloc]initWithName:@"TOC" fill:nil stroke:nil rect:r layer:[graphicView currentEditableLayer]];
-	NSTextStorage *ts = [[[NSTextStorage alloc]init]autorelease];
+	NSTextStorage *ts = [[NSTextStorage alloc]init];
 	[t setContents:ts];
 	NSMutableArray *styles = [NSMutableArray arrayWithCapacity:[stylePairs count]];
 	NSMutableArray *mappedStyles = [NSMutableArray arrayWithCapacity:[stylePairs count]];
@@ -1310,7 +1298,6 @@ static NSMutableArray *parseRenameString(NSString* str)
 	[ts appendAttributedString:tocString];
 	[ts endEditing];
 	[graphicView addGraphic:t];
-	[t release];
    }
 
 - (void)tocSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo

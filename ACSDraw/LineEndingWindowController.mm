@@ -21,15 +21,6 @@
 	return self;
    }
 
-- (void)dealloc 
-   {
-	if (pages)
-		[pages release];
-	if (undoManager)
-		[undoManager release];
-	[super dealloc];
-   }
-
 - (GraphicView*)graphicView
    {
 	return graphicView;
@@ -42,9 +33,9 @@
 
 - (void)windowDidLoad
    {
-	pages = [[NSMutableArray arrayWithCapacity:1]retain];
+	pages = [NSMutableArray arrayWithCapacity:1];
 	ACSDPage *p = [[ACSDPage alloc]initWithDocument:[self document]];
-	[pages addObject:[p autorelease]];
+	[pages addObject:p];
 	[[graphicView enclosingScrollView]setHasHorizontalRuler:YES];
 	[[graphicView enclosingScrollView]setHasVerticalRuler:YES];
 	[[graphicView enclosingScrollView]setRulersVisible:YES];
@@ -66,7 +57,7 @@
 	[verticalRuler setOriginOffset:deltaY];
 	[horizontalRuler setDelegate:self];
 	[verticalRuler setDelegate:self];
-	[[p currentLayer]addGraphic:[g autorelease]];
+	[[p currentLayer]addGraphic:g];
 	verticalGuideLine = [[SnapLine alloc]initWithGraphicView:graphicView orientation:SNAPLINE_VERTICAL];
 	[verticalGuideLine setVisible:YES];
 	[verticalGuideLine setLocation:deltaX];
@@ -111,7 +102,7 @@
 - (void)adjustWindowSize
    {
 	NSScrollView *scrollView = [graphicView enclosingScrollView];
-	   NSSize frameS = [NSScrollView frameSizeForContentSize:[graphicView frame].size horizontalScrollerClass:[NSScroller class] verticalScrollerClass:[NSScroller class] borderType:[scrollView borderType] controlSize:NSRegularControlSize scrollerStyle:[[scrollView horizontalScroller]scrollerStyle]];
+       NSSize frameS = [NSScrollView frameSizeForContentSize:[graphicView frame].size horizontalScrollerClass:[NSScroller class] verticalScrollerClass:[NSScroller class] borderType:[scrollView borderType] controlSize:NSControlSizeRegular scrollerStyle:[[scrollView horizontalScroller]scrollerStyle]];
 	/*NSSize frameS = [NSScrollView frameSizeForContentSize:([graphicView frame].size)
 									hasHorizontalScroller:[scrollView hasHorizontalScroller]
 									  hasVerticalScroller: [scrollView hasVerticalScroller]
@@ -264,17 +255,13 @@
    {
 	if (temporaryLineEnding == p)
 		return;
-	if (temporaryLineEnding)
-		[temporaryLineEnding release];
 	temporaryLineEnding = p;
-	if (temporaryLineEnding)
-		[temporaryLineEnding retain];
    }
 
 -(ACSDLineEnding*)temporaryLineEnding
    {
 	if (!temporaryLineEnding)
-		temporaryLineEnding = [[self tempLineEnding]retain];
+		temporaryLineEnding = [self tempLineEnding];
 	return temporaryLineEnding;
    }
 
@@ -296,7 +283,7 @@
 	   {
 		NSMutableArray *arr = [NSMutableArray arrayWithCapacity:ct];
 		for (int i = 0;i < ct;i++)
-			[arr addObject:[[[graphics objectAtIndex:i]copy]autorelease]];
+			[arr addObject:[[graphics objectAtIndex:i]copy]];
 		g = [[ACSDGroup alloc]initWithName:@"legroup" graphics:arr layer:nil];
 	   }
 	if ([fillTypeRBMatrix selectedRow] == 1)		//fill uses parent
@@ -305,7 +292,6 @@
 	float yOffset = -[verticalRuler originOffset];
 	[g moveBy:NSMakePoint(xOffset,yOffset)];
 	ACSDLineEnding *le = [ACSDLineEnding lineEndingWithGraphic:g scale:[scaleText floatValue] aspect:[aspectText floatValue] offset:[offsetText floatValue]];
-	[g release];
 	return le;
    }
 

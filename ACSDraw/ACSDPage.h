@@ -42,7 +42,6 @@ enum
 	NSMutableArray *layers;
 	NSString *name;
 	NSMutableSet *graphicViews;
-	ACSDrawDocument *document;
 	NSInteger currentLayerInd,guideLayerInd,pageNo,nextLayer;
 	int pageType;
 	int masterType;

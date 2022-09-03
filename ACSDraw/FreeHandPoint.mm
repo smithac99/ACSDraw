@@ -12,50 +12,50 @@
 @implementation FreeHandPoint
 
 +(FreeHandPoint*)freeHandPoint:(NSPoint)pt pressure:(float)p
-   {
-	return [[[FreeHandPoint alloc]initWithPoint:pt pressure:p]autorelease];
-   }
+{
+    return [[FreeHandPoint alloc]initWithPoint:pt pressure:p];
+}
 
 - (id)initWithPoint:(NSPoint)pt pressure:(float)p
-   {
-	if (self = [super init])
-	   {
-		point = pt;
-		pressure = p;
-//		NSLog(@"%g",p);
-	   }
-	return self;
-   }
+{
+    if (self = [super init])
+    {
+        point = pt;
+        pressure = p;
+        //		NSLog(@"%g",p);
+    }
+    return self;
+}
 
 -(NSPoint)point
-   {
-	return point;
-   }
+{
+    return point;
+}
 
 -(float)pressure
-   {
-	return pressure;
-   }
+{
+    return pressure;
+}
 
 -(float)length
-   {
-	return length;
-   }
+{
+    return length;
+}
 
 -(void)setPoint:(NSPoint)p
-   {
-	point = p;
-   }
+{
+    point = p;
+}
 
 -(void)setLength:(float)l
-   {
-	length = l;
-   }
+{
+    length = l;
+}
 
 -(void)moveBy:(NSPoint)p
-   {
-	point.x += p.x;
-	point.y += p.y;
-   }
+{
+    point.x += p.x;
+    point.y += p.y;
+}
 
 @end

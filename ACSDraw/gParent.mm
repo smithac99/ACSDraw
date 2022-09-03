@@ -50,7 +50,7 @@ NSMutableArray *reverseLines(NSMutableArray* lines)
 
 + (gParent*)parentWithDirection:(int)dir startVector:(NSPoint)sv endVector:(NSPoint)ev
    {
-	return [[[gParent alloc]initWithDirection:dir startVector:sv endVector:ev]autorelease];
+	return [[gParent alloc]initWithDirection:dir startVector:sv endVector:ev];
    }
    
 - (id)initWithDirection:(int)dir startVector:(NSPoint)sv endVector:(NSPoint)ev
@@ -65,16 +65,6 @@ NSMutableArray *reverseLines(NSMutableArray* lines)
 	   }
 	return self;
    }
-/*
--(void)dealloc
-   {
-	if (leftLines)
-		[leftLines release];
-	if (rightLines)
-		[rightLines release];
-	[super dealloc];
-   }
-*/
 
 - (NSString *)description
    {

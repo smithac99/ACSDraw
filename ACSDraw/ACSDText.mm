@@ -1220,7 +1220,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 						[[self layoutManager] drawGlyphsForGlyphRange:glyphRange atPoint:NSMakePoint(0,0)];
 					   }
 					[im unlockFocus];
-					[im drawInRect:b fromRect:NSMakeRect(0,0,[im size].width,[im size].height) operation:NSCompositeSourceOver fraction:1.0];
+                       [im drawInRect:b fromRect:NSMakeRect(0,0,[im size].width,[im size].height) operation:NSCompositingOperationSourceOver fraction:1.0];
 				   }
 				else
 				   {

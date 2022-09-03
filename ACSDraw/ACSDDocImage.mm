@@ -30,12 +30,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	self.drawDoc = nil;
-	[super dealloc];
-}
-
 - (void) encodeWithCoder:(NSCoder*)coder
 {
 	[super encodeWithCoder:coder];
@@ -46,7 +40,7 @@
 {
 	self = [super initWithCoder:coder];
 	NSData *d = [coder decodeObjectForKey:@"drawDoc"];
-	ACSDrawDocument *adoc = [[[ACSDrawDocument alloc]init]autorelease];
+	ACSDrawDocument *adoc = [[ACSDrawDocument alloc]init];
 	[adoc readFromData:d ofType:@"acsd" error:nil];
 	self.drawDoc = adoc;
 	return self;

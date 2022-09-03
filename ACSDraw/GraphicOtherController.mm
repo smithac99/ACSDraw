@@ -128,7 +128,7 @@ NSString *ACSDrawGraphicAttribIdxPasteboardType = @"ACSDrawGraphicAttribidx";
     NSButtonCell *bc = [[NSButtonCell alloc]init];
     rowForContextualMenu = -1;
     displayRowForContextualMenu = -1;
-    [bc setButtonType:NSToggleButton];
+    [bc setButtonType:NSButtonTypeToggle];
     [bc setImage:[NSImage imageNamed:@"eye2"]];
     [bc setAlternateImage:[NSImage imageNamed:@"eye3"]];
 	[bc setBordered:NO];

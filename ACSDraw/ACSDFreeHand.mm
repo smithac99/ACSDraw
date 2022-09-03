@@ -14,6 +14,7 @@
 
 
 @implementation ACSDFreeHand
+
 + (NSString*)graphicTypeName
 {
 	return @"FreeHand";
@@ -24,28 +25,18 @@
 {
     if (self = [super initWithName:n fill:f stroke:str rect:r layer:l])
 	{
-		points = [[NSMutableArray arrayWithCapacity:50]retain];
-		bezierPath = [[NSBezierPath bezierPath]retain];
+		points = [NSMutableArray arrayWithCapacity:50];
+		bezierPath = [NSBezierPath bezierPath];
 		level = 5;
 	}
 	return self;
-}
-
--(void)dealloc
-{
-	if (points)
-		[points release];
-	if (bezierPath)
-		[bezierPath release];
-	[super dealloc];
 }
 
 -(void)buildBezierPath
 {
 	if ([points count] == 0)
 		return;
-	[bezierPath release];
-	bezierPath = [[NSBezierPath bezierPath]retain];
+	bezierPath = [NSBezierPath bezierPath];
 	[bezierPath moveToPoint:[[points objectAtIndex:0]point]];
 	for (FreeHandPoint *fhp in points)
 		[bezierPath lineToPoint:[fhp point]];
@@ -55,8 +46,7 @@
 {
 	if ([lines count] == 0)
 		return;
-	[bezierPath release];
-	bezierPath = [[NSBezierPath bezierPath]retain];
+	bezierPath = [NSBezierPath bezierPath];
 	[bezierPath moveToPoint:[[lines objectAtIndex:0]fromPt]];
 	for (id obj in lines)
 		if ([obj isKindOfClass:[gCurve class]])

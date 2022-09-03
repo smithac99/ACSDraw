@@ -31,14 +31,14 @@ enum
 {
     IBOutlet NSTableView *animationTableView;
     IBOutlet NSTextView *textView;
-    NSSpeechSynthesizer *speechSynthesizer;
-    NSConditionLock *speechLock;
 }
 
 @property (assign) NSMutableArray *animationList;
 @property (retain) NSString *errMsg;
 @property (retain) NSString *tempDirectory;
 @property (assign) ACSDPage *currentPage;
+@property (strong) NSConditionLock *speechLock;
+@property (strong,nonatomic) NSSpeechSynthesizer *speechSynthesizer;
 @property NSRect pageBounds;
 @property int status;
 -(void)recordAnimationsToURL:(NSURL*)url;

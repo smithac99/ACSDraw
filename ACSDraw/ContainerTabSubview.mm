@@ -134,7 +134,7 @@
 	[cpController tabHit:self];
 	r.origin = dragOffset;
 	dragOffset = [[self window]convertRectFromScreen:r].origin;
-	if (([theEvent modifierFlags] & NSCommandKeyMask)!=0 && [theEvent window] == [self window])
+	if (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0 && [theEvent window] == [self window])
     {
 		createdcpc = [cpController detachTab:self];
         CGPoint pt = NSPointToCGPoint(NSEvent.mouseLocation);
