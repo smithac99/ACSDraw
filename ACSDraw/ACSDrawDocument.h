@@ -69,7 +69,6 @@ NSString* Creator();
 @property (retain) IBOutlet NSPanel *paddingSheet,*selectNameSheet;
 @property (retain) NSDate *documentKey;
 
-
 -(NSSize)documentSize;
 -(NSMutableArray*)strokes;
 -(NSMutableArray*)fills;

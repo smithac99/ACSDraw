@@ -57,7 +57,7 @@ static NSCharacterSet *svgCommandCharacterSet()
     static NSCharacterSet *charset = nil;
     if (charset == nil)
     {
-        charset = [[NSCharacterSet characterSetWithCharactersInString:@"zZMmLlHhVvCcSsQqTtAa"]retain];
+        charset = [NSCharacterSet characterSetWithCharactersInString:@"zZMmLlHhVvCcSsQqTtAa"];
     }
     return charset;
 }
@@ -78,7 +78,7 @@ static int skipdelims(NSString *str,int idx)
 static float getFloat(NSString* str,int *i)
 {
     int idx = *i;
-    NSMutableString *rstr = [[[NSMutableString alloc]init]autorelease];
+    NSMutableString *rstr = [[NSMutableString alloc]init];
     unichar lastChar = 0;
     idx = skipdelims(str, idx);
     if (idx < [str length])
@@ -459,12 +459,12 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 
 +(id)pathWithSubPaths:(NSArray*)subPaths
    {
-	return [[[ACSDPath alloc]initWithName:@"" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:[[subPaths mutableCopy]autorelease]]autorelease];
+	return [[ACSDPath alloc]initWithName:@"" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:[subPaths mutableCopy]];
    }
 
 +(id)pathWithPath:(NSBezierPath*)p
    {
-	return [[[ACSDPath alloc]initWithName:@"" fill:nil stroke:nil rect:NSZeroRect layer:nil bezierPath:p]autorelease];
+	return [[ACSDPath alloc]initWithName:@"" fill:nil stroke:nil rect:NSZeroRect layer:nil bezierPath:p];
    }
 
 +(id)pathWithSVGPath:(NSBezierPath*)p settings:(NSMutableDictionary*)settings
@@ -475,7 +475,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 	NSAffineTransform *t = [settings objectForKey:@"transform"];
 	if (t)
 		[p transformUsingAffineTransform:t];
-	return [[[ACSDPath alloc]initWithName:@"" fill:nil stroke:nil rect:NSZeroRect layer:nil bezierPath:p]autorelease];
+	return [[ACSDPath alloc]initWithName:@"" fill:nil stroke:nil rect:NSZeroRect layer:nil bezierPath:p];
 }
 
 +(id)pathWithSVGNode:(XMLNode*)xmlnode settingsStack:(NSMutableArray*)settingsStack
@@ -553,7 +553,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 		[o1 reversePathWithStrokeList:nil];
 		NSArray *vertexList = [ACSDSubPath aNotBBetweenPath:o0 andPath:o1];
 		NSMutableArray *subPaths = [GraphicView intersectedSubPathsFromVertexList:vertexList];
-		o0 = [[[ACSDPath alloc]initWithName:@"path" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:subPaths]autorelease];
+		o0 = [[ACSDPath alloc]initWithName:@"path" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:subPaths];
 	   }
 	return o0;
    }
@@ -567,7 +567,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 		ACSDPath *o1 = [objectArray objectAtIndex:i];
 		NSArray *vertexList = [ACSDSubPath intersectionsBetweenPath:o0 andPath:o1];
 		NSMutableArray *subPaths = [ACSDSubPath unionSubPathsFromVertexList:vertexList];
-		o0 = [[[ACSDPath alloc]initWithName:@"path" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:subPaths]autorelease];
+		o0 = [[ACSDPath alloc]initWithName:@"path" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:subPaths];
 	   }
 	return o0;
    }
@@ -588,7 +588,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
         NSMutableArray *subPaths = [GraphicView intersectedSubPathsFromVertexList:vertexList];
         if ([subPaths count] == 0)
             return nil;
-        o0 = [[[ACSDPath alloc]initWithName:@"path" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:subPaths]autorelease];
+        o0 = [[ACSDPath alloc]initWithName:@"path" fill:nil stroke:nil rect:NSZeroRect layer:nil subPaths:subPaths];
     }
     return o0;
 }
@@ -613,8 +613,8 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
    {
     if (self = [super initWithName:n fill:f stroke:str rect:r layer:l])
 	   {
-		path = [[NSBezierPath bezierPath]retain];
-		subPaths = [[NSMutableArray arrayWithCapacity:1]retain];
+		path = [NSBezierPath bezierPath];
+		subPaths = [NSMutableArray arrayWithCapacity:1];
 		[subPaths addObject:[ACSDSubPath subPath]];
 		currentSubPathInd = 0;
 		isCreating = YES;
@@ -627,8 +627,8 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
    {
     if (self = [super initWithName:n fill:f stroke:str rect:r layer:l])
 	   {
-		path = [p retain];
-		subPaths = [[ACSDSubPath subPathsFromBezierPath:path ]retain];
+		path = p;
+		subPaths = [ACSDSubPath subPathsFromBezierPath:path];
 		isCreating = NO;
 		addingPointPath = nil;
 		[self generatePath];
@@ -643,8 +643,8 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
    {
     if (self = [super initWithName:n fill:f stroke:str rect:r layer:l xScale:xs yScale:ys rotation:rot shadowType:st label:lab alpha:a])
 	   {
-		path = [p retain];
-		subPaths = [[ACSDSubPath subPathsFromBezierPath:path ]retain];
+		path = p;
+		subPaths = [ACSDSubPath subPathsFromBezierPath:path];
 		isCreating = NO;
 		addingPointPath = nil;
 		[self generatePath];
@@ -659,7 +659,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
    {
     if (self = [super initWithName:n fill:f stroke:str rect:r layer:l xScale:xs yScale:ys rotation:rot shadowType:st label:lab alpha:a])
 	   {
-		subPaths = [[NSMutableArray arrayWithCapacity:[sp count]]retain];
+		subPaths = [NSMutableArray arrayWithCapacity:[sp count]];
 		[subPaths addObjectsFromArray:sp];
 		isCreating = NO;
 		addingPointPath = nil;
@@ -676,7 +676,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
    {
     if (self = [super initWithName:n fill:f stroke:str rect:r layer:l])
 	   {
-		subPaths = [[NSMutableArray arrayWithCapacity:[sp count]]retain];
+		subPaths = [NSMutableArray arrayWithCapacity:[sp count]];
 		[subPaths addObjectsFromArray:sp];
 		isCreating = NO;
 		addingPointPath = nil;
@@ -689,15 +689,15 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 
 - (NSMutableArray*)copySubPaths 
    {
-	NSMutableArray *arr = [[NSMutableArray arrayWithCapacity:[subPaths count] + 1]retain];
+	NSMutableArray *arr = [NSMutableArray arrayWithCapacity:[subPaths count] + 1];
 	for (int i = 0;i < (signed)[subPaths count];i++)
-		[arr addObject:[[[subPaths objectAtIndex:i]copy]autorelease]];
+		[arr addObject:[[subPaths objectAtIndex:i]copy]];
 	return arr;
    }
 
 - (id)copyWithZone:(NSZone *)zone 
 {
-	NSMutableArray *arr = [[self copySubPaths]autorelease];
+	NSMutableArray *arr = [self copySubPaths];
 	//    ACSDPath *obj =  [[[self class] allocWithZone:zone] initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:[self bounds]
 	//																layer:layer subPaths:arr xScale:xScale 
 	//															  yScale:yScale rotation:rotation shadowType:[self shadowType] label:[textLabel copy] alpha:alpha];
@@ -727,12 +727,12 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super initWithCoder:coder];
-	subPaths = [[coder decodeObjectForKey:@"ACSDPath_subPaths"]retain];
+	subPaths = [coder decodeObjectForKey:@"ACSDPath_subPaths"];
 	currentSubPathInd = [coder decodeIntegerForKey:@"ACSDPath_currentSubPathInd"];
 	isCreating = [coder decodeIntForKey:@"ACSDPath_isCreating"];
 	handlePoints = NULL;
 	noHandlePoints = 0;
-	path = [[NSBezierPath bezierPath]retain];
+	path = [NSBezierPath bezierPath];
 	isCreating = NO;
 	addingPointPath = nil;
 	[self generatePath];
@@ -742,15 +742,6 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 		[self setBounds:NSZeroRect];
 	selectedElements = [[NSMutableSet alloc]init];
 	return self;
-}
-
--(void)dealloc
-{
-	[path release];
-	[subPaths release];
-	[addingPointPath release];
-	[selectedElements release];
-	[super dealloc];
 }
 
 -(bool)reversePathWithStrokeList:(NSMutableArray*)strokes
@@ -800,7 +791,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 
 -(void)applyTransform:(NSAffineTransform*)tr
 {
-    NSMutableArray *arr = [[self copySubPaths]autorelease];
+    NSMutableArray *arr = [self copySubPaths];
     [arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:tr];
     [self setGraphicTransform:nil];
     [self setSubPathsAndRebuild:arr];
@@ -813,7 +804,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
    {
 	if (!transform)
 		return;
-	NSMutableArray *arr = [[self copySubPaths]autorelease];
+	NSMutableArray *arr = [self copySubPaths];
 	[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:transform];
 	[self setGraphicTransform:nil];
 	[self setSubPathsAndRebuild:arr];
@@ -824,7 +815,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 
 -(void)permanentScale:(float)sc transform:(NSAffineTransform*)t
 {
-	NSMutableArray *arr = [[self copySubPaths]autorelease];
+	NSMutableArray *arr = [self copySubPaths];
 	[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:t];
 	[self setGraphicTransform:nil];
 	[self setSubPathsAndRebuild:arr];
@@ -832,7 +823,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 
 -(NSMutableArray*)transformedSubPaths
    {
-	NSMutableArray *arr = [[self copySubPaths]autorelease];
+	NSMutableArray *arr = [self copySubPaths];
 	if (transform)
 		[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:transform];
 	return arr;
@@ -943,7 +934,7 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 	NSPoint lastPoint = origPoint;
 	ACSDPathElement *el = [[ACSDPathElement alloc]initWithPoint:origPoint preControlPoint:origPoint postControlPoint:origPoint hasPreControlPoint:NO
 			hasPostControlPoint:NO isLineToPoint:YES];
-	[[self pathElements] addObject:[el autorelease]];
+	[[self pathElements] addObject:el];
     while (1)
 	   {
            theEvent = [[view window] nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
@@ -1044,25 +1035,19 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 
 - (void)setPath:(NSBezierPath*)p 
    {
-	if (path)
-		[path release];
-	path = [p retain];
+	path = p;
    }
 
 - (void)setAddingPointPath:(NSBezierPath*)p 
    {
 	if (p == addingPointPath)
 		return;
-	if (addingPointPath)
-		[addingPointPath release];
-	addingPointPath = [p retain];
+	addingPointPath = p;
    }
 
 - (void)setSubPaths:(NSMutableArray*)p
    {
-	if (subPaths)
-		[subPaths release];
-	subPaths = [p retain];
+	subPaths = p;
    }
 
 - (NSMutableArray*)subPaths
@@ -1140,7 +1125,7 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 - (void)generatePath 
    {
 	if (path == nil)
-		path = [[NSBezierPath bezierPath]retain];
+		path = [NSBezierPath bezierPath];
 	bezierPathFromSubPath(subPaths,path);
 	[self setDisplayBoundsValid:NO];
    }
@@ -1354,7 +1339,7 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 {
 	NSPoint point=NSZeroPoint,lastPoint,originalOtherPoint;
 	ACSDPathElement *el = [self pathElementForKnob:kd];
-	ACSDPathElement *newEl = [[el copy]autorelease];
+	ACSDPathElement *newEl = [el copy];
 	if (kd.controlPoint == 1)
 		originalOtherPoint = [el postControlPoint];
 	else
@@ -1613,8 +1598,8 @@ selectedGraphics:(NSSet*)selectedGraphics
 		else
 			[resultSubpaths addObjectsFromArray:[subPath outlineStroke:strokeWidth lineStart:lineStart lineEnd:lineEnd lineCap:[stroke lineCap]]];
     }
-	ACSDPath *acsdPath = [[[ACSDPath alloc]initWithName:[NSString stringWithFormat:@"%@Stroke",self.name] fill:nil stroke:nil
-                                                  rect:[self bounds] layer:[self layer] subPaths:resultSubpaths]autorelease];
+	ACSDPath *acsdPath = [[ACSDPath alloc]initWithName:[NSString stringWithFormat:@"%@Stroke",self.name] fill:nil stroke:nil
+                                                  rect:[self bounds] layer:[self layer] subPaths:resultSubpaths];
 	return acsdPath;
 }
 
@@ -1625,7 +1610,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 	NSInteger subPathInd = kd.subPath;
 	ACSDSubPath *subPath = [subPaths objectAtIndex:subPathInd];
 	ACSDPathElement *el = [[subPath pathElements] objectAtIndex:elInd];
-	ACSDPathElement *el2 = [[el copy]autorelease];
+	ACSDPathElement *el2 = [el copy];
 	[el setHasPostControlPoint:NO];
 	[el2 setHasPreControlPoint:NO];
 	[[subPath pathElements]insertObject:el2 atIndex:elInd+1];
@@ -1658,7 +1643,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 {
 	ACSDPathElement *el = [[ACSDPathElement alloc]initWithPoint:anchorPoint preControlPoint:anchorPoint postControlPoint:anchorPoint hasPreControlPoint:NO
 											hasPostControlPoint:NO isLineToPoint:NO];
-	[[self pathElements] addObject:[el autorelease]];
+	[[self pathElements] addObject:el];
 	[self generatePath];
     [self setBounds:NSMakeRect(anchorPoint.x, anchorPoint.y, 0.0, 0.0)];
 }
@@ -1761,7 +1746,7 @@ selectedGraphics:(NSSet*)selectedGraphics
                 point = [self invertPoint:point];
             if (NSPointInRect(point,rect))
             {
-                SelectedElement *se = [[[SelectedElement alloc]initWithKnobDescriptor:KnobDescriptor(j,i,0)]autorelease];
+                SelectedElement *se = [[SelectedElement alloc]initWithKnobDescriptor:KnobDescriptor(j,i,0)];
                 [knobs addObject:se];
             }
         }
@@ -1903,10 +1888,10 @@ selectedGraphics:(NSSet*)selectedGraphics
 		   {
 			NSMutableArray *tempSubPaths = [NSMutableArray arrayWithCapacity:ct];
 			for (int i = 0;i < ct;i++)
-				[tempSubPaths addObject:[[[subPaths objectAtIndex:i]copy]autorelease]];
+				[tempSubPaths addObject:[[subPaths objectAtIndex:i]copy]];
 			ACSDPathElement *el = [[ACSDPathElement alloc]initWithPoint:addingPoint preControlPoint:addingPoint 
 				postControlPoint:addingPoint hasPreControlPoint:NO hasPostControlPoint:NO isLineToPoint:YES];
-			[[[tempSubPaths objectAtIndex:(ct - 1)]pathElements]addObject:[el autorelease]];
+			[[[tempSubPaths objectAtIndex:(ct - 1)]pathElements]addObject:el];
 			NSBezierPath *p = [NSBezierPath bezierPath];
 			bezierPathFromSubPath(tempSubPaths,p);
 			[p setLineWidth:0.0];

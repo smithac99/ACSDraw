@@ -164,7 +164,14 @@ int findSame(id obj,NSArray *arr);
 - (id)unarchiver:(NSKeyedUnarchiver *)unarchiver didDecodeObject:(id)object
 {
 	if (archiveType == ARCHIVE_FILE)
-		return object;
+    {
+        /*NSLog(@"unarchived %@",NSStringFromClass([object class]));
+        if ([object isMemberOfClass:[NSAttributedString class]])
+        {
+            NSLog(@"unarchived %@",object);
+        }*/
+        return object;
+    }
 	if ([object isKindOfClass:[ACSDLink class]])
 	{
 		if ([object fromObject] == nil)
@@ -196,5 +203,18 @@ int findSame(id obj,NSArray *arr);
 {
 	sameDocument = b;
 }
+
+- (Class)unarchiver:(NSKeyedUnarchiver *)unarchiver cannotDecodeObjectOfClassName:(NSString *)name originalClasses:(NSArray<NSString *> *)classNames
+{
+    NSLog(@"cannot decode object %@",classNames);
+    return nil;
+}
+
+- (void)unarchiver:(NSKeyedUnarchiver *)unarchiver  willReplaceObject:(id)object withObject:(id)newObject
+{
+    NSLog(@"unarchiver substitution %@ for %@",newObject,object);
+}
+
+
 
 @end

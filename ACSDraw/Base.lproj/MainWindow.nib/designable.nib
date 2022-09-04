@@ -8,6 +8,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MainWindowController">
             <connections>
+                <outlet property="errorPanel" destination="ZLt-d3-La3" id="Xdh-fz-cZ4"/>
+                <outlet property="errorTextView" destination="W1p-Pe-a0a" id="OTM-Y1-o5i"/>
                 <outlet property="graphicView" destination="21" id="23"/>
                 <outlet property="window" destination="5" id="18"/>
             </connections>
@@ -194,5 +196,85 @@
             </items>
             <point key="canvasLocation" x="568" y="441"/>
         </menu>
+        <window title="Errors" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="ZLt-d3-La3" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="272" y="172" width="528" height="378"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <view key="contentView" id="ZaQ-uq-q8T">
+                <rect key="frame" x="0.0" y="0.0" width="528" height="378"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Tco-CS-Deh">
+                        <rect key="frame" x="18" y="342" width="105" height="16"/>
+                        <constraints>
+                            <constraint firstAttribute="width" priority="250" constant="130" id="5y9-N4-7tE"/>
+                            <constraint firstAttribute="height" constant="16" id="67Q-qw-lMD"/>
+                        </constraints>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Errors Occurred:" id="Z5t-qI-WXu">
+                            <font key="font" usesAppearanceFont="YES"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XCQ-Sz-L0e">
+                        <rect key="frame" x="20" y="61" width="488" height="267"/>
+                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="wKb-0X-qFV">
+                            <rect key="frame" x="0.0" y="0.0" width="473" height="267"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" smartInsertDelete="YES" id="W1p-Pe-a0a">
+                                    <rect key="frame" x="0.0" y="0.0" width="473" height="267"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="minSize" width="473" height="267"/>
+                                    <size key="maxSize" width="478" height="10000000"/>
+                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                </textView>
+                            </subviews>
+                        </clipView>
+                        <constraints>
+                            <constraint firstAttribute="width" priority="250" constant="488" id="eLq-5e-jb3"/>
+                            <constraint firstAttribute="height" priority="250" constant="267" id="prw-be-k9L"/>
+                        </constraints>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="RRV-lS-b81">
+                            <rect key="frame" x="-100" y="-100" width="225" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="ZRI-BR-OvK">
+                            <rect key="frame" x="473" y="0.0" width="15" height="267"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Od5-Fu-x0k">
+                        <rect key="frame" x="430" y="13" width="87" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="0aX-aN-ElV"/>
+                            <constraint firstAttribute="width" priority="250" constant="75" id="Q5i-Fl-tyT"/>
+                        </constraints>
+                        <buttonCell key="cell" type="push" title="Dismiss" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nbU-Px-Ez6">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Tco-CS-Deh" firstAttribute="leading" secondItem="ZaQ-uq-q8T" secondAttribute="leading" constant="20" symbolic="YES" id="7Fm-f3-hRV"/>
+                    <constraint firstAttribute="trailing" secondItem="Tco-CS-Deh" secondAttribute="trailing" priority="250" constant="378" id="BjK-FT-xfe"/>
+                    <constraint firstItem="XCQ-Sz-L0e" firstAttribute="leading" secondItem="ZaQ-uq-q8T" secondAttribute="leading" constant="20" symbolic="YES" id="TOi-GN-0KX"/>
+                    <constraint firstItem="Od5-Fu-x0k" firstAttribute="top" secondItem="XCQ-Sz-L0e" secondAttribute="bottom" constant="20" symbolic="YES" id="Z1I-7l-BK1"/>
+                    <constraint firstAttribute="bottom" secondItem="Od5-Fu-x0k" secondAttribute="bottom" constant="20" symbolic="YES" id="aod-6H-Qmz"/>
+                    <constraint firstItem="Od5-Fu-x0k" firstAttribute="leading" secondItem="ZaQ-uq-q8T" secondAttribute="leading" priority="250" constant="436" id="bTT-6h-5Ch"/>
+                    <constraint firstAttribute="trailing" secondItem="Od5-Fu-x0k" secondAttribute="trailing" constant="17" id="d6j-cF-xNp"/>
+                    <constraint firstItem="Od5-Fu-x0k" firstAttribute="top" secondItem="XCQ-Sz-L0e" secondAttribute="bottom" constant="20" symbolic="YES" id="lSK-6O-GVl"/>
+                    <constraint firstItem="Tco-CS-Deh" firstAttribute="top" secondItem="ZaQ-uq-q8T" secondAttribute="top" constant="20" symbolic="YES" id="mhB-Aa-h2z"/>
+                    <constraint firstItem="XCQ-Sz-L0e" firstAttribute="top" secondItem="Tco-CS-Deh" secondAttribute="bottom" constant="14" id="mhv-zd-0Yf"/>
+                    <constraint firstAttribute="trailing" secondItem="XCQ-Sz-L0e" secondAttribute="trailing" constant="20" symbolic="YES" id="n1Q-wH-ODc"/>
+                    <constraint firstItem="XCQ-Sz-L0e" firstAttribute="top" secondItem="Tco-CS-Deh" secondAttribute="bottom" constant="14" id="tOg-6V-cMY"/>
+                </constraints>
+            </view>
+            <point key="canvasLocation" x="122" y="807"/>
+        </window>
     </objects>
 </document>

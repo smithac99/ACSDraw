@@ -441,6 +441,8 @@ NSString *additionalCSSKey = @"additionalCSS";
 NSString *ACSDrawDocumentKey = @"documentKey";
 //NSString *nextStyleKeyKey = @"nextStyleKey";
 
+#pragma mark read/write doc
+
 - (NSDictionary *)setupDictionaryFromMemory
    {
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
@@ -504,6 +506,83 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	[archiver release];
     return data;
 }
+
+-(BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
+{
+    if ([[typeName lowercaseString]isEqualToString:@"svg"])
+        return [self loadSVGData:data];
+    if ([[typeName lowercaseString]isEqualToString:@"xml"])
+        return [self loadLayoutXMLData:data];
+    NSError *err = nil;
+    NSKeyedUnarchiver *unarchiver = [[[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&err]autorelease];
+    unarchiver.requiresSecureCoding = NO;
+    if (err)
+        NSLog(@"File read error %@",[err localizedDescription]);
+    [unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
+    id d = [unarchiver decodeObjectForKey:@"root"];
+    [unarchiver finishDecoding];
+    if ([d isKindOfClass:[NSDictionary class]])
+    {
+        id obj;
+        if ((obj = [d objectForKey:strokesKey]))
+        {
+            if ([obj count] < 5)
+                [[self strokes] addObjectsFromArray:obj];
+            else
+                [self setStrokes:obj];
+        }
+        if ((obj = [d objectForKey:fillsKey]))
+        {
+            if ([obj count] < 5)
+                [fills addObjectsFromArray:obj];
+            else
+                [self setFills:obj];
+        }
+        if ((obj = [d objectForKey:shadowsKey]))
+        {
+            if ([obj count] < 5)
+                [shadows addObjectsFromArray:obj];
+            else
+                [self setShadows:obj];
+        }
+        documentSize.width = [[d objectForKey:docSizeWidthKey]floatValue];
+        documentSize.height = [[d objectForKey:docSizeHeightKey]floatValue];
+        docTitle = [[d objectForKey:docTitleKey]retain];
+        scriptURL = [[d objectForKey:scriptURLKey]retain];
+        additionalCSS = [[d objectForKey:additionalCSSKey]retain];
+        //if ((obj = [d objectForKey:ACSDrawDocumentKey]))
+        //[self setDocumentKey:obj];
+        if ((obj = [d objectForKey:pagesKey]))
+            [self setPages:obj];
+        if ((obj = [d objectForKey:nameCountsKey]))
+            [self setNameCounts:obj];
+        if ((obj = [d objectForKey:lineEndingsKey]))
+            [self setLineEndings:obj];
+        if ((obj = [d objectForKey:stylesKey]))
+            [self setStyles:obj];
+        if ((obj = [d objectForKey:backgroundColourKey]))
+            [self setBackgroundColour:obj];
+        htmlSettings = [[d objectForKey:htmlSettingsKey]retain];
+        [pages makeObjectsPerformSelector:@selector(fixTextBoxLinks)];
+        if (d[@"exporteventxml"])
+        {
+            NSURL *u = d[@"exporteventxml"];
+            if ([[NSFileManager defaultManager]fileExistsAtPath:[u path]])
+                miscValues[@"exporteventxml"] = u;
+        }
+        return YES;
+    }
+    return NO;
+}
+
+- (void)setFileURL:(NSURL *)url
+{
+    [super setFileURL:url];
+    [[mainWindowController window]setFrameAutosaveName:[[self fileURL]path]];
+    [[mainWindowController window]saveFrameUsingName:[[self fileURL]path]];
+}
+
+#pragma mark
 
 -(ACSDStroke*)strokeLikeStroke:(ACSDStroke*)stroke
 {
@@ -1101,77 +1180,7 @@ static BOOL isCSSIdent(unichar ch)
 
 #pragma mark -
 
--(BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
-{
-    if ([[typeName lowercaseString]isEqualToString:@"svg"])
-        return [self loadSVGData:data];
-    if ([[typeName lowercaseString]isEqualToString:@"xml"])
-        return [self loadLayoutXMLData:data];
-	NSKeyedUnarchiver *unarchiver = [[[NSKeyedUnarchiver alloc] initForReadingWithData:data]autorelease];
-	[unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
-	id d = [unarchiver decodeObjectForKey:@"root"];
-	[unarchiver finishDecoding];
-	if ([d isKindOfClass:[NSDictionary class]])
-	{
-		id obj;
-		if ((obj = [d objectForKey:strokesKey]))
-		{
-			if ([obj count] < 5)
-				[[self strokes] addObjectsFromArray:obj];
-			else
-				[self setStrokes:obj];
-		}
-		if ((obj = [d objectForKey:fillsKey]))
-		{
-			if ([obj count] < 5)
-				[fills addObjectsFromArray:obj];
-			else
-				[self setFills:obj];
-		}
-		if ((obj = [d objectForKey:shadowsKey]))
-		{
-			if ([obj count] < 5)
-				[shadows addObjectsFromArray:obj];
-			else
-				[self setShadows:obj];
-		}
-		documentSize.width = [[d objectForKey:docSizeWidthKey]floatValue];
-		documentSize.height = [[d objectForKey:docSizeHeightKey]floatValue];
-		docTitle = [[d objectForKey:docTitleKey]retain];
-		scriptURL = [[d objectForKey:scriptURLKey]retain];
-		additionalCSS = [[d objectForKey:additionalCSSKey]retain];
-		//if ((obj = [d objectForKey:ACSDrawDocumentKey]))
-			//[self setDocumentKey:obj];
-		if ((obj = [d objectForKey:pagesKey]))
-			[self setPages:obj];
-		if ((obj = [d objectForKey:nameCountsKey]))
-			[self setNameCounts:obj];
-		if ((obj = [d objectForKey:lineEndingsKey]))
-			[self setLineEndings:obj];
-		if ((obj = [d objectForKey:stylesKey]))
-			[self setStyles:obj];
-		if ((obj = [d objectForKey:backgroundColourKey]))
-			[self setBackgroundColour:obj];
-		htmlSettings = [[d objectForKey:htmlSettingsKey]retain];
-		[pages makeObjectsPerformSelector:@selector(fixTextBoxLinks)];
-        if (d[@"exporteventxml"])
-        {
-            NSURL *u = d[@"exporteventxml"];
-            if ([[NSFileManager defaultManager]fileExistsAtPath:[u path]])
-                miscValues[@"exporteventxml"] = u;
-        }
-		return YES;
-	}
-	return NO;
-}
 
-- (void)setFileURL:(NSURL *)url
-   {
-	[super setFileURL:url];
-	[[mainWindowController window]setFrameAutosaveName:[[self fileURL]path]];
-	[[mainWindowController window]saveFrameUsingName:[[self fileURL]path]];
-   }
-   
 #pragma mark -
 #pragma mark exports
 

@@ -221,39 +221,39 @@ NSString *substitute_characters(NSString* string)
    }
 
 - (id) initWithCoder:(NSCoder*)coder
-   {
-	self = [super initWithCoder:coder];
-	previousText = [coder decodeObjectForKey:@"ACSDText_previousText"];
-//	if (previousText)
-//		textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
-	NSAttributedString *astr = [coder decodeObjectForKey:@"ACSDText_contents"];
-	if (astr)
-	   {
-		contents = [[NSTextStorage alloc] initWithAttributedString:astr];
-//		contents = [[ACSDTextStorage alloc] initWithAttributedString:astr];
-		[contents addLayoutManager:[self layoutManager]];
-	   }
-	else
-		contents = nil;
-	nextText = [coder decodeObjectForKey:@"ACSDText_nextText"];
-	cornerRadius = [coder decodeFloatForKey:@"ACSDText_cornerRadius"];
-	overflow = NO;
-	topMargin = [coder decodeFloatForKey:@"ACSDText_topMargin"];
-	leftMargin = [coder decodeFloatForKey:@"ACSDText_leftMargin"];
-	bottomMargin = [coder decodeFloatForKey:@"ACSDText_bottomMargin"];
-	rightMargin = [coder decodeFloatForKey:@"ACSDText_rightMargin"];
-	verticalAlignment = (VerticalAlignment)[coder decodeIntForKey:@"ACSDText_verticalAlignment"];
-	flowMethod = [coder decodeIntForKey:@"ACSDText_flowMethod"];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentsChanged:) 
-		name:NSTextStorageDidProcessEditingNotification object:contents];
-	handlePoints = new NSPoint[8];
-	noHandlePoints = 8;
-	maxAnchorID = [coder decodeIntForKey:@"ACSDText_maxAnchorID"];
-//	if (previousText == nil && nextText != nil)
-//		[ACSDText sortOutLinkedTextGraphics:self];
-	flowPad = [coder decodeFloatForKey:@"ACSDText_flowPad"];
-	return self;
-   }
+{
+    self = [super initWithCoder:coder];
+    previousText = [coder decodeObjectForKey:@"ACSDText_previousText"];
+    //	if (previousText)
+    //		textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
+    NSAttributedString *astr = [coder decodeObjectForKey:@"ACSDText_contents"];
+    if (astr)
+    {
+        contents = [[NSTextStorage alloc] initWithAttributedString:astr];
+        //		contents = [[ACSDTextStorage alloc] initWithAttributedString:astr];
+        [contents addLayoutManager:[self layoutManager]];
+    }
+    else
+        contents = nil;
+    nextText = [coder decodeObjectForKey:@"ACSDText_nextText"];
+    cornerRadius = [coder decodeFloatForKey:@"ACSDText_cornerRadius"];
+    overflow = NO;
+    topMargin = [coder decodeFloatForKey:@"ACSDText_topMargin"];
+    leftMargin = [coder decodeFloatForKey:@"ACSDText_leftMargin"];
+    bottomMargin = [coder decodeFloatForKey:@"ACSDText_bottomMargin"];
+    rightMargin = [coder decodeFloatForKey:@"ACSDText_rightMargin"];
+    verticalAlignment = (VerticalAlignment)[coder decodeIntForKey:@"ACSDText_verticalAlignment"];
+    flowMethod = [coder decodeIntForKey:@"ACSDText_flowMethod"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentsChanged:)
+                                                 name:NSTextStorageDidProcessEditingNotification object:contents];
+    handlePoints = new NSPoint[8];
+    noHandlePoints = 8;
+    maxAnchorID = [coder decodeIntForKey:@"ACSDText_maxAnchorID"];
+    //	if (previousText == nil && nextText != nil)
+    //		[ACSDText sortOutLinkedTextGraphics:self];
+    flowPad = [coder decodeFloatForKey:@"ACSDText_flowPad"];
+    return self;
+}
 
 -(void)allocateTextSystemStuff
    {

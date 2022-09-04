@@ -50,6 +50,8 @@ CGColorSpaceRef getRGBColorSpace();
 @property (retain) IBOutlet NSPanel *batchScalePanel;
 @property (retain) IBOutlet GroupViewController *groupViewController;
 @property (retain) IBOutlet NSWindow *groupWindow;
+@property (assign) IBOutlet NSPanel *errorPanel;
+@property (assign) IBOutlet NSTextView *errorTextView;
 
 - (id)initWithPages:(NSMutableArray*)list;
 - (GraphicView*)graphicView;
