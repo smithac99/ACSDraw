@@ -39,6 +39,7 @@
 #import "SVGGradient.h"
 #import "geometry.h"
 #import "NSString+StringAdditions.h"
+#import "ACSDLink.h"
 
 NSString *backgroundColourKey = @"backgroundColour";
 NSString *lineEndingsKey = @"lineEndings";
@@ -1953,6 +1954,15 @@ NSString* Creator()
             ACSDPage *page = pagesDict[pno];
             if (page)
             {
+                ACSDGraphic *pageGraphic = nil;
+                NSArray *ls = [page layersWithName:@"image"];
+                if ([ls count] > 0)
+                {
+                    ACSDLayer *imageLayer = ls[0];
+                    NSArray *gs = [imageLayer graphicsWithName:pno];
+                    if ([gs count] > 0)
+                        pageGraphic = gs[0];
+                }
                 NSArray<XMLNode*>*paraNodes = [pageNode childrenOfType:@"para"];
                 CGFloat y = documentSize.height - 300,x = 100;
                 int idx = 1;
@@ -1990,6 +2000,10 @@ NSString* Creator()
                         [contents addLayoutManager:[t layoutManager]];
                         [t setContents:contents];
                         [[layer graphics] addObject:[self registerObject:t]];
+                        if (pageGraphic)
+                        {
+                            [ACSDLink uLinkFromObject:t toObject:pageGraphic anchor:-1 substitutePageNo:NO changeAttributes:YES undoManager:[self undoManager]];
+                        }
 
                     }
                     idx++;
