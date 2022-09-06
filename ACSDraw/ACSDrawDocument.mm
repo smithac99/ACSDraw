@@ -1369,7 +1369,7 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 NSData *eps  = [[self frontmostMainWindowController] epsRepresentation];
 			 [self setExportDirectory:[sp directoryURL]];
@@ -1396,7 +1396,7 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 [self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
 			 NSURL *url = [(NSSavePanel*)sp URL];
@@ -1555,7 +1555,7 @@ NSString* Creator()
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
 	 {
-		 if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
 		 {
 			 NSError *err = nil;
 			 if (!([[self graphicXMLString] writeToURL:[sp URL] atomically:YES encoding:NSUnicodeStringEncoding error:&err]))

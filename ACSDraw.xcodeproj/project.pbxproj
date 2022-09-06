@@ -34,7 +34,7 @@
 		E740563915B1EF2D0040F590 /* ACSDGraphic.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F015B1EF2D0040F590 /* ACSDGraphic.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E740563A15B1EF2D0040F590 /* ACSDGrid.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F215B1EF2D0040F590 /* ACSDGrid.mm */; };
 		E740563B15B1EF2D0040F590 /* ACSDGroup.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F415B1EF2D0040F590 /* ACSDGroup.mm */; };
-		E740563C15B1EF2D0040F590 /* ACSDImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F615B1EF2D0040F590 /* ACSDImage.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740563C15B1EF2D0040F590 /* ACSDImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F615B1EF2D0040F590 /* ACSDImage.mm */; };
 		E740563D15B1EF2D0040F590 /* ACSDImageRep.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F815B1EF2D0040F590 /* ACSDImageRep.mm */; };
 		E740563E15B1EF2D0040F590 /* ACSDLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FA15B1EF2D0040F590 /* ACSDLabel.mm */; };
 		E740563F15B1EF2D0040F590 /* ACSDLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FC15B1EF2D0040F590 /* ACSDLayer.mm */; };
@@ -97,7 +97,7 @@
 		E740567E15B1EF2E0040F590 /* GradientRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740557C15B1EF2D0040F590 /* GradientRulerView.mm */; };
 		E740567F15B1EF2E0040F590 /* GraphicCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740557E15B1EF2D0040F590 /* GraphicCache.mm */; };
 		E740568015B1EF2E0040F590 /* GraphicRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740558015B1EF2D0040F590 /* GraphicRulerView.mm */; };
-		E740568115B1EF2E0040F590 /* GraphicView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740558215B1EF2D0040F590 /* GraphicView.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740568115B1EF2E0040F590 /* GraphicView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740558215B1EF2D0040F590 /* GraphicView.mm */; };
 		E740568215B1EF2E0040F590 /* GreyView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740558415B1EF2D0040F590 /* GreyView.mm */; };
 		E740568315B1EF2E0040F590 /* gSubPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740558615B1EF2D0040F590 /* gSubPath.mm */; };
 		E740568415B1EF2E0040F590 /* GXPArchiveDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740558815B1EF2D0040F590 /* GXPArchiveDelegate.mm */; };

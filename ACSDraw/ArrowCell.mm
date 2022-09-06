@@ -18,7 +18,7 @@
 	ACSDLineEnding *arrow = nil;
 	NSRect colRect = cellFrame;
 	[NSGraphicsContext saveGraphicsState];
-       [NSGraphicsContext setGraphicsState:0];
+       //[NSGraphicsContext setGraphicsState:0];
 	[NSBezierPath clipRect:cellFrame];
 	if ([self objectValue] && [[self objectValue] isKindOfClass:[ACSDLineEnding class]])
 	   {

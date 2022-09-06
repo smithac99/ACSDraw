@@ -59,17 +59,17 @@ NSColor *colourFromArray(NSArray* arr);
 	if (appDefaults == nil)
     {
 		appDefaults = [NSDictionary
-                        dictionaryWithObjectsAndKeys:[NSArchiver archivedDataWithRootObject:[NSColor cyanColor]],prefsSelectionColourKey,
-                        [NSArchiver archivedDataWithRootObject:[NSColor purpleColor]],prefsGuideColourKey,
-                        [NSArchiver archivedDataWithRootObject:[NSColor redColor]],prefsHiliteColourKey,
-                        [NSNumber numberWithInt:4],prefsSnapSizeKey,
-                        [NSNumber numberWithInt:20],prefsHotSpotSizeKey,
-                        [NSNumber numberWithInt:PDF_LINK_STROKE],prefsPDFLinkModeKey,
-                        [NSNumber numberWithFloat:PDF_LINK_STROKE],prefsPDFLinkStrokeKey,
-                        [NSArchiver archivedDataWithRootObject:[[NSColor redColor]colorWithAlphaComponent:0.25]],prefsPDFLinkColourKey,
-                        [NSNumber numberWithInt:BACKGROUND_DRAW_COLOUR],prefsBackgroundType,
-                        [NSArchiver archivedDataWithRootObject:[NSColor whiteColor]],prefsBackgroundColour,
-                       [NSNumber numberWithBool:NO],prefsShowPathDirection,
+                        dictionaryWithObjectsAndKeys:archivedObject([NSColor cyanColor]),prefsSelectionColourKey,
+                       archivedObject([NSColor purpleColor]),prefsGuideColourKey,
+                       archivedObject([NSColor redColor]),prefsHiliteColourKey,
+                        @(4),prefsSnapSizeKey,
+                        @(20),prefsHotSpotSizeKey,
+                        @(PDF_LINK_STROKE),prefsPDFLinkModeKey,
+                        @(PDF_LINK_STROKE),prefsPDFLinkStrokeKey,
+                        archivedObject([[NSColor redColor]colorWithAlphaComponent:0.25]),prefsPDFLinkColourKey,
+                        @(BACKGROUND_DRAW_COLOUR),prefsBackgroundType,
+                        archivedObject([NSColor whiteColor]),prefsBackgroundColour,
+                       @NO,prefsShowPathDirection,
                        @(1),prefsDocScale,
                        @[@"/"],prefsImageLibs,
                         nil];
@@ -107,7 +107,7 @@ NSColor *colourFromArray(NSArray* arr)
 
 - (IBAction)pdfLinkHighlightingColourWellHit:(id)sender
    {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:(NSColor*)[sender color]] forKey:prefsPDFLinkColourKey];
+	[[NSUserDefaults standardUserDefaults] setObject:archivedObject([sender color]) forKey:prefsPDFLinkColourKey];
    }
 
 - (IBAction)pdfLinkHighlightingStrokeHit:(id)sender
@@ -125,28 +125,33 @@ NSColor *colourFromArray(NSArray* arr)
 
 - (IBAction)guideColourHit:(id)sender
    {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:(NSColor*)[sender color]] forKey:prefsGuideColourKey];
+	[[NSUserDefaults standardUserDefaults] setObject:archivedObject([sender color]) forKey:prefsGuideColourKey];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDGuideColourDidChangeNotification object:self 
 		userInfo:[NSDictionary dictionaryWithObject:(NSColor*)[sender color]forKey:@"col"]];
    }
 
 - (IBAction)hotSpotSizeHit:(id)sender
    {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:[sender intValue]] forKey:prefsHotSpotSizeKey];
+	[[NSUserDefaults standardUserDefaults] setObject:@([sender intValue]) forKey:prefsHotSpotSizeKey];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDHotSpotSizeDidChangeNotification object:self 
-		userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[sender intValue]] forKey:@"n"]];
+		userInfo:[NSDictionary dictionaryWithObject:@([sender intValue]) forKey:@"n"]];
    }
+
+NSData *archivedObject(id obj)
+{
+    return [NSArchiver archivedDataWithRootObject:obj];
+}
 
 - (IBAction)selectionColourHit:(id)sender
    {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:(NSColor*)[sender color]] forKey:prefsSelectionColourKey];
+	[[NSUserDefaults standardUserDefaults] setObject:archivedObject([sender color]) forKey:prefsSelectionColourKey];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDSelectionColourDidChangeNotification object:self 
 		userInfo:[NSDictionary dictionaryWithObject:(NSColor*)[sender color]forKey:@"col"]];
    }
 
 - (IBAction)hiliteColourHit:(id)sender
    {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:(NSColor*)[sender color]] forKey:prefsHiliteColourKey];
+	[[NSUserDefaults standardUserDefaults] setObject:archivedObject([sender color]) forKey:prefsHiliteColourKey];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDHiliteColourDidChangeNotification object:self 
 													  userInfo:[NSDictionary dictionaryWithObject:(NSColor*)[sender color]forKey:@"col"]];
    }
@@ -219,11 +224,10 @@ NSColor *colourFromArray(NSArray* arr)
 
 - (IBAction)backgroundColourHit:(id)sender
 {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:(NSColor*)[sender color]] forKey:prefsBackgroundColour];
+	[[NSUserDefaults standardUserDefaults] setObject:archivedObject([sender color]) forKey:prefsBackgroundColour];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDBackgroundColourChange object:self 
 													  userInfo:[NSDictionary dictionaryWithObject:(NSColor*)[sender color]forKey:@"col"]];
 }
-
 
 - (int)snapSize
    {
@@ -243,9 +247,9 @@ NSColor *colourFromArray(NSArray* arr)
 
 - (IBAction)snapSizehit:(id)sender
    {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:[sender intValue]] forKey:prefsSnapSizeKey];
+	[[NSUserDefaults standardUserDefaults] setObject:@([sender intValue]) forKey:prefsSnapSizeKey];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDSnapSizeDidChangeNotification object:self 
-		userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[sender intValue]] forKey:@"n"]];
+		userInfo:[NSDictionary dictionaryWithObject:@([sender intValue]) forKey:@"n"]];
    }
 
 -(void)setValuesFromGuidePrefsUndo:(BOOL)undo

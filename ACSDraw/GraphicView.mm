@@ -154,12 +154,6 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
     [self endEditing];
 	[[self selectedGraphics] removeAllObjects];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicViewSelectionDidChangeNotification object:self];
-	[pages release];
-	[defaultFill release];
-	[defaultStroke release];
-	[layoutManager release];
-	[editor release];
-	[repeatQueue release];
 	if (verticalHandleBits)
 		delete[] verticalHandleBits;
 	if (horizontalHandleBits)
@@ -168,21 +162,14 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 		delete[] snapHOffsets;
 	if (snapVOffsets)
 		delete[] snapVOffsets;
-	[handleShadow release];
-	[highLightLayer release];
-	[_polygonSheet release];
-	self.savedEyeClick = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[super dealloc];
 }
 
 -(void) setPages:(NSMutableArray*)list
    {
 	if (pages == list)
 		return;
-	if (pages)
-		[pages release];
-	pages = [list retain];
+	pages = list;
 	[self adjustPageNumbersFromIndex:0];
 	[self resolveMasters];
 	[self setCurrentPageIndex:0 force:YES withUndo:NO];
@@ -613,18 +600,15 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 		[[[self undoManager] prepareWithInvocationTarget:self] movePageFromIndex:toInd-1 toIndex:fromInd];
 		[pages insertObject:[pages objectAtIndex:fromInd] atIndex:toInd];
 		[pages removeObjectAtIndex:fromInd];
-//		currentPageInd = toInd - 1;
 		[self setCurrentPageIndex:toInd-1 force:NO];
 		[self renumberPagesFromIndex:fromInd];
 	}
 	else
 	{
 		[[[self undoManager] prepareWithInvocationTarget:self] movePageFromIndex:toInd toIndex:fromInd+1];
-		id obj = [[pages objectAtIndex:fromInd]retain];
+		id obj = [pages objectAtIndex:fromInd];
 		[pages removeObjectAtIndex:fromInd];
 		[pages insertObject:obj atIndex:toInd];
-		[obj release];
-//		currentPageInd = toInd;
 		[self setCurrentPageIndex:toInd force:NO];
 		[self renumberPagesFromIndex:toInd];
 	}
@@ -661,10 +645,9 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 	else
 	{
 		[[[self undoManager] prepareWithInvocationTarget:self] moveLayerFromIndex:toInd toIndex:fromInd+1];
-		id obj = [[layers objectAtIndex:fromInd]retain];
+		id obj = [layers objectAtIndex:fromInd];
 		[layers removeObjectAtIndex:fromInd];
 		[layers insertObject:obj atIndex:toInd];
-		[obj release];
 		[[self currentPage]setCurrentLayerInd:toInd];
 	}
 	[self setNeedsDisplay:YES];
@@ -793,7 +776,7 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 	
 - (ACSDPage*)addNewPageAtIndex:(NSInteger)index
 {
-    ACSDPage *p = [[[ACSDPage alloc]initWithDocument:[self document]]autorelease];
+    ACSDPage *p = [[ACSDPage alloc]initWithDocument:[self document]];
     [self addPage:p atIndex:index];
 	[[self undoManager] setActionName:@"Add Page"];
     return p;
@@ -826,7 +809,7 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 
 -(void)duplicatePageAtIndex:(NSInteger)index
 {
-    ACSDPage *p = [[pages[index]copy]autorelease];
+    ACSDPage *p = [pages[index]copy];
     [p setPageTitle:IncrementString([pages[index]pageTitle])];
 	[self addPage:p atIndex:index+1];
 	[[self undoManager] setActionName:@"Duplicate Page"];
@@ -840,7 +823,7 @@ creatingGraphic,creatingPath,editingGraphic,defaultFill,defaultStroke;
 
 - (ACSDLayer*)addNewLayerAtIndex:(NSInteger)index
 {
-    ACSDLayer *l = [[[ACSDLayer alloc]initWithName:[[self currentPage] nextLayerName]isGuideLayer:NO]autorelease];
+    ACSDLayer *l = [[ACSDLayer alloc]initWithName:[[self currentPage] nextLayerName]isGuideLayer:NO];
     [self addLayer:l atIndex:index];
     [self setCurrentEditableLayerIndex:index force:NO select:YES withUndo:YES];
     [[self undoManager] setActionName:@"Add Layer"];
@@ -1395,7 +1378,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 
 -(NSIndexSet*)indexesOfSelectedGraphics
 {
-	NSMutableIndexSet *ixs = [[[NSMutableIndexSet alloc]init]autorelease];
+	NSMutableIndexSet *ixs = [[NSMutableIndexSet alloc]init];
     NSArray *elementArray = [[self selectedGraphics] allObjects];
 	for (ACSDGraphic *curGraphic in elementArray)
 	{
@@ -1412,7 +1395,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	for (ACSDGraphic *curGraphic in elementArray)
 	{
 		NSUInteger pos = [[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:curGraphic];
-		[positionalObjects addObject:[[[PositionalObject alloc]initWithPosition:pos object:curGraphic]autorelease]];
+		[positionalObjects addObject:[[PositionalObject alloc]initWithPosition:pos object:curGraphic]];
 	}
 	[positionalObjects sortUsingFunction:sortPositionalObjects context:NULL];
 	return positionalObjects;
@@ -1817,7 +1800,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
             }
         }
     }
-	NSMutableDictionary *goptions = [[[NSMutableDictionary alloc]initWithCapacity:5]autorelease];
+	NSMutableDictionary *goptions = [[NSMutableDictionary alloc]initWithCapacity:5];
 	[goptions setObject:substitutions forKey:@"substitutions"];
 	if (overrideScale != 0.0)
 		[goptions setObject:[NSNumber numberWithFloat:overrideScale] forKey:@"scale"];
@@ -1932,7 +1915,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		return handleShadow;
 	else
 	   {
-		NSShadow *scaledShadow = [[[NSShadow alloc]init]autorelease];
+		NSShadow *scaledShadow = [[NSShadow alloc]init];
 		NSSize sz = [handleShadow shadowOffset];
 		sz.width = sz.width * magnification;
 		sz.height = sz.height * magnification;
@@ -1965,7 +1948,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[self undoManager] setActionName:[NSString stringWithFormat:@"Create %@",[[ACSDConnector class] graphicTypeName]]];
     [[self window] invalidateCursorRectsForView:self];
 	[self reCalcHandleBitsIgnoreSelected:NO];
-    [creatingGraphic release];
 	creatingGraphic = nil;
 	
    }
@@ -2100,7 +2082,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	   }
     [[self window] invalidateCursorRectsForView:self];
 	[self reCalcHandleBitsIgnoreSelected:NO];
-    [creatingGraphic release];
 	creatingGraphic = nil;
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
    }
@@ -2140,7 +2121,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	[[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
 	[[self undoManager] setActionName:@"Import document"];
 	[[self window] invalidateCursorRectsForView:self];
-	[image release];
 }
 
 -(void)addGraphicToCurrentLayer:(ACSDGraphic*)g
@@ -2176,7 +2156,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	[[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
     [[self undoManager] setActionName:@"Import Picture"];
     [[self window] invalidateCursorRectsForView:self];
-	[image release];
     return image;
 }
 
@@ -2387,7 +2366,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
         for (SelectedElement *se in arr)
             [graphic uDeselectElement:se];
     }
-    NSSet *originalSelection = [[graphic.selectedElements copy]autorelease];
+    NSSet *originalSelection = [graphic.selectedElements copy];
     rubberbandIsDeselecting = (([theEvent modifierFlags] & NSEventModifierFlagCommand) ? YES : NO);
     origPoint = curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     rubberbandRect = NSZeroRect;
@@ -2406,7 +2385,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
             rubberbandRect = NSZeroRect;
             if (rubberbandKnobs)
             {
-                [rubberbandKnobs release];
                 rubberbandKnobs = nil;
             }
         }
@@ -2418,8 +2396,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
                 [self setNeedsDisplayInRect:rubberbandRect];
                 [self invalidateGraphics:@[graphic]];
                 rubberbandRect = newRubberbandRect;
-                [rubberbandKnobs release];
-                rubberbandKnobs = [[graphic knobsInRect:rubberbandRect]retain];
+                rubberbandKnobs = [graphic knobsInRect:rubberbandRect];
                 
                 [graphic.selectedElements removeAllObjects];
                 if (adding||subtracting)
@@ -2465,11 +2442,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     if (!NSEqualRects(rubberbandRect, NSZeroRect))
         [self setNeedsDisplayInRect:rubberbandRect];
     rubberbandRect = NSZeroRect;
-    if (rubberbandKnobs)
-    {
-        [rubberbandKnobs release];
-        rubberbandKnobs = nil;
-    }
+    rubberbandKnobs = nil;
     [[self window] invalidateCursorRectsForView:self];
     return changed;
 }
@@ -2494,11 +2467,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
                 [self invalidateGraphics:[rubberbandGraphics allObjects]];
             }
             rubberbandRect = NSZeroRect;
-            if (rubberbandGraphics)
-            {
-                [rubberbandGraphics release];
-                rubberbandGraphics = nil;
-            }
+            rubberbandGraphics = nil;
         }
         else
         {
@@ -2508,8 +2477,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
                 [self setNeedsDisplayInRect:rubberbandRect];
                 [self invalidateGraphics:[rubberbandGraphics allObjects]];
                 rubberbandRect = newRubberbandRect;
-                [rubberbandGraphics release];
-                rubberbandGraphics = [[self graphicsIntersectingRect:rubberbandRect]retain];
+                rubberbandGraphics = [self graphicsIntersectingRect:rubberbandRect];
                 [self setNeedsDisplayInRect:rubberbandRect];
                 [self invalidateGraphics:[rubberbandGraphics allObjects]];
             }
@@ -2530,11 +2498,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     if (!NSEqualRects(rubberbandRect, NSZeroRect))
         [self setNeedsDisplayInRect:rubberbandRect];
     rubberbandRect = NSZeroRect;
-    if (rubberbandGraphics)
-    {
-        [rubberbandGraphics release];
-        rubberbandGraphics = nil;
-    }
+    rubberbandGraphics = nil;
     [[self window] invalidateCursorRectsForView:self];
     return changed;
 }
@@ -3026,7 +2990,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		{
 			[graphic startBoundsManipulation];
 			ACSDPath *path = (ACSDPath*)graphic;
-			ACSDSubPath *copysp = [[[[path subPaths] objectAtIndex:kd.subPath]copy]autorelease];
+			ACSDSubPath *copysp = [[[path subPaths] objectAtIndex:kd.subPath]copy];
 			[[[self undoManager] prepareWithInvocationTarget:path] uReplaceSubPathsInRange:NSMakeRange(kd.subPath,1)withSubPaths:[NSArray arrayWithObject:copysp]];
             [((ACSDPath*)graphic) trackSplitKnob:kd withEvent:theEvent copy:(([theEvent modifierFlags] & NSEventModifierFlagOption)!=0) inView:self];
 			[graphic stopBoundsManipulation];
@@ -3680,7 +3644,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	NSInteger nextPos = [graphics count];
 	NSInteger count = [sortedSelectedGraphics count];
 	for (int i = 0;i < count;i++)
-		[graphics addObject:[[[sortedSelectedGraphics objectAtIndex:i]copy]autorelease]];
+		[graphics addObject:[[sortedSelectedGraphics objectAtIndex:i]copy]];
 	count = [graphics count];
 	[self clearSelection];
 	for (NSInteger i = nextPos;i < count;i++)
@@ -3787,39 +3751,39 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 }
 
 -(void)setLinkFromObjects:(NSSet*)fromObjects toObject:(id)toObject modifiers:(NSUInteger)modifiers
-   {
-	if (!(fromObjects && toObject))
-		return;
-	int anchorID = -1;
+{
+    if (!(fromObjects && toObject))
+        return;
+    int anchorID = -1;
     NSEnumerator *fEnum = [fromObjects objectEnumerator];
-	NSRange charRange = {0,0};
-       if ([toObject isKindOfClass:[ACSDText class]] && ((modifiers & NSEventModifierFlagCommand)==0))
-	   {
-		charRange = [toObject characterRangeUnderPoint:[self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil]];
-		anchorID = [toObject assignAnchorForRange:charRange];
-	   }
+    NSRange charRange = {0,0};
+    if ([toObject isKindOfClass:[ACSDText class]] && ((modifiers & NSEventModifierFlagCommand)==0))
+    {
+        charRange = [toObject characterRangeUnderPoint:[self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil]];
+        anchorID = [toObject assignAnchorForRange:charRange];
+    }
     ACSDGraphic *g;
-	ACSDLink *l = nil;
+    ACSDLink *l = nil;
     while ((g = [fEnum nextObject]) != nil)
-	   {	
-		NSArray *ranges = [[self document]linkRanges];
-		if (ranges)
-		   {
-			for (unsigned i = 0;i < [ranges count];i++)
-			   {
-				NSRange r = [[ranges objectAtIndex:i]rangeValue];
-				l = [ACSDLink uLinkFromObject:g range:r toObject:toObject anchor:anchorID substitutePageNo:NO changeAttributes:YES undoManager:[self  undoManager]];
-			   }
-		   }
-		else
-			l = [ACSDLink uLinkFromObject:g toObject:toObject anchor:anchorID substitutePageNo:NO changeAttributes:YES undoManager:[self undoManager]];
-	   }
-	if (anchorID < 0)
-		[highLightLayer highLightObject:toObject times:5 interval:0.25];
-	else
-		[highLightLayer highLightObject:l times:5 interval:0.25];
+    {
+        NSArray *ranges = [[self document]linkRanges];
+        if (ranges)
+        {
+            for (unsigned i = 0;i < [ranges count];i++)
+            {
+                NSRange r = [[ranges objectAtIndex:i]rangeValue];
+                l = [ACSDLink uLinkFromObject:g range:r toObject:toObject anchor:anchorID substitutePageNo:NO changeAttributes:YES undoManager:[self  undoManager]];
+            }
+        }
+        else
+            l = [ACSDLink uLinkFromObject:g toObject:toObject anchor:anchorID substitutePageNo:NO changeAttributes:YES undoManager:[self undoManager]];
+    }
+    if (anchorID < 0)
+        [highLightLayer highLightObject:toObject times:5 interval:0.25];
+    else
+        [highLightLayer highLightObject:l times:5 interval:0.25];
     [[self undoManager] setActionName:@"Link"];
-   }
+}
 
 -(IBAction)sizeToWidth:(id)sender
 {
@@ -4316,29 +4280,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	return snapSize;
    }
 
-- (NSColor*)guideColour
-   {
-	return guideColour;
-   }
-
-- (void)setGuideColour:(NSColor*)col
-   {
-    if (col == guideColour)
-		return;
-	if (guideColour)
-		[guideColour release];
-	guideColour = [col retain]; 
-   }
-
-- (void)setSelectionColour:(NSColor*)col
-   {
-    if (col == selectionColour)
-		return;
-	if (selectionColour)
-		[selectionColour release];
-	selectionColour = [col retain]; 
-   }
-
 - (void)boundsChanged:(NSNotification *)notification
    {
 	[self resizeHandleBits];
@@ -4504,7 +4445,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
         layoutManager = [[NSLayoutManager allocWithZone:NULL] init];
 //        [tc setWidthTracksTextView:NO];
 //        [tc setHeightTracksTextView:NO];
-        [layoutManager addTextContainer:[tc autorelease]];
+        [layoutManager addTextContainer:tc];
        }
     return layoutManager;
    }
@@ -4526,7 +4467,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
         {
             for (ACSDGraphic *g in sortedSelectedGraphics)
             {
-                ACSDGraphic *newGraphic = [[g copy]autorelease];
+                ACSDGraphic *newGraphic = [g copy];
                 [newGraphic moveBy:NSMakePoint(j * xinc + thisRowOffset, i * yinc)];
                 [newGraphic setName:[NSString stringWithFormat:@"%@ copy%d_%d",[g name],i,j]];
                 [self addElement:newGraphic];
@@ -4549,7 +4490,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	for (NSInteger i = 0;i < count;i++)
 	{
 		ACSDGraphic *oldGraphic = [sortedSelectedGraphics objectAtIndex:i];
-		ACSDGraphic *newGraphic = [[oldGraphic copy]autorelease];
+		ACSDGraphic *newGraphic = [oldGraphic copy];
 		[newGraphic setName:[NSString stringWithFormat:@"%@ copy",[oldGraphic name]]];
 		[graphics addObject:[[self document]registerObject:newGraphic]];
 		[map setObject:newGraphic forKey:[NSValue valueWithNonretainedObject:oldGraphic]];
@@ -4689,7 +4630,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [self removeGraphicAtIndex:idx andMakeClipFor:group];
     [self uGroupGraphicsFromIndexSet:ixs intoGroup:group atIndex:[[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:group]];
     [self selectGraphic:group];
-    [group release];
     [[self undoManager] setActionName:@"Clip"];
 }
 
@@ -4699,7 +4639,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	ACSDGroup *group = [[ACSDGroup alloc]initWithName:[ACSDGroup nextNameForDocument:[self document]] graphics:[NSArray array]
 		layer:[self currentEditableLayer]];
 	[self uGroupGraphicsFromIndexSet:ixs intoGroup:group atIndex:[[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:group]];
-	[group release];
 	[[self undoManager] setActionName:@"Group"];
    }
 
@@ -4834,7 +4773,7 @@ NSString *dragGraphicKey = @"dragGraphic";
 		[ConditionalObject conditionalObject:dg],dragGraphicKey,
 		nil];
 	NSMutableData *mdat = [NSMutableData data];
-	NSKeyedArchiver *archiver = [[[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat]autorelease];
+	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
 	[archiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
 	[archiver encodeObject:dict forKey:@"root"];
 	[archiver encodeObject:[[self document]documentKey] forKey:@"docKey"];
@@ -5063,7 +5002,7 @@ NSInteger findSame(id obj,NSArray *arr)
                if ([extension isEqualTo:@"acsd"] || [extension isEqualTo:@"svg"])
                {
                    NSData *d = [NSData dataWithContentsOfFile:fileStr];
-                   ACSDrawDocument *adoc = [[[ACSDrawDocument alloc]init]autorelease];
+                   ACSDrawDocument *adoc = [[ACSDrawDocument alloc]init];
                    [adoc setFileURL:[NSURL fileURLWithPath:fileStr]];
                    [adoc readFromData:d ofType:extension error:nil];
                    r.size = [adoc documentSize];
@@ -5075,7 +5014,7 @@ NSInteger findSame(id obj,NSArray *arr)
                {
                    NSImage *im = nil;
                    if (!(im = ImageFromFile(fileStr)))
-                       im = [[[NSImage alloc]initWithContentsOfFile:fileStr]autorelease];
+                       im = [[NSImage alloc]initWithContentsOfFile:fileStr];
                    if (im)
                    {
                        r.size = [im size];
@@ -5086,7 +5025,7 @@ NSInteger findSame(id obj,NSArray *arr)
                }
                if (newobj)
                {
-                   newobj.attributes = [[obj.attributes mutableCopy]autorelease];
+                   newobj.attributes = [obj.attributes mutableCopy];
                    newobj.sourcePath = fileStr;
                    [newobj setXScale:[obj xScale]];
                    [newobj setYScale:[obj yScale]];
@@ -5101,7 +5040,7 @@ NSInteger findSame(id obj,NSArray *arr)
                        id toobj = [obj.link toObject];
                        [ACSDLink uLinkFromObject:newobj toObject:toobj anchor:[obj.link anchorID] substitutePageNo:[obj.link substitutePageNo] changeAttributes:[obj.link changeAttributes] undoManager:[self undoManager]];
                    }
-                   for (ACSDLink *l in [[[obj linkedObjects] copy]autorelease])
+                   for (ACSDLink *l in [[obj linkedObjects] copy])
                        [ACSDLink uLinkFromObject:[l toObject] toObject:newobj anchor:[l anchorID] substitutePageNo:[l substitutePageNo] changeAttributes:[l changeAttributes] undoManager:[self undoManager]];
                    [obj preDelete];
                    [[self document]registerObject:newobj];
@@ -5139,7 +5078,7 @@ NSInteger findSame(id obj,NSArray *arr)
 				if ([extension isEqualTo:@"acsd"] || [extension isEqualTo:@"svg"])
 				{
 					NSData *d = [NSData dataWithContentsOfFile:fileStr];
-					ACSDrawDocument *adoc = [[[ACSDrawDocument alloc]init]autorelease];
+					ACSDrawDocument *adoc = [[ACSDrawDocument alloc]init];
 					[adoc setFileURL:[NSURL fileURLWithPath:fileStr]];
 					[adoc readFromData:d ofType:extension error:nil];
 					[self createDocImage:adoc name:[[fileStr lastPathComponent]stringByDeletingPathExtension] location:loc fileName:fileStr];
@@ -5147,7 +5086,7 @@ NSInteger findSame(id obj,NSArray *arr)
 				else
 				{
 					if (!(im = ImageFromFile(fileStr)))
-						im = [[[NSImage alloc]initWithContentsOfFile:fileStr]autorelease];
+						im = [[NSImage alloc]initWithContentsOfFile:fileStr];
 					if (im)
 						[self createImage:im name:[[fileStr lastPathComponent]stringByDeletingPathExtension] location:loc fileName:fileStr];
 				}
@@ -5155,11 +5094,11 @@ NSInteger findSame(id obj,NSArray *arr)
 			return;
 		}
 		if ((im = [[NSImage alloc]initWithPasteboard:pBoard]))
-			[self createImage:[im autorelease] name:[ACSDImage nextNameForDocument:[self document]] location:loc fileName:nil];
+			[self createImage:im name:[ACSDImage nextNameForDocument:[self document]] location:loc fileName:nil];
 		return;
 	}
 	NSDictionary *dict;
-	NSKeyedUnarchiver *unarch = [[[NSKeyedUnarchiver alloc]initForReadingWithData:data]autorelease];
+	NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
 	[unarch setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
 	id docKey = [unarch decodeObjectForKey:@"docKey"];
 	[(ArchiveDelegate*)[unarch delegate]setSameDocument:[docKey isEqual:[[self document]documentKey]]];
@@ -5218,9 +5157,9 @@ NSInteger findSame(id obj,NSArray *arr)
     {
         NSString *str = [arr objectAtIndex:0];
         NSBezierPath *bp = bezierPathFromSVGPath(str);
-        ACSDPath *p = [[[ACSDPath alloc] initWithName:[ACSDPath nextNameForDocument:[self document]]
+        ACSDPath *p = [[ACSDPath alloc] initWithName:[ACSDPath nextNameForDocument:[self document]]
                                                                     fill:[self defaultFill] stroke:[self defaultStroke] rect:NSZeroRect layer:[self currentEditableLayer]
-                       bezierPath:bp]autorelease];
+                       bezierPath:bp];
         if (p)
         {
             [self clearSelection];
@@ -5387,7 +5326,7 @@ NSInteger findSame(id obj,NSArray *arr)
         [p setLineCapStyle:[[g stroke]lineCap]];
         [p setLineJoinStyle:[[g stroke]lineJoin]];
         NSBezierPath *outp = outlinedStrokePath(p);
-        ACSDPath *newPath = [[[ACSDPath alloc]initWithName:[g name] fill:nil stroke:nil rect:[g bounds] layer:nil bezierPath:outp]autorelease];
+        ACSDPath *newPath = [[ACSDPath alloc]initWithName:[g name] fill:nil stroke:nil rect:[g bounds] layer:nil bezierPath:outp];
         [self uInsertGraphic:newPath intoLayer:[self currentEditableLayer] atIndex:[[[self currentEditableLayer]graphics]count]];
         [newPath completeRebuild];
         [self selectGraphic:newPath];
@@ -5408,7 +5347,7 @@ NSInteger findSame(id obj,NSArray *arr)
         [p setLineCapStyle:[[g stroke]lineCap]];
         [p setLineJoinStyle:[[g stroke]lineJoin]];
         NSBezierPath *outp = outlinedStrokePath(p);
-        ACSDPath *newPath = [[[ACSDPath alloc]initWithName:[g name] fill:nil stroke:nil rect:[g bounds] layer:nil bezierPath:outp]autorelease];
+        ACSDPath *newPath = [[ACSDPath alloc]initWithName:[g name] fill:nil stroke:nil rect:[g bounds] layer:nil bezierPath:outp];
         NSInteger idx = [[[self currentEditableLayer]graphics]indexOfObject:g];
         //[self uInsertGraphic:newPath intoLayer:[self currentEditableLayer] atIndex:[[[self currentEditableLayer]graphics]count]];
         [self uInsertGraphic:newPath intoLayer:[self currentEditableLayer] atIndex:idx];
@@ -5454,7 +5393,6 @@ NSInteger findSame(id obj,NSArray *arr)
             NSInteger idx = [[[self currentEditableLayer]graphics]indexOfObject:g];
             [self uInsertGraphic:newGraphic intoLayer:[self currentEditableLayer] atIndex:idx];
             [newGraphic completeRebuild];
-            [newGraphic release];
             [self deleteGraphic:g];
         }
     }
@@ -5638,9 +5576,9 @@ NSInteger findSame(id obj,NSArray *arr)
 			for (NSInteger j = 0;j < subPathCount;j++)
 			   {
 				NSMutableArray *pArray = [NSMutableArray arrayWithCapacity:1];
-				[pArray addObject:[[[subPathArray objectAtIndex:j]copy]autorelease]];
-				ACSDPath *h = [[[ACSDPath alloc]initWithName:[g name] fill:[g fill] stroke:[g stroke] rect:[g bounds] layer:[self currentEditableLayer] subPaths:pArray
-													  xScale:[g xScale] yScale:[g yScale] rotation:[g rotation] shadowType:[g shadowType] label:nil alpha:[g alpha]]autorelease];
+				[pArray addObject:[[subPathArray objectAtIndex:j]copy]];
+				ACSDPath *h = [[ACSDPath alloc]initWithName:[g name] fill:[g fill] stroke:[g stroke] rect:[g bounds] layer:[self currentEditableLayer] subPaths:pArray
+													  xScale:[g xScale] yScale:[g yScale] rotation:[g rotation] shadowType:[g shadowType] label:nil alpha:[g alpha]];
 				[self addElement:h];
 				[self selectGraphic:h];
 			   }
@@ -5671,7 +5609,7 @@ NSInteger findSame(id obj,NSArray *arr)
 	ACSDGraphic *graphic = [arr objectAtIndex:0];
 	ACSDPath *consumer;
 	if ([graphic isMemberOfClass:[ACSDPath class]])
-		consumer = [[graphic copy]autorelease];
+		consumer = [graphic copy];
 	else
 		consumer = [graphic convertToPath];
 	[consumer setLayer:[graphic layer]];
@@ -5682,7 +5620,7 @@ NSInteger findSame(id obj,NSArray *arr)
 		ACSDPath *g;
 		graphic = [arr objectAtIndex:i];
 		if ([graphic isMemberOfClass:[ACSDPath class]])
-			g = [[graphic copy]autorelease];
+			g = [graphic copy];
 		else
 			g = [graphic convertToPath];
 		[g applyTransform];
@@ -6138,7 +6076,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	while ((graphic = [objEnum nextObject]) != nil)
 	{
 		ACSDPath *newGraphic = [graphic convertToPath];
-		newGraphic.attributes = [[graphic.attributes mutableCopy]autorelease];
+		newGraphic.attributes = [graphic.attributes mutableCopy];
 		NSUInteger i = [[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:graphic];
 		[self replaceGraphicAtIndex:i with:newGraphic];
 		[newGraphic setLayer:[graphic layer]];
@@ -6347,11 +6285,10 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		if (i == 0)
 			startInd = 1;
 	   }
-	ACSDGraphic *modelObject = [[graphics objectAtIndex:0]retain];
+	ACSDGraphic *modelObject = [graphics objectAtIndex:0];
        if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
-	[modelObject release];
 	[[self undoManager] setActionName:[sender title]];
    }
 
@@ -6364,7 +6301,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	NSPoint joinPoint = [[graphics objectAtIndex:0]lastPoint];
 	for (unsigned i = 0;i < [graphics count];i++)
 	   {
-		ACSDPath *path = [[[graphics objectAtIndex:i]copy]autorelease];
+		ACSDPath *path = [[graphics objectAtIndex:i]copy];
 		if (i == 0)
 			[subPaths addObjectsFromArray:[[path subPaths]copiedObjects]];
 		else
@@ -6385,11 +6322,10 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 			joinPoint = [path lastPoint];
 		   }
 	   }
-	ACSDGraphic *modelObject = [[graphics objectAtIndex:0]retain];
+	ACSDGraphic *modelObject = [graphics objectAtIndex:0];
        if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
-	[modelObject release];
 	[[self undoManager] setActionName:[sender title]];
    }
 
@@ -6443,7 +6379,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
     {
         id g = [arr objectAtIndex:i];
         if ([g isMemberOfClass:[ACSDPath class]])
-            g = [[g copy]autorelease];
+            g = [g copy];
         else
             g = [g convertToPath];
         [g applyTransform];
@@ -6463,7 +6399,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	   {
 	    id g = [arr objectAtIndex:i];
 		if ([g isMemberOfClass:[ACSDPath class]])
-			g = [[g copy]autorelease];
+			g = [g copy];
 		else
 			g = [g convertToPath];
 		[g applyTransform];
@@ -6507,7 +6443,6 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	[self uInsertGraphic:newGraphic intoLayer:[self currentEditableLayer] atIndex:[[[self currentEditableLayer]graphics]count]];
 	[newGraphic completeRebuild];
 	[self selectGraphic:newGraphic];
-   [newGraphic release];
    }
 
 
@@ -6518,10 +6453,10 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         return;
     ACSDPath *g;
     if ([sender keyEquivalentModifierMask] & NSEventModifierFlagOption)
-        g = [[[arr objectAtIndex:0]copy]autorelease];
+        g = [[arr objectAtIndex:0]copy];
     else
         g = [arr objectAtIndex:0];
-    ACSDSubPath *subPath = [[[[g subPaths]objectAtIndex:0]copy]autorelease];
+    ACSDSubPath *subPath = [[[g subPaths]objectAtIndex:0]copy];
     NSMutableArray *elementArray = [subPath pathElements];
     if ([elementArray count] < 2)
         return;
@@ -6533,7 +6468,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
     [transform appendTransform:[NSAffineTransform transformWithScaleXBy:1.0 yBy:-1.0]];
     [transform appendTransform:[NSAffineTransform transformWithRotationByDegrees:angle]];
     [transform appendTransform:[NSAffineTransform transformWithTranslateXBy:[firstPoint point].x yBy:[firstPoint point].y]];
-    ACSDSubPath *newSubPath = [[subPath copy]autorelease];
+    ACSDSubPath *newSubPath = [subPath copy];
     [newSubPath applyTransform:transform];
     [newSubPath reverse];
     NSMutableArray *reflectedElementArray = [newSubPath pathElements];
@@ -6560,8 +6495,8 @@ static ACSDGraphic *parg(ACSDGraphic *g)
     for (int i = 1; i < [[g subPaths]count];i++)
     {
         ACSDSubPath *sp = [g subPaths][i];
-        [a addObject:[[sp copy]autorelease]];
-        subPath = [[sp copy]autorelease];
+        [a addObject:[sp copy]];
+        subPath = [sp copy];
         [subPath applyTransform:transform];
         [subPath reverse];
         [a addObject:subPath];
@@ -6587,12 +6522,12 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         return;
     ACSDPath *g;
     if ([sender keyEquivalentModifierMask] & NSEventModifierFlagOption)
-        g = [[[arr objectAtIndex:0]copy]autorelease];
+        g = [[arr objectAtIndex:0]copy];
     else
         g = [arr objectAtIndex:0];
 //    if ([[g subPaths]count] != 1)
   //      return;
-    ACSDSubPath *subPath = [[[[g subPaths]objectAtIndex:0]copy]autorelease];
+    ACSDSubPath *subPath = [[[g subPaths]objectAtIndex:0]copy];
     NSMutableArray *elementArray = [subPath pathElements];
     if ([elementArray count] < 2)
         return;
@@ -6608,7 +6543,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
     NSMutableArray *a = [NSMutableArray array];
     for (ACSDSubPath *sp in [g subPaths])
     {
-        subPath = [[sp copy]autorelease];
+        subPath = [sp copy];
         [subPath applyTransform:transform];
         [a addObject:subPath];
     }
@@ -6634,11 +6569,10 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	if (!pathArray)
 		return;
 	NSMutableArray *subPaths = [[ACSDPath aNotBSubPathsFromObjects:pathArray]subPaths];
-	ACSDGraphic *modelObject = [[arr objectAtIndex:0]retain];
+	ACSDGraphic *modelObject = [arr objectAtIndex:0];
        if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
-	[modelObject release];
 	[[self undoManager] setActionName:[sender title]];
    }
 
@@ -6651,11 +6585,10 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	if (!pathArray)
 		return;
 	NSMutableArray *subPaths = [[ACSDPath intersectedSubPathsFromObjects:pathArray]subPaths];
-	ACSDGraphic *modelObject = [[arr objectAtIndex:0]retain];
+	ACSDGraphic *modelObject = [arr objectAtIndex:0];
        if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
-	[modelObject release];
 	[[self undoManager] setActionName:[sender title]];
    }
 
@@ -6668,11 +6601,10 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	if (!pathArray)
 		return;
 	NSMutableArray *subPaths = [[ACSDPath unionSubPathsFromObjects:pathArray]subPaths];
-	ACSDGraphic *modelObject = [[arr objectAtIndex:0]retain];
+	ACSDGraphic *modelObject = [arr objectAtIndex:0];
        if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
-	[modelObject release];
 	[[self undoManager] setActionName:[sender title]];
    }
 
@@ -6685,11 +6617,10 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	if (!pathArray)
 		return;
 	NSMutableArray *subPaths = [[ACSDPath xorSubPathsFromObjects:pathArray]subPaths];
-	ACSDGraphic *modelObject = [[arr objectAtIndex:0]retain];
+	ACSDGraphic *modelObject = [arr objectAtIndex:0];
        if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
 		[self deleteSelectedGraphics];
 	[self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
-	[modelObject release];
 	[[self undoManager] setActionName:[sender title]];
    }
 
@@ -7130,13 +7061,13 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	if (ct == 0)
 		return;
 	if (ct == 1)
-		g = [[[selectedArray objectAtIndex:0]copy]autorelease];
+		g = [[selectedArray objectAtIndex:0]copy];
 	else
 	   {
 		NSMutableArray *arr = [NSMutableArray arrayWithCapacity:ct];
 		for (int i = 0;i < ct;i++)
-			[arr addObject:[[[selectedArray objectAtIndex:i]copy]autorelease]];
-		g = [[[ACSDGroup alloc]initWithName:@"patgroup" graphics:arr layer:nil]autorelease];
+			[arr addObject:[[selectedArray objectAtIndex:i]copy]];
+		g = [[ACSDGroup alloc]initWithName:@"patgroup" graphics:arr layer:nil];
 	   }
 	[[self document]createPatternWindowWithPattern:[ACSDPattern patternWithGraphic:g]isNew:YES];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDFillAdded object:self];
@@ -7155,7 +7086,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	   {
 		NSMutableArray *arr = [NSMutableArray arrayWithCapacity:ct];
 		for (int i = 0;i < ct;i++)
-			[arr addObject:[[[selectedArray objectAtIndex:i]copy]autorelease]];
+			[arr addObject:[[selectedArray objectAtIndex:i]copy]];
 		g = [[ACSDGroup alloc]initWithName:@"legroup" graphics:arr layer:nil];
 	   }
 	NSRect b = [g bounds];
@@ -7239,7 +7170,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 -(NSImage*)imageFromCurrentPageOfSize:(NSSize)sz
 {
 	NSBitmapImageRep *bm = newBitmap(sz.width,sz.height);
-	NSImage *im = [[[NSImage alloc]initWithSize:sz]autorelease];
+	NSImage *im = [[NSImage alloc]initWithSize:sz];
 	[im addRepresentation:bm];
 	[im lockFocusFlipped:YES];
 	NSRect b = [self bounds];
@@ -7256,7 +7187,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 -(NSImage*)imageFromPage:(int)pidx ofSize:(NSSize)sz
 {
     NSBitmapImageRep *bm = newBitmap(sz.width,sz.height);
-    NSImage *im = [[[NSImage alloc]initWithSize:sz]autorelease];
+    NSImage *im = [[NSImage alloc]initWithSize:sz];
     [im addRepresentation:bm];
     [im lockFocusFlipped:YES];
     NSRect b = [self bounds];
@@ -7290,7 +7221,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         xoff = (sz.height - sz.width) / 2.0;
     }
     NSBitmapImageRep *bm = newBitmap((int)s,(int)s);
-    NSImage *im = [[[NSImage alloc]initWithSize:NSMakeSize(s,s)]autorelease];
+    NSImage *im = [[NSImage alloc]initWithSize:NSMakeSize(s,s)];
     [im addRepresentation:bm];
     [im lockFocusFlipped:YES];
     [[NSAffineTransform transformWithScaleXBy:sc yBy:sc]concat];
@@ -7452,7 +7383,6 @@ NSString *IncrementString(NSString *str)
     [[self undoManager] setActionName:@"Create Bounding Box"];
     [[self window] invalidateCursorRectsForView:self];
     [self reCalcHandleBitsIgnoreSelected:NO];
-    [creatingGraphic release];
     creatingGraphic = nil;
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
     
@@ -7471,7 +7401,6 @@ NSString *IncrementString(NSString *str)
         [creatingGraphic setShadowType:[self defaultShadow]];
         [[[self currentEditableLayer] graphics] addObject:[[self document]registerObject:creatingGraphic]];
         [self selectGraphic:creatingGraphic];
-        [creatingGraphic release];
     }
     [[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
     [[self undoManager] setActionName:@"Create Bounding Boxes"];
@@ -7500,7 +7429,6 @@ NSString *IncrementString(NSString *str)
     [[self undoManager] setActionName:@"Create Bounding Box"];
     [[self window] invalidateCursorRectsForView:self];
     [self reCalcHandleBitsIgnoreSelected:NO];
-    [creatingGraphic release];
     creatingGraphic = nil;
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
     

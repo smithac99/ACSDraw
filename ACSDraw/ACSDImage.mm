@@ -40,7 +40,7 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 	{
 		if (im)
 		{
-			image = [im retain];
+			image = im;
 			frame.origin = NSMakePoint(0.0,0.0);
 			frame.size = [im size];
 		}
@@ -60,7 +60,7 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 	{
 		if (im)
 		{
-			image = [im retain];
+			image = im;
 			frame.origin = NSMakePoint(0.0,0.0);
 			frame.size = [im size];
 		}
@@ -71,16 +71,6 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 		[self invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
 	}
 	return self;
-}
-
--(void)dealloc
-{
-	[image release];
-	[spareImage release];
-	[ciContext release];
-	if (histogram)
-		free(histogram);
-	[super dealloc];
 }
 
 - (void) encodeWithCoder:(NSCoder*)coder
@@ -97,7 +87,7 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super initWithCoder:coder];
-	image = [[coder decodeObjectForKey:@"ACSDImage_image"]retain];
+	image = [coder decodeObjectForKey:@"ACSDImage_image"];
 	if ([coder containsValueForKey:@"ACSDImage_framex"])
 		frame = [ACSDGraphic decodeRectForKey:@"ACSDImage_frame" coder:coder];
 	else
@@ -166,7 +156,7 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 																		 bitsPerSample:[oldBitmapImageRep bitsPerSample]samplesPerPixel:[oldBitmapImageRep samplesPerPixel]hasAlpha:[oldBitmapImageRep hasAlpha]
 																			  isPlanar:[oldBitmapImageRep isPlanar]colorSpaceName:[oldBitmapImageRep colorSpaceName]bytesPerRow:bytesPerRow bitsPerPixel:[oldBitmapImageRep bitsPerPixel]];
 		[newBitmapRep setSize:NSMakeSize(newW,newH)];
-		[newImage addRepresentation:[newBitmapRep autorelease]];
+		[newImage addRepresentation:newBitmapRep];
 	}
 	[newImage lockFocus];
 	[[NSColor clearColor]set];
@@ -176,15 +166,15 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 	[[NSAffineTransform transformWithTranslateXBy:-w/2.0 yBy:-h/2.0] concat];
 	[oldImageRep drawInRect:NSMakeRect(0.0,0.0,w,h)];
 	[newImage unlockFocus];
-	return [newImage autorelease];
+	return newImage;
 }
 
 
 NSBitmapImageRep *createRGBBitmap(int width,int height)
 {
-	return [[[NSBitmapImageRep alloc]initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height
+	return [[NSBitmapImageRep alloc]initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height
 												bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES
-													 isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:0 bitsPerPixel:0]autorelease];
+													 isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:0 bitsPerPixel:0];
 }
 
 -(NSImage*)demercatorImage
@@ -196,7 +186,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	NSBitmapImageRep *newBitmapRep,*tempBitmapRep;
 	
 	if (_demercatorFilter == nil)
-		_demercatorFilter = [[CIFilter filterWithName:@"DemercatorFilter"]retain];
+		_demercatorFilter = [CIFilter filterWithName:@"DemercatorFilter"];
 	CIImage *ciImage = [CIImage imageWithCGImage:cgImage];
 	[_demercatorFilter setValue:ciImage forKey: @"inputImage"];
 	ciImage = [_demercatorFilter valueForKey: @"outputImage"];
@@ -222,7 +212,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	CGImageRef cgr = [newBitmapRep CGImage];
 	NSImage *newImage = [[NSImage alloc]initWithCGImage:cgr size:NSZeroSize];
 	
-	return [newImage autorelease];
+	return newImage;
 }
 
 -(NSImage*)wideCylinderHalfWrapImage
@@ -235,7 +225,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	NSBitmapImageRep *newBitmapRep;
 
 	if (_wideCylinderHalfWrapFilter == nil)
-		_wideCylinderHalfWrapFilter = [[CIFilter filterWithName:@"WideCylinderHalfWrapFilter"]retain];
+		_wideCylinderHalfWrapFilter = [CIFilter filterWithName:@"WideCylinderHalfWrapFilter"];
 	CIImage *ciImage = [CIImage imageWithCGImage:cgImage];
 	[_wideCylinderHalfWrapFilter setValue:ciImage forKey: @"inputImage"];
 	ciImage = [_wideCylinderHalfWrapFilter valueForKey: @"outputImage"];
@@ -246,11 +236,11 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	NSRect newRect = NSMakeRect(0,0,w,newH);
 	[[NSColor redColor]set];
 	NSRectFill(newRect);
-	[ciImage drawInRect:newRect fromRect:newRect operation:NSCompositeSourceOver fraction:1.0];
+    [ciImage drawInRect:newRect fromRect:newRect operation:NSCompositingOperationSourceOver fraction:1.0];
 	[NSGraphicsContext setCurrentContext:oldContext];
 	[newImage addRepresentation:newBitmapRep];
 	
-	return [newImage autorelease];
+	return newImage;
 }
 
 -(NSImage*)wideCylinderHalfUnwrapImage
@@ -266,7 +256,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	CGRect destR = CGRectMake(0.0,0.0,w,oldH);
     CGContextDrawImage([[NSGraphicsContext currentContext]CGContext],destR,cgImage);
 	if (_wideCylinderHalfUnwrapFilter == nil)
-		_wideCylinderHalfUnwrapFilter = [[CIFilter filterWithName:@"WideCylinderHalfUnwrapFilter"]retain];
+		_wideCylinderHalfUnwrapFilter = [CIFilter filterWithName:@"WideCylinderHalfUnwrapFilter"];
 	CIImage *ciImage = [CIImage imageWithCGImage:[tempBitmapRep CGImage]];
 	[_wideCylinderHalfUnwrapFilter setValue:ciImage forKey: @"inputImage"];
 	ciImage = [_wideCylinderHalfUnwrapFilter valueForKey: @"outputImage"];
@@ -278,7 +268,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
     [ciImage drawAtPoint:NSMakePoint(0.0,0.0) fromRect:NSMakeRect(0.0,0.0,w,newH) operation:/*NSCompositeCopy*/NSCompositingOperationSourceOver fraction:1.0];
 	[NSGraphicsContext setCurrentContext:oldContext];
 	[newImage addRepresentation:newBitmapRep];
-	return [newImage autorelease];
+	return newImage;
 }
 
 - (ACSDImage*)rotatedACSDImage 
@@ -291,9 +281,9 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	b.origin.y -= h2;
 	b.size.width = [im size].width;
 	b.size.height = [im size].height;
-    ACSDImage* obj = [[[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
+    ACSDImage* obj = [[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
 									  layer:[self layer] xScale:xScale yScale:yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:alpha 
-									  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast]autorelease];
+									  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast];
 	return obj;
 }
 
@@ -307,9 +297,9 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	b.origin.y -= h2;
 	b.size.width = [im size].width;
 	b.size.height = [im size].height;
-    ACSDImage* obj = [[[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
+    ACSDImage* obj = [[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
 											  layer:[self layer] xScale:xScale yScale:yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:alpha 
-											  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast]autorelease];
+											  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast];
 	return obj;
 }
 
@@ -323,9 +313,9 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	b.origin.y -= h2;
 	b.size.width = [im size].width;
 	b.size.height = [im size].height;
-    ACSDImage* obj = [[[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
+    ACSDImage* obj = [[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
 											  layer:[self layer] xScale:xScale yScale:yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:alpha 
-											  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast]autorelease];
+											  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast];
 	return obj;
 }
 
@@ -339,9 +329,9 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	b.origin.y -= h2;
 	b.size.width = [im size].width;
 	b.size.height = [im size].height;
-    ACSDImage* obj = [[[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
+    ACSDImage* obj = [[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
 											  layer:[self layer] xScale:xScale yScale:yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:alpha 
-											  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast]autorelease];
+											  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast];
 	return obj;
 }
 
@@ -357,14 +347,14 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 				isPlanar:[oldBitmapRep isPlanar]colorSpaceName:[oldBitmapRep colorSpaceName]bytesPerRow:[oldBitmapRep bytesPerRow]bitsPerPixel:[oldBitmapRep bitsPerPixel]];
 	[newBitmapRep setSize:NSMakeSize([newBitmapRep pixelsWide],[newBitmapRep pixelsHigh])];
 	spareImage = [[NSImage alloc]initWithSize:NSMakeSize([newBitmapRep pixelsWide],[newBitmapRep pixelsHigh])];
-	[spareImage addRepresentation:[newBitmapRep autorelease]];
+	[spareImage addRepresentation:newBitmapRep];
 }
 
 -(void)drawFilteredImage
 {
 	NSData *imData = [image TIFFRepresentation];
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imData];
-	CIImage *ciImage = [[[CIImage alloc]initWithBitmapImageRep:(NSBitmapImageRep*)imageRep]autorelease];
+	CIImage *ciImage = [[CIImage alloc]initWithBitmapImageRep:(NSBitmapImageRep*)imageRep];
 	CIImage *resultImage = ciImage;
 	for (NSString *s in [NSArray arrayWithObjects:@"ACSLevels",nil])
 	{
@@ -418,7 +408,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 		resultImage = [filter valueForKey: @"outputImage"];
 	}
 	if (!ciContext)
-		ciContext = [[[NSGraphicsContext currentContext]CIContext]retain];
+		ciContext = [[NSGraphicsContext currentContext]CIContext];
 	[self allocSpareImage];
 	[NSGraphicsContext saveGraphicsState];
 	[spareImage lockFocus];
@@ -432,7 +422,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 {
 	NSData *imData = [image TIFFRepresentation];
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imData];
-	CIImage *ciImage = [[[CIImage alloc]initWithBitmapImageRep:(NSBitmapImageRep*)imageRep]autorelease];
+	CIImage *ciImage = [[CIImage alloc]initWithBitmapImageRep:(NSBitmapImageRep*)imageRep];
 	CIImage *resultImage = ciImage;
 	CIFilter *filter = [CIFilter filterWithName:@"OverlayFilter"];
 	[filter setDefaults];
@@ -440,7 +430,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	[filter setValue:[CIColor colorWithCGColor:[col CGColor]]forKey:@"colour"];
 	resultImage = [filter valueForKey: @"outputImage"];
 	if (!ciContext)
-		ciContext = [[[NSGraphicsContext currentContext]CIContext]retain];
+		ciContext = [[NSGraphicsContext currentContext]CIContext];
 	[self allocSpareImage];
 	[NSGraphicsContext saveGraphicsState];
 	[spareImage lockFocus];
@@ -506,7 +496,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
     }
 	else
 	{
-		NSImageRep *rep = [[[image bestRepresentationForRect:bounds context:nil hints:nil]copy]autorelease];
+		NSImageRep *rep = [[image bestRepresentationForRect:bounds context:nil hints:nil]copy];
 		NSPoint pt = [self bounds].origin;
 		[rep drawAtPoint:pt];
 	}
@@ -861,7 +851,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	CGContextRef context = CGBitmapContextCreate(pixel, 1, 1, 8, 1, NULL,kCGImageAlphaOnly);
 //	CGContextTranslateCTM(context, -p.x, -p.y);
 //	[self renderInContext:context];
-	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
 	NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:-p.x yBy:-p.y];
 	if (transform)
 	{
@@ -895,7 +885,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 -(NSImage*)scaledImage
 {
 	NSRect db = NSIntegralRect([self displayBounds]);
-	NSImage *im = [[[NSImage alloc]initWithSize:db.size]autorelease];
+	NSImage *im = [[NSImage alloc]initWithSize:db.size];
 	NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
 	[t appendTransform:[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale]];
 	[t appendTransform:[NSAffineTransform transformWithRotationByDegrees:rotation]];
@@ -950,7 +940,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 			NSSize destSz = sz;
 			destSz.width *= scale;
 			destSz.height *= scale;
-			NSImage *destImage = [[[NSImage alloc]initWithSize:destSz]autorelease];
+			NSImage *destImage = [[NSImage alloc]initWithSize:destSz];
 			if ([oldRep isKindOfClass:[NSBitmapImageRep class]])
 			{
 				NSBitmapImageRep *oldBitmapRep = (NSBitmapImageRep*)oldRep;
@@ -959,7 +949,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 																						  isPlanar:[oldBitmapRep isPlanar]colorSpaceName:[oldBitmapRep colorSpaceName]
 																					   bytesPerRow:destSz.width*[oldBitmapRep samplesPerPixel] bitsPerPixel:[oldBitmapRep bitsPerPixel]];
 				[newBitmapRep setSize:NSMakeSize([newBitmapRep pixelsWide],[newBitmapRep pixelsHigh])];
-				[destImage addRepresentation:[newBitmapRep autorelease]];
+				[destImage addRepresentation:newBitmapRep];
 			}
 			NSRect sourceRect,destRect;
 			sourceRect.origin = destRect.origin = NSMakePoint(0.0,0.0);
@@ -1061,7 +1051,7 @@ CGContextRef CreateArgbContext(int width,int height)
 	NSSize sz = [image size];
 	CGContextRef context = CreateArgbContext(sz.width, sz.height);
 	[NSGraphicsContext saveGraphicsState];
-	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
     [image drawAtPoint:NSMakePoint(0.0,0.0) fromRect:NSMakeRect(0.0,0.0,sz.width,sz.height) operation:NSCompositingOperationSourceOver fraction:1.0];
 	[NSGraphicsContext restoreGraphicsState];
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

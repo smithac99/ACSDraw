@@ -157,7 +157,7 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
 		if (row >= 0)
 		{
 			NSUInteger modifierFlags = [[[pagePlus window]currentEvent]modifierFlags];
-			if (modifierFlags & NSAlternateKeyMask)
+            if (modifierFlags & NSEventModifierFlagOption)
 			{
 				[self duplicatePageAtRow:row];
 				return;

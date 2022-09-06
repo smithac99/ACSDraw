@@ -26,7 +26,7 @@
 		NSRect r;
 		r.origin = NSMakePoint(0.0,0.0);
 		r.size = sz;
-		[im drawAtPoint:NSMakePoint([self bounds].origin.x + xdiff,[self bounds].origin.y + ydiff) fromRect:r operation:NSCompositeSourceOver fraction:1.0];
+        [im drawAtPoint:NSMakePoint([self bounds].origin.x + xdiff,[self bounds].origin.y + ydiff) fromRect:r operation:NSCompositingOperationSourceOver fraction:1.0];
 		[NSGraphicsContext restoreGraphicsState];
 	}
 }

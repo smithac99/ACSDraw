@@ -72,9 +72,7 @@ enum GV_Cursor_Mode
 	int defaultMatrixRows,defaultMatrixColumns,defaultPolygonSides;
 	NSRect rubberbandRect;
 	NSSet *rubberbandGraphics;
-	ACSDGraphic *creatingGraphic,*trackingGraphic;
-    ACSDGraphic *editingGraphic;
-    ACSDGraphic *creatingPath;
+	ACSDGraphic *trackingGraphic;
 	BOOL rubberbandIsDeselecting;
 	NSLayoutManager *layoutManager;
 	NSTextView *editor;
@@ -87,7 +85,6 @@ enum GV_Cursor_Mode
 	NSPoint lineAnchorPoint,lineDragPoint;
 	BOOL snap,showSelection;
 	int snapSize,hotSpotSize;
-	NSColor *guideColour,*selectionColour;
 	char *snapVOffsets,*snapHOffsets;
 	BOOL cacheDrawing,documentBased;
 	GV_Cursor_Mode cursorMode;
@@ -105,12 +102,13 @@ enum GV_Cursor_Mode
 @property GV_Cursor_Mode cursorMode;
 @property int defaultMatrixRows,defaultMatrixColumns,defaultPolygonSides;
 @property NSPoint rotationPoint;
-@property (assign) ACSDGraphic *creatingGraphic,*creatingPath,*editingGraphic;
+@property (strong) ACSDGraphic *creatingGraphic,*creatingPath,*editingGraphic;
 @property (retain,nonatomic) ACSDFill *defaultFill;
 @property (retain,nonatomic) ACSDStroke *defaultStroke;
 @property (retain,nonatomic) ShadowType *defaultShadow;
 @property (retain) NSPanel *polygonSheet;
 @property (retain) NSArray *savedEyeClick;
+@property (strong) NSColor *guideColour,*selectionColour;
 
 
 

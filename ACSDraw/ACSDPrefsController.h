@@ -80,3 +80,6 @@ enum
 -(IBAction)toggleShowPathDirection:(id)sender;
 
 @end
+
+NSData *archivedObject(id obj);
+

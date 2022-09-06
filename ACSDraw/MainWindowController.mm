@@ -670,7 +670,7 @@ NSImage *ImageFromFile(NSString* str)
     [[self window]beginSheet:_genTextSheet completionHandler:^(NSModalResponse returnCode) {
         if (returnCode == 0)
         {
-            NSString *str = [genTextField stringValue];
+            NSString *str = [self->genTextField stringValue];
             if (str)
                 completionBlock(str);
         }
@@ -682,14 +682,14 @@ NSImage *ImageFromFile(NSString* str)
 - (IBAction)hideLayerWithName:(id)sender
 {
     [self showGenTextFieldWithTitle:@"Hide Layer with Name:" completionBlock:^(NSString *str) {
-        [graphicView hideLayersWithName:str];
+        [self->graphicView hideLayersWithName:str];
     }];
 }
 
 - (IBAction)selectLayerWithName:(id)sender
 {
     [self showGenTextFieldWithTitle:@"Select Layer with Name:" completionBlock:^(NSString *str) {
-        [graphicView selectLayersWithName:str];
+        [self->graphicView selectLayersWithName:str];
     }];
 }
 

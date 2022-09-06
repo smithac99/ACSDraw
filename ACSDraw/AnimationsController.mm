@@ -1013,7 +1013,7 @@ static BOOL VisualCommand(NSString* str)
     NSParameterAssert(videoWriter);
     
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   AVVideoCodecH264, AVVideoCodecKey,
+                                   AVVideoCodecTypeH264, AVVideoCodecKey,
                                    @(sz.width), AVVideoWidthKey,
                                    @(sz.height), AVVideoHeightKey,
                                    nil];

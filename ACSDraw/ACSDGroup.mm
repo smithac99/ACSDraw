@@ -539,7 +539,7 @@
     CGColorSpaceRelease(colorspace);
     
     // Switch to the context for drawing
-    NSGraphicsContext *maskGraphicsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:maskContext flipped:NO];
+    NSGraphicsContext *maskGraphicsContext = [NSGraphicsContext graphicsContextWithCGContext:maskContext flipped:NO];
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:maskGraphicsContext];
     [[NSGraphicsContext currentContext]saveGraphicsState];
