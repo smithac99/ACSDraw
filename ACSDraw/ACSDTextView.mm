@@ -232,4 +232,16 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
 	return [super validateMenuItem:menuItem];
    }
 */
+
+/*-(NSDictionary*)typingAttributes
+{
+    NSMutableDictionary *mdict = [[super typingAttributes]mutableCopy];
+    NSArray
+    return mdict;
+}*/
+-(NSDictionary*)typingAttributesPlus
+{
+    NSMutableDictionary *mdict = [[self typingAttributes]mutableCopy];
+    return mdict;
+}
 @end

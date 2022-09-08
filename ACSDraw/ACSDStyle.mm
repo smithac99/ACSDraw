@@ -21,6 +21,7 @@ NSString *StyleFirstIndent = @"FirstIndent";
 NSString *StyleLeftIndent = @"LeftIndent";
 NSString *StyleRightIndent = @"RightIndent";
 NSString *StyleLeading = @"Leading";
+NSString *StyleKerning = @"Kerning";
 NSString *StyleSpaceAfter = @"SpaceAfter";
 NSString *StyleSpaceBefore = @"SpaceBefore";
 NSString *StyleTabs = @"Tabs";
@@ -76,6 +77,8 @@ NSString *StyleItalic = @"Italic";
     }
     if ((o = [typing objectForKey:NSForegroundColorAttributeName]))
         [st setForegroundColour:o];
+    if ((o = [typing objectForKey:NSKernAttributeName]))
+        [st setFloatValue:[o floatValue] forKey:StyleKerning];
     NSParagraphStyle *ps = [typing objectForKey:NSParagraphStyleAttributeName];
     if (ps)
     {
