@@ -52,7 +52,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 {
     IBOutlet NSTextField *textAccessoryLabel;
     IBOutlet NSTextField *textAccessoryTextField;
-    IBOutlet NSView *textAccessoryView;
+    IBOutlet  NSView __strong *textAccessoryView;
 }
 @end
 
