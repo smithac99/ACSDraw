@@ -40,7 +40,7 @@
 		E740563F15B1EF2D0040F590 /* ACSDLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FC15B1EF2D0040F590 /* ACSDLayer.mm */; };
 		E740564015B1EF2D0040F590 /* ACSDLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FE15B1EF2D0040F590 /* ACSDLine.mm */; };
 		E740564115B1EF2D0040F590 /* ACSDLineEnding.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550015B1EF2D0040F590 /* ACSDLineEnding.mm */; };
-		E740564215B1EF2D0040F590 /* ACSDLink.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550215B1EF2D0040F590 /* ACSDLink.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740564215B1EF2D0040F590 /* ACSDLink.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550215B1EF2D0040F590 /* ACSDLink.mm */; };
 		E740564315B1EF2D0040F590 /* ACSDMatrix.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550415B1EF2D0040F590 /* ACSDMatrix.mm */; };
 		E740564415B1EF2D0040F590 /* ACSDPage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550615B1EF2D0040F590 /* ACSDPage.mm */; };
 		E740564515B1EF2D0040F590 /* ACSDPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550815B1EF2D0040F590 /* ACSDPath.mm */; };
@@ -48,7 +48,7 @@
 		E740564715B1EF2D0040F590 /* ACSDPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550C15B1EF2D0040F590 /* ACSDPattern.mm */; };
 		E740564815B1EF2D0040F590 /* ACSDPolygon.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550E15B1EF2D0040F590 /* ACSDPolygon.mm */; };
 		E740564915B1EF2D0040F590 /* ACSDPrefsController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551015B1EF2D0040F590 /* ACSDPrefsController.mm */; };
-		E740564A15B1EF2D0040F590 /* ACSDrawDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551315B1EF2D0040F590 /* ACSDrawDocument.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740564A15B1EF2D0040F590 /* ACSDrawDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551315B1EF2D0040F590 /* ACSDrawDocument.mm */; };
 		E740564B15B1EF2D0040F590 /* ACSDrawTextAttachmentCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551515B1EF2D0040F590 /* ACSDrawTextAttachmentCell.mm */; };
 		E740564C15B1EF2D0040F590 /* ACSDRect.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551715B1EF2D0040F590 /* ACSDRect.mm */; };
 		E740564E15B1EF2D0040F590 /* ACSDStroke.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551B15B1EF2D0040F590 /* ACSDStroke.mm */; };
@@ -1886,12 +1886,12 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.043;
+				CURRENT_PROJECT_VERSION = 1.044;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACSDraw/ACSDraw-Prefix.pch";
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.043;
+				MARKETING_VERSION = 1.044;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -1905,12 +1905,12 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.043;
+				CURRENT_PROJECT_VERSION = 1.044;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACSDraw/ACSDraw-Prefix.pch";
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.043;
+				MARKETING_VERSION = 1.044;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

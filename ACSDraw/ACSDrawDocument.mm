@@ -62,7 +62,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 {
     if ((self = [super init]))
 	   {
-           nameCounts = [[NSMutableDictionary dictionaryWithCapacity:10]retain];
+           _nameCounts = [NSMutableDictionary dictionaryWithCapacity:10];
            ACSDrawDocument *doc = (ACSDrawDocument*)[[NSDocumentController sharedDocumentController]currentDocument];
            if (doc)
                documentSize = [doc documentSize];
@@ -70,8 +70,8 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
                documentSize = [[NSPrintInfo sharedPrintInfo]paperSize];
            mainWindowController = nil;
            keyedObjects = [[NSMutableDictionary alloc]initWithCapacity:100];
-           lineEndings = [[self systemLineEndings]retain];
-           miscValues = [[NSMutableDictionary dictionaryWithCapacity:5]retain];
+           lineEndings = [self systemLineEndings];
+           miscValues = [NSMutableDictionary dictionaryWithCapacity:5];
            [self shadows];
            [self pages];
            [self styles];
@@ -82,39 +82,10 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
     return self;
 }
 
--(void)dealloc
-{
-	[strokes release];
-	[pages release];
-	[fills release];
-	[shadows release];
-	[lineEndings release];
-	[styles release];
-	[nameCounts release];
-	[miscValues release];
-	[exportDirectory release];
-	[docTitle release];
-	[scriptURL release];
-	[additionalCSS release];
-	[htmlSettings release];
-	[exportImageSettings release];
-	[_exportImageController release];
-	[_exportHTMLController release];
-	[_paddingSheet release];
-	[_selectNameSheet release];
-	[linkGraphics release];
-	[linkRanges release];
-	self.documentKey = nil;
-	[keyedObjects release];
-	[super dealloc];
-}
-
 - (void)setExportDirectory:(NSURL*)expd
 {
     if ([exportDirectory isEqual:expd])
 		return;
-	if (exportDirectory)
-		[exportDirectory release];
 	exportDirectory = [expd copy];
 }
 
@@ -136,7 +107,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 -(NSColor*)backgroundColour
    {
 	if (backgroundColour == nil)
-		backgroundColour = [[NSColor whiteColor]retain];
+		backgroundColour = [NSColor whiteColor];
 	return backgroundColour;
    }
 
@@ -158,9 +129,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 {
 	if (backgroundColour == c)
 		return;
-	if (backgroundColour)
-		[backgroundColour release];
-	backgroundColour = [c retain];
+	backgroundColour = c;
 	[self updateWindowForBackgroundColour];
 }
 
@@ -203,7 +172,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
    {
 	if (strokes == nil)
 	   {
-	    strokes = [[ACSDStroke initialStrokes]retain];
+	    strokes = [ACSDStroke initialStrokes];
 		[self performSelector:@selector(registerObject:)withObjectsFromArray:strokes];
 	   }
     return strokes;
@@ -213,7 +182,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
    {
 	if (styles == nil)
 	   {
-	    styles = [[ACSDStyle initialStyles]retain];
+	    styles = [ACSDStyle initialStyles];
 		[self performSelector:@selector(registerObject:)withObjectsFromArray:styles];
 	   }
     return styles;
@@ -223,7 +192,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
    {
 	if (fills == nil)
 	   {
-	    fills = [[ACSDFill initialFills]retain];
+	    fills = [ACSDFill initialFills];
 		[self performSelector:@selector(registerObject:)withObjectsFromArray:fills];
 	   }
     return fills;
@@ -231,22 +200,17 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 
 -(NSMutableArray*)shadows
    {
-	if (shadows == nil)
+	if (_shadows == nil)
 	   {
-	    shadows = [[ShadowType initialShadows]retain];
-		[self performSelector:@selector(registerObject:)withObjectsFromArray:shadows];
+	    _shadows = [ShadowType initialShadows];
+		[self performSelector:@selector(registerObject:)withObjectsFromArray:_shadows];
 	   }
-    return shadows;
+    return _shadows;
    }
 
 -(NSMutableArray*)lineEndings
    {
     return lineEndings;
-   }
-
--(NSMutableDictionary*)nameCounts
-   {
-    return nameCounts;
    }
 
 -(NSMutableDictionary*)miscValues
@@ -258,8 +222,8 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
    {
 	if (!pages)
 	   {
-		pages = [[NSMutableArray arrayWithCapacity:5]retain];
-		[pages addObject:(ACSDPage*)[self registerObject:[[[ACSDPage alloc]initWithDocument:self]autorelease]]];
+		pages = [NSMutableArray arrayWithCapacity:5];
+		[pages addObject:(ACSDPage*)[self registerObject:[[ACSDPage alloc]initWithDocument:self]]];
 	   }
     return pages;
    }
@@ -270,7 +234,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 	NSString *dPath = [[NSBundle mainBundle]pathForResource:@"systemLineEndings" ofType:@"acsdl"];
 	if (dPath)
 	   {
-		NSKeyedUnarchiver *unarchiver = [[[NSKeyedUnarchiver alloc] initForReadingWithData:[NSData dataWithContentsOfFile:dPath]]autorelease];
+		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:[NSData dataWithContentsOfFile:dPath]];
 		[unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
 		id d = [unarchiver decodeObjectForKey:@"root"];
 //		id d = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:dPath]];
@@ -295,9 +259,8 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 
 - (void)makeWindowControllers
 {
-	mainWindowController = [[MainWindowController allocWithZone:[self zone]] initWithPages:[self pages]];
+	mainWindowController = [[MainWindowController alloc] initWithPages:[self pages]];
 	[self addWindowController:mainWindowController];
-	[mainWindowController release];
 	[self windowControllerDidLoadNib:mainWindowController];
 }
 
@@ -314,9 +277,8 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 
 - (IBAction)addView:(id)sender
    {
-	MainWindowController *mwc = [[MainWindowController allocWithZone:[self zone]] initWithPages:[self pages]];
+	MainWindowController *mwc = [[MainWindowController alloc] initWithPages:[self pages]];
 	[self addWindowController:mwc];
-	[mwc release];
 	[mwc showWindow:self];
 	if (maxViewNumber == -1)
 	   {
@@ -337,8 +299,8 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
    {
 	if (isNew)
 		[lineEndings addObject:le];
-	LineEndingWindowController *lwc = [[LineEndingWindowController allocWithZone:[self zone]] initWithLineEnding:le];
-	[self addWindowController:[lwc autorelease]];
+	LineEndingWindowController *lwc = [[LineEndingWindowController alloc] initWithLineEnding:le];
+	[self addWindowController:lwc];
 	[lwc showWindow:self];
    }
 
@@ -346,8 +308,8 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
    {
 	if (isNew)
 		[[self fills] addObject:pat];
-	PatternWindowController *pc = [[PatternWindowController allocWithZone:[self zone]] initWithPattern:pat];
-	[self addWindowController:[pc autorelease]];
+	PatternWindowController *pc = [[PatternWindowController alloc] initWithPattern:pat];
+	[self addWindowController:pc];
 	[pc showWindow:self];
    }
 
@@ -452,16 +414,16 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 		[dictionary setObject:strokes forKey:strokesKey];
 	if (fills)
 		[dictionary setObject:fills forKey:fillsKey];
-	if (shadows)
-		[dictionary setObject:shadows forKey:shadowsKey];
+	if (_shadows)
+		dictionary[shadowsKey] = _shadows;
 	if (lineEndings)
 		[dictionary setObject:lineEndings forKey:lineEndingsKey];
-	[dictionary setObject:nameCounts forKey:nameCountsKey];
+	dictionary[nameCountsKey] = _nameCounts;
 	[dictionary setObject:self.documentKey forKey:ACSDrawDocumentKey];
 	if (styles)
 		[dictionary setObject:styles forKey:stylesKey];
-	if (docTitle)
-		[dictionary setObject:docTitle forKey:docTitleKey];
+	if (_docTitle)
+		dictionary[docTitleKey] = _docTitle;
 	[dictionary setObject:[NSNumber numberWithFloat:documentSize.width] forKey:docSizeWidthKey];
 	[dictionary setObject:[NSNumber numberWithFloat:documentSize.height] forKey:docSizeHeightKey];
 	if (backgroundColour)
@@ -472,10 +434,10 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	[dictionary setObject:[NSNumber numberWithInteger:i] forKey:currentLayerKey];
 	if (htmlSettings)
 		[dictionary setObject:htmlSettings forKey:htmlSettingsKey];
-	if (scriptURL)
-		[dictionary setObject:scriptURL forKey:scriptURLKey];
-	if (additionalCSS)
-		[dictionary setObject:additionalCSS forKey:additionalCSSKey];
+	if (_scriptURL)
+		dictionary[scriptURLKey] = _scriptURL;
+	if (_additionalCSS)
+		dictionary[additionalCSSKey] = _additionalCSS;
     if (miscValues[@"exporteventxml"])
         dictionary[@"exporteventxml"] = miscValues[@"exporteventxml"];
 	return dictionary;
@@ -501,10 +463,9 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	NSDictionary *dict = [self setupDictionaryFromMemory];
 	NSMutableData *data = [NSMutableData dataWithCapacity:8192];
 	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc]initForWritingWithMutableData:data];
-	[archiver setDelegate:[[[GXPArchiveDelegate alloc]init]autorelease]];
+	[archiver setDelegate:[[GXPArchiveDelegate alloc]init]];
 	[archiver encodeObject:dict forKey:@"root"];
 	[archiver finishEncoding];
-	[archiver release];
     return data;
 }
 
@@ -515,7 +476,7 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     if ([[typeName lowercaseString]isEqualToString:@"xml"])
         return [self loadLayoutXMLData:data];
     NSError *err = nil;
-    NSKeyedUnarchiver *unarchiver = [[[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&err]autorelease];
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&err];
     unarchiver.requiresSecureCoding = NO;
     if (err)
         NSLog(@"File read error %@",[err localizedDescription]);
@@ -542,15 +503,15 @@ NSString *ACSDrawDocumentKey = @"documentKey";
         if ((obj = [d objectForKey:shadowsKey]))
         {
             if ([obj count] < 5)
-                [shadows addObjectsFromArray:obj];
+                [_shadows addObjectsFromArray:obj];
             else
                 [self setShadows:obj];
         }
         documentSize.width = [[d objectForKey:docSizeWidthKey]floatValue];
         documentSize.height = [[d objectForKey:docSizeHeightKey]floatValue];
-        docTitle = [[d objectForKey:docTitleKey]retain];
-        scriptURL = [[d objectForKey:scriptURLKey]retain];
-        additionalCSS = [[d objectForKey:additionalCSSKey]retain];
+        _docTitle = d[docTitleKey];
+        _scriptURL = d[scriptURLKey];
+        _additionalCSS = d[additionalCSSKey];
         //if ((obj = [d objectForKey:ACSDrawDocumentKey]))
         //[self setDocumentKey:obj];
         if ((obj = [d objectForKey:pagesKey]))
@@ -563,7 +524,7 @@ NSString *ACSDrawDocumentKey = @"documentKey";
             [self setStyles:obj];
         if ((obj = [d objectForKey:backgroundColourKey]))
             [self setBackgroundColour:obj];
-        htmlSettings = [[d objectForKey:htmlSettingsKey]retain];
+        htmlSettings = [d objectForKey:htmlSettingsKey];
         [pages makeObjectsPerformSelector:@selector(fixTextBoxLinks)];
         if (d[@"exporteventxml"])
         {
@@ -773,7 +734,7 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
     NSString *transformString = [child.attributes objectForKey:@"transform"];
     if (transformString)
     {
-        NSAffineTransform *transform = [[[settings objectForKey:@"transform"]copy]autorelease];
+        NSAffineTransform *transform = [[settings objectForKey:@"transform"]copy];
 		NSAffineTransform *newTransform = [self transFormFromAttrString:transformString];
 		[transform prependTransform:newTransform];
 		[settings setObject:transform forKey:@"transform"];
@@ -854,7 +815,7 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
         return @[cmd];
     NSString *paramString = [str substringWithRange:NSMakeRange(startidx, (*index) - startidx)];
     (*index)++;
-    NSMutableCharacterSet *charset = [[[NSMutableCharacterSet whitespaceAndNewlineCharacterSet]mutableCopy]autorelease];
+    NSMutableCharacterSet *charset = [[NSMutableCharacterSet whitespaceAndNewlineCharacterSet]mutableCopy];
     [charset addCharactersInString:@","];
     NSArray *components = [paramString componentsSeparatedByCharactersInSet:charset];
     return @[cmd,components];
@@ -875,7 +836,7 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
 
 -(SVGGradient*)gradientFromSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack isLinear:(BOOL)linear
 {
-    SVGGradient *grad = [[[SVGGradient alloc]init]autorelease];
+    SVGGradient *grad = [[SVGGradient alloc]init];
 	if (!linear)
 		grad.gradientType = GRADIENT_RADIAL;
 	for (NSString *k in @[@"x1",@"y1",@"x2",@"y2",@"gradientUnits",@"spreadMethod",@"cx",@"cy",@"fx",@"fy",@"r"])
@@ -904,7 +865,7 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
         s = [stopnode.attributes objectForKey:@"stop-opacity"];
         if (s)
             alpha = [s floatValue];
-        GradientElement *ge = [[[GradientElement alloc]initWithPosition:stopf colour:[col colorWithAlphaComponent:alpha]]autorelease];
+        GradientElement *ge = [[GradientElement alloc]initWithPosition:stopf colour:[col colorWithAlphaComponent:alpha]];
         [elements addObject:ge];
     }
     if ([elements count] >= 2)
@@ -975,7 +936,7 @@ static BOOL isCSSIdent(unichar ch)
 
 -(id)graphicFromSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
 {
-	NSMutableDictionary *currentSettings = [[[settingsStack lastObject]mutableCopy]autorelease];
+	NSMutableDictionary *currentSettings = [[settingsStack lastObject]mutableCopy];
     [settingsStack addObject:currentSettings];
     [self getAttributesFromSVGNode:child settings:currentSettings];
     ACSDGraphic *g = nil;
@@ -1097,7 +1058,7 @@ static BOOL isCSSIdent(unichar ch)
 
 -(BOOL)loadLayoutXMLData:(NSData*)data
 {
-    XMLManager *xmlman = [[[XMLManager alloc]init]autorelease];
+    XMLManager *xmlman = [[XMLManager alloc]init];
     XMLNode *root = [xmlman parseData:data];
     if (![root.nodeName isEqualToString:@"events"])
         return NO;
@@ -1128,7 +1089,7 @@ static BOOL isCSSIdent(unichar ch)
 
 -(BOOL)loadSVGData:(NSData*)data
 {
-    XMLManager *xmlman = [[[XMLManager alloc]init]autorelease];
+    XMLManager *xmlman = [[XMLManager alloc]init];
     XMLNode *root = [xmlman parseData:data];
     if (![root.nodeName isEqualToString:@"svg"])
         return NO;
@@ -1164,7 +1125,7 @@ static BOOL isCSSIdent(unichar ch)
     
     //[self getAttributesFromSVGNode:root settings:svgSettings];
     
-	ACSDFill *blackFill = [[[ACSDFill alloc]initWithColour:[NSColor blackColor]]autorelease];
+	ACSDFill *blackFill = [[ACSDFill alloc]initWithColour:[NSColor blackColor]];
     [svgSettings setObject:[self fillLikeFill:blackFill] forKey:@"fill"];
     [svgSettings setObject:[NSMutableDictionary dictionaryWithCapacity:10] forKey:@"defs"];
     NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:0 yBy:documentSize.height];
@@ -1227,8 +1188,8 @@ NSString *xHTMLString2 = @"<html>\n";
 		[options setObject:smallImagesFolderName forKey:@"smallimages"];
 		[options setObject:largeImagesFolderName forKey:@"largeimages"];
 		[options setObject:htmlSettings forKey:@"htmlSettings"];
-		if (scriptURL && [scriptURL length] > 0)
-			[options setObject:scriptURL forKey:@"scriptURL"];
+		if (_scriptURL && [_scriptURL length] > 0)
+			options[@"scriptURL"] = _scriptURL;
 		[_exportHTMLController updateSettingsFromControls:htmlSettings];
 		[options setObject:[htmlSettings objectForKey:@"ieCompatibility"] forKey:@"ieCompatibility"];
 		NSString *firstPageFileName = nil;
@@ -1421,8 +1382,8 @@ NSString* Creator()
 			 [options setObject:smallImagesFolderName forKey:@"smallimages"];
 			 [options setObject:largeImagesFolderName forKey:@"largeimages"];
 			 [options setObject:htmlSettings forKey:@"htmlSettings"];
-			 if (scriptURL && [scriptURL length] > 0)
-				 [options setObject:scriptURL forKey:@"scriptURL"];
+			 if (self.scriptURL && [self.scriptURL length] > 0)
+				 options[@"scriptURL"] = self.scriptURL;
 			 [_exportHTMLController updateSettingsFromControls:htmlSettings];
 			 [options setObject:[htmlSettings objectForKey:@"ieCompatibility"] forKey:@"ieCompatibility"];
 			 //		[options setObject:[NSMutableDictionary dictionaryWithCapacity:10] forKey:@"fontDict"];
@@ -1474,7 +1435,7 @@ NSString* Creator()
 
 -(NSArray*)svgBodyString
 {
-	SVGWriter *svgWriter = [[[SVGWriter alloc]initWithSize:documentSize document:self page:0]autorelease];
+	SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:documentSize document:self page:0];
 	[svgWriter createData];
 	return @[[svgWriter defs],[svgWriter contents]];
 }
@@ -1493,7 +1454,7 @@ NSString* Creator()
         if (result == NSModalResponseOK)
 		 {
 			 [self setExportDirectory:[sp directoryURL]];
-			 SVGWriter *svgWriter = [[[SVGWriter alloc]initWithSize:documentSize document:self page:[[[self frontmostMainWindowController] graphicView]currentPageInd]]autorelease];
+			 SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:documentSize document:self page:[[[self frontmostMainWindowController] graphicView]currentPageInd]];
 			 [svgWriter createData];
 			 NSError *err = nil;
 			 if (!([[svgWriter fullString] writeToURL:[(NSSavePanel*)sp URL] atomically:YES encoding:NSUTF8StringEncoding error:&err]))
@@ -1534,7 +1495,7 @@ NSString* Creator()
                 {
                     NSString *nm = [[NSString stringWithFormat:@"%d_%@",(int)i,page.pageTitle] stringByAppendingPathExtension:@"svg"];
                     NSURL *furl = [url URLByAppendingPathComponent:nm];
-                    SVGWriter *svgWriter = [[[SVGWriter alloc]initWithSize:documentSize document:self page:i] autorelease];
+                    SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:documentSize document:self page:i];
                     [svgWriter createData];
                     NSError *err = nil;
                     if (!([[svgWriter fullString] writeToURL:furl atomically:YES encoding:NSUTF8StringEncoding error:&err]))
@@ -1765,7 +1726,7 @@ NSString* Creator()
                     return;
                 }
             int resolution = 72;
-            [_exportImageController updateSettingsFromControls:exportImageSettings];
+            [self->_exportImageController updateSettingsFromControls:self->exportImageSettings];
             NSSize sz;
             sz.width = [exportImageSettings[@"imageWidth"]floatValue];
             sz.height = [exportImageSettings[@"imageHeight"]floatValue];
@@ -1995,7 +1956,7 @@ NSString* Creator()
                         NSFont *f = [NSFont fontWithName:@"onebillionreader-Regular" size:40];
                         if (f == nil)
                             f = [NSFont systemFontOfSize:40];
-                        NSAttributedString *mas = [[[NSAttributedString alloc]initWithString:text attributes:@{NSFontAttributeName:f,NSForegroundColorAttributeName:textFill}]autorelease];
+                        NSAttributedString *mas = [[NSAttributedString alloc]initWithString:text attributes:@{NSFontAttributeName:f,NSForegroundColorAttributeName:textFill}];
                         NSTextStorage *contents = [[NSTextStorage alloc]initWithAttributedString:mas];
                         [contents addLayoutManager:[t layoutManager]];
                         [t setContents:contents];
@@ -2108,7 +2069,7 @@ NSString* Creator()
             {
                 NSString *path = [url path];
                 NSString *fn = [[url lastPathComponent]stringByDeletingPathExtension];
-                NSImage *im = [[[NSImage alloc]initWithContentsOfURL:url]autorelease];
+                NSImage *im = [[NSImage alloc]initWithContentsOfURL:url];
                 imageDict[fn] = @[im,path];
             }
             [self insertImagesAsBook:imageDict];
@@ -2131,7 +2092,7 @@ NSString* Creator()
             {
                 NSString *path = [url path];
                 NSString *fn = [[url lastPathComponent]stringByDeletingPathExtension];
-                NSImage *im = [[[NSImage alloc]initWithContentsOfURL:url]autorelease];
+                NSImage *im = [[NSImage alloc]initWithContentsOfURL:url];
                 imageDict[fn] = @[im,path];
             }
             [self insertPreviewImagesForBook:imageDict];
@@ -2262,64 +2223,24 @@ NSString* Creator()
 
 -(void)setStrokes:(NSMutableArray*)a
    {
-	if (strokes)
-		[strokes release];
-	strokes =[a retain];
+	strokes = a;
    }
 
 -(void)setLineEndings:(NSMutableArray*)a
    {
-	if (lineEndings)
-		[lineEndings release];
-	lineEndings = [a retain];
+	lineEndings = a;
    }
 
 -(void)setStyles:(NSMutableArray*)a
    {
 	if (styles == a)
 		return;
-	if (styles)
-		[styles release];
-	styles = [a retain];
+	styles = a;
    }
 
 -(void)setFills:(NSMutableArray*)a
    {
-	if (fills)
-		[fills release];
-	fills = [a retain];
-   }
-
--(id)linkGraphics
-   {
-	return linkGraphics;
-   }
-
--(void)setLinkGraphics:(id)lg
-   {
-	if (lg == linkGraphics)
-		return;
-	if (linkGraphics)
-		[linkGraphics release];
-	linkGraphics = lg;
-	if (linkGraphics)
-		[linkGraphics retain];
-   }
-
--(NSArray*)linkRanges
-   {
-	return linkRanges;
-   }
-
--(void)setLinkRanges:(NSArray*)r
-   {
-	if (r == linkRanges)
-		return;
-	if (linkRanges)
-		[linkRanges release];
-	linkRanges = r;
-	if (linkRanges)
-		[linkRanges retain];
+	fills = a;
    }
 
 -(void)deleteFillAtIndex:(NSInteger)i
@@ -2352,15 +2273,15 @@ NSString* Creator()
 
 -(void)deleteShadowAtIndex:(NSInteger)i
    {
-	[[[self undoManager] prepareWithInvocationTarget:self] insertShadow:[shadows objectAtIndex:i]atIndex:i];
-	[shadows removeObjectAtIndex:i];
+	[[[self undoManager] prepareWithInvocationTarget:self] insertShadow:_shadows[i] atIndex:i];
+	[_shadows removeObjectAtIndex:i];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDRefreshShadowsNotification object:self];
    }
 
 -(void)insertShadow:(id)sh atIndex:(NSInteger)i
    {
 	[[[self undoManager] prepareWithInvocationTarget:self] deleteShadowAtIndex:i];
-	[shadows insertObject:sh atIndex:i];
+	[_shadows insertObject:sh atIndex:i];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDRefreshShadowsNotification object:self];
    }
 
@@ -2380,66 +2301,8 @@ NSString* Creator()
 
 -(void)setPages:(NSMutableArray*)a
    {
-	if (pages)
-		[pages release];
-	pages = [a retain];
+	pages = a;
 	[pages makeObjectsPerformSelector:@selector(setDocument:)withObject:self];
-   }
-
--(void)setShadows:(NSMutableArray*)a
-   {
-	if (shadows)
-		[shadows release];
-	shadows = [a retain];
-   }
-
--(NSString*)docTitle
-   {
-	return docTitle;
-   }
-	
--(void)setDocTitle:(NSString*)s
-   {
-	if (docTitle == s)
-		return;
-	if (docTitle)
-		[docTitle release];
-	docTitle = [s retain];
-   }
-
--(NSString*)additionalCSS
-   {
-	return additionalCSS;
-   }
-
--(void)setAdditionalCSS:(NSString*)s
-   {
-	if (additionalCSS == s)
-		return;
-	if (additionalCSS)
-		[additionalCSS release];
-	additionalCSS = [s retain];
-   }
-
--(NSString*)scriptURL
-   {
-	return scriptURL;
-   }
-
--(void)setScriptURL:(NSString*)s
-   {
-	if (scriptURL == s)
-		return;
-	if (scriptURL)
-		[scriptURL release];
-	scriptURL = [s retain];
-   }
-
--(void)setNameCounts:(NSMutableDictionary*)d
-   {
-	if (nameCounts)
-		[nameCounts release];
-	nameCounts = [d retain];
    }
 
 static NSString *LastX(NSString* path,int ct)
