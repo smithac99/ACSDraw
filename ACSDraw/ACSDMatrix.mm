@@ -31,7 +31,7 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
     {
         leftMargin = rightMargin = topMargin = bottomMargin = 0.0;
         verticalAlignment = VERTICAL_ALIGNMENT_TOP;
-        GraphicView *gView = [[[[layer page]graphicViews]allObjects]objectAtIndex:0];
+        GraphicView *gView = [[[[self.layer page]graphicViews]allObjects]objectAtIndex:0];
         if (gView)
         {
             rows = [gView defaultMatrixRows];
@@ -145,7 +145,7 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
 
 - (id)copyWithZone:(NSZone *)zone 
 {
-    return [[[self class] alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:layer
+    return [[[self class] alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:self.layer
                                       xScale:xScale yScale:yScale rotation:rotation shadowType:shadowType label:textLabel alpha:alpha
                                    topMargin:topMargin leftMargin:leftMargin bottomMargin:bottomMargin rightMargin:rightMargin verticalAlignment:verticalAlignment
                                         rows:rows columns:columns cellContents:cellContents cellStroke:cellStroke
@@ -719,7 +719,7 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
     [[svgWriter contents]appendString:@"\">\n"];
     NSTextStorage *cont = [self cellContentsFromRow:i column:j];
     NSLayoutManager *lm=nil;
-    GraphicView *gView = [[[[layer page]graphicViews]allObjects]objectAtIndex:0];
+    GraphicView *gView = [[[[self.layer page]graphicViews]allObjects]objectAtIndex:0];
     if (gView)
         lm = [gView layoutManager];
     NSTextContainer *tc = [[lm textContainers] objectAtIndex:0];

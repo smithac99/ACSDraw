@@ -152,7 +152,6 @@ struct KnobDescriptor
 	float textPad;
 	GraphicMode graphicMode;
 	NSPoint rotationPoint;
-	ACSDLayer *layer;
 	ACSDGroup *parent;
 	ACSDLabel *textLabel;
 	NSString *toolTip;
@@ -167,7 +166,6 @@ struct KnobDescriptor
 	float originalXScale,originalYScale;
 	NSMutableDictionary *events,*filterSettings;
 	GraphicCache *graphicCache;
-	BOOL usesCache;
 	BOOL drawingToCache;
 	BOOL addingPoints;
 	BOOL isMask;
@@ -178,7 +176,6 @@ struct KnobDescriptor
 	NSBezierPath *outlinePath;
 	BOOL outlinePathValid;
 	NSBezierPath *bezierPath;
-	BOOL bezierPathValid;
 	ACSDStroke *preOutlineStroke;
 	ACSDFill *preOutlineFill;
 	BOOL opCancelled;

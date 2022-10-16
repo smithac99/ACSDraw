@@ -99,7 +99,7 @@
 		return;
 	graphics = [g mutableCopy];
 	[graphics makeObjectsPerformSelector:@selector(setParent:) withObject:self];
-	[graphics makeObjectsPerformSelector:@selector(setLayer:) withObject:layer];
+	[graphics makeObjectsPerformSelector:@selector(setLayer:) withObject:self.layer];
 	[graphics makeObjectsPerformSelector:@selector(postUndelete)];
 	[graphics makeObjectsPerformSelector:@selector(freeCache)];
     bounds = [ACSDGroup rectForObjects:graphics];

@@ -432,8 +432,8 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	[dictionary setObject:[NSString stringWithFormat:@"ACSDraw %@",version] forKey:sourceKey];
 	NSInteger i = [[[[self frontmostMainWindowController] graphicView] currentPage]currentLayerInd];
 	[dictionary setObject:[NSNumber numberWithInteger:i] forKey:currentLayerKey];
-	if (htmlSettings)
-		[dictionary setObject:htmlSettings forKey:htmlSettingsKey];
+	if (self.htmlSettings)
+		[dictionary setObject:self.htmlSettings forKey:htmlSettingsKey];
 	if (_scriptURL)
 		dictionary[scriptURLKey] = _scriptURL;
 	if (_additionalCSS)
@@ -524,7 +524,7 @@ NSString *ACSDrawDocumentKey = @"documentKey";
             [self setStyles:obj];
         if ((obj = [d objectForKey:backgroundColourKey]))
             [self setBackgroundColour:obj];
-        htmlSettings = [d objectForKey:htmlSettingsKey];
+        self.htmlSettings = [d objectForKey:htmlSettingsKey];
         [pages makeObjectsPerformSelector:@selector(fixTextBoxLinks)];
         if (d[@"exporteventxml"])
         {
@@ -1180,18 +1180,18 @@ NSString *xHTMLString2 = @"<html>\n";
 		NSString *smallImagesFolderName = [[url path] stringByAppendingPathComponent:@"smallimages"],
 		*largeImagesFolderName = [[url path] stringByAppendingPathComponent:@"largeimages"];
 		NSString *dTitle = [[self displayName]stringByDeletingPathExtension];
-		if (!htmlSettings)
-			htmlSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
+		if (!self.htmlSettings)
+            self.htmlSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
 		NSMutableDictionary *options = [NSMutableDictionary dictionaryWithCapacity:10];
 		[options setObject:dTitle forKey:@"dTitle"];
 		[options setObject:[url path] forKey:@"directory"];
 		[options setObject:smallImagesFolderName forKey:@"smallimages"];
 		[options setObject:largeImagesFolderName forKey:@"largeimages"];
-		[options setObject:htmlSettings forKey:@"htmlSettings"];
+		[options setObject:self.htmlSettings forKey:@"htmlSettings"];
 		if (_scriptURL && [_scriptURL length] > 0)
 			options[@"scriptURL"] = _scriptURL;
-		[_exportHTMLController updateSettingsFromControls:htmlSettings];
-		[options setObject:[htmlSettings objectForKey:@"ieCompatibility"] forKey:@"ieCompatibility"];
+		[_exportHTMLController updateSettingsFromControls:self.htmlSettings];
+		[options setObject:[self.htmlSettings objectForKey:@"ieCompatibility"] forKey:@"ieCompatibility"];
 		NSString *firstPageFileName = nil;
 		for (ACSDPage *page in [self pages])
 		{
@@ -1210,7 +1210,7 @@ NSString *xHTMLString2 = @"<html>\n";
 					NSBeep();
 			}
 		}
-		if ([[htmlSettings objectForKey:@"openAfterExport"]boolValue])
+		if ([[self.htmlSettings objectForKey:@"openAfterExport"]boolValue])
 			[[NSWorkspace sharedWorkspace] openFile:firstPageFileName];
 	}
 }
@@ -1353,7 +1353,7 @@ NSString* Creator()
 	[sp setAllowedFileTypes:nil];
 	[sp setTitle:@"Export HTML"];
 	[sp setAccessoryView:[_exportHTMLController accessoryView]];
-	[_exportHTMLController setControls:htmlSettings];
+	[_exportHTMLController setControls:self.htmlSettings];
 	[sp setDirectoryURL:[self exportDirectory]];
 	[sp setNameFieldStringValue:fName];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result)
@@ -1374,18 +1374,18 @@ NSString* Creator()
 			 NSString *smallImagesFolderName = [[url path] stringByAppendingPathComponent:@"smallimages"],
 			 *largeImagesFolderName = [[url path] stringByAppendingPathComponent:@"largeimages"];
 			 NSString *dTitle = [[self displayName]stringByDeletingPathExtension];
-			 if (!htmlSettings)
-				 htmlSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
+			 if (!self.htmlSettings)
+                 self.htmlSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
 			 NSMutableDictionary *options = [NSMutableDictionary dictionaryWithCapacity:10];
 			 [options setObject:dTitle forKey:@"dTitle"];
 			 [options setObject:[url path] forKey:@"directory"];
 			 [options setObject:smallImagesFolderName forKey:@"smallimages"];
 			 [options setObject:largeImagesFolderName forKey:@"largeimages"];
-			 [options setObject:htmlSettings forKey:@"htmlSettings"];
+			 [options setObject:self.htmlSettings forKey:@"htmlSettings"];
 			 if (self.scriptURL && [self.scriptURL length] > 0)
 				 options[@"scriptURL"] = self.scriptURL;
-			 [_exportHTMLController updateSettingsFromControls:htmlSettings];
-			 [options setObject:[htmlSettings objectForKey:@"ieCompatibility"] forKey:@"ieCompatibility"];
+			 [self.exportHTMLController updateSettingsFromControls:self.htmlSettings];
+			 [options setObject:[self.htmlSettings objectForKey:@"ieCompatibility"] forKey:@"ieCompatibility"];
 			 //		[options setObject:[NSMutableDictionary dictionaryWithCapacity:10] forKey:@"fontDict"];
 			 NSString *firstPageFileName = nil;
 			 for (ACSDPage *page in [self pages])
@@ -1405,7 +1405,7 @@ NSString* Creator()
 						 NSBeep();
 				 }
 			 }
-			 if ([[htmlSettings objectForKey:@"openAfterExport"]boolValue])
+			 if ([self.htmlSettings [@"openAfterExport"]boolValue])
 				 [[NSWorkspace sharedWorkspace] openFile:firstPageFileName];
 		 }
 	 }
@@ -1641,14 +1641,14 @@ NSString* Creator()
     NSSavePanel *sp;
     NSString *fName = [[self displayName]stringByDeletingPathExtension];
     sp = [NSSavePanel savePanel];
-    if (!exportImageSettings)
+    if (!self.exportImageSettings)
     {
-        exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
-        [exportImageSettings setObject:[NSNumber numberWithFloat:0.7] forKey:@"compressionQuality"];
+        self.exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
+        [self.exportImageSettings setObject:[NSNumber numberWithFloat:0.7] forKey:@"compressionQuality"];
     }
-    [exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.width] forKey:@"imageWidth"];
-    [exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.height] forKey:@"imageHeight"];
-    [_exportImageController setControls:exportImageSettings];
+    [self.exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.width] forKey:@"imageWidth"];
+    [self.exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.height] forKey:@"imageHeight"];
+    [_exportImageController setControls:self.exportImageSettings];
     [_exportImageController prepareSavePanel:sp];
     [sp setTitle:@"Export Image"];
     [sp setDirectoryURL:[self exportDirectory]];
@@ -1658,15 +1658,15 @@ NSString* Creator()
         if (result == NSModalResponseOK)
          {
              int resolution = 72;
-             [_exportImageController updateSettingsFromControls:exportImageSettings];
+             [self.exportImageController updateSettingsFromControls:self.exportImageSettings];
              NSSize sz;
-             sz.width = [[exportImageSettings objectForKey:@"imageWidth"]floatValue];
-             sz.height = [[exportImageSettings objectForKey:@"imageHeight"]floatValue];
-             float compressionQuality = [[exportImageSettings objectForKey:@"compressionQuality"]floatValue];
+             sz.width = [[self.exportImageSettings objectForKey:@"imageWidth"]floatValue];
+             sz.height = [[self.exportImageSettings objectForKey:@"imageHeight"]floatValue];
+             float compressionQuality = [[self.exportImageSettings objectForKey:@"compressionQuality"]floatValue];
              [self setExportDirectory:[sp directoryURL]];
              CGImageRef cgr = [[self frontmostMainWindowController]cgImageFromCurrentPageSelectionOnlyDrawSelectionOnly:drawSelectionOnly];
              CGImageRetain(cgr);
-             CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)[sp URL],(CFStringRef)[_exportImageController uti],1,nil);
+             CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)[sp URL],(CFStringRef)[self.exportImageController uti],1,nil);
              NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:compressionQuality],kCGImageDestinationLossyCompressionQuality,
                                     [NSNumber numberWithInt:resolution],kCGImagePropertyDPIHeight,[NSNumber numberWithInt:resolution],kCGImagePropertyDPIWidth,nil];
              CGImageDestinationAddImage(dest,cgr,(CFDictionaryRef)props);
@@ -1688,6 +1688,34 @@ NSString* Creator()
     [self exportSelectionImageDrawSelectionOnly:NO];
     }
 
+-(void)writeImagesToDirUrl:(NSURL *)dirURL
+{
+    int resolution = 72;
+    [self->_exportImageController updateSettingsFromControls:self.exportImageSettings];
+    NSSize sz;
+    sz.width = [self.exportImageSettings[@"imageWidth"]floatValue];
+    sz.height = [self.exportImageSettings[@"imageHeight"]floatValue];
+    float compressionQuality = [self.exportImageSettings[@"compressionQuality"]floatValue];
+    //[self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
+    NSString *dirpath = [dirURL path];
+    NSString *suffix = [_exportImageController chosenSuffix];
+    for (int i = 0;i < [pages count];i++)
+    {
+        ACSDPage *p = pages[i];
+        CGImageRef cgr = [[self frontmostMainWindowController]cgImageFromPage:i ofSize:sz];
+        CGImageRetain(cgr);
+        NSString *path = [[dirpath stringByAppendingPathComponent:[p pageTitle]]stringByAppendingPathExtension:suffix];
+        NSURL *url = [NSURL fileURLWithPath:path];
+        CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)url,(CFStringRef)[self.exportImageController uti],1,nil);
+        NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:compressionQuality],kCGImageDestinationLossyCompressionQuality,
+                               [NSNumber numberWithInt:resolution],kCGImagePropertyDPIHeight,[NSNumber numberWithInt:resolution],kCGImagePropertyDPIWidth,nil];
+        CGImageDestinationAddImage(dest,cgr,(CFDictionaryRef)props);
+        CGImageDestinationFinalize(dest);
+        CFRelease(dest);
+        CGImageRelease(cgr);
+    }
+}
+
 - (void)exportImages:(id)menuItem
 {
     if (!_exportImageController)
@@ -1701,14 +1729,14 @@ NSString* Creator()
     [sp setNameFieldLabel:@"Export As:"];
     [sp setNameFieldStringValue:fName];
     [sp setAllowedFileTypes:nil];
-    if (!exportImageSettings)
+    if (!self.exportImageSettings)
     {
-        exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
-        [exportImageSettings setObject:[NSNumber numberWithFloat:0.7] forKey:@"compressionQuality"];
+        self.exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
+        [self.exportImageSettings setObject:@(0.7) forKey:@"compressionQuality"];
     }
-    [exportImageSettings setObject:@(documentSize.width) forKey:@"imageWidth"];
-    [exportImageSettings setObject:@(documentSize.height) forKey:@"imageHeight"];
-    [_exportImageController setControls:exportImageSettings];
+    [self.exportImageSettings setObject:@(documentSize.width) forKey:@"imageWidth"];
+    [self.exportImageSettings setObject:@(documentSize.height) forKey:@"imageHeight"];
+    [_exportImageController setControls:self.exportImageSettings];
     [_exportImageController setIgnoreSavePanel:YES];
     [_exportImageController prepareSavePanel:sp];
     [sp setAllowedFileTypes:nil];
@@ -1725,30 +1753,7 @@ NSString* Creator()
                     NSRunAlertPanel(@"Error",@"%@",@"OK",nil,nil,[NSString stringWithFormat:@"Error creating directory: %@, %@",[dirURL path],[err localizedDescription]]);
                     return;
                 }
-            int resolution = 72;
-            [self->_exportImageController updateSettingsFromControls:self->exportImageSettings];
-            NSSize sz;
-            sz.width = [exportImageSettings[@"imageWidth"]floatValue];
-            sz.height = [exportImageSettings[@"imageHeight"]floatValue];
-            float compressionQuality = [[exportImageSettings objectForKey:@"compressionQuality"]floatValue];
-            //[self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
-            NSString *dirpath = [[sp URL]path];
-            NSString *suffix = [_exportImageController chosenSuffix];
-            for (int i = 0;i < [pages count];i++)
-            {
-                ACSDPage *p = pages[i];
-                CGImageRef cgr = [[self frontmostMainWindowController]cgImageFromPage:i ofSize:sz];
-                CGImageRetain(cgr);
-                NSString *path = [[dirpath stringByAppendingPathComponent:[p pageTitle]]stringByAppendingPathExtension:suffix];
-                NSURL *url = [NSURL fileURLWithPath:path];
-                CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)url,(CFStringRef)[_exportImageController uti],1,nil);
-                NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:compressionQuality],kCGImageDestinationLossyCompressionQuality,
-                                       [NSNumber numberWithInt:resolution],kCGImagePropertyDPIHeight,[NSNumber numberWithInt:resolution],kCGImagePropertyDPIWidth,nil];
-                CGImageDestinationAddImage(dest,cgr,(CFDictionaryRef)props);
-                CGImageDestinationFinalize(dest);
-                CFRelease(dest);
-                CGImageRelease(cgr);
-            }
+            [self writeImagesToDirUrl:dirURL];
         }
     }];
 }
@@ -1765,29 +1770,29 @@ NSString* Creator()
 	sp = [NSSavePanel savePanel];
 	[sp setNameFieldLabel:@"Export As:"];
 	[sp setNameFieldStringValue:fName];
-	if (!exportImageSettings)
+	if (!self.exportImageSettings)
 	{
-		exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
-		[exportImageSettings setObject:[NSNumber numberWithFloat:0.7] forKey:@"compressionQuality"];
+        self.exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
+		[self.exportImageSettings setObject:@(0.7) forKey:@"compressionQuality"];
 	}
-	[exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.width] forKey:@"imageWidth"];
-	[exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.height] forKey:@"imageHeight"];
-	[_exportImageController setControls:exportImageSettings];
+	[self.exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.width] forKey:@"imageWidth"];
+	[self.exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.height] forKey:@"imageHeight"];
+	[_exportImageController setControls:self.exportImageSettings];
 	[_exportImageController prepareSavePanel:sp];
 	[sp setTitle:@"Export Image"];
 	[sp beginSheetModalForWindow:[[self frontmostMainWindowController] window] completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK)
 		{
 			int resolution = 72;
-			[_exportImageController updateSettingsFromControls:exportImageSettings];
+			[self.exportImageController updateSettingsFromControls:self.exportImageSettings];
 			NSSize sz;
-			sz.width = [[exportImageSettings objectForKey:@"imageWidth"]floatValue];
-			sz.height = [[exportImageSettings objectForKey:@"imageHeight"]floatValue];
-			float compressionQuality = [[exportImageSettings objectForKey:@"compressionQuality"]floatValue];
+			sz.width = [[self.exportImageSettings objectForKey:@"imageWidth"]floatValue];
+			sz.height = [[self.exportImageSettings objectForKey:@"imageHeight"]floatValue];
+			float compressionQuality = [[self.exportImageSettings objectForKey:@"compressionQuality"]floatValue];
 			[self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
 			CGImageRef cgr = [[self frontmostMainWindowController]cgImageFromCurrentPageOfSize:sz];
 			//CGImageRetain(cgr);
-			CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)[sp URL],(CFStringRef)[_exportImageController uti],1,nil);
+			CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)[sp URL],(CFStringRef)[self.exportImageController uti],1,nil);
 			NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:compressionQuality],kCGImageDestinationLossyCompressionQuality,
 								   [NSNumber numberWithInt:resolution],kCGImagePropertyDPIHeight,[NSNumber numberWithInt:resolution],kCGImagePropertyDPIWidth,nil];
 			CGImageDestinationAddImage(dest,cgr,(CFDictionaryRef)props);
@@ -1808,19 +1813,19 @@ NSString* Creator()
 	NSSavePanel *sp;
 	NSString *fName = [[im name]stringByDeletingPathExtension];
 	sp = [NSSavePanel savePanel];
-	if (!exportImageSettings)
+	if (!self.exportImageSettings)
 	{
-		exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
-		[exportImageSettings setObject:[NSNumber numberWithFloat:0.7] forKey:@"compressionQuality"];
+        self.exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
+		[self.exportImageSettings setObject:[NSNumber numberWithFloat:0.7] forKey:@"compressionQuality"];
 	}
 	NSRect f = [im frame];
 	CGImageRef cgImage = [[im image] CGImageForProposedRect:&f context:nil hints:nil]; 
 	float w = CGImageGetWidth(cgImage);
 	float h = CGImageGetHeight(cgImage);
 	
-	[exportImageSettings setObject:[NSNumber numberWithInteger:w] forKey:@"imageWidth"];
-	[exportImageSettings setObject:[NSNumber numberWithInteger:h] forKey:@"imageHeight"];
-	[_exportImageController setControls:exportImageSettings];
+	[self.exportImageSettings setObject:[NSNumber numberWithInteger:w] forKey:@"imageWidth"];
+	[self.exportImageSettings setObject:[NSNumber numberWithInteger:h] forKey:@"imageHeight"];
+	[_exportImageController setControls:self.exportImageSettings];
 	[_exportImageController prepareSavePanel:sp];
 	[sp setTitle:@"Export Image"];
 	[sp setDirectoryURL:[self exportDirectory]];
@@ -1829,16 +1834,16 @@ NSString* Creator()
         if (result == NSModalResponseOK)
 		{
 			int resolution = 72;
-			[_exportImageController updateSettingsFromControls:exportImageSettings];
+            [self.exportImageController updateSettingsFromControls:self.exportImageSettings];
 			NSSize sz;
-			sz.width = [[exportImageSettings objectForKey:@"imageWidth"]floatValue];
-			sz.height = [[exportImageSettings objectForKey:@"imageHeight"]floatValue];
-			float compressionQuality = [[exportImageSettings objectForKey:@"compressionQuality"]floatValue];
+			sz.width = [[self.exportImageSettings objectForKey:@"imageWidth"]floatValue];
+			sz.height = [[self.exportImageSettings objectForKey:@"imageHeight"]floatValue];
+			float compressionQuality = [[self.exportImageSettings objectForKey:@"compressionQuality"]floatValue];
 			[self setExportDirectory:[(NSSavePanel*)sp directoryURL]];
 			CGImageRef cgr = [[im image] CGImageForProposedRect:nil context:nil hints:nil]; 
 			CGImageRetain(cgr);
 			CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)[(NSSavePanel*)sp URL],
-																		 (CFStringRef)[_exportImageController uti],
+																		 (CFStringRef)[self.exportImageController uti],
 																		 1,nil);
 			NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:compressionQuality],kCGImageDestinationLossyCompressionQuality,
 								   [NSNumber numberWithInt:resolution],kCGImagePropertyDPIHeight,[NSNumber numberWithInt:resolution],kCGImagePropertyDPIWidth,nil];

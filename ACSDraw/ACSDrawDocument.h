@@ -48,7 +48,6 @@ NSString* Creator();
 	NSURL *exportDirectory;
 	saveContextInfo sci;
 	id hPaddingField,vPaddingField,selectNameField;
-	NSMutableDictionary *htmlSettings,*exportImageSettings;
 	NSColor *backgroundColour;
 // Transient stuff
 	int maxViewNumber;
@@ -59,7 +58,7 @@ NSString* Creator();
 
 @property (strong) NSMutableDictionary *nameCounts;
 @property (strong) NSString *scriptURL;
-@property (strong) NSMutableArray *shadows;
+@property (strong,nonatomic) NSMutableArray *shadows;
 @property (strong) NSString *additionalCSS;
 
 @property (strong) NSSet *linkGraphics;
@@ -69,6 +68,8 @@ NSString* Creator();
 
 @property (retain) HtmlExportController *exportHTMLController;
 @property (retain) ImageExportController *exportImageController;
+@property (strong) NSMutableDictionary *htmlSettings,*exportImageSettings;
+
 @property (retain) IBOutlet NSPanel *paddingSheet,*selectNameSheet;
 @property (retain) NSDate *documentKey;
 

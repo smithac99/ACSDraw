@@ -61,7 +61,7 @@
 		return;
 	if ([points count] == 0)
 		return;
-	if (layer)
+	if (self.layer)
 		[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
 	rotationPoint.x += vector.x;
 	rotationPoint.y += vector.y;
@@ -72,7 +72,7 @@
 	[self computeTransformedHandlePoints];
 	bounds = NSOffsetRect([self bounds], vector.x, vector.y);
 	
-	if (layer)
+	if (self.layer)
 	{
 		[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
 		[self invalidateConnectors];
@@ -155,7 +155,7 @@
 	{
 		[self setOutlinePathValid:NO];
 	}
-	if (graphicCache && usesCache && sizeChanged)
+	if (graphicCache && self.usesCache && sizeChanged)
 		[self readjustCache];
 	if (graphicCache && redraw)
 		[graphicCache setValid:NO];
@@ -192,7 +192,7 @@
 
 - (NSBezierPath *)bezierPath
 {
-	if (!addingPoints && !bezierPathValid && points && ([points count] > 1))
+	if (!addingPoints && !self.bezierPathValid && points && ([points count] > 1))
 	{
 		NSMutableArray *curves = [NSMutableArray arrayWithCapacity:100];
 		[self calcCurveFromInd:0 toInd:(int)[points count]-1 currLevel:0 maxLevel:level curves:curves];

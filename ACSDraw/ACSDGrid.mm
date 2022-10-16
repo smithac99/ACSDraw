@@ -21,7 +21,7 @@
    {
     if (self = [super initWithName:n fill:f stroke:str rect:r layer:l])
 	   {
-		GraphicView *gView = [[[[layer page]graphicViews]allObjects]objectAtIndex:0];
+		GraphicView *gView = [[[[self.layer page]graphicViews]allObjects]objectAtIndex:0];
 		if (gView)
 		   {
 			rows = [gView defaultMatrixRows];

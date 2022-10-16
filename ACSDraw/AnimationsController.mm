@@ -166,7 +166,7 @@ static NSArray *decomposed(NSString *command)
         return;
     self.pageBounds = [[self inspectingGraphicView] bounds];
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		for (AnimationEntry *ae in _animationList)
+        for (AnimationEntry *ae in self.animationList)
 		{
 			NSArray *commands = [ae.text componentsSeparatedByString:@"\n"];
 			for (NSString *command in commands)

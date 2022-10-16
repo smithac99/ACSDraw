@@ -856,7 +856,7 @@ static NSMutableArray *parseRenameString(NSString* str)
             if (idx != NSNotFound)
             {
 				dispatch_async(dispatch_get_main_queue(), ^{
-					[[renameTextField currentEditor]setSelectedRange:NSMakeRange(0, idx)];
+                    [[self->renameTextField currentEditor]setSelectedRange:NSMakeRange(0, idx)];
 				});
             }
         }
@@ -864,7 +864,7 @@ static NSMutableArray *parseRenameString(NSString* str)
         if (rena != nil)
             [renameStartFromTextField setStringValue:rena];
     }
-    [NSApp beginSheet: _renameSheet
+    [NSApp beginSheet: self.renameSheet
 	   modalForWindow: [self window]
 		modalDelegate: self
 	   didEndSelector: @selector(renameSheetDidEnd:returnCode:contextInfo:)
@@ -937,7 +937,7 @@ static NSMutableArray *parseRenameString(NSString* str)
             }
             else
             {
-                [batchScaleMsg setStringValue:[err localizedDescription]];
+                [self->batchScaleMsg setStringValue:[err localizedDescription]];
                 return nil;
             }
 
@@ -970,7 +970,7 @@ static NSMutableArray *parseRenameString(NSString* str)
             }
             else
             {
-                [batchScaleMsg setStringValue:[err localizedDescription]];
+                [self->batchScaleMsg setStringValue:[err localizedDescription]];
                 return nil;
             }
             return nil;

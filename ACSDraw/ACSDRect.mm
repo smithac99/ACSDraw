@@ -29,9 +29,9 @@
 
 - (void)postChangeOfBounds
 {
-	if (!layer)
+	if (!self.layer)
 		return;
-	if ([[layer selectedGraphics]count] == 1)
+	if ([[self.layer selectedGraphics]count] == 1)
 	{
 		NSRect r = bounds;
 		if (moving)

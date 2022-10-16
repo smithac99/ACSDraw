@@ -185,7 +185,7 @@ NSString *substitute_characters(NSString* string)
 - (id)copyWithZone:(NSZone *)zone
 {
     NSTextStorage *c = [[NSTextStorage alloc] initWithAttributedString:contents];
-	id obj = [[ACSDText alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:layer
+	id obj = [[ACSDText alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:self.layer
 									xScale:xScale yScale:yScale rotation:rotation shadowType:shadowType label:textLabel alpha:alpha contents:c
 								 topMargin:topMargin leftMargin:leftMargin bottomMargin:bottomMargin rightMargin:rightMargin verticalAlignment:verticalAlignment];
 	[(ACSDText*)obj setCornerRadius:cornerRadius];
@@ -1676,7 +1676,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 		objectsInFront = [NSMutableSet setWithCapacity:10];
 	else
 		[objectsInFront removeAllObjects];
-	[layer addGraphicsInFrontOfGraphic:self toSet:objectsInFront];
+	[self.layer addGraphicsInFrontOfGraphic:self toSet:objectsInFront];
 	objectsInFrontValid = YES;
 	return objectsInFront;
    }
@@ -1915,7 +1915,7 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 						if (![style nullStyle])
 							[mas addAttributes:[style textAndStyleAttributes] range:NSMakeRange(0,[mas length])];
 						[mas endEditing];
-						NSString *endBit = [NSString stringWithFormat:@"%ld",[[layer page]pageNo]];
+						NSString *endBit = [NSString stringWithFormat:@"%ld",[[self.layer page]pageNo]];
 						NSMutableAttributedString *p = [[NSMutableAttributedString alloc]initWithString:endBit];
 						l = [ACSDLink linkFrom:target to:self anchorID:anchor substitutePageNo:YES changeAttributes:NO];
 						[p addAttributes:[NSDictionary dictionaryWithObject:l forKey:NSLinkAttributeName] range:NSMakeRange(0,[[p string]length])];
@@ -2295,7 +2295,7 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 	NSMutableString *cssString = [options objectForKey:@"cssString"];
 	NSMutableString *bodyString = [options objectForKey:@"bodyString"];
 	NSMutableDictionary *fontDict = [options objectForKey:@"fontDict"];
-	NSSize sz = [[[layer page] document]documentSize];
+	NSSize sz = [[[self.layer page] document]documentSize];
 	NSRect b = [self bounds];
 	NSString *objName = imageNameForOptions(options);
 	float lpad = [textContainer lineFragmentPadding],rpad=lpad,tpad=topMargin,bpad=bottomMargin,strokeWidth=0.0,halfStrokeWidth=0.0;
