@@ -90,14 +90,14 @@
 
 - (BOOL)intersectsWithRect:(NSRect)selectionRect	//used for selecting with rubberband
    {
-	if (transform == nil)
+	if (self.transform == nil)
 		return lineInRect(selectionRect,self.fromPt,self.toPt);
 	return [super intersectsWithRect:selectionRect];
    }
 
 - (BOOL)shapeUnderPoint:(NSPoint)point includeKnobs:(BOOL)includeKnobs view:(GraphicView*)vw
    {
-	if (transform == nil)
+	if (self.transform == nil)
 		return NSPointInRect(point,bounds);
 	return [super shapeUnderPoint:point includeKnobs:includeKnobs view:vw];
    }
@@ -112,21 +112,20 @@
    }
 
 - (void)moveBy:(NSPoint)vector
-   {
-	if (vector.x == 0.0 && vector.y == 0.0)
-		return;
-	_fromPt.x += vector.x;
-	_fromPt.y += vector.y;
-	_toPt.x += vector.x;
-	_toPt.y += vector.y;
+{
+    if (vector.x == 0.0 && vector.y == 0.0)
+        return;
+    _fromPt.x += vector.x;
+    _fromPt.y += vector.y;
+    _toPt.x += vector.x;
+    _toPt.y += vector.y;
     [self setBoundsTo:NSOffsetRect([self bounds], vector.x, vector.y) from:bounds];
-	rotationPoint.x += vector.x;
-	rotationPoint.y += vector.y;
-	[self computeTransform];
-	[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-	[self invalidateConnectors];
-	[self postChangeOfBounds];
-   }
+    self.rotationPoint = offset_point(self.rotationPoint, vector);
+    [self computeTransform];
+    [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+    [self invalidateConnectors];
+    [self postChangeOfBounds];
+}
 
 - (void)flipV
 {
@@ -165,7 +164,7 @@
 }
 - (KnobDescriptor)resizeByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain aroundCentre:(BOOL)aroundCentre
    {
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
 	if (kd.knob == 0)
 	   {

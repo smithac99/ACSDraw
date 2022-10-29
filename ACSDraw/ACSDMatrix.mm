@@ -626,7 +626,7 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
     if (self.rotation != 0.0)
     {
         [NSGraphicsContext saveGraphicsState];
-        [transform concat];
+        [self.transform concat];
     }
     for (int i = 0;i < rows;i++)
     {
@@ -702,7 +702,7 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
 {
     if (self.rotation == 0.0)
         return [self cellPath];
-    return [transform transformBezierPath:[self cellPath]];
+    return [self.transform transformBezierPath:[self cellPath]];
 }
 
 - (NSBezierPath *)bezierPath
@@ -714,8 +714,8 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
 -(void)writeSVGCellTextRow:(int)i column:(int)j writer:(SVGWriter*)svgWriter
 {
     [[svgWriter contents]appendString:@"<text transform=\""];
-    if (transform)
-        [[svgWriter contents]appendString:string_from_transform(transform)];
+    if (self.transform)
+        [[svgWriter contents]appendString:string_from_transform(self.transform)];
     [[svgWriter contents]appendString:@"\">\n"];
     NSTextStorage *cont = [self cellContentsFromRow:i column:j];
     NSLayoutManager *lm=nil;

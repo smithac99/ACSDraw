@@ -35,7 +35,7 @@
 	{
 		NSRect r = bounds;
 		if (self.moving)
-			r = NSOffsetRect(r,moveOffset.x,moveOffset.y);
+			r = NSOffsetRect(r,self.moveOffset.x,self.moveOffset.y);
 		NSDictionary *dict1 = @{@"bounds":[NSValue valueWithRect:r],
 								@"cornerRadius":[NSNumber numberWithFloat:self.cornerRadius],
 								@"maxCornerRadius":[NSNumber numberWithFloat:[self maxCornerRadius]]};
@@ -94,7 +94,7 @@
 
 - (BOOL)intersectsWithRect:(NSRect)selectionRect	//used for selecting with rubberband
    {
-	if (transform == nil)
+	if (self.transform == nil)
 		return NSIntersectsRect(selectionRect,[self bounds]);
 	else
 		return [super intersectsWithRect:selectionRect];
@@ -111,11 +111,11 @@
 {
     float inset = -[self paddingRequired];
 	NSRect r;
-	if (transform)
-		r = [[transform transformBezierPath:[NSBezierPath bezierPathWithRect:bounds]]controlPointBounds];
+	if (self.transform)
+		r = [[self.transform transformBezierPath:[NSBezierPath bezierPathWithRect:bounds]]controlPointBounds];
 	else
 		r = [[NSBezierPath bezierPathWithRect:bounds]controlPointBounds];
-	if (graphicMode == GRAPHIC_MODE_OUTLINE)
+	if (self.graphicMode == GRAPHIC_MODE_OUTLINE)
 	   {
 		NSRect r2 = [[self transformedOutlinePath]controlPointBounds];
 		r = NSUnionRect(r,r2);
@@ -278,7 +278,7 @@
 
 -(void)applyTransform
 {
-    if (!transform)
+    if (!self.transform)
         return;
     if (self.xScale == 1.0 && self.yScale == 1.0)
         return;

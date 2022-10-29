@@ -206,8 +206,6 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 
 @implementation ACSDGraphic
 
-@synthesize rotationPoint,addingPoint,actualAddingPoint,moveOffset,graphicMode,
-layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 
 + (void) encodePoint:(NSPoint)pt coder:(NSCoder*)coder forKey:(NSString*)key
 {
@@ -305,7 +303,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 {
 	if ((self = [super init]))
 	{
-		transform = nil;
+        self.transform = nil;
         self.selectionTimeStamp = nil;
 		shadowType = nil;
 		manipulatingBounds = self.moving = NO;
@@ -320,7 +318,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		connectors = [[NSMutableArray arrayWithCapacity:5]retain];
 		deleted = NO;
         _tempSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
-        filterSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
+        self.filterSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
 	}
 	return self;
 }
@@ -333,7 +331,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		[self setStroke:str];
 		[self setFill:f];
 		bounds = b;
-		layer = l;
+		self.layer = l;
 		self.usesCache = [self usuallyUsesCache];
 		events = [[NSMutableDictionary dictionaryWithCapacity:2]retain];
 		textLabel = [[ACSDLabel alloc]initWithGraphic:self];
@@ -350,17 +348,17 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		[self setStroke:str];
 		[self setFill:f];
 		bounds = b;
-		layer = l;
+        self.layer = l;
         self.usesCache = [self usuallyUsesCache];
 		events = [[NSMutableDictionary dictionaryWithCapacity:2]retain];
 		[self setXScale:xs];
 		[self setYScale:ys];
-		rotationPoint = [self centrePoint];
+		self.rotationPoint = [self centrePoint];
 		//[self setRotation:rot];
 		_rotation = rot;
 		if (_rotation != 0.0 || _xScale != 1.0 || _yScale != 1.0)
 		{
-			[self setRotationPoint:rotationPoint];
+			[self setRotationPoint:self.rotationPoint];
 			[self computeTransform];
 		}
 		[self setShadowType:st];
@@ -378,8 +376,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		[self setFill:nil];
 	if (stroke)
 		[self setStroke:nil];
-	if (transform)
-		[transform release];
+    self.transform = nil;
     self.selectionTimeStamp = nil;
 	if (shadowType)
 		[self setShadowType:nil];
@@ -403,7 +400,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		[linkedObjects release];
 	if (triggers)
 		[triggers release];
-    [filterSettings release];
+    self.filterSettings = nil;
     [_tempSettings release];
 	self.sourcePath = nil;
     self.clipGraphic = nil;
@@ -420,7 +417,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
     [obj setStroke:stroke];
     [obj setFill:fill];
     obj.bounds = bounds;
-    obj.layer = layer;
+    obj.layer = self.layer;
     obj.usesCache = self.usesCache;
     //obj.events = [[NSMutableDictionary dictionaryWithCapacity:2]retain];
     [obj setXScale:_xScale];
@@ -429,7 +426,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
     obj.rotation = _rotation;
     if (_rotation != 0.0 || _xScale != 1.0 || _yScale != 1.0)
     {
-        [obj setRotationPoint:rotationPoint];
+        [obj setRotationPoint:self.rotationPoint];
         [obj computeTransform];
     }
     [obj setShadowType:[self shadowType]];
@@ -440,10 +437,10 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
     obj.hidden = self.hidden;
     obj.clipGraphic = self.clipGraphic;
     
-	[obj setGraphicMode:graphicMode];
+	[obj setGraphicMode:_graphicMode];
 	[obj setToolTip:toolTip];
     [obj setIsMask:self.isMask];
-	obj.filterSettings = [[filterSettings mutableCopy]autorelease];
+	obj.filterSettings = [[_filterSettings mutableCopy]autorelease];
 	obj.sourcePath = self.sourcePath;
 	obj.linkAlignmentFlags = self.linkAlignmentFlags;
 	return obj;
@@ -491,7 +488,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 {
 	[super encodeWithCoder:coder];
 	[coder encodeObject:[self name] forKey:@"ACSDGraphic_name"];
-	[coder encodeConditionalObject:layer forKey:@"ACSDGraphic_layer"];
+	[coder encodeConditionalObject:self.layer forKey:@"ACSDGraphic_layer"];
 	[coder encodeConditionalObject:fill forKey:@"ACSDGraphic_fill"];
 	[coder encodeConditionalObject:stroke forKey:@"ACSDGraphic_stroke"];
 	[coder encodeConditionalObject:shadowType forKey:@"ACSDGraphic_shadowtype"];
@@ -499,7 +496,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	[coder encodeFloat:_rotation forKey:@"ACSDGraphic_rotation"];
 	[coder encodeFloat:_xScale forKey:@"ACSDGraphic_xScale"];
 	[coder encodeFloat:_yScale forKey:@"ACSDGraphic_yScale"];
-	[ACSDGraphic encodePoint:rotationPoint coder:coder forKey:@"ACSDGraphic_rotationPoint"];
+	[ACSDGraphic encodePoint:self.rotationPoint coder:coder forKey:@"ACSDGraphic_rotationPoint"];
 	[coder encodeObject:[self transform] forKey:@"ACSDGraphic_transform"];
 	[coder encodeObject:[self events] forKey:@"ACSDGraphic_events"];
 	[coder encodeObject:textLabel forKey:@"ACSDGraphic_label"];
@@ -508,19 +505,19 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	[coder encodeFloat:_alpha forKey:@"ACSDGraphic_alpha"];
     [coder encodeBool:self.isMask forKey:@"ACSDGraphic_Mask"];
     [coder encodeBool:self.hidden forKey:@"ACSDGraphic_hidden"];
-	[coder encodeInt:graphicMode forKey:@"ACSDGraphic_graphicMode"];
+	[coder encodeInt:_graphicMode forKey:@"ACSDGraphic_graphicMode"];
     [coder encodeObject:[self link] forKey:@"ACSDGraphic_link"];
     [coder encodeObject:self.clipGraphic forKey:@"ACSDGraphic_clipGraphic"];
 	if (linkedObjects)
 		[coder encodeObject:linkedObjects forKey:@"ACSDGraphic_linkedObjects"];
-	if (preOutlineFill)
-		[coder encodeConditionalObject:preOutlineFill forKey:@"ACSDGraphic_preOutlineFill"];
-	if (preOutlineStroke)
-		[coder encodeConditionalObject:preOutlineStroke forKey:@"ACSDGraphic_preOutlineStroke"];
+	if (_preOutlineFill)
+		[coder encodeConditionalObject:_preOutlineFill forKey:@"ACSDGraphic_preOutlineFill"];
+	if (_preOutlineStroke)
+		[coder encodeConditionalObject:_preOutlineStroke forKey:@"ACSDGraphic_preOutlineStroke"];
 	if (triggers)
 		[coder encodeObject:triggers forKey:@"ACSDGraphic_triggers"];
-	if (filterSettings && [[filterSettings allKeys]count] > 0)
-		[coder encodeObject:filterSettings forKey:@"ACSDGraphic_filterSettings"];
+	if (_filterSettings && [[self.filterSettings allKeys]count] > 0)
+		[coder encodeObject:_filterSettings forKey:@"ACSDGraphic_filterSettings"];
 	if (_sourcePath)
 		[coder encodeObject:_sourcePath forKey:@"ACSDImage_sourcepath"];
 	if (self.linkAlignmentFlags != 0)
@@ -532,15 +529,15 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	//	self = [self init];
 	self = [super initWithCoder:coder];
 	self.name = [coder decodeObjectForKey:@"ACSDGraphic_name"];
-	layer = [coder decodeObjectForKey:@"ACSDGraphic_layer"];
+    self.layer = [coder decodeObjectForKey:@"ACSDGraphic_layer"];
 	[self setFill:[coder decodeObjectForKey:@"ACSDGraphic_fill"]];
 	[self setStroke:[coder decodeObjectForKey:@"ACSDGraphic_stroke"]];
 	[self setShadowType:[coder decodeObjectForKey:@"ACSDGraphic_shadowtype"]];
 	bounds = [ACSDGraphic decodeRectForKey:@"ACSDGraphic_bounds" coder:coder];
 	_rotation = [coder decodeFloatForKey:@"ACSDGraphic_rotation"];
-	rotationPoint = [ACSDGraphic decodePointForKey:@"ACSDGraphic_rotationPoint" coder:coder];
-	transform = [[coder decodeObjectForKey:@"ACSDGraphic_transform"]retain];
-	if (_rotation != 0.0 && !transform)
+    self.rotationPoint = [ACSDGraphic decodePointForKey:@"ACSDGraphic_rotationPoint" coder:coder];
+    self.transform = [[coder decodeObjectForKey:@"ACSDGraphic_transform"]retain];
+	if (_rotation != 0.0 && !self.transform)
 		[self computeTransform];
 	_xScale = [coder decodeFloatForKey:@"ACSDGraphic_xScale"];
 	if (_xScale == 0.0)
@@ -548,7 +545,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	_yScale = [coder decodeFloatForKey:@"ACSDGraphic_yScale"];
 	if (_yScale == 0.0)
 		_yScale = 1.0;
-	if (!transform && (_rotation != 0.0  || _xScale != 1.0 || _yScale != 1.0))
+	if (!self.transform && (_rotation != 0.0  || _xScale != 1.0 || _yScale != 1.0))
 		[self computeTransform];
     self.usesCache = [self usuallyUsesCache];
 	events = [[coder decodeObjectForKey:@"ACSDGraphic_events"]retain];
@@ -565,7 +562,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	currentDrawingDestination = nil;
     self.isMask = [coder decodeBoolForKey:@"ACSDGraphic_Mask"];
     self.hidden = [coder decodeBoolForKey:@"ACSDGraphic_hidden"];
-	graphicMode = (GraphicMode)[coder decodeIntForKey:@"ACSDGraphic_graphicMode"];
+	_graphicMode = (GraphicMode)[coder decodeIntForKey:@"ACSDGraphic_graphicMode"];
 	link = [[coder decodeObjectForKey:@"ACSDGraphic_link"]retain];
 	linkedObjects = [[coder decodeObjectForKey:@"ACSDGraphic_linkedObjects"]retain];
 	[self setPreOutlineFill:[coder decodeObjectForKey:@"ACSDGraphic_preOutlineFill"]];
@@ -575,8 +572,8 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		for (NSDictionary *t in triggers)
 			[[t objectForKey:@"layer"]addTrigger:t];
 	self.filterSettings = [coder decodeObjectForKey:@"ACSDGraphic_filterSettings"];
-	if (filterSettings == nil)
-		filterSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
+	if (self.filterSettings == nil)
+        self.filterSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
 	self.sourcePath = [coder decodeObjectForKey:@"ACSDImage_sourcepath"];
 	self.linkAlignmentFlags = [coder decodeIntForKey:@"linkAlignmentFlags"];
     self.clipGraphic = [coder decodeObjectForKey:@"ACSDGraphic_clipGraphic"];
@@ -595,12 +592,12 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 
 - (NSUndoManager*)undoManager
    {
-    return [[layer document] undoManager];
+    return [[self.layer document] undoManager];
    }
 
 - (ACSDrawDocument*)document
    {
-    return [layer document];
+    return [self.layer document];
    }
 
 -(ACSDFill*)fill
@@ -626,10 +623,10 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		[fillSet addObject:fill];
 		[fillSet unionSet:[fill usedFills]];
 	}
-	if (preOutlineFill)
+	if (self.preOutlineFill)
 	{
-		[fillSet addObject:preOutlineFill];
-		[fillSet unionSet:[preOutlineFill usedFills]];
+		[fillSet addObject:self.preOutlineFill];
+		[fillSet unionSet:[self.preOutlineFill usedFills]];
 	}
 	if (stroke)
 		[fillSet unionSet:[stroke usedFills]];
@@ -653,29 +650,29 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	NSMutableSet *strokeSet = [NSMutableSet setWithCapacity:10];
 	if (fill)
 		[strokeSet unionSet:[fill usedStrokes]];
-	if (preOutlineFill)
-		[strokeSet unionSet:[preOutlineFill usedStrokes]];
+	if (self.preOutlineFill)
+		[strokeSet unionSet:[self.preOutlineFill usedStrokes]];
 	if (stroke)
 	{
 		[strokeSet addObject:stroke];
 		[strokeSet unionSet:[stroke usedStrokes]];
 	}
-	if (preOutlineStroke)
+	if (self.preOutlineStroke)
 	{
-		[strokeSet addObject:preOutlineStroke];
-		[strokeSet unionSet:[preOutlineStroke usedStrokes]];
+		[strokeSet addObject:self.preOutlineStroke];
+		[strokeSet unionSet:[self.preOutlineStroke usedStrokes]];
 	}
 	return strokeSet;
 }
 
 -(BOOL)graphicUsesStroke:(ACSDStroke*)str
 {
-	return (str == stroke) || (str == preOutlineStroke);
+	return (str == stroke) || (str == self.preOutlineStroke);
 }
 
 -(BOOL)graphicUsesFill:(ACSDFill*)f
 {
-	return (f == fill) || (f == preOutlineFill);
+	return (f == fill) || (f == self.preOutlineFill);
 }
 
 -(ACSDStroke*)stroke
@@ -700,7 +697,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 
 -(NSRect)transformedBounds
 {
-    if (transform == nil)
+    if (self.transform == nil)
     {
         NSRect b = bounds;
         if (b.size.width == 0.0)
@@ -725,10 +722,10 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		pad = [stroke lineWidth] / 2.0;
 	NSRect r = NSInsetRect([self bounds],-pad,-pad);
 	NSBezierPath *p = [NSBezierPath bezierPathWithRect:r];
-	if (transform)
-		p = [transform transformBezierPath:p];
+	if (self.transform)
+		p = [self.transform transformBezierPath:p];
 	if (self.moving)
-		p = [[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y]transformBezierPath:p];
+		p = [[NSAffineTransform transformWithTranslateXBy:self.moveOffset.x yBy:self.moveOffset.y]transformBezierPath:p];
 	return [ACSDPath pathWithPath:p];
    }
 
@@ -768,7 +765,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	if (![self displayBoundsValid])
 		[self computeDisplayBounds];
 	if (self.moving)
-		return(NSOffsetRect(displayBounds,moveOffset.x,moveOffset.y));
+		return(NSOffsetRect(displayBounds,self.moveOffset.x,self.moveOffset.y));
 	return displayBounds;
    }
 
@@ -942,7 +939,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	if (!manipulatingBounds)
 		[[[self undoManager] prepareWithInvocationTarget:self] setGraphicBoundsTo:oldBounds from:newBounds];
 	bounds = newBounds;
-	rotationPoint = [self centrePoint];
+    self.rotationPoint = [self centrePoint];
 	[self computeTransform];
 	[self resizeAdjustmentOldBounds:oldBounds newBounds:newBounds];
 	if (newBounds.size.width != oldBounds.size.width || newBounds.size.height != oldBounds.size.height)
@@ -1025,7 +1022,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 
 -(void)setGraphicTransform:(NSAffineTransform*)t
    {
-	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicTransform:transform];
+	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicTransform:self.transform];
 	[self setTransform:t];
    }
 
@@ -1041,8 +1038,8 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 
 -(BOOL)visible
    {
-	if (layer)
-		return [layer visible] & !self.hidden;
+	if (self.layer)
+		return [self.layer visible] & !self.hidden;
 	else
 		return !self.hidden;
    }
@@ -1064,7 +1061,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 
 -(void)invalidateInView
    {
-	[[[layer page]graphicViews]makeObjectsPerformSelector:@selector(invalidateGraphic:)withObject:self];
+	[[[self.layer page]graphicViews]makeObjectsPerformSelector:@selector(invalidateGraphic:)withObject:self];
    }
 
 -(void)invalidateGraphicSizeChanged:(BOOL)sizeChanged shapeChanged:(BOOL)shapeChanged redraw:(BOOL)redraw notify:(BOOL)notify
@@ -1081,8 +1078,8 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	if (graphicCache && redraw)
 		[graphicCache setValid:NO];
 	[self invalidateInView];
-	if (parent)
-		[parent invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
+	if (self.parent)
+		[self.parent invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
 	if (notify)
 		[[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicDidChangeNotification object:self];
    }
@@ -1108,14 +1105,14 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
    {
 	NSPoint offset = [offsetV pointValue];
 	[self invalidateInView];
-	moveOffset = offset;
+       self.moveOffset = offset;
 	[self invalidateInView];
    }
 
 - (void)startMove
 {
     self.moving = YES;
-    moveOffset.x = moveOffset.y = 0.0;
+    self.moveOffset = CGPointZero;
 }
 
 - (void)stopMove:(NSNumber*)n
@@ -1124,8 +1121,8 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
     if (moved)
     {
         self.moving = NO;
-        if (moveOffset.x != 0.0 || moveOffset.y != 0.0)
-            [self uMoveBy:moveOffset];
+        if (self.moveOffset.x != 0.0 || self.moveOffset.y != 0.0)
+            [self uMoveBy:self.moveOffset];
     }
     else
     {
@@ -1133,7 +1130,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
         self.moving = NO;
         [self invalidateInView];
     }
-    moveOffset.x = moveOffset.y = 0.0;
+    self.moveOffset = CGPointZero;
 }
     
 - (void)startBoundsManipulation
@@ -1178,10 +1175,10 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 -(void)computeTransformedHandlePoints
    {
 	[self computeHandlePoints];
-	if (!transform)
+	if (!self.transform)
 		return;
 	for (int i = 0;i < noHandlePoints;i++)
-		handlePoints[i] = [transform transformPoint:handlePoints[i]];
+		handlePoints[i] = [self.transform transformPoint:handlePoints[i]];
    }
     
 -(void)computeTransform
@@ -1192,7 +1189,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		return;
 	   }
 	NSAffineTransform *t = [NSAffineTransform transform];
-	[t translateXBy:-rotationPoint.x yBy:-rotationPoint.y];
+	[t translateXBy:-self.rotationPoint.x yBy:-self.rotationPoint.y];
 	NSAffineTransform *t2 = [NSAffineTransform transform];
 	[t2 scaleXBy:_xScale yBy:_yScale];
 	[t appendTransform:t2];
@@ -1200,7 +1197,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	[t2 rotateByDegrees:_rotation];
 	[t appendTransform:t2];
 	t2 = [NSAffineTransform transform];
-	[t2 translateXBy:rotationPoint.x yBy:rotationPoint.y];
+	[t2 translateXBy:self.rotationPoint.x yBy:self.rotationPoint.y];
 	[t appendTransform:t2];
 	[self setTransform:t];
    }
@@ -1241,7 +1238,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 		return NSZeroRect;
 	}
 	NSRect r = [tp controlPointBounds];
-	if (graphicMode == GRAPHIC_MODE_OUTLINE)
+	if (_graphicMode == GRAPHIC_MODE_OUTLINE)
 		r = NSUnionRect([[self transformedOutlinePath]controlPointBounds],r);
 	return r;
 }
@@ -1450,7 +1447,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 -(BOOL)setGraphicLevelsBlack:(float)newBlackLevel white:(float)newWhiteLevel grey:(float)newGreyLevel notify:(BOOL)notify
 {
 	float blackLevel = 0.0,whiteLevel = 1.0,greyLevel = 0.5;
-	NSDictionary *d = [filterSettings objectForKey:@"ACSLevels"];
+	NSDictionary *d = [self.filterSettings objectForKey:@"ACSLevels"];
 	if (d)
 	{
 		blackLevel = [[d objectForKey:@"blackLevel"]floatValue];
@@ -1462,9 +1459,9 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:notify];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicLevelsBlack:blackLevel white:whiteLevel grey:greyLevel notify:YES];
 	if (blackLevel == 0.0 && whiteLevel == 1.0 && greyLevel == 0.5)
-		[filterSettings removeObjectForKey:@"ACSLevels"];
+		[self.filterSettings removeObjectForKey:@"ACSLevels"];
 	else
-		[filterSettings setObject:[NSDictionary dictionaryWithObjectsAndKeys:
+		[self.filterSettings setObject:[NSDictionary dictionaryWithObjectsAndKeys:
 								   [NSNumber numberWithFloat:newBlackLevel],@"blackLevel",
 								   [NSNumber numberWithFloat:newWhiteLevel],@"whiteLevel",
 								   [NSNumber numberWithFloat:newGreyLevel],@"greyLevel",
@@ -1530,7 +1527,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 {
 	if (f != _rotation)
 	{
-		rotationPoint = [self centrePoint];
+        self.rotationPoint = [self centrePoint];
 		_rotation = f;
 		[self computeTransform];
 	}
@@ -1540,7 +1537,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 {
 	if (f != _xScale)
 	{
-		rotationPoint = [self centrePoint];
+        self.rotationPoint = [self centrePoint];
 		_xScale = f;
 		[self computeTransform];
 	}
@@ -1550,7 +1547,7 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 {
 	if (f != _yScale)
 	{
-		rotationPoint = [self centrePoint];
+        self.rotationPoint = [self centrePoint];
 		_yScale = f;
 		[self computeTransform];
 	}
@@ -1583,17 +1580,17 @@ layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 }
 
 - (void)setGraphicXScale:(float)fx yScale:(float)fy undo:(bool)undo
-   {
-	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
-	if (undo)
-		[[[self undoManager] prepareWithInvocationTarget:self] setGraphicXScale:[self xScale] yScale:[self yScale] undo:YES];
-	rotationPoint = [self centrePoint];
-	[self setXScale:fx];
-	[self setYScale:fy];
-	[self computeTransform];
-	[self invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
-	[self postSizePanelChangeId:SC_SCALEX_CHANGE|SC_SCALEY_CHANGE];
-   }
+{
+    [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+    if (undo)
+        [[[self undoManager] prepareWithInvocationTarget:self] setGraphicXScale:[self xScale] yScale:[self yScale] undo:YES];
+    self.rotationPoint = [self centrePoint];
+    [self setXScale:fx];
+    [self setYScale:fy];
+    [self computeTransform];
+    [self invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
+    [self postSizePanelChangeId:SC_SCALEX_CHANGE|SC_SCALEY_CHANGE];
+}
 
 -(FlippableView*)setCurrentDrawingDestination:(FlippableView*)dest
 {
@@ -1632,9 +1629,9 @@ float normalisedAngle(float ang)
 	[tf3 translateXBy:centre.x yBy:centre.y];
 	[tf appendTransform:tf2];
 	[tf appendTransform:tf3];
-	rotationPoint = [self centrePoint];
-	NSPoint newCentrePoint = [tf transformPoint:rotationPoint];
-	[self uMoveBy:NSMakePoint(newCentrePoint.x - rotationPoint.x,newCentrePoint.y - rotationPoint.y)];
+       self.rotationPoint = [self centrePoint];
+	NSPoint newCentrePoint = [tf transformPoint:self.rotationPoint];
+	[self uMoveBy:NSMakePoint(newCentrePoint.x - self.rotationPoint.x,newCentrePoint.y - self.rotationPoint.y)];
 	[self setGraphicRotation:normalisedAngle(rotationAmount + _rotation) notify:YES];
    }
 
@@ -1644,8 +1641,8 @@ float normalisedAngle(float ang)
 	   {
 		id g = self;
 		g = [g convertToPath];
-		[g setFill:preOutlineFill];
-		[g setStroke:preOutlineStroke];
+		[g setFill:self.preOutlineFill];
+		[g setStroke:self.preOutlineStroke];
 		g = [g outlineStroke];
 		if (outlinePath)
 			[outlinePath release];
@@ -1657,9 +1654,9 @@ float normalisedAngle(float ang)
 
 -(NSBezierPath*)transformedOutlinePath
    {
-	if (!transform)
+	if (!self.transform)
 		return [self outlinePath];
-	return [transform transformBezierPath:[self outlinePath]];
+	return [self.transform transformBezierPath:[self outlinePath]];
    }
 
 -(NSInteger)totalElementCount:(NSBezierPath*)p
@@ -1670,7 +1667,7 @@ float normalisedAngle(float ang)
 -(ACSDFill*)chosenFillOptions:(NSMutableDictionary*)options
 {
 	ACSDFill *thisfill = fill;
-	if (parent && [self.name hasPrefix:@"col"])
+	if (self.parent && [self.name hasPrefix:@"col"])
 	{
 		ACSDGroup *primoGenitor = [self primogenitor];
 		if (primoGenitor && [primoGenitor fill] && primoGenitor.colourMode == COLOUR_MODE_SUB)
@@ -1703,7 +1700,7 @@ float normalisedAngle(float ang)
 - (void)drawObject:(NSRect)aRect view:(GraphicView*)gView options:(NSMutableDictionary*)options
 {
     NSBezierPath *path;
-    if (graphicMode == GRAPHIC_MODE_NORMAL)
+    if (_graphicMode == GRAPHIC_MODE_NORMAL)
         path = [self bezierPath];
     else
         path = [self outlinePath];
@@ -1781,7 +1778,7 @@ float normalisedAngle(float ang)
 		if ([self drawStrokeWithoutTransform] && [stroke colour])
 		{
 			if (self.moving)
-				[[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
+				[[NSAffineTransform transformWithTranslateXBy:self.moveOffset.x yBy:self.moveOffset.y] concat];
 			[stroke strokePath:[self transformedBezierPath]];
 		}
 		CGContextEndTransparencyLayer (currentContext);
@@ -1801,7 +1798,7 @@ float normalisedAngle(float ang)
 		else
 		   {
 			if (self.moving)
-				[[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
+				[[NSAffineTransform transformWithTranslateXBy:self.moveOffset.x yBy:self.moveOffset.y] concat];
 			if (shadowType && [shadowType itsShadow])
 				[[shadowType shadowWithScale:[[options objectForKey:@"scale"]floatValue]]set];
                CGContextRef currentContext = [[NSGraphicsContext currentContext] CGContext];
@@ -1810,8 +1807,8 @@ float normalisedAngle(float ang)
 				CGContextSetAlpha(currentContext,_alpha);
 			CGContextBeginTransparencyLayer (currentContext, NULL);
 			[NSGraphicsContext saveGraphicsState];
-			if (transform)
-				[transform concat];
+			if (self.transform)
+				[self.transform concat];
 			[self drawObject:aRect view:gView options:options];
 			[NSGraphicsContext restoreGraphicsState];
 			if ([self drawStrokeWithoutTransform] && [stroke colour])
@@ -1845,8 +1842,8 @@ float normalisedAngle(float ang)
     if (self.clipGraphic)
        [[self.clipGraphic bezierPath]addClip];
 	FlippableView *temp = [self setCurrentDrawingDestination:(GraphicView*)[graphicCache image]];
-	if (transform)
-		[transform concat];
+	if (self.transform)
+		[self.transform concat];
        CGContextRef currentContext = [[NSGraphicsContext currentContext] CGContext];
 	if (_alpha < 1.0)
 		CGContextSetAlpha(currentContext,_alpha);
@@ -1889,37 +1886,37 @@ float normalisedAngle(float ang)
 
 - (void)postChangeOfBounds
    {
-	if (!layer)
+	if (!self.layer)
 		return;
-	if ([[layer selectedGraphics]count] == 1)
+	if ([[self.layer selectedGraphics]count] == 1)
 	   {
 		NSRect r = bounds;
 		if (self.moving)
-			r = NSOffsetRect(r,moveOffset.x,moveOffset.y);
+			r = NSOffsetRect(r,self.moveOffset.x,self.moveOffset.y);
 		[ACSDGraphic postChangeOfBounds:r];
 	   }
    }
 
 - (void)moveBy:(NSPoint)vector
-   {
-	if (vector.x == 0.0 && vector.y == 0.0)
-		return;
-	if (layer)
-		[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
-	rotationPoint.x += vector.x;
-	rotationPoint.y += vector.y;
-	[self computeTransform];
-	[self computeTransformedHandlePoints];
-	bounds = NSOffsetRect([self bounds], vector.x, vector.y);
+{
+    if (vector.x == 0.0 && vector.y == 0.0)
+        return;
+    if (self.layer)
+        [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+    _rotationPoint.x += vector.x;
+    _rotationPoint.y += vector.y;
+    [self computeTransform];
+    [self computeTransformedHandlePoints];
+    bounds = NSOffsetRect([self bounds], vector.x, vector.y);
     if (self.clipGraphic)
         [self.clipGraphic moveBy:vector];
-	if (layer)
-	   {
-		[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-		[self invalidateConnectors];
-		[self postChangeOfBounds];
-	   }
-   }
+    if (self.layer)
+    {
+        [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+        [self invalidateConnectors];
+        [self postChangeOfBounds];
+    }
+}
 
 - (void)uMoveBy:(NSPoint)vector
 {
@@ -2117,9 +2114,9 @@ BOOL rightKnob(NSInteger knob)
 
 -(NSPoint)invertPoint:(NSPoint)point
    {
-	if (transform)
+	if (self.transform)
 	   {
-		NSAffineTransform *t = [[[NSAffineTransform alloc]initWithTransform:transform]autorelease];
+		NSAffineTransform *t = [[[NSAffineTransform alloc]initWithTransform:self.transform]autorelease];
 		[t invert];
 		point = [t transformPoint:point];
 	   }
@@ -2128,14 +2125,14 @@ BOOL rightKnob(NSInteger knob)
 
 -(NSPoint)invertOffset:(NSPoint)offset
    {
-	if (transform)
+	if (self.transform)
 	   {
-		NSAffineTransform *t = [[[NSAffineTransform alloc]initWithTransform:transform]autorelease];
-		NSPoint point = [t transformPoint:rotationPoint];
+		NSAffineTransform *t = [[[NSAffineTransform alloc]initWithTransform:self.transform]autorelease];
+		NSPoint point = [t transformPoint:self.rotationPoint];
 		point = NSMakePoint(point.x + offset.x,point.y + offset.y);
 		[t invert];
 		point = [t transformPoint:point];
-		return NSMakePoint(point.x- rotationPoint.x,point.y- rotationPoint.y);
+		return NSMakePoint(point.x- self.rotationPoint.x,point.y- self.rotationPoint.y);
 	   }
 	return offset;
    }
@@ -2144,7 +2141,7 @@ BOOL rightKnob(NSInteger knob)
 {
     NSRect theBounds = originalBounds;
 	float diff;
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
     if (leftKnob(kd.knob))
 	{
@@ -2460,8 +2457,8 @@ BOOL rightKnob(NSInteger knob)
 - (void)drawCentrePointMagnification:(float)mag
    {
     NSPoint cp = [self centrePoint];
-	if (transform)
-		cp = [transform transformPoint:cp];
+	if (self.transform)
+		cp = [self.transform transformPoint:cp];
     NSRect r = [self handleRect:cp magnification:mag];
 	[[NSColor cyanColor] set];
 	[NSBezierPath setDefaultLineWidth:0.0];
@@ -2512,7 +2509,7 @@ BOOL rightKnob(NSInteger knob)
 	NSBezierPath *path = [NSBezierPath bezierPath];
 	[self setHandleColour:forGuide];
 	if (self.moving)
-		[[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
+		[[NSAffineTransform transformWithTranslateXBy:self.moveOffset.x yBy:self.moveOffset.y] concat];
 	[path moveToPoint:handlePoints[0]];
 	for (int i = 1;i < noHandlePoints;i++)
 	   {
@@ -2572,9 +2569,9 @@ BOOL rightKnob(NSInteger knob)
 
 - (NSBezierPath *)transformedBezierPath
 {
-	if (!transform)
+	if (!self.transform)
 		return [self bezierPath];
-	return [transform transformBezierPath:[self bezierPath]];
+	return [self.transform transformBezierPath:[self bezierPath]];
 }
 
 - (BOOL)hasNonTransparentFillOrStroke
@@ -2873,7 +2870,7 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 {
     if (_rotation != 0.0)
     {
-        NSPoint rpt = rotationPoint;
+        NSPoint rpt = self.rotationPoint;
         float rot = _rotation;
         if (svgWriter.shouldInvertSVGCoords)
         {
@@ -2971,9 +2968,9 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 
 -(void)writeCanvasGraphic:(CanvasWriter*)canvasWriter
 {
-	if (transform)
+	if (self.transform)
 	{
-		NSAffineTransformStruct t = [transform transformStruct];
+		NSAffineTransformStruct t = [self.transform transformStruct];
 		[[canvasWriter contents]appendFormat:@"ctx.transform(%g,%g,%g,%g,%g,%g);\n",t.m11, t.m12, t.m21, t.m22, t.tX, t.tY];
 	}
 	[[canvasWriter contents]appendString:@"ctx.beginPath();\n"];
@@ -3191,25 +3188,25 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 }
 
 -(void)uSetGraphicMode:(GraphicMode)gm
-   {
-	if (gm == graphicMode)
-		return;
-	[[[self undoManager] prepareWithInvocationTarget:self] uSetGraphicMode:graphicMode];
-	graphicMode = gm;
-	if (graphicMode == GRAPHIC_MODE_OUTLINE)
-	   {
-		[self setPreOutlineStroke:stroke];
-		[self setPreOutlineFill:fill];
-		[self setStroke:nil];
-		[self setOutlinePathValid:NO];
-	   }
-	else
-	   {
-		[self setStroke:preOutlineStroke];
-		[self setFill:preOutlineFill];
-	   }
-	[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-   }
+{
+    if (gm == _graphicMode)
+        return;
+    [[[self undoManager] prepareWithInvocationTarget:self] uSetGraphicMode:_graphicMode];
+    self.graphicMode = gm;
+    if (self.graphicMode == GRAPHIC_MODE_OUTLINE)
+    {
+        [self setPreOutlineStroke:stroke];
+        [self setPreOutlineFill:fill];
+        [self setStroke:nil];
+        [self setOutlinePathValid:NO];
+    }
+    else
+    {
+        [self setStroke:self.preOutlineStroke];
+        [self setFill:self.preOutlineFill];
+    }
+    [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+}
 
 -(BOOL)isOrContainsImage
    {
@@ -3333,7 +3330,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 	else
 	   {
 		NSString *pref;
-		if ([layer page] == [[(ACSDGraphic*)obj layer]page])
+		if ([self.layer page] == [[(ACSDGraphic*)obj layer]page])
 			pref = @"";
 		else
 			pref = [NSString stringWithFormat:@"%@_%ld.html",[options objectForKey:@"dTitle"],[[[(ACSDGraphic*)obj layer] page]pageNo]];
@@ -3396,7 +3393,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 	NSMutableString *cssString = [options objectForKey:@"cssString"];
 	NSMutableString *ieString = [options objectForKey:@"ieString"];
 	NSString *objName = imageNameForOptions(options);
-	NSSize sz = [[[layer page] document]documentSize];
+	NSSize sz = [[[self.layer page] document]documentSize];
 	NSRect b = NSIntegralRect([self displayBounds]);
 	[cssString appendFormat:@"\t\t\t#%@ {position: absolute; top: %dpx; left: %dpx; height: %dpx; width: %dpx; padding: 0px; margin: 0px; z-index: 1;",
 	 objName,(int)(sz.height-NSMaxY(b)),(int)(NSMinX(b)),(int)b.size.height,(int)b.size.width];
@@ -3860,13 +3857,13 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 
 -(NSArray*)indexPathFromAncestor:(ACSDGroup*)anc array:(NSArray*)inArray
 {
-	if (parent == nil)
+	if (self.parent == nil)
 		return nil;
-	NSInteger idx = [parent.graphics indexOfObjectIdenticalTo:self];
+	NSInteger idx = [self.parent.graphics indexOfObjectIdenticalTo:self];
 	inArray = [@[@(idx)] arrayByAddingObjectsFromArray:inArray];
-	if (parent == anc)
+	if (self.parent == anc)
 		return inArray;
-	return [parent indexPathFromAncestor:anc array:inArray];
+	return [self.parent indexPathFromAncestor:anc array:inArray];
 }
 
 -(NSArray*)indexPathFromAncestor:(ACSDGroup*)anc

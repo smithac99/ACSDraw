@@ -604,7 +604,7 @@ NSString *substitute_characters(NSString* string)
 	[obj setRotation:self.rotation];
 	if (self.rotation != 0.0)
 	   {
-		[obj setRotationPoint:rotationPoint];
+		[obj setRotationPoint:self.rotationPoint];
 		[obj computeTransform];
 	   }
 	return (ACSDPath*)obj;
@@ -818,7 +818,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 {
     [self writeSVGDefs:svgWriter];
     [[svgWriter contents]appendFormat:@"<g id=\"%@\" ",self.name];
-    if (transform)
+    if (self.transform)
     {
         //[[svgWriter contents]appendFormat:@"transform=\"%@\"",string_from_transform(transform)];
         [[svgWriter contents]appendString:[self svgTransform:svgWriter]];
@@ -1540,8 +1540,8 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 - (void)drawOtherHandlesMagnification:(float)mag
    {
 	[NSGraphicsContext saveGraphicsState];
-	if (transform)
-		[transform concat];
+	if (self.transform)
+		[self.transform concat];
 	NSRect r = [self preFlowRectMagnification:mag];
 	[[NSColor whiteColor]set];
 	NSRectFill(r);
@@ -2282,7 +2282,7 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 
 -(BOOL)htmlMustBeDoneAsImage
 {
-	return (transform != nil || self.alpha < 1.0 || (shadowType != nil && [shadowType colour]) || cornerRadius != 0.0);
+	return (self.transform != nil || self.alpha < 1.0 || (shadowType != nil && [shadowType colour]) || cornerRadius != 0.0);
 }
 
 -(void)processHTMLOptions:(NSMutableDictionary*)options

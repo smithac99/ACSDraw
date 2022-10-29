@@ -358,7 +358,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	CIImage *resultImage = ciImage;
 	for (NSString *s in [NSArray arrayWithObjects:@"ACSLevels",nil])
 	{
-		NSDictionary *d = [filterSettings objectForKey:s];
+		NSDictionary *d = self.filterSettings[s];
 		if (d)
 		{
 			CIFilter *f = [CIFilter filterWithName:s];
@@ -506,7 +506,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 - (void)startBoundsManipulation
    {
     [super startBoundsManipulation];
-	originalCentrePoint = rotationPoint;
+	originalCentrePoint = self.rotationPoint;
     originalFrame = frame;
 	originalXScale = self.xScale;
 	originalYScale = self.yScale;
@@ -516,7 +516,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 {
 	NSAffineTransform *t = [NSAffineTransform transform];
 	[t translateXBy:[self bounds].origin.x yBy:[self bounds].origin.y];
-	[t translateXBy:-rotationPoint.x yBy:-rotationPoint.y];
+	[t translateXBy:-self.rotationPoint.x yBy:-self.rotationPoint.y];
 	NSAffineTransform *t2 = [NSAffineTransform transform];
 	[t2 scaleXBy:self.xScale yBy:self.yScale];
 	[t appendTransform:t2];
@@ -524,7 +524,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	[t2 rotateByDegrees:self.rotation];
 	[t appendTransform:t2];
 	t2 = [NSAffineTransform transform];
-	[t2 translateXBy:rotationPoint.x yBy:rotationPoint.y];
+	[t2 translateXBy:self.rotationPoint.x yBy:self.rotationPoint.y];
 	[t appendTransform:t2];
 	return t;
 }
@@ -628,10 +628,10 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 
 - (KnobDescriptor)resizeFrameByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain
 {
-	NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
+	NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-self.rotationPoint.x yBy:-self.rotationPoint.y];
 	[aff appendTransform:[NSAffineTransform transformWithScaleXBy:self.xScale yBy:self.yScale]];
 	[aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:self.rotation]];
-	[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
+	[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:self.rotationPoint.x yBy:self.rotationPoint.y]];
 	[aff invert];
 	point = [aff transformPoint:point];
     BOOL altDown = (([theEvent modifierFlags] & NSEventModifierFlagOption)!=0);
@@ -705,9 +705,9 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 		return [self resizeFrameByMovingKnob:kd toPoint:point event:theEvent constrain:(BOOL)constrain];
 	if (self.rotation != 0.0)
 	   {
-		NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
+		NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-self.rotationPoint.x yBy:-self.rotationPoint.y];
 		[aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:self.rotation]];
-		[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
+		[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:self.rotationPoint.x yBy:self.rotationPoint.y]];
 		[aff invert];
 		point = [aff transformPoint:point];
 	   }
@@ -717,7 +717,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	tFrame.origin.y += tBounds.origin.y;
 	float xRatio = (NSMidX(tBounds) - NSMinX(tFrame)) / tFrame.size.width;
 	float yRatio = (NSMidY(tBounds) - NSMinY(tFrame)) / tFrame.size.height;
-	if (transform)
+	if (self.transform)
 	   {
 		NSPoint cp = [self centrePoint];
 		tBounds = [[NSAffineTransform transformWithTranslateXBy:-cp.x yBy:-cp.y] transformRect:tBounds];
@@ -853,7 +853,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 //	[self renderInContext:context];
     [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
 	NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:-p.x yBy:-p.y];
-	if (transform)
+	if (self.transform)
 	{
 		//[transform concat];
 		//[t prependTransform:transform];
@@ -869,7 +869,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 {
 	if (isSelected && ([self knobUnderPoint:point view:gView].knob != NoKnob))
         return YES;
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
 	if (!NSPointInRect(point, [self bounds]))
 		return NO;
@@ -886,10 +886,10 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 {
 	NSRect db = NSIntegralRect([self displayBounds]);
 	NSImage *im = [[NSImage alloc]initWithSize:db.size];
-	NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
+	NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:-self.rotationPoint.x yBy:-self.rotationPoint.y];
 	[t appendTransform:[NSAffineTransform transformWithScaleXBy:self.xScale yBy:self.yScale]];
 	[t appendTransform:[NSAffineTransform transformWithRotationByDegrees:self.rotation]];
-	[t appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x - db.origin.x yBy:rotationPoint.y - db.origin.y]];
+	[t appendTransform:[NSAffineTransform transformWithTranslateXBy:self.rotationPoint.x - db.origin.x yBy:self.rotationPoint.y - db.origin.y]];
 	[im lockFocus];
 	[[shadowType itsShadow]set];
 	[t concat];

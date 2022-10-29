@@ -237,24 +237,23 @@
 }
 
 - (void)moveBy:(NSPoint)vector
-   {
-	if (vector.x == 0.0 && vector.y == 0.0)
-		return;
-	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
-	rotationPoint.x += vector.x;
-	rotationPoint.y += vector.y;
-	centrePoint.x += vector.x;
-	centrePoint.y += vector.y;
-	for (int i = 0;i < noSides;i++)
-		handlePoints[i] = offset_point(handlePoints[i],vector);
-	pt0 = handlePoints[0];
-	pt1 = handlePoints[1];
-	bounds = [[self bezierPath]bounds];
-	[self computeTransform];
-	[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-	[self invalidateConnectors];
-	[self postChangeOfBounds];
-   }
+{
+    if (vector.x == 0.0 && vector.y == 0.0)
+        return;
+    [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+    self.rotationPoint = offset_point(self.rotationPoint, vector);
+    centrePoint.x += vector.x;
+    centrePoint.y += vector.y;
+    for (int i = 0;i < noSides;i++)
+    handlePoints[i] = offset_point(handlePoints[i],vector);
+    pt0 = handlePoints[0];
+    pt1 = handlePoints[1];
+    bounds = [[self bezierPath]bounds];
+    [self computeTransform];
+    [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+    [self invalidateConnectors];
+    [self postChangeOfBounds];
+}
 
 -(KnobDescriptor)nearestKnobForPoint:(NSPoint)pt
    {

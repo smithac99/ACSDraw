@@ -147,30 +147,22 @@ struct KnobDescriptor
 		displayBounds;		//cache bounds rotated + shadow
 	BOOL deleted;
 	float textPad;
-	GraphicMode graphicMode;
-	NSPoint rotationPoint;
-	ACSDGroup *parent;
 	ACSDLabel *textLabel;
 	NSString *toolTip;
 	NSPoint *handlePoints;
-	NSAffineTransform *transform;
 	int noHandlePoints;
 	ShadowType *shadowType;
 	BOOL manipulatingBounds;
-	NSPoint moveOffset;
 	NSRect originalBounds;
 	float originalXScale,originalYScale;
-	NSMutableDictionary *events,*filterSettings;
+	NSMutableDictionary *events;
 	GraphicCache *graphicCache;
 	BOOL drawingToCache;
-	NSPoint addingPoint,actualAddingPoint;
 	ObjectPDFData *objectPdfData;
 	FlippableView *currentDrawingDestination;
 	NSMutableArray *connectors;
 	NSBezierPath *outlinePath;
 	NSBezierPath *bezierPath;
-	ACSDStroke *preOutlineStroke;
-	ACSDFill *preOutlineFill;
 	NSMutableArray *triggers;
    }
 

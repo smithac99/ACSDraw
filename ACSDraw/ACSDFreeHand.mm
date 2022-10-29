@@ -57,27 +57,26 @@
 
 - (void)moveBy:(NSPoint)vector
 {
-	if (vector.x == 0.0 && vector.y == 0.0)
-		return;
-	if ([points count] == 0)
-		return;
-	if (self.layer)
-		[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
-	rotationPoint.x += vector.x;
-	rotationPoint.y += vector.y;
-	for (FreeHandPoint *fhp in points)
-		[fhp moveBy:vector];
-	[self buildBezierPath];
-	[self computeTransform];
-	[self computeTransformedHandlePoints];
-	bounds = NSOffsetRect([self bounds], vector.x, vector.y);
-	
-	if (self.layer)
-	{
-		[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-		[self invalidateConnectors];
-		[self postChangeOfBounds];
-	}
+    if (vector.x == 0.0 && vector.y == 0.0)
+        return;
+    if ([points count] == 0)
+        return;
+    if (self.layer)
+        [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+    self.rotationPoint = offset_point(self.rotationPoint, vector);
+    for (FreeHandPoint *fhp in points)
+        [fhp moveBy:vector];
+    [self buildBezierPath];
+    [self computeTransform];
+    [self computeTransformedHandlePoints];
+    bounds = NSOffsetRect([self bounds], vector.x, vector.y);
+    
+    if (self.layer)
+    {
+        [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+        [self invalidateConnectors];
+        [self postChangeOfBounds];
+    }
 }
 
 -(void)calculateLengths
@@ -160,8 +159,8 @@
 	if (graphicCache && redraw)
 		[graphicCache setValid:NO];
 	[self invalidateInView];
-	if (parent)
-		[parent invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
+	if (self.parent)
+		[self.parent invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
 	if (notify)
 		[[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicDidChangeNotification object:self];
 }

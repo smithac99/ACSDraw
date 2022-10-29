@@ -802,10 +802,10 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 
 -(void)applyTransform
    {
-	if (!transform)
+	if (!self.transform)
 		return;
 	NSMutableArray *arr = [self copySubPaths];
-	[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:transform];
+	[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:self.transform];
 	[self setGraphicTransform:nil];
 	[self setSubPathsAndRebuild:arr];
 	[self setGraphicRotation:0.0 notify:YES];
@@ -824,8 +824,8 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 -(NSMutableArray*)transformedSubPaths
    {
 	NSMutableArray *arr = [self copySubPaths];
-	if (transform)
-		[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:transform];
+	if (self.transform)
+		[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:self.transform];
 	return arr;
    }
 
@@ -1233,8 +1233,7 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 	[self offsetPointValue:[NSValue valueWithPoint:vector]];
 	if (self.rotation != 0.0)
 	{
-		rotationPoint.x += vector.x;
-		rotationPoint.y += vector.y;
+        self.rotationPoint = offset_point(self.rotationPoint, vector);
 		[self computeTransform];
 	}
 	[self generatePath];
@@ -1742,7 +1741,7 @@ selectedGraphics:(NSSet*)selectedGraphics
         {
             ACSDPathElement *el = [[subPath pathElements] objectAtIndex:i];
             NSPoint point = el.point;
-            if (transform)
+            if (self.transform)
                 point = [self invertPoint:point];
             if (NSPointInRect(point,rect))
             {
@@ -1756,7 +1755,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 
 - (KnobDescriptor)knobUnderPoint:(NSPoint)point view:(GraphicView*)gView
    {
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
 	for (unsigned int j = 0;j < [subPaths count];j++)
 	   {
@@ -1829,7 +1828,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 
 - (KnobDescriptor)resizeByMovingKnob:(KnobDescriptor)kd by:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain
    {
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
 	NSPoint curPoint = [[self pathElementForKnob:kd]point];
 	if (point.x != 0.0 || point.y != 0.0)
@@ -1839,7 +1838,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 
 - (KnobDescriptor)resizeByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain aroundCentre:(BOOL)aroundCentre
 {
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
     if (constrain)
     {
@@ -1889,8 +1888,8 @@ selectedGraphics:(NSSet*)selectedGraphics
 			NSMutableArray *tempSubPaths = [NSMutableArray arrayWithCapacity:ct];
 			for (int i = 0;i < ct;i++)
 				[tempSubPaths addObject:[[subPaths objectAtIndex:i]copy]];
-			ACSDPathElement *el = [[ACSDPathElement alloc]initWithPoint:addingPoint preControlPoint:addingPoint 
-				postControlPoint:addingPoint hasPreControlPoint:NO hasPostControlPoint:NO isLineToPoint:YES];
+			ACSDPathElement *el = [[ACSDPathElement alloc]initWithPoint:self.addingPoint preControlPoint:self.addingPoint
+				postControlPoint:self.addingPoint hasPreControlPoint:NO hasPostControlPoint:NO isLineToPoint:YES];
 			[[[tempSubPaths objectAtIndex:(ct - 1)]pathElements]addObject:el];
 			NSBezierPath *p = [NSBezierPath bezierPath];
 			bezierPathFromSubPath(tempSubPaths,p);
@@ -2015,10 +2014,10 @@ selectedGraphics:(NSSet*)selectedGraphics
 {
     [NSGraphicsContext saveGraphicsState];
     if (self.moving)
-        [[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
-    if (transform)
+        [[NSAffineTransform transformWithTranslateXBy:self.moveOffset.x yBy:self.moveOffset.y] concat];
+    if (self.transform)
     {
-        [transform concat];
+        [self.transform concat];
     }
     NSColor *mainCol = [self setHandleColour:forGuide];
     NSColor *firstCol = mainCol;

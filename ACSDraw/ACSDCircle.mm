@@ -69,11 +69,11 @@
 {
 	float inset = -[self paddingRequired];
 	NSRect r;
-	if (transform)
-		r = [[transform transformBezierPath:[NSBezierPath bezierPathWithRect:bounds]]controlPointBounds];
+	if (self.transform)
+		r = [[self.transform transformBezierPath:[NSBezierPath bezierPathWithRect:bounds]]controlPointBounds];
 	else
 		r = [[NSBezierPath bezierPathWithRect:bounds]controlPointBounds];
-	if (graphicMode == GRAPHIC_MODE_OUTLINE)
+	if (self.graphicMode == GRAPHIC_MODE_OUTLINE)
 	{
 		NSRect r2 = [[self transformedOutlinePath]controlPointBounds];
 		r = NSUnionRect(r,r2);
@@ -92,7 +92,7 @@
 	NSBezierPath *path = [self transformedBezierPath];
 	[NSGraphicsContext saveGraphicsState];
 	if (self.moving)
-		[[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
+		[[NSAffineTransform transformWithTranslateXBy:self.moveOffset.x yBy:self.moveOffset.y] concat];
 	[path moveToPoint:handlePoints[0]];
 	for (int i = 1;i < noHandlePoints;i++)
 		[path lineToPoint:handlePoints[i]];
@@ -115,8 +115,8 @@
 		pad = [stroke lineWidth] / 2.0;
 	NSRect r = NSInsetRect([self bounds],-pad,-pad);
 	NSBezierPath *p = [NSBezierPath bezierPathWithOvalInRect:r];
-	if (transform)
-		p = [transform transformBezierPath:p];
+	if (self.transform)
+		p = [self.transform transformBezierPath:p];
 	return [ACSDPath pathWithPath:p];
 }
 
