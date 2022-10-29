@@ -149,8 +149,8 @@
 		frac = (pos - currVal) / (nextVal - currVal);
 	else 
 		frac = 0.0;
-	NSColor *currColour = [[[self.gradientElements objectAtIndex:ind]colour]colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-	NSColor *nextColour = [[[self.gradientElements objectAtIndex:nextInd]colour]colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+	NSColor *currColour = [[[self.gradientElements objectAtIndex:ind]colour]colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]];
+	NSColor *nextColour = [[[self.gradientElements objectAtIndex:nextInd]colour]colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]];
 	float r,g,b,a;
 	r = [currColour redComponent] + frac * ([nextColour redComponent] - [currColour redComponent]);
 	g = [currColour greenComponent] + frac * ([nextColour greenComponent] - [currColour greenComponent]);

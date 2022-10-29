@@ -322,8 +322,8 @@
 - (KnobDescriptor)resizeFrameByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain
 {
     NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
-    [aff appendTransform:[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale]];
-    [aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:rotation]];
+    [aff appendTransform:[NSAffineTransform transformWithScaleXBy:self.xScale yBy:self.yScale]];
+    [aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:self.rotation]];
     [aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
     [aff invert];
     point = [aff transformPoint:point];
@@ -443,10 +443,10 @@
     BOOL commandDown = (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0);
     if (commandDown)
         return [self resizeFrameByMovingKnob:kd toPoint:point event:theEvent constrain:(BOOL)constrain];
-    if (rotation != 0.0)
+    if (self.rotation != 0.0)
     {
         NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
-        [aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:rotation]];
+        [aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:self.rotation]];
         [aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
         [aff invert];
         point = [aff transformPoint:point];
@@ -461,11 +461,11 @@
     {
         NSPoint cp = [self centrePoint];
         tBounds = [[NSAffineTransform transformWithTranslateXBy:-cp.x yBy:-cp.y] transformRect:tBounds];
-        tBounds = [[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale] transformRect:tBounds];
+        tBounds = [[NSAffineTransform transformWithScaleXBy:self.xScale yBy:self.yScale] transformRect:tBounds];
         tBounds = [[NSAffineTransform transformWithTranslateXBy:cp.x yBy:cp.y] transformRect:tBounds];
         //        tFrame = [[NSAffineTransform transformWithTranslateXBy:-(cp.x - NSMinX(bounds)) yBy:-(cp.y - NSMinY(bounds))] transformRect:tFrame];
         tFrame = [[NSAffineTransform transformWithTranslateXBy:-cp.x yBy:-cp.y] transformRect:tFrame];
-        tFrame = [[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale] transformRect:tFrame];
+        tFrame = [[NSAffineTransform transformWithScaleXBy:self.xScale yBy:self.yScale] transformRect:tFrame];
         tFrame = [[NSAffineTransform transformWithTranslateXBy:cp.x yBy:cp.y] transformRect:tFrame];
     }
     if (leftKnob(kd.knob))
@@ -557,7 +557,7 @@
 - (void)drawObject:(NSRect)aRect view:(GraphicView*)gView options:(NSMutableDictionary*)options
 {
     [NSGraphicsContext saveGraphicsState];
-    if (isMask)
+    if (self.isMask)
 	   {
            int ct = (int)[graphics count];
            [[NSGraphicsContext currentContext]saveGraphicsState];

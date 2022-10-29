@@ -220,7 +220,7 @@
 
 - (NSBezierPath *)transformedCellPath
    {
-    if (rotation == 0.0)
+    if (self.rotation == 0.0)
 		return [self cellPath];
 	return [transform transformBezierPath:[self cellPath]];
    }

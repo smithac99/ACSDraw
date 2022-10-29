@@ -229,7 +229,7 @@
 	BOOL can = NO,periodicStarted=NO;
     while (1)
 	   {
-		if (opCancelled)
+		if (self.opCancelled)
 		   {
 			[self setOpCancelled:NO];
 			can = YES;

@@ -633,11 +633,6 @@ NSImage *ImageFromFile(NSString* str)
 	[NSApp endSheet:_abslinkSheet];
    }
 
-- (void)abslinkSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-	[_abslinkSheet orderOut:self];
-}
-
 -(void)loadSheetNib
 {
 	[[NSBundle mainBundle]loadNibNamed:@"RotationSheet" owner:self topLevelObjects:nil];
@@ -654,11 +649,9 @@ NSImage *ImageFromFile(NSString* str)
 		if ([l isKindOfClass:[NSURL class]])
 			[linkTextField setStringValue:[l description]];
 	   }
-    [NSApp beginSheet: _abslinkSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(abslinkSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+       [[self window]beginSheet:_abslinkSheet completionHandler:^(NSModalResponse returnCode) {
+           [self.abslinkSheet orderOut:self];
+       }];
    }
 
 -(void)showGenTextFieldWithTitle:(NSString*)title completionBlock:(void (^)(NSString *str))completionBlock
@@ -709,21 +702,14 @@ NSImage *ImageFromFile(NSString* str)
 	[NSApp endSheet:_rotateSheet];
 }
 
-- (void)rotateSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-	[graphicView setCursorMode:GV_MODE_NONE];
-	[_rotateSheet orderOut:self];
-}
-
 - (void)showRotateDialog
 {
 	if (!_rotateSheet)
 		[self loadSheetNib];
-    [NSApp beginSheet: _rotateSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(rotateSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+    [[self window]beginSheet:_rotateSheet completionHandler:^(NSModalResponse returnCode) {
+        [self->graphicView setCursorMode:GV_MODE_NONE];
+        [self.rotateSheet orderOut:self];
+    }];
 }
 
 #pragma mark -
@@ -1095,11 +1081,6 @@ static NSMutableArray *parseRenameString(NSString* str)
     [regexpPattern setStringValue:[s substringToIndex:r.location]];
     [regexpTemplate setStringValue:[s substringFromIndex:r.location + r.length]];
 }
-- (void)regexpSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-	[_renameRegexpSheet orderOut:self];
-}
-
 - (IBAction)showRegexpDialog: (id)sender
 {
 	if (!_renameRegexpSheet)
@@ -1113,11 +1094,9 @@ static NSMutableArray *parseRenameString(NSString* str)
 			[regexpTemplate setStringValue:rena];
 		[regexpMsg setStringValue:@""];
 	}
-	[NSApp beginSheet: _renameRegexpSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(regexpSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+    [[self window]beginSheet:_renameRegexpSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.renameRegexpSheet orderOut:self];
+    }];
 }
 
 -(NSArray*)processBatchScaleFields
@@ -1236,11 +1215,6 @@ static NSMutableArray *parseRenameString(NSString* str)
     [NSApp endSheet:_repeatSheet];
 }
 
-- (void)repeatSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-    [_repeatSheet orderOut:self];
-}
-
 - (IBAction)showRepeatDialog: (id)sender
 {
     if (!_repeatSheet)
@@ -1258,11 +1232,9 @@ static NSMutableArray *parseRenameString(NSString* str)
         [repeathtextField setFloatValue:b.size.height];
         [repeatxincTextField setFloatValue:b.size.width];
         [repeatyincTextField setFloatValue:b.size.height];
-        [NSApp beginSheet: _repeatSheet
-           modalForWindow: [self window]
-            modalDelegate: self
-           didEndSelector: @selector(repeatSheetDidEnd:returnCode:contextInfo:)
-              contextInfo: nil];
+        [[self window]beginSheet:_repeatSheet completionHandler:^(NSModalResponse returnCode) {
+            [self.repeatSheet orderOut:self];
+        }];
     }
 }
 
@@ -1373,29 +1345,25 @@ static NSMutableArray *parseRenameString(NSString* str)
    }
 
 - (IBAction)showDocSizeDialog: (id)sender
-   {
-	if (!_docSizeSheet)
-		[self loadSheetNib];
-	NSSize sz = [graphicView bounds].size;
-	[docSizeWidth setIntValue:(int)sz.width];
-	[docSizeHeight setIntValue:(int)sz.height];
-    [NSApp beginSheet: _docSizeSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(generalSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
-   }
+{
+    if (!_docSizeSheet)
+        [self loadSheetNib];
+    NSSize sz = [graphicView bounds].size;
+    [docSizeWidth setIntValue:(int)sz.width];
+    [docSizeHeight setIntValue:(int)sz.height];
+    [[self window]beginSheet:_docSizeSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.docSizeSheet orderOut:self];
+    }];
+}
 
 - (IBAction)showScaleDocDialog: (id)sender
 {
 	if (!_scaleSheet)
 		[self loadSheetNib];
 	[scaleTextField setFloatValue:[[NSUserDefaults standardUserDefaults]floatForKey:prefsDocScale]];
-    [NSApp beginSheet: _scaleSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(generalSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+    [[self window]beginSheet:_scaleSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.scaleSheet orderOut:self];
+    }];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName

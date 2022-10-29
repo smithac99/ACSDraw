@@ -186,7 +186,7 @@ NSString *substitute_characters(NSString* string)
 {
     NSTextStorage *c = [[NSTextStorage alloc] initWithAttributedString:contents];
 	id obj = [[ACSDText alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:self.layer
-									xScale:xScale yScale:yScale rotation:rotation shadowType:shadowType label:textLabel alpha:alpha contents:c
+									xScale:self.xScale yScale:self.yScale rotation:self.rotation shadowType:shadowType label:textLabel alpha:self.alpha contents:c
 								 topMargin:topMargin leftMargin:leftMargin bottomMargin:bottomMargin rightMargin:rightMargin verticalAlignment:verticalAlignment];
 	[(ACSDText*)obj setCornerRadius:cornerRadius];
     [obj setAttributes:[self.attributes mutableCopy]];
@@ -601,8 +601,8 @@ NSString *substitute_characters(NSString* string)
 	if ([self stroke] && [[self stroke]colour])
 		[p appendBezierPath:[self bezierPath]];
 	ACSDGraphic *obj =  [[ACSDPath alloc] initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:[self bounds] layer:nil bezierPath:p];
-	[obj setRotation:rotation];
-	if (rotation != 0.0)
+	[obj setRotation:self.rotation];
+	if (self.rotation != 0.0)
 	   {
 		[obj setRotationPoint:rotationPoint];
 		[obj computeTransform];
@@ -1167,7 +1167,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
    {
 	[NSGraphicsContext saveGraphicsState];
 	NSBezierPath *path = [self bezierPath];
-	if (isMask)
+	if (self.isMask)
 	   {
 		NSBezierPath *clipPath = [self bezierPath];
 		[clipPath appendBezierPath:[self pathFromText]];
@@ -1183,7 +1183,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	if (stroke)
 		[stroke strokePath:path];
 	[NSGraphicsContext saveGraphicsState];
-    if (!(([gView editingGraphic] == self) || ([gView creatingGraphic] == self) || isMask))
+    if (!(([gView editingGraphic] == self) || ([gView creatingGraphic] == self) || self.isMask))
 	   {
 //		if (![self visible])
 //			return;
@@ -1307,11 +1307,11 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
     b.origin.y += (b.size.height/2.0);
 	NSAffineTransform *trans = [NSAffineTransform transform];
 	[trans translateXBy:b.origin.x yBy:b.origin.y];
-	[trans rotateByDegrees:rotation];
+	[trans rotateByDegrees:self.rotation];
 	[trans translateXBy:-b.origin.x yBy:-b.origin.y];
 	pt = [trans transformPoint:pt];
 	[editor setFrame:b];
-	[editor setFrameRotation:rotation];
+	[editor setFrameRotation:self.rotation];
 	[editor setFrameOrigin:pt];
 //    [cont addLayoutManager:[editor layoutManager]];
     [view addSubview:editor];
@@ -2282,7 +2282,7 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 
 -(BOOL)htmlMustBeDoneAsImage
 {
-	return (transform != nil || alpha < 1.0 || (shadowType != nil && [shadowType colour]) || cornerRadius != 0.0);
+	return (transform != nil || self.alpha < 1.0 || (shadowType != nil && [shadowType colour]) || cornerRadius != 0.0);
 }
 
 -(void)processHTMLOptions:(NSMutableDictionary*)options

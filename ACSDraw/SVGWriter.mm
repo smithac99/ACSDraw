@@ -28,7 +28,7 @@ NSString* rgba_from_nscolor(NSColor *col)
     if (!col)
 		col = [NSColor blackColor];
 	CGFloat r,g,b,a;
-	[[col colorUsingColorSpaceName:NSCalibratedRGBColorSpace device:nil]getRed:&r green:&g blue:&b alpha:&a];
+	[[col colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
 	r *= 255;
 	g *= 255;
 	b *= 255;
@@ -40,7 +40,7 @@ NSString* string_from_nscolor(NSColor *col)
     if (!col)
 		col = [NSColor blackColor];
 	CGFloat r,g,b,a;
-	[[col colorUsingColorSpaceName:NSCalibratedRGBColorSpace device:nil]getRed:&r green:&g blue:&b alpha:&a];
+	[[col colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
 	r *= 100;
 	g *= 100;
 	b *= 100;

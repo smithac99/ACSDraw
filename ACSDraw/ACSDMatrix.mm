@@ -146,7 +146,7 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
 - (id)copyWithZone:(NSZone *)zone 
 {
     return [[[self class] alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:self.layer
-                                      xScale:xScale yScale:yScale rotation:rotation shadowType:shadowType label:textLabel alpha:alpha
+                                      xScale:self.xScale yScale:self.yScale rotation:self.rotation shadowType:shadowType label:textLabel alpha:self.alpha
                                    topMargin:topMargin leftMargin:leftMargin bottomMargin:bottomMargin rightMargin:rightMargin verticalAlignment:verticalAlignment
                                         rows:rows columns:columns cellContents:cellContents cellStroke:cellStroke
                                    cellWidth:cellWidth cellHeight:cellHeight strokeType:strokeType cellSizeFixed:cellSizeFixed noCellsFixed:noCellsFixed];
@@ -587,11 +587,11 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
     b.origin.y += (b.size.height/2.0);
     NSAffineTransform *trans = [NSAffineTransform transform];
     [trans translateXBy:b.origin.x yBy:b.origin.y];
-    [trans rotateByDegrees:rotation];
+    [trans rotateByDegrees:self.rotation];
     [trans translateXBy:-b.origin.x yBy:-b.origin.y];
     pt = [trans transformPoint:pt];
     [editor setFrame:b];
-    [editor setFrameRotation:rotation];
+    [editor setFrameRotation:self.rotation];
     [editor setFrameOrigin:pt];
     [cont addLayoutManager:[editor layoutManager]];
     [view addSubview:editor];
@@ -623,7 +623,7 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
         return;
     if (![self visible])
         return;
-    if (rotation != 0.0)
+    if (self.rotation != 0.0)
     {
         [NSGraphicsContext saveGraphicsState];
         [transform concat];
@@ -670,7 +670,7 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
             }
         }
     }
-    if (rotation != 0.0)
+    if (self.rotation != 0.0)
         [NSGraphicsContext restoreGraphicsState];
 }
 
@@ -700,7 +700,7 @@ NSString *cellWidthDidChangeNotification = @"cellWidthDidChange";
 
 - (NSBezierPath *)transformedCellPath
 {
-    if (rotation == 0.0)
+    if (self.rotation == 0.0)
         return [self cellPath];
     return [transform transformBezierPath:[self cellPath]];
 }

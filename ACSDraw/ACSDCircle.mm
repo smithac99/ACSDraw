@@ -91,7 +91,7 @@
 	[NSBezierPath setDefaultLineWidth:0.0];
 	NSBezierPath *path = [self transformedBezierPath];
 	[NSGraphicsContext saveGraphicsState];
-	if (moving)
+	if (self.moving)
 		[[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
 	[path moveToPoint:handlePoints[0]];
 	for (int i = 1;i < noHandlePoints;i++)

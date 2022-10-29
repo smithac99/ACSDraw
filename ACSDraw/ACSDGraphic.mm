@@ -206,10 +206,8 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 
 @implementation ACSDGraphic
 
-@synthesize xScale,yScale,alpha,rotation,rotationPoint,addingPoint,actualAddingPoint,moveOffset,graphicMode,
-selectionTimeStamp,layer,transform,parent,preOutlineStroke,preOutlineFill,
-usesCache,bezierPathValid,displayBoundsValid,isMask,addingPoints,outlinePathValid,moving,opCancelled,
-exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,gaussianBlurRadius,filterSettings;
+@synthesize rotationPoint,addingPoint,actualAddingPoint,moveOffset,graphicMode,
+layer,transform,parent,preOutlineStroke,preOutlineFill,filterSettings;
 
 + (void) encodePoint:(NSPoint)pt coder:(NSCoder*)coder forKey:(NSString*)key
 {
@@ -308,15 +306,15 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 	if ((self = [super init]))
 	{
 		transform = nil;
-		selectionTimeStamp = nil;
+        self.selectionTimeStamp = nil;
 		shadowType = nil;
-		manipulatingBounds = moving = NO;
-		rotation = 0.0;
-		xScale = yScale = 1.0;
+		manipulatingBounds = self.moving = NO;
+		_rotation = 0.0;
+		_xScale = _yScale = 1.0;
 		textPad = -1.0;
-		alpha = 1.0;
-		addingPoints = NO;
-		displayBoundsValid = NO;
+		_alpha = 1.0;
+        self.addingPoints = NO;
+        self.displayBoundsValid = NO;
 		currentDrawingDestination = nil;
 		[self allocHandlePoints];
 		connectors = [[NSMutableArray arrayWithCapacity:5]retain];
@@ -336,7 +334,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 		[self setFill:f];
 		bounds = b;
 		layer = l;
-		usesCache = [self usuallyUsesCache];
+		self.usesCache = [self usuallyUsesCache];
 		events = [[NSMutableDictionary dictionaryWithCapacity:2]retain];
 		textLabel = [[ACSDLabel alloc]initWithGraphic:self];
 	}
@@ -353,14 +351,14 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 		[self setFill:f];
 		bounds = b;
 		layer = l;
-		usesCache = [self usuallyUsesCache];
+        self.usesCache = [self usuallyUsesCache];
 		events = [[NSMutableDictionary dictionaryWithCapacity:2]retain];
 		[self setXScale:xs];
 		[self setYScale:ys];
 		rotationPoint = [self centrePoint];
 		//[self setRotation:rot];
-		rotation = rot;
-		if (rotation != 0.0 || xScale != 1.0 || yScale != 1.0)
+		_rotation = rot;
+		if (_rotation != 0.0 || _xScale != 1.0 || _yScale != 1.0)
 		{
 			[self setRotationPoint:rotationPoint];
 			[self computeTransform];
@@ -368,7 +366,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 		[self setShadowType:st];
 		textLabel = [lab copy];
 		[textLabel setGraphic:self];
-		alpha = a;
+		_alpha = a;
 	}
 	return self;
 }
@@ -382,8 +380,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 		[self setStroke:nil];
 	if (transform)
 		[transform release];
-	if (selectionTimeStamp)
-		[selectionTimeStamp release];
+    self.selectionTimeStamp = nil;
 	if (shadowType)
 		[self setShadowType:nil];
 	if (events)
@@ -424,13 +421,13 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
     [obj setFill:fill];
     obj.bounds = bounds;
     obj.layer = layer;
-    obj.usesCache = usesCache;
+    obj.usesCache = self.usesCache;
     //obj.events = [[NSMutableDictionary dictionaryWithCapacity:2]retain];
-    [obj setXScale:xScale];
-    [obj setYScale:yScale];
+    [obj setXScale:_xScale];
+    [obj setYScale:_yScale];
     obj.rotationPoint = [obj centrePoint];
-    obj.rotation = rotation;
-    if (rotation != 0.0 || xScale != 1.0 || yScale != 1.0)
+    obj.rotation = _rotation;
+    if (_rotation != 0.0 || _xScale != 1.0 || _yScale != 1.0)
     {
         [obj setRotationPoint:rotationPoint];
         [obj computeTransform];
@@ -439,13 +436,13 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
     ACSDLabel *l = [textLabel copy];
     [obj setTextLabel:[l autorelease]];
     [l setGraphic:obj];
-    obj.alpha = alpha;
+    obj.alpha = _alpha;
     obj.hidden = self.hidden;
     obj.clipGraphic = self.clipGraphic;
     
 	[obj setGraphicMode:graphicMode];
 	[obj setToolTip:toolTip];
-    [obj setIsMask:isMask];
+    [obj setIsMask:self.isMask];
 	obj.filterSettings = [[filterSettings mutableCopy]autorelease];
 	obj.sourcePath = self.sourcePath;
 	obj.linkAlignmentFlags = self.linkAlignmentFlags;
@@ -499,17 +496,17 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 	[coder encodeConditionalObject:stroke forKey:@"ACSDGraphic_stroke"];
 	[coder encodeConditionalObject:shadowType forKey:@"ACSDGraphic_shadowtype"];
 	[ACSDGraphic encodeRect:bounds coder:coder forKey:@"ACSDGraphic_bounds"];
-	[coder encodeFloat:rotation forKey:@"ACSDGraphic_rotation"];
-	[coder encodeFloat:xScale forKey:@"ACSDGraphic_xScale"];
-	[coder encodeFloat:yScale forKey:@"ACSDGraphic_yScale"];
+	[coder encodeFloat:_rotation forKey:@"ACSDGraphic_rotation"];
+	[coder encodeFloat:_xScale forKey:@"ACSDGraphic_xScale"];
+	[coder encodeFloat:_yScale forKey:@"ACSDGraphic_yScale"];
 	[ACSDGraphic encodePoint:rotationPoint coder:coder forKey:@"ACSDGraphic_rotationPoint"];
 	[coder encodeObject:[self transform] forKey:@"ACSDGraphic_transform"];
 	[coder encodeObject:[self events] forKey:@"ACSDGraphic_events"];
 	[coder encodeObject:textLabel forKey:@"ACSDGraphic_label"];
 	if (toolTip)
 		[coder encodeObject:toolTip forKey:@"ACSDGraphic_toolTip"];
-	[coder encodeFloat:alpha forKey:@"ACSDGraphic_alpha"];
-    [coder encodeBool:isMask forKey:@"ACSDGraphic_Mask"];
+	[coder encodeFloat:_alpha forKey:@"ACSDGraphic_alpha"];
+    [coder encodeBool:self.isMask forKey:@"ACSDGraphic_Mask"];
     [coder encodeBool:self.hidden forKey:@"ACSDGraphic_hidden"];
 	[coder encodeInt:graphicMode forKey:@"ACSDGraphic_graphicMode"];
     [coder encodeObject:[self link] forKey:@"ACSDGraphic_link"];
@@ -540,20 +537,20 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 	[self setStroke:[coder decodeObjectForKey:@"ACSDGraphic_stroke"]];
 	[self setShadowType:[coder decodeObjectForKey:@"ACSDGraphic_shadowtype"]];
 	bounds = [ACSDGraphic decodeRectForKey:@"ACSDGraphic_bounds" coder:coder];
-	rotation = [coder decodeFloatForKey:@"ACSDGraphic_rotation"];
+	_rotation = [coder decodeFloatForKey:@"ACSDGraphic_rotation"];
 	rotationPoint = [ACSDGraphic decodePointForKey:@"ACSDGraphic_rotationPoint" coder:coder];
 	transform = [[coder decodeObjectForKey:@"ACSDGraphic_transform"]retain];
-	if (rotation != 0.0 && !transform)
+	if (_rotation != 0.0 && !transform)
 		[self computeTransform];
-	xScale = [coder decodeFloatForKey:@"ACSDGraphic_xScale"];
-	if (xScale == 0.0)
-		xScale = 1.0;
-	yScale = [coder decodeFloatForKey:@"ACSDGraphic_yScale"];
-	if (yScale == 0.0)
-		yScale = 1.0;
-	if (!transform && (rotation != 0.0  || xScale != 1.0 || yScale != 1.0))
+	_xScale = [coder decodeFloatForKey:@"ACSDGraphic_xScale"];
+	if (_xScale == 0.0)
+		_xScale = 1.0;
+	_yScale = [coder decodeFloatForKey:@"ACSDGraphic_yScale"];
+	if (_yScale == 0.0)
+		_yScale = 1.0;
+	if (!transform && (_rotation != 0.0  || _xScale != 1.0 || _yScale != 1.0))
 		[self computeTransform];
-	usesCache = [self usuallyUsesCache];
+    self.usesCache = [self usuallyUsesCache];
 	events = [[coder decodeObjectForKey:@"ACSDGraphic_events"]retain];
 	//	manipulatingBounds = NO;
 	textPad = -1.0;
@@ -561,12 +558,12 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 		textLabel = [[ACSDLabel alloc]initWithGraphic:self];
 	toolTip = [[coder decodeObjectForKey:@"ACSDGraphic_toolTip"]retain];
 	if ([coder containsValueForKey:@"ACSDGraphic_alpha"])
-		alpha = [coder decodeFloatForKey:@"ACSDGraphic_alpha"];
+		_alpha = [coder decodeFloatForKey:@"ACSDGraphic_alpha"];
 	else
-		alpha = 1.0;
-	addingPoints = NO;
+		_alpha = 1.0;
+    self.addingPoints = NO;
 	currentDrawingDestination = nil;
-    isMask = [coder decodeBoolForKey:@"ACSDGraphic_Mask"];
+    self.isMask = [coder decodeBoolForKey:@"ACSDGraphic_Mask"];
     self.hidden = [coder decodeBoolForKey:@"ACSDGraphic_hidden"];
 	graphicMode = (GraphicMode)[coder decodeIntForKey:@"ACSDGraphic_graphicMode"];
 	link = [[coder decodeObjectForKey:@"ACSDGraphic_link"]retain];
@@ -730,7 +727,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 	NSBezierPath *p = [NSBezierPath bezierPathWithRect:r];
 	if (transform)
 		p = [transform transformBezierPath:p];
-	if (moving)
+	if (self.moving)
 		p = [[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y]transformBezierPath:p];
 	return [ACSDPath pathWithPath:p];
    }
@@ -770,7 +767,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
    {
 	if (![self displayBoundsValid])
 		[self computeDisplayBounds];
-	if (moving)
+	if (self.moving)
 		return(NSOffsetRect(displayBounds,moveOffset.x,moveOffset.y));
 	return displayBounds;
    }
@@ -1022,9 +1019,9 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
    }
 
 -(NSComparisonResult)compareTimeStampWith:(id)obj
-   {
-	return [selectionTimeStamp compare:[obj selectionTimeStamp]];
-   }
+{
+    return [self.selectionTimeStamp compare:[obj selectionTimeStamp]];
+}
 
 -(void)setGraphicTransform:(NSAffineTransform*)t
    {
@@ -1079,7 +1076,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 		[self setOutlinePathValid:NO];
 		[self setBezierPathValid:NO];
 	   }
-	if (graphicCache && usesCache && sizeChanged)
+	if (graphicCache && self.usesCache && sizeChanged)
 		[self readjustCache];
 	if (graphicCache && redraw)
 		[graphicCache setValid:NO];
@@ -1116,28 +1113,28 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
    }
 
 - (void)startMove
-   {
-	moving = YES;
-	moveOffset.x = moveOffset.y = 0.0;
-   }
-    
+{
+    self.moving = YES;
+    moveOffset.x = moveOffset.y = 0.0;
+}
+
 - (void)stopMove:(NSNumber*)n
-   {
-	BOOL moved = [n boolValue];
-	if (moved)
-	   {
-		moving = NO;
-		if (moveOffset.x != 0.0 || moveOffset.y != 0.0)
-			[self uMoveBy:moveOffset];
-	   }
-	else
-	   {
-		[self invalidateInView];
-		moving = NO;
-		[self invalidateInView];
-	   }
-	   moveOffset.x = moveOffset.y = 0.0;
-   }
+{
+    BOOL moved = [n boolValue];
+    if (moved)
+    {
+        self.moving = NO;
+        if (moveOffset.x != 0.0 || moveOffset.y != 0.0)
+            [self uMoveBy:moveOffset];
+    }
+    else
+    {
+        [self invalidateInView];
+        self.moving = NO;
+        [self invalidateInView];
+    }
+    moveOffset.x = moveOffset.y = 0.0;
+}
     
 - (void)startBoundsManipulation
    {
@@ -1189,7 +1186,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
     
 -(void)computeTransform
    {
-	if (rotation == 0.0 && xScale == 1.0 && yScale == 1.0)
+	if (_rotation == 0.0 && _xScale == 1.0 && _yScale == 1.0)
 	   {
 		[self setTransform:nil];
 		return;
@@ -1197,10 +1194,10 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 	NSAffineTransform *t = [NSAffineTransform transform];
 	[t translateXBy:-rotationPoint.x yBy:-rotationPoint.y];
 	NSAffineTransform *t2 = [NSAffineTransform transform];
-	[t2 scaleXBy:xScale yBy:yScale];
+	[t2 scaleXBy:_xScale yBy:_yScale];
 	[t appendTransform:t2];
 	t2 = [NSAffineTransform transform];
-	[t2 rotateByDegrees:rotation];
+	[t2 rotateByDegrees:_rotation];
 	[t appendTransform:t2];
 	t2 = [NSAffineTransform transform];
 	[t2 translateXBy:rotationPoint.x yBy:rotationPoint.y];
@@ -1352,7 +1349,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 
 - (void)setGraphicMask:(BOOL)b
    {
-	if (b == isMask)
+	if (b == self.isMask)
 		return;
     [self invalidateInView];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicMask:[self isMask]];
@@ -1375,13 +1372,13 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 
 -(BOOL)hasAFilter
 {
-	return (exposure != 0.0 || saturation != 1.0 || brightness != 0.0 ||contrast != 1.0 
-			|| (unsharpmaskRadius > 0.0 && unsharpmaskIntensity > 0.0) || gaussianBlurRadius > 0.0);
+	return (_exposure != 0.0 || _saturation != 1.0 || _brightness != 0.0 ||_contrast != 1.0
+			|| (_unsharpmaskRadius > 0.0 && _unsharpmaskIntensity > 0.0) || _gaussianBlurRadius > 0.0);
 }
 
 -(BOOL)setGraphicGaussianBlurRadius:(float)f notify:(BOOL)notify
 {
-	if (f == gaussianBlurRadius)
+	if (f == _gaussianBlurRadius)
 		return NO;
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicGaussianBlurRadius:[self gaussianBlurRadius] notify:YES];
 	self.gaussianBlurRadius = f;
@@ -1391,7 +1388,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 
 - (void)setGraphicExposure:(float)f notify:(BOOL)notify
 {
-	if (f == exposure)
+	if (f == _exposure)
 		return;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:notify];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicExposure:[self exposure]notify:YES];
@@ -1401,7 +1398,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 
 - (BOOL)setGraphicSaturation:(float)f notify:(BOOL)notify
 {
-	if (f == saturation)
+	if (f == _saturation)
 		return NO;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:notify];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicSaturation:[self saturation]notify:YES];
@@ -1411,7 +1408,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 }
 - (BOOL)setGraphicBrightness:(float)f notify:(BOOL)notify
 {
-	if (f == brightness)
+	if (f == _brightness)
 		return NO;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:notify];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicBrightness:[self brightness]notify:YES];
@@ -1421,7 +1418,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 }
 - (BOOL)setGraphicContrast:(float)f notify:(BOOL)notify
 {
-	if (f == contrast)
+	if (f == _contrast)
 		return NO;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:notify];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicContrast:[self contrast]notify:YES];
@@ -1431,7 +1428,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 }
 - (BOOL)setGraphicUnsharpmaskIntensity:(float)f notify:(BOOL)notify
 {
-	if (f == unsharpmaskIntensity)
+	if (f == _unsharpmaskIntensity)
 		return NO;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:notify];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicUnsharpmaskIntensity:[self unsharpmaskIntensity]notify:YES];
@@ -1441,7 +1438,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 }
 - (BOOL)setGraphicUnsharpmaskRadius:(float)f notify:(BOOL)notify
 {
-	if (f == unsharpmaskRadius)
+	if (f == _unsharpmaskRadius)
 		return NO;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:notify];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicUnsharpmaskRadius:[self unsharpmaskRadius]notify:YES];
@@ -1518,7 +1515,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 
 - (BOOL)setGraphicRotation:(float)rot notify:(BOOL)notify
 {
-	if (rot == rotation)
+	if (rot == _rotation)
 		return NO;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:YES];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicRotation:[self rotation]notify:YES];
@@ -1531,37 +1528,37 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 
 -(void)setRotation:(float)f
 {
-	if (f != rotation)
+	if (f != _rotation)
 	{
 		rotationPoint = [self centrePoint];
-		rotation = f;
+		_rotation = f;
 		[self computeTransform];
 	}
 }
 
 -(void)setXScale:(float)f
 {
-	if (f != xScale)
+	if (f != _xScale)
 	{
 		rotationPoint = [self centrePoint];
-		xScale = f;
+		_xScale = f;
 		[self computeTransform];
 	}
 }
 
 -(void)setYScale:(float)f
 {
-	if (f != yScale)
+	if (f != _yScale)
 	{
 		rotationPoint = [self centrePoint];
-		yScale = f;
+		_yScale = f;
 		[self computeTransform];
 	}
 }
 
 - (BOOL)setGraphicXScale:(float)f notify:(BOOL)notify
 {
-	if (f == xScale)
+	if (f == _xScale)
 		return NO;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:notify];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicXScale:[self xScale]notify:YES];
@@ -1574,7 +1571,7 @@ exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,g
 
 - (BOOL)setGraphicYScale:(float)f notify:(BOOL)notify
 {
-	if (f == yScale)
+	if (f == _yScale)
 		return NO;
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:notify];
 	[[[self undoManager] prepareWithInvocationTarget:self] setGraphicYScale:[self yScale]notify:YES];
@@ -1638,12 +1635,12 @@ float normalisedAngle(float ang)
 	rotationPoint = [self centrePoint];
 	NSPoint newCentrePoint = [tf transformPoint:rotationPoint];
 	[self uMoveBy:NSMakePoint(newCentrePoint.x - rotationPoint.x,newCentrePoint.y - rotationPoint.y)];
-	[self setGraphicRotation:normalisedAngle(rotationAmount+rotation) notify:YES];
+	[self setGraphicRotation:normalisedAngle(rotationAmount + _rotation) notify:YES];
    }
 
 -(NSBezierPath*)outlinePath
    {
-	if (!outlinePathValid)
+	if (!_outlinePathValid)
 	   {
 		id g = self;
 		g = [g convertToPath];
@@ -1653,7 +1650,7 @@ float normalisedAngle(float ang)
 		if (outlinePath)
 			[outlinePath release];
 		outlinePath = [[g bezierPath]retain];
-		outlinePathValid = YES;
+		_outlinePathValid = YES;
 	   }
 	return outlinePath;
    }
@@ -1783,7 +1780,7 @@ float normalisedAngle(float ang)
 		[NSGraphicsContext restoreGraphicsState];
 		if ([self drawStrokeWithoutTransform] && [stroke colour])
 		{
-			if (moving)
+			if (self.moving)
 				[[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
 			[stroke strokePath:[self transformedBezierPath]];
 		}
@@ -1803,14 +1800,14 @@ float normalisedAngle(float ang)
 		   }
 		else
 		   {
-			if (moving)
+			if (self.moving)
 				[[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
 			if (shadowType && [shadowType itsShadow])
 				[[shadowType shadowWithScale:[[options objectForKey:@"scale"]floatValue]]set];
                CGContextRef currentContext = [[NSGraphicsContext currentContext] CGContext];
 			CGContextBeginTransparencyLayer (currentContext, NULL);
-			if (alpha < 1.0)
-				CGContextSetAlpha(currentContext,alpha);
+			if (_alpha < 1.0)
+				CGContextSetAlpha(currentContext,_alpha);
 			CGContextBeginTransparencyLayer (currentContext, NULL);
 			[NSGraphicsContext saveGraphicsState];
 			if (transform)
@@ -1851,8 +1848,8 @@ float normalisedAngle(float ang)
 	if (transform)
 		[transform concat];
        CGContextRef currentContext = [[NSGraphicsContext currentContext] CGContext];
-	if (alpha < 1.0)
-		CGContextSetAlpha(currentContext,alpha);
+	if (_alpha < 1.0)
+		CGContextSetAlpha(currentContext,_alpha);
 	CGContextBeginTransparencyLayer (currentContext, NULL);
 	[self drawObject:aRect view:gView options:options];
 	CGContextEndTransparencyLayer (currentContext);
@@ -1870,7 +1867,7 @@ float normalisedAngle(float ang)
 		return;
 	if (gView)
 		[self setCurrentDrawingDestination:gView];
-	if (usesCache && (graphicCache == nil) && cacheDrawing)
+	if (self.usesCache && (graphicCache == nil) && cacheDrawing)
 		[self allocCacheWithMagnification:[gView magnification]];
 	if (graphicCache && cacheDrawing && !(([[[self layer]page]pageType] == PAGE_TYPE_MASTER) && [self mayContainSubstitutions]))
 	   {
@@ -1897,7 +1894,7 @@ float normalisedAngle(float ang)
 	if ([[layer selectedGraphics]count] == 1)
 	   {
 		NSRect r = bounds;
-		if (moving)
+		if (self.moving)
 			r = NSOffsetRect(r,moveOffset.x,moveOffset.y);
 		[ACSDGraphic postChangeOfBounds:r];
 	   }
@@ -2327,7 +2324,7 @@ BOOL rightKnob(NSInteger knob)
 
 -(void) readjustCache
    {
-	if (graphicCache && usesCache)
+	if (graphicCache && self.usesCache)
 	   {
 		[graphicCache resizeToWidth:[self displayBounds].size.width height:[self displayBounds].size.height];
 		[graphicCache setValid:NO];
@@ -2514,7 +2511,7 @@ BOOL rightKnob(NSInteger knob)
 	[NSBezierPath setDefaultLineWidth:0.0];
 	NSBezierPath *path = [NSBezierPath bezierPath];
 	[self setHandleColour:forGuide];
-	if (moving)
+	if (self.moving)
 		[[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
 	[path moveToPoint:handlePoints[0]];
 	for (int i = 1;i < noHandlePoints;i++)
@@ -2569,7 +2566,7 @@ BOOL rightKnob(NSInteger knob)
 	if (!p)
 		p = [NSBezierPath bezierPathWithRect:[self bounds]];
 	ACSDPath *obj =  [[[ACSDPath alloc] initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:[self bounds]
-											   layer:nil bezierPath:p xScale:1 yScale:1 rotation:0 shadowType:shadowType label:textLabel alpha:alpha]autorelease];
+											   layer:nil bezierPath:p xScale:1 yScale:1 rotation:0 shadowType:shadowType label:textLabel alpha:_alpha]autorelease];
 	return obj;
 }
 
@@ -2801,7 +2798,7 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 	BOOL can = NO,periodicStarted=NO;
     while (1)
 	{
-		if (opCancelled)
+		if (self.opCancelled)
 		{
 			[self setOpCancelled:NO];
 			can = YES;
@@ -2874,14 +2871,14 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 
 -(NSString*)svgTransform:(SVGWriter*)svgWriter
 {
-    if (rotation != 0.0)
+    if (_rotation != 0.0)
     {
         NSPoint rpt = rotationPoint;
-        float rot = rotation;
+        float rot = _rotation;
         if (svgWriter.shouldInvertSVGCoords)
         {
             rpt = [svgWriter.inversionTransform transformPoint:rpt];
-            rot = -rotation;
+            rot = -_rotation;
         }
         return [NSString stringWithFormat:@" transform=\"rotate(%g %g %g)\" ",rot,rpt.x,rpt.y];
     }
@@ -3637,12 +3634,12 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 	float x = pt.x / docx;
 	float y = pt.y / docy;
 	[attrString appendFormat:@" relx=%g rely=%g",x,y];
-	if (xScale != 1.0)
-		[attrString appendFormat:@" scalex=%g",xScale];
-	if (yScale != 1.0)
-		[attrString appendFormat:@" scaley=%g",yScale];
-	if (rotation != 0.0)
-		[attrString appendFormat:@" rotation=%g",rotation];
+	if (_xScale != 1.0)
+		[attrString appendFormat:@" scalex=%g",_xScale];
+	if (_yScale != 1.0)
+		[attrString appendFormat:@" scaley=%g",_yScale];
+	if (_rotation != 0.0)
+		[attrString appendFormat:@" rotation=%g",_rotation];
 	return attrString;
 }
 
@@ -3711,12 +3708,12 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 	if (self.link && [self.link respondsToSelector:@selector(toObject)] && [[self.link toObject]isKindOfClass:[ACSDGraphic class]])
 		[attrString appendFormat:@" parent=\"%@\"",[(ACSDGraphic*)[self.link toObject] name]];
 	[attrString appendFormat:@" src=\"%@\"",source];
-	if (xScale != 1.0)
-		[attrString appendFormat:@" scalex=\"%g\"",xScale];
-	if (yScale != 1.0 || xScale != 1.0)
-		[attrString appendFormat:@" scaley=\"%g\"",yScale];
-	if (rotation != 0.0)
-		[attrString appendFormat:@" rotation=\"%g\"",rotation];
+	if (_xScale != 1.0)
+		[attrString appendFormat:@" scalex=\"%g\"",_xScale];
+	if (_yScale != 1.0 || _xScale != 1.0)
+		[attrString appendFormat:@" scaley=\"%g\"",_yScale];
+	if (_rotation != 0.0)
+		[attrString appendFormat:@" rotation=\"%g\"",_rotation];
     if (fill)
     {
         if ([fill isKindOfClass:[ACSDGradient class]])
@@ -3730,7 +3727,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 		else if (fill.colour)
 		{
 			CGFloat r,g,b,a;
-            [[fill.colour colorUsingColorSpaceName:NSDeviceRGBColorSpace device:nil]getRed:&r green:&g blue:&b alpha:&a];
+            [[fill.colour colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
             //[[fill.colour colorUsingColorSpaceName:NSCalibratedRGBColorSpace device:nil]getRed:&r green:&g blue:&b alpha:&a];
 			if (a > 0.0)
 			{
@@ -3746,7 +3743,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
     if (stroke && stroke.colour && stroke.lineWidth > 0.0)
     {
         CGFloat r,g,b,a;
-        [[stroke.colour colorUsingColorSpaceName:NSDeviceRGBColorSpace device:nil]getRed:&r green:&g blue:&b alpha:&a];
+        [[stroke.colour colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
         if (a > 0.0)
         {
             r *= 255;
@@ -3780,7 +3777,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
     if (shadowType && shadowType.colour)
     {
         CGFloat r,g,b,a;
-        [[shadowType.colour colorUsingColorSpaceName:NSDeviceRGBColorSpace device:nil]getRed:&r green:&g blue:&b alpha:&a];
+        [[shadowType.colour colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
         if (a > 0.0)
         {
             r *= 255;
@@ -3794,7 +3791,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
             [attrString appendFormat:@" shadowyoffset=\"%g\"",-shadowType.yOffset];
         }
     }
-	if (isMask)
+	if (self.isMask)
 		[attrString appendString:@" hasmask=\"true\""];
     float zpos = [options[@"layerzidx"]floatValue] + [self.tempSettings[@"gzidx"]floatValue]/1000.0;
     [attrString appendFormat:@" zpos=\"%g\"",zpos];

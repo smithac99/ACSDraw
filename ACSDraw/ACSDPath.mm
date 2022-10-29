@@ -1200,10 +1200,10 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 -(NSRect)displayBoundsSansShadow
    {
 	NSInteger ct = [[self pathElements] count];
-	if ((ct  == 0) && !(addingPoints && addingPointPath))
+	if ((ct  == 0) && !(self.addingPoints && addingPointPath))
 		return NSZeroRect;
 	NSRect r = [super displayBoundsSansShadow];
-	if (addingPoints && addingPointPath)
+	if (self.addingPoints && addingPointPath)
 	   {
 		NSRect pr = [addingPointPath controlPointBounds];
 		if (pr.size.width == 0.0)
@@ -1228,10 +1228,10 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 - (void)moveBy:(NSPoint)vector
 {
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
-	vector.x /= xScale;
-	vector.y /= yScale;
+	vector.x /= self.xScale;
+	vector.y /= self.yScale;
 	[self offsetPointValue:[NSValue valueWithPoint:vector]];
-	if (rotation != 0.0)
+	if (self.rotation != 0.0)
 	{
 		rotationPoint.x += vector.x;
 		rotationPoint.y += vector.y;
@@ -1357,7 +1357,7 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 	BOOL can = NO,periodicStarted=NO;
 	while (1)
 	{
-		if (opCancelled)
+		if (self.opCancelled)
 		{
 			[self setOpCancelled:NO];
 			can = YES;
@@ -1881,7 +1881,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 
 -(void)constructAddingPointPath
    {
-	if (addingPoints)
+	if (self.addingPoints)
 	   {
 		NSInteger ct = [subPaths count];
 		if (ct > 0)
@@ -1951,7 +1951,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 -(NSInteger)totalElementCount:(NSBezierPath*)p
 {
 	NSInteger tot = 0;
-	if (addingPoints)
+	if (self.addingPoints)
 		tot += [addingPointPath elementCount];
 	return [p elementCount] + tot;
 }
@@ -2014,7 +2014,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 - (void)drawHandlesGuide:(BOOL)forGuide magnification:(float)mg options:(NSUInteger)options
 {
     [NSGraphicsContext saveGraphicsState];
-    if (moving)
+    if (self.moving)
         [[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
     if (transform)
     {
@@ -2024,8 +2024,8 @@ selectedGraphics:(NSSet*)selectedGraphics
     NSColor *firstCol = mainCol;
     if (options & DRAW_HANDLES_PATH_DIR)
         firstCol = [NSColor blackColor];
-    float mag = fmax(xScale,yScale)*mg;
-    if (addingPoints)
+    float mag = fmax(self.xScale,self.yScale)*mg;
+    if (self.addingPoints)
         [addingPointPath stroke];
     else
     {

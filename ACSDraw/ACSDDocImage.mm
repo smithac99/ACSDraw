@@ -22,10 +22,10 @@
 		self.drawDoc = drawDoc;
 		frame.origin = NSMakePoint(0.0,0.0);
 		frame.size = self.drawDoc.documentSize;
-		exposure = 0.0;
-		saturation = 1.0;
-		brightness = 0.0;
-		contrast = 1.0;
+        self.exposure = 0.0;
+        self.saturation = 1.0;
+        self.brightness = 0.0;
+        self.contrast = 1.0;
 	}
 	return self;
 }
@@ -128,20 +128,20 @@
         pt = [svgWriter.inversionTransform transformPoint:pt];
     }
     [mstr appendFormat:@"translate(%g,%g)",pt.x,pt.y];
-    if (rotation != 0.0 || xScale != 1.0 || yScale != 1.0)
+    if (self.rotation != 0.0 || self.xScale != 1.0 || self.yScale != 1.0)
     {
         float h2 = bounds.size.height / 2.0;
         float w2 = bounds.size.width / 2.0;
         [mstr appendFormat:@" translate(%g,%g)",w2,h2];
-        if (rotation != 0.0)
+        if (self.rotation != 0.0)
         {
-            float rot = rotation;
+            float rot = self.rotation;
             if (svgWriter.shouldInvertSVGCoords)
-                rot = -rotation;
+                rot = -self.rotation;
             [mstr appendFormat:@" rotate(%g)",rot];
         }
-        if (xScale != 1.0 || yScale != 1.0)
-            [mstr appendFormat:@" scale(%g %g)",xScale,yScale];
+        if (self.xScale != 1.0 || self.yScale != 1.0)
+            [mstr appendFormat:@" scale(%g %g)",self.xScale,self.yScale];
         [mstr appendFormat:@" translate(%g,%g)",-w2,-h2];
     }
     if ([mstr length] > 0)

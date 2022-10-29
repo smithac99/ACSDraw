@@ -65,9 +65,9 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
            _nameCounts = [NSMutableDictionary dictionaryWithCapacity:10];
            ACSDrawDocument *doc = (ACSDrawDocument*)[[NSDocumentController sharedDocumentController]currentDocument];
            if (doc)
-               documentSize = [doc documentSize];
+               self.documentSize = [doc documentSize];
            else
-               documentSize = [[NSPrintInfo sharedPrintInfo]paperSize];
+               self.documentSize = [[NSPrintInfo sharedPrintInfo]paperSize];
            mainWindowController = nil;
            keyedObjects = [[NSMutableDictionary alloc]initWithCapacity:100];
            lineEndings = [self systemLineEndings];
@@ -99,11 +99,6 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 	return exportDirectory;
 }
 
--(NSSize)documentSize
-   {
-    return documentSize;
-   }
-	
 -(NSColor*)backgroundColour
    {
 	if (backgroundColour == nil)
@@ -424,8 +419,8 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 		[dictionary setObject:styles forKey:stylesKey];
 	if (_docTitle)
 		dictionary[docTitleKey] = _docTitle;
-	[dictionary setObject:[NSNumber numberWithFloat:documentSize.width] forKey:docSizeWidthKey];
-	[dictionary setObject:[NSNumber numberWithFloat:documentSize.height] forKey:docSizeHeightKey];
+	[dictionary setObject:[NSNumber numberWithFloat:self.documentSize.width] forKey:docSizeWidthKey];
+	[dictionary setObject:[NSNumber numberWithFloat:self.documentSize.height] forKey:docSizeHeightKey];
 	if (backgroundColour)
 		[dictionary setObject:backgroundColour forKey:backgroundColourKey];
 	id version = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleVersion"];
@@ -507,8 +502,8 @@ NSString *ACSDrawDocumentKey = @"documentKey";
             else
                 [self setShadows:obj];
         }
-        documentSize.width = [[d objectForKey:docSizeWidthKey]floatValue];
-        documentSize.height = [[d objectForKey:docSizeHeightKey]floatValue];
+        _documentSize.width = [[d objectForKey:docSizeWidthKey]floatValue];
+        _documentSize.height = [[d objectForKey:docSizeHeightKey]floatValue];
         _docTitle = d[docTitleKey];
         _scriptURL = d[scriptURLKey];
         _additionalCSS = d[additionalCSSKey];
@@ -1000,7 +995,7 @@ static BOOL isCSSIdent(unichar ch)
 				{
 					SVGGradient *svgg = [obj copy];
 					NSRect bounds = NSZeroRect;
-					bounds.size = documentSize;
+					bounds.size = self.documentSize;
 					[svgg resolveSettingsForOriginalBoundingBox:[g bounds] frame:bounds];
 					[[self fills] addObject:svgg];
 					[self registerObject:svgg];
@@ -1062,19 +1057,19 @@ static BOOL isCSSIdent(unichar ch)
     XMLNode *root = [xmlman parseData:data];
     if (![root.nodeName isEqualToString:@"events"])
         return NO;
-    documentSize.width = 1024;
-    documentSize.height = 768;
+    _documentSize.width = 1024;
+    _documentSize.height = 768;
     
     NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
     NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithCapacity:10];
     //ACSDFill *blackFill = [[[ACSDFill alloc]initWithColour:[NSColor blackColor]]autorelease];
     //[settings setObject:[self fillLikeFill:blackFill] forKey:@"fill"];
     [settings setObject:[NSMutableDictionary dictionaryWithCapacity:10] forKey:@"defs"];
-    settings[@"docheight"] = @(documentSize.height);
-    NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:0 yBy:documentSize.height];
+    settings[@"docheight"] = @(self.documentSize.height);
+    NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:0 yBy:self.documentSize.height];
     [t scaleXBy:1.0 yBy:-1.0];
     settings[@"transform"] = t;
-    settings[@"parentrect"] = [NSValue valueWithRect:NSMakeRect(0, 0, documentSize.width, documentSize.height)];
+    settings[@"parentrect"] = [NSValue valueWithRect:NSMakeRect(0, 0, self.documentSize.width, self.documentSize.height)];
     [settingsStack addObject:settings];
 
     NSMutableDictionary *objectDict = [NSMutableDictionary dictionary];
@@ -1114,12 +1109,12 @@ static BOOL isCSSIdent(unichar ch)
 			}
 		}
 	}
-    documentSize.width = ceilf([root attributeFloatValue:@"width"]);
-	if (documentSize.width < vbw)
-		documentSize.width = vbw;
-    documentSize.height = ceilf([root attributeFloatValue:@"height"]);
-	if (documentSize.height < vbh)
-		documentSize.height = vbh;
+    _documentSize.width = ceilf([root attributeFloatValue:@"width"]);
+	if (self.documentSize.width < vbw)
+		_documentSize.width = vbw;
+    _documentSize.height = ceilf([root attributeFloatValue:@"height"]);
+	if (self.documentSize.height < vbh)
+		_documentSize.height = vbh;
     NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
     NSMutableDictionary *svgSettings = [NSMutableDictionary dictionaryWithCapacity:10];
     
@@ -1128,7 +1123,7 @@ static BOOL isCSSIdent(unichar ch)
 	ACSDFill *blackFill = [[ACSDFill alloc]initWithColour:[NSColor blackColor]];
     [svgSettings setObject:[self fillLikeFill:blackFill] forKey:@"fill"];
     [svgSettings setObject:[NSMutableDictionary dictionaryWithCapacity:10] forKey:@"defs"];
-    NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:0 yBy:documentSize.height];
+    NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:0 yBy:self.documentSize.height];
     [t scaleXBy:1.0 yBy:-1.0];
     [svgSettings setObject:t forKey:@"transform"];
     [settingsStack addObject:svgSettings];
@@ -1219,8 +1214,8 @@ NSString *xHTMLString2 = @"<html>\n";
 {
 	NSMutableString *xmlString = [NSMutableString stringWithCapacity:500];
 	NSMutableDictionary *options = [NSMutableDictionary dictionaryWithCapacity:10];
-	[options setObject:[NSNumber numberWithInt:documentSize.width] forKey:xmlDocWidth];
-	[options setObject:[NSNumber numberWithInt:documentSize.height] forKey:xmlDocHeight];
+	[options setObject:[NSNumber numberWithInt:self.documentSize.width] forKey:xmlDocWidth];
+	[options setObject:[NSNumber numberWithInt:self.documentSize.height] forKey:xmlDocHeight];
 	[options setObject:@"\t" forKey:xmlIndent];
 	[xmlString appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"];
 	[xmlString appendString:[[[mainWindowController graphicView]currentPage]graphicXML:options]];
@@ -1242,8 +1237,8 @@ NSString* Creator()
 {
 	NSMutableString *xmlString = [NSMutableString stringWithCapacity:500];
 	NSMutableDictionary *options = [NSMutableDictionary dictionaryWithCapacity:10];
-	options[xmlDocWidth] = @(documentSize.width);
-	options[xmlDocHeight] = @(documentSize.height);
+	options[xmlDocWidth] = @(self.documentSize.width);
+	options[xmlDocHeight] = @(self.documentSize.height);
 	options[@"errors"] = @0;
 	options[@"document"] = self;
 	options[xmlIndent] = @"\t";
@@ -1435,7 +1430,7 @@ NSString* Creator()
 
 -(NSArray*)svgBodyString
 {
-	SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:documentSize document:self page:0];
+	SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:self.documentSize document:self page:0];
 	[svgWriter createData];
 	return @[[svgWriter defs],[svgWriter contents]];
 }
@@ -1454,7 +1449,7 @@ NSString* Creator()
         if (result == NSModalResponseOK)
 		 {
 			 [self setExportDirectory:[sp directoryURL]];
-			 SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:documentSize document:self page:[[[self frontmostMainWindowController] graphicView]currentPageInd]];
+			 SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:self.documentSize document:self page:[[[self frontmostMainWindowController] graphicView]currentPageInd]];
 			 [svgWriter createData];
 			 NSError *err = nil;
 			 if (!([[svgWriter fullString] writeToURL:[(NSSavePanel*)sp URL] atomically:YES encoding:NSUTF8StringEncoding error:&err]))
@@ -1495,7 +1490,7 @@ NSString* Creator()
                 {
                     NSString *nm = [[NSString stringWithFormat:@"%d_%@",(int)i,page.pageTitle] stringByAppendingPathExtension:@"svg"];
                     NSURL *furl = [url URLByAppendingPathComponent:nm];
-                    SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:documentSize document:self page:i];
+                    SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:self.documentSize document:self page:i];
                     [svgWriter createData];
                     NSError *err = nil;
                     if (!([[svgWriter fullString] writeToURL:furl atomically:YES encoding:NSUTF8StringEncoding error:&err]))
@@ -1646,8 +1641,8 @@ NSString* Creator()
         self.exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
         [self.exportImageSettings setObject:[NSNumber numberWithFloat:0.7] forKey:@"compressionQuality"];
     }
-    [self.exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.width] forKey:@"imageWidth"];
-    [self.exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.height] forKey:@"imageHeight"];
+    [self.exportImageSettings setObject:[NSNumber numberWithInteger:self.documentSize.width] forKey:@"imageWidth"];
+    [self.exportImageSettings setObject:[NSNumber numberWithInteger:self.documentSize.height] forKey:@"imageHeight"];
     [_exportImageController setControls:self.exportImageSettings];
     [_exportImageController prepareSavePanel:sp];
     [sp setTitle:@"Export Image"];
@@ -1734,8 +1729,8 @@ NSString* Creator()
         self.exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
         [self.exportImageSettings setObject:@(0.7) forKey:@"compressionQuality"];
     }
-    [self.exportImageSettings setObject:@(documentSize.width) forKey:@"imageWidth"];
-    [self.exportImageSettings setObject:@(documentSize.height) forKey:@"imageHeight"];
+    [self.exportImageSettings setObject:@(self.documentSize.width) forKey:@"imageWidth"];
+    [self.exportImageSettings setObject:@(self.documentSize.height) forKey:@"imageHeight"];
     [_exportImageController setControls:self.exportImageSettings];
     [_exportImageController setIgnoreSavePanel:YES];
     [_exportImageController prepareSavePanel:sp];
@@ -1775,8 +1770,8 @@ NSString* Creator()
         self.exportImageSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
 		[self.exportImageSettings setObject:@(0.7) forKey:@"compressionQuality"];
 	}
-	[self.exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.width] forKey:@"imageWidth"];
-	[self.exportImageSettings setObject:[NSNumber numberWithInteger:documentSize.height] forKey:@"imageHeight"];
+	[self.exportImageSettings setObject:[NSNumber numberWithInteger:self.documentSize.width] forKey:@"imageWidth"];
+	[self.exportImageSettings setObject:[NSNumber numberWithInteger:self.documentSize.height] forKey:@"imageHeight"];
 	[_exportImageController setControls:self.exportImageSettings];
 	[_exportImageController prepareSavePanel:sp];
 	[sp setTitle:@"Export Image"];
@@ -1930,7 +1925,7 @@ NSString* Creator()
                         pageGraphic = gs[0];
                 }
                 NSArray<XMLNode*>*paraNodes = [pageNode childrenOfType:@"para"];
-                CGFloat y = documentSize.height - 300,x = 100;
+                CGFloat y = self.documentSize.height - 300,x = 100;
                 int idx = 1;
                 for (XMLNode *para in paraNodes)
                 {
@@ -2120,7 +2115,7 @@ NSString* Creator()
     NSRect r = [[self frontmostMainWindowController]rectCroppedToOpaqueSelectionOnly:selectionOnly drawSelectionOnly:YES];
     float cx = r.origin.x + r.size.width / 2.0;
     float cy = r.origin.y + r.size.height / 2.0;
-    NSLog(@"sizetoopaque offset %g,%g ; rel centre %g,%g",r.origin.x,documentSize.height - (r.origin.y + r.size.height),cx / documentSize.width,1.0 - cy / documentSize.height);
+    NSLog(@"sizetoopaque offset %g,%g ; rel centre %g,%g",r.origin.x,self.documentSize.height - (r.origin.y + r.size.height),cx / self.documentSize.width,1.0 - cy / self.documentSize.height);
     [self sizeToRect:r];
 }
 
@@ -2156,11 +2151,6 @@ NSString* Creator()
 	[NSApp endSheet:_paddingSheet];
    }
 
-- (void)paddingSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-   {
-	[_paddingSheet orderOut:self];
-   }
-
 - (IBAction)closeSelectNameSheet: (id)sender
 {
     NSInteger reply = [sender tag];
@@ -2172,36 +2162,27 @@ NSString* Creator()
 	[NSApp endSheet:_selectNameSheet];
 }
 
-- (void)selectNameSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-	[_selectNameSheet orderOut:self];
-}
-
 - (void)showSelectByNameDialog:(id)sender
 {
 	if (!_selectNameSheet)
 	{
 		[[NSBundle mainBundle]loadNibNamed:@"DocPadding" owner:self topLevelObjects:nil];
 	}
-    [NSApp beginSheet: _selectNameSheet
-	   modalForWindow: [[self frontmostMainWindowController] window]
-		modalDelegate: self
-	   didEndSelector: @selector(selectNameSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+    [[[self frontmostMainWindowController] window]beginSheet:_selectNameSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.selectNameSheet orderOut:self];
+    }];
 }
 
 - (void)sizeToObjectsWithDialog
-   {
-	if (!_paddingSheet)
-	   {
-		[[NSBundle mainBundle] loadNibNamed:@"DocPadding" owner:self topLevelObjects:nil];
-	   }
-    [NSApp beginSheet: _paddingSheet
-	   modalForWindow: [[self frontmostMainWindowController] window]
-		modalDelegate: self
-	   didEndSelector: @selector(paddingSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
-   }
+{
+    if (!_paddingSheet)
+    {
+        [[NSBundle mainBundle] loadNibNamed:@"DocPadding" owner:self topLevelObjects:nil];
+    }
+    [[[self frontmostMainWindowController] window]beginSheet:_paddingSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.paddingSheet orderOut:self];
+    }];
+}
 
 - (IBAction)sizeToObjects:(id)sender
    {
@@ -2220,11 +2201,6 @@ NSString* Creator()
 {
     [self sizeToOpaqueSelectionOnly:YES];
 }
-
--(void)setDocumentSize:(NSSize)sz
-   {
-	documentSize = sz;
-   }
 
 -(void)setStrokes:(NSMutableArray*)a
    {

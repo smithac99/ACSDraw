@@ -38,7 +38,6 @@ NSString* Creator();
 @interface ACSDrawDocument : NSDocument
 {
 	NSMutableArray<ACSDPage*> *pages;
-	NSSize documentSize;
 	MainWindowController *mainWindowController;
 	NSMutableArray *strokes;
 	NSMutableArray *fills;
@@ -55,6 +54,8 @@ NSString* Creator();
 	unsigned nextObjectKey;
 	NSMutableDictionary *keyedObjects;
 }
+
+@property NSSize documentSize;
 
 @property (strong) NSMutableDictionary *nameCounts;
 @property (strong) NSString *scriptURL;

@@ -192,7 +192,7 @@
 
 - (NSBezierPath *)bezierPath
 {
-	if (!addingPoints && !self.bezierPathValid && points && ([points count] > 1))
+	if (!self.addingPoints && !self.bezierPathValid && points && ([points count] > 1))
 	{
 		NSMutableArray *curves = [NSMutableArray arrayWithCapacity:100];
 		[self calcCurveFromInd:0 toInd:(int)[points count]-1 currLevel:0 maxLevel:level curves:curves];
@@ -209,7 +209,7 @@
 	[bezierPath moveToPoint:anchorPoint];
     [self setBounds:NSMakeRect(anchorPoint.x, anchorPoint.y, 0.0, 0.0)];
 	[self setBezierPathValid:YES];
-	addingPoints = YES;
+    self.addingPoints = YES;
 }
 
 -(void)createMid:(NSPoint)anchorPoint currentPoint:(NSPoint*)currPoint event:(NSEvent*)theEvent

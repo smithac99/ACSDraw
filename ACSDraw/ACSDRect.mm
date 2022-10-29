@@ -34,7 +34,7 @@
 	if ([[self.layer selectedGraphics]count] == 1)
 	{
 		NSRect r = bounds;
-		if (moving)
+		if (self.moving)
 			r = NSOffsetRect(r,moveOffset.x,moveOffset.y);
 		NSDictionary *dict1 = @{@"bounds":[NSValue valueWithRect:r],
 								@"cornerRadius":[NSNumber numberWithFloat:self.cornerRadius],
@@ -280,7 +280,7 @@
 {
     if (!transform)
         return;
-    if (xScale == 1.0 && yScale == 1.0)
+    if (self.xScale == 1.0 && self.yScale == 1.0)
         return;
     CGRect tb = [self transformedBounds];
     //[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
