@@ -1387,9 +1387,9 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 		if (r.length == 0)
 			return;
 	   }
-    [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObjects:NSRTFDPboardType,ACSDrawTextPBoardType,nil] owner:self];
+       [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeRTFD,ACSDrawTextPBoardType,nil] owner:self];
 	NSData *data = [textView RTFDFromRange:[[selectedRanges objectAtIndex:0]rangeValue]];
-	[[NSPasteboard generalPasteboard] setData:data forType:NSRTFDPboardType];
+       [[NSPasteboard generalPasteboard] setData:data forType:NSPasteboardTypeRTFD];
 	[[NSPasteboard generalPasteboard] setData:data forType:ACSDrawTextPBoardType];
    }
 

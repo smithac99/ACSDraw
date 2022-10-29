@@ -37,6 +37,7 @@
 #import "SizeController.h"
 #import "SelectionSet.h"
 #import "ACSDPattern.h"
+#import "GradientElement.h"
 
 #define SIGN(a) (((a)<0)?(-1):(((a)==0)?0:1))
 
@@ -315,7 +316,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
         self.displayBoundsValid = NO;
 		currentDrawingDestination = nil;
 		[self allocHandlePoints];
-		connectors = [[NSMutableArray arrayWithCapacity:5]retain];
+		connectors = [NSMutableArray arrayWithCapacity:5];
 		deleted = NO;
         _tempSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
         self.filterSettings = [[NSMutableDictionary alloc]initWithCapacity:5];
@@ -333,7 +334,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 		bounds = b;
 		self.layer = l;
 		self.usesCache = [self usuallyUsesCache];
-		events = [[NSMutableDictionary dictionaryWithCapacity:2]retain];
+		events = [NSMutableDictionary dictionaryWithCapacity:2];
 		textLabel = [[ACSDLabel alloc]initWithGraphic:self];
 	}
 	return self;
@@ -350,7 +351,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 		bounds = b;
         self.layer = l;
         self.usesCache = [self usuallyUsesCache];
-		events = [[NSMutableDictionary dictionaryWithCapacity:2]retain];
+		events = [NSMutableDictionary dictionaryWithCapacity:2];
 		[self setXScale:xs];
 		[self setYScale:ys];
 		self.rotationPoint = [self centrePoint];
@@ -371,40 +372,8 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 
 -(void)dealloc
 {
-	self.name = nil;
-	if (fill)
-		[self setFill:nil];
-	if (stroke)
-		[self setStroke:nil];
-    self.transform = nil;
-    self.selectionTimeStamp = nil;
-	if (shadowType)
-		[self setShadowType:nil];
-	if (events)
-		[events release];
-	if (graphicCache)
-		[graphicCache release];
 	if (handlePoints)
 		delete[] handlePoints;
-	if (textLabel)
-		[textLabel release];
-	if (toolTip)
-		[toolTip release];
-	if (objectPdfData)
-		[objectPdfData release];
-	if (connectors)
-		[connectors release];
-	if (outlinePath)
-		[outlinePath release];
-	if (linkedObjects)
-		[linkedObjects release];
-	if (triggers)
-		[triggers release];
-    self.filterSettings = nil;
-    [_tempSettings release];
-	self.sourcePath = nil;
-    self.clipGraphic = nil;
-	[super dealloc];
 }
 
 - (id)copyWithZone:(NSZone *)zone 
@@ -431,7 +400,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
     }
     [obj setShadowType:[self shadowType]];
     ACSDLabel *l = [textLabel copy];
-    [obj setTextLabel:[l autorelease]];
+    [obj setTextLabel:l];
     [l setGraphic:obj];
     obj.alpha = _alpha;
     obj.hidden = self.hidden;
@@ -440,45 +409,42 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 	[obj setGraphicMode:_graphicMode];
 	[obj setToolTip:toolTip];
     [obj setIsMask:self.isMask];
-	obj.filterSettings = [[_filterSettings mutableCopy]autorelease];
+	obj.filterSettings = [_filterSettings mutableCopy];
 	obj.sourcePath = self.sourcePath;
 	obj.linkAlignmentFlags = self.linkAlignmentFlags;
 	return obj;
 }
 
 -(void)mapCopiedObjectsFromDictionary:(NSDictionary*)map
-   {
-   }
+{
+}
 
 -(BOOL)usuallyUsesCache
-   {
-	return YES;
-   }
+{
+    return YES;
+}
 
 -(void)allocCacheWithMagnification:(float)mag
-   {
-	if (graphicCache)
-		[graphicCache release];
-	graphicCache = [[GraphicCache alloc]initWithWidth:[self bounds].size.width height:[self bounds].size.height];
-	if (mag > 0.0)
-		[graphicCache setMagnification:mag];
-	[self readjustCache];
-   }
+{
+    graphicCache = [[GraphicCache alloc]initWithWidth:[self bounds].size.width height:[self bounds].size.height];
+    if (mag > 0.0)
+        [graphicCache setMagnification:mag];
+    [self readjustCache];
+}
 
 -(void)freeCache
-   {
-	if (graphicCache)
-	   {
-		[graphicCache release];
-		graphicCache = nil;
-	   }
-   }
+{
+    if (graphicCache)
+    {
+        graphicCache = nil;
+    }
+}
 
 -(void)allocHandlePoints
-   {
-	handlePoints = new NSPoint[8];
-	noHandlePoints = 8;
-   }
+{
+    handlePoints = new NSPoint[8];
+    noHandlePoints = 8;
+}
 
 -(void)finishInit
    {
@@ -536,7 +502,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 	bounds = [ACSDGraphic decodeRectForKey:@"ACSDGraphic_bounds" coder:coder];
 	_rotation = [coder decodeFloatForKey:@"ACSDGraphic_rotation"];
     self.rotationPoint = [ACSDGraphic decodePointForKey:@"ACSDGraphic_rotationPoint" coder:coder];
-    self.transform = [[coder decodeObjectForKey:@"ACSDGraphic_transform"]retain];
+    self.transform = [coder decodeObjectForKey:@"ACSDGraphic_transform"];
 	if (_rotation != 0.0 && !self.transform)
 		[self computeTransform];
 	_xScale = [coder decodeFloatForKey:@"ACSDGraphic_xScale"];
@@ -548,12 +514,12 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 	if (!self.transform && (_rotation != 0.0  || _xScale != 1.0 || _yScale != 1.0))
 		[self computeTransform];
     self.usesCache = [self usuallyUsesCache];
-	events = [[coder decodeObjectForKey:@"ACSDGraphic_events"]retain];
+	events = [coder decodeObjectForKey:@"ACSDGraphic_events"];
 	//	manipulatingBounds = NO;
 	textPad = -1.0;
-	if ((textLabel = [[coder decodeObjectForKey:@"ACSDGraphic_label"]retain]) == nil)
+	if ((textLabel = [coder decodeObjectForKey:@"ACSDGraphic_label"]) == nil)
 		textLabel = [[ACSDLabel alloc]initWithGraphic:self];
-	toolTip = [[coder decodeObjectForKey:@"ACSDGraphic_toolTip"]retain];
+	toolTip = [coder decodeObjectForKey:@"ACSDGraphic_toolTip"];
 	if ([coder containsValueForKey:@"ACSDGraphic_alpha"])
 		_alpha = [coder decodeFloatForKey:@"ACSDGraphic_alpha"];
 	else
@@ -563,11 +529,11 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
     self.isMask = [coder decodeBoolForKey:@"ACSDGraphic_Mask"];
     self.hidden = [coder decodeBoolForKey:@"ACSDGraphic_hidden"];
 	_graphicMode = (GraphicMode)[coder decodeIntForKey:@"ACSDGraphic_graphicMode"];
-	link = [[coder decodeObjectForKey:@"ACSDGraphic_link"]retain];
-	linkedObjects = [[coder decodeObjectForKey:@"ACSDGraphic_linkedObjects"]retain];
+	link = [coder decodeObjectForKey:@"ACSDGraphic_link"];
+	linkedObjects = [coder decodeObjectForKey:@"ACSDGraphic_linkedObjects"];
 	[self setPreOutlineFill:[coder decodeObjectForKey:@"ACSDGraphic_preOutlineFill"]];
 	[self setPreOutlineStroke:[coder decodeObjectForKey:@"ACSDGraphic_preOutlineStroke"]];
-	triggers = [[coder decodeObjectForKey:@"ACSDGraphic_triggers"]retain];
+	triggers = [coder decodeObjectForKey:@"ACSDGraphic_triggers"];
 	if (triggers)
 		for (NSDictionary *t in triggers)
 			[[t objectForKey:@"layer"]addTrigger:t];
@@ -612,7 +578,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 
 -(void)allocTriggers
 {
-	triggers = [[NSMutableArray arrayWithCapacity:3]retain];
+	triggers = [NSMutableArray arrayWithCapacity:3];
 }
 
 -(NSSet*)usedFills
@@ -793,9 +759,9 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 {
     if (l == textLabel)
         return;
-    [textLabel release];
-    textLabel = [l retain];
+    textLabel = l;
 }
+
 -(void)setGraphicName:(NSString*)n
    {
 	if ([self.name isEqualToString:n])
@@ -807,48 +773,44 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
    }
 
 -(void)setFill:(ACSDFill*)f
-   {
-	if (f == fill)
-		return;
-	if (fill)
-	   {
-		[fill removeGraphic:self];
-		[fill release];
-	   }
-	fill = f;
-	if (fill)
-	   {
-		[fill retain];
-		[fill addGraphic:self];
-	   }
-   }
+{
+    if (f == fill)
+        return;
+    if (fill)
+    {
+        [fill removeGraphic:self];
+    }
+    fill = f;
+    if (fill)
+    {
+        [fill addGraphic:self];
+    }
+}
 
 -(void)setAllFills:(ACSDFill*)f
-   {
-	[self setFill:f];
-   }
+{
+    [self setFill:f];
+}
 
 -(void)setStroke:(ACSDStroke*)s
-   {
-	if (s == stroke)
-		return;
-	if (stroke)
-	   {
-		[stroke removeGraphic:self];
-		[stroke release];
-	   }
-	stroke = s;
-	if (stroke)
-	   {
-		[stroke retain];
-		[stroke addGraphic:self];
-	   }
-   }
+{
+    if (s == stroke)
+        return;
+    if (stroke)
+    {
+        [stroke removeGraphic:self];
+    }
+    stroke = s;
+    if (stroke)
+    {
+        [stroke addGraphic:self];
+    }
+}
 
 -(ShadowType*)shadowType
-   {
-	return shadowType;
-   }
+{
+    return shadowType;
+}
 
 -(void)setShadowType:(ShadowType*)s
    {
@@ -857,12 +819,10 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 	if (shadowType)
 	   {
 		[shadowType removeGraphic:self];
-		[shadowType release];
 	   }
 	shadowType = s;
 	if (shadowType)
 	   {
-		[shadowType retain];
 		[shadowType addGraphic:self];
 	   }
    }
@@ -909,7 +869,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 			[self uSetLink:nil];
 	if (linkedObjects)
 	   {
-        for (ACSDLink *l in [[linkedObjects copy]autorelease])
+        for (ACSDLink *l in [linkedObjects copy])
 			[ACSDLink uDeleteFromFromObjectLink:l undoManager:[self undoManager]];
 	   }
 	[self setDeleted:YES];
@@ -1474,8 +1434,6 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
    {
 	if (toolTip == tip)
 		return;
-	if (toolTip)
-		[toolTip release];
 	if (tip && ![tip isEqualToString:@""])
 		toolTip = [tip copy];
 	else
@@ -1597,10 +1555,10 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
     if (currentDrawingDestination == dest)
         return dest;
     FlippableView* temp = currentDrawingDestination;
-    currentDrawingDestination = [dest retain];
+    currentDrawingDestination = dest;
     if (fill && [fill respondsToSelector:(@selector(setCurrentDrawingDestination:))])
         [(id)fill setCurrentDrawingDestination:dest];
-    return [temp autorelease];
+    return temp;
 }
 
 -(FlippableView*)currentDrawingDestination
@@ -1644,9 +1602,7 @@ float normalisedAngle(float ang)
 		[g setFill:self.preOutlineFill];
 		[g setStroke:self.preOutlineStroke];
 		g = [g outlineStroke];
-		if (outlinePath)
-			[outlinePath release];
-		outlinePath = [[g bezierPath]retain];
+		outlinePath = [g bezierPath];
 		_outlinePathValid = YES;
 	   }
 	return outlinePath;
@@ -1742,7 +1698,6 @@ float normalisedAngle(float ang)
    {
 	if (objectPdfData)
 	   {
-		[objectPdfData release];
 		objectPdfData = nil;
 	   }
 //	if (fill)
@@ -1793,7 +1748,6 @@ float normalisedAngle(float ang)
 			   NSRect r = NSZeroRect;
 			   r.size = [img size];
 			   [[img bestRepresentationForRect:r context:nil hints:nil]drawAtPoint:[objectPdfData offset]];	//the imagerep must be used instead of the image because the image one gives jaggies under magnification
-			[img release];
 		   }
 		else
 		   {
@@ -2116,7 +2070,7 @@ BOOL rightKnob(NSInteger knob)
    {
 	if (self.transform)
 	   {
-		NSAffineTransform *t = [[[NSAffineTransform alloc]initWithTransform:self.transform]autorelease];
+		NSAffineTransform *t = [[NSAffineTransform alloc]initWithTransform:self.transform];
 		[t invert];
 		point = [t transformPoint:point];
 	   }
@@ -2127,7 +2081,7 @@ BOOL rightKnob(NSInteger knob)
    {
 	if (self.transform)
 	   {
-		NSAffineTransform *t = [[[NSAffineTransform alloc]initWithTransform:self.transform]autorelease];
+		NSAffineTransform *t = [[NSAffineTransform alloc]initWithTransform:self.transform];
 		NSPoint point = [t transformPoint:self.rotationPoint];
 		point = NSMakePoint(point.x + offset.x,point.y + offset.y);
 		[t invert];
@@ -2562,8 +2516,8 @@ BOOL rightKnob(NSInteger knob)
 	NSBezierPath *p = [self transformedBezierPath];
 	if (!p)
 		p = [NSBezierPath bezierPathWithRect:[self bounds]];
-	ACSDPath *obj =  [[[ACSDPath alloc] initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:[self bounds]
-											   layer:nil bezierPath:p xScale:1 yScale:1 rotation:0 shadowType:shadowType label:textLabel alpha:_alpha]autorelease];
+	ACSDPath *obj = [[ACSDPath alloc] initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:[self bounds]
+											   layer:nil bezierPath:p xScale:1 yScale:1 rotation:0 shadowType:shadowType label:textLabel alpha:_alpha];
 	return obj;
 }
 
@@ -3079,10 +3033,6 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
    {
 	if (l == link)
 		return;
-	if (link)
-		[link release];
-	if (l)
-		[l retain];
 	link = l;
    }
 
@@ -3217,7 +3167,7 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 -(NSImage*)graphicImageFromPageImage:(NSImage*)pageImage
    {
 	NSRect b = NSIntegralRect([self displayBounds]);
-	NSImage *im = [[[NSImage alloc]initWithSize:b.size]autorelease];
+	NSImage *im = [[NSImage alloc]initWithSize:b.size];
 	[im lockFocus];
        [pageImage drawInRect:NSMakeRect(0,0,b.size.width,b.size.height) fromRect:b operation:NSCompositingOperationSourceOver fraction:1.0];
 	[im unlockFocus];
@@ -3227,7 +3177,7 @@ BOOL pathIntersectsWithRect(NSBezierPath *p,NSRect pathBounds,NSRect r,BOOL chec
 -(NSImage*)scaledImage
    {
 	NSRect b = NSIntegralRect([self displayBounds]);
-	NSImage *im = [[[NSImage alloc]initWithSize:b.size]autorelease];
+	NSImage *im = [[NSImage alloc]initWithSize:b.size];
 	[im lockFocus];
 	[[shadowType itsShadow]set];
 	[graphicCache.bitmap drawInRect:[graphicCache allocatedBounds]];
@@ -3252,7 +3202,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 
 -(BOOL)writeSVGImageOptions:(NSMutableDictionary*)options
    {
-	SVGWriter *svgWriter = [[[SVGWriter alloc]initWithSize:[self displayBounds].size document:nil page:nil]autorelease];
+	SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:[self displayBounds].size document:nil page:nil];
 	[svgWriter createDataForGraphic:self];
 	NSString *fileName = [imageNameForOptions(options) stringByAppendingPathExtension:@"svg"];
 	NSString *pathName = htmlDirectoryNameForOptions(options,@"smallimages");
@@ -3265,7 +3215,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 	NSString *identifier = imageNameForOptions(options);
 	NSMutableArray *fNames = [options objectForKey:@"canvasScriptNames"];
 	[fNames addObject:identifier];
-	CanvasWriter *canvasWriter = [[[CanvasWriter alloc]initWithBounds:[self displayBounds]identifier:identifier]autorelease];
+	CanvasWriter *canvasWriter = [[CanvasWriter alloc]initWithBounds:[self displayBounds]identifier:identifier];
 	[canvasWriter createDataForGraphic:self];
 	return [canvasWriter contents];
    }
@@ -3581,7 +3531,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 
 -(NSString*)pathTextInvertY:(BOOL)invertY
 {
-	NSBezierPath *p = [[[self pathTextGetPath]copy]autorelease];
+	NSBezierPath *p = [[self pathTextGetPath]copy];
 	int format = PS_FORMAT;
 	NSString *returnString;
 	NSSize sz = [self document].documentSize;

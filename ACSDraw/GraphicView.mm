@@ -2556,7 +2556,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 -(void)setUpDragWithEvent:(NSEvent*)theEvent graphicUnderMouse:(ACSDGraphic*)graphic
    {
     NSPasteboard *pboard;
-    pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+       pboard = [NSPasteboard pasteboardWithName:NSPasteboardNameDrag];
     [pboard declareTypes:[NSArray arrayWithObjects:ACSDrawGraphicRefPasteboardType,ACSDrawGraphicPasteboardType,nil]  owner:self];
 	ACSDrawDocument *doc = [self document];
 	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[NSData dataWithBytes:&doc length:sizeof(void*)],@"doc",
@@ -4782,7 +4782,7 @@ NSString *dragGraphicKey = @"dragGraphic";
 	NSMutableString *ms = [NSMutableString stringWithCapacity:100];
 	for (unsigned i = 0;i < [graphics count];i++)
 		[ms appendString:[[graphics objectAtIndex:i]pathTextInvertY:altDown]];
-	[pb setString:ms forType:NSStringPboardType];
+       [pb setString:ms forType:NSPasteboardTypeString];
    }
 
 -(NSString*)liveCodeRelativeLocationStringForArray:(NSArray*)array

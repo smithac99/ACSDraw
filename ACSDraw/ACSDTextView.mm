@@ -123,7 +123,7 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
 
 - (IBAction)paste:(id)sender
    {
-	NSArray *pasteTypes = [NSArray arrayWithObjects:ACSDrawTextPBoardType,NSRTFDPboardType,NSRTFPboardType,NSStringPboardType, nil];
+       NSArray *pasteTypes = [NSArray arrayWithObjects:ACSDrawTextPBoardType,NSPasteboardTypeRTFD,NSPasteboardTypeRTF,NSPasteboardTypeString, nil];
 	NSString *bestType = [[NSPasteboard generalPasteboard] availableTypeFromArray:pasteTypes];
 	if (bestType == nil)
 		return;

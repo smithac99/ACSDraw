@@ -731,11 +731,6 @@ NSImage *ImageFromFile(NSString* str)
     [NSApp endSheet:self.editPointSheet];
 }
 
-- (void)editPointSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-    [self.editPointSheet orderOut:self];
-}
-
 -(void)showEditPointDialogForPathElement:(ACSDPathElement*)pe
 {
     if (!_rotateSheet)
@@ -748,11 +743,9 @@ NSImage *ImageFromFile(NSString* str)
     [epCP2Y setFloatValue:pe.postControlPoint.y];
     [epCBCP1 setIntegerValue:pe.hasPreControlPoint];
     [epCBCP2 setIntegerValue:pe.hasPostControlPoint];
-    [NSApp beginSheet: self.editPointSheet
-       modalForWindow: [self window]
-        modalDelegate: self
-       didEndSelector: @selector(editPointSheetDidEnd:returnCode:contextInfo:)
-          contextInfo: nil];
+    [[self window]beginSheet:self.editPointSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.editPointSheet orderOut:self];
+    }];
 }
 
 -(IBAction)showGroupView:(id)sender
@@ -824,11 +817,6 @@ static NSMutableArray *parseRenameString(NSString* str)
 	[NSApp endSheet:_renameSheet];
 }
 
-- (void)renameSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-	[_renameSheet orderOut:self];
-}
-
 - (IBAction)showRenameDialog: (id)sender
 {
 	if (!_renameSheet)
@@ -850,11 +838,9 @@ static NSMutableArray *parseRenameString(NSString* str)
         if (rena != nil)
             [renameStartFromTextField setStringValue:rena];
     }
-    [NSApp beginSheet: self.renameSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(renameSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+    [[self window]beginSheet:self.renameSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.renameSheet orderOut:self];
+    }];
 }
 
 #pragma mark
@@ -1272,22 +1258,15 @@ static NSMutableArray *parseRenameString(NSString* str)
 	[graphicView addGraphic:t];
    }
 
-- (void)tocSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-   {
-	[sheet orderOut:self];
-   }
-
 - (IBAction)showTOCSheet: (id)sender
-   {
-	if (!tocController)
-		tocController = [[TOCController alloc]initWithController:self];
-	[tocController setStyles:[[self document]styles]];
-    [NSApp beginSheet: [tocController tocSheet]
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(tocSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
-   }
+{
+    if (!tocController)
+        tocController = [[TOCController alloc]initWithController:self];
+    [tocController setStyles:[[self document]styles]];
+    [[self window]beginSheet:[tocController tocSheet] completionHandler:^(NSModalResponse returnCode) {
+        [[tocController tocSheet] orderOut:self];
+    }];
+}
 
 - (IBAction)closeDocSizeSheet: (id)sender
 {
