@@ -2620,15 +2620,15 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		data = [pboard dataForType:ACSDrawGraphicRefPasteboardType];
 		if (data)
 		   {
-			dict = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+			dict = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSDictionary class] fromData:data error:NULL];
 			ACSDrawDocument *doc;
 			NSData *d = [dict objectForKey:@"doc"];
-			[d getBytes:&doc];
+			[d getBytes:&doc length:sizeof(ACSDrawDocument*)];
 			if (doc == [self document])
 			   {
 				GraphicView *v; 
 				d = [dict objectForKey:@"view"];
-				[d getBytes:&v];
+				[d getBytes:&v length:sizeof(GraphicView*)];
 				[[self undoManager] setActionName:@"Move"];
 				if ([self currentPage] != [v currentPage])
 				   {
@@ -3537,7 +3537,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent 
 {
-	NSRect frame = [self frame],b = [self bounds];
+	NSRect b = [self bounds];
 	NSSize scsz = [self scale];
 	scsz = [markerView scale];
 	NSPoint anchorPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil],dragPoint = anchorPoint;

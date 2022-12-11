@@ -97,12 +97,12 @@ NSColor *colourFromArray(NSArray* arr);
 NSArray *arrayFromColour(NSColor *col)
    {
 	col = [col colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]];
-	return [NSArray arrayWithObjects:[NSNumber numberWithFloat:[col redComponent]],[NSNumber numberWithFloat:[col greenComponent]],[NSNumber numberWithFloat:[col blueComponent]],[NSNumber numberWithFloat:[col alphaComponent]],nil];
+	return @[[NSNumber numberWithFloat:[col redComponent]],[NSNumber numberWithFloat:[col greenComponent]],[NSNumber numberWithFloat:[col blueComponent]],[NSNumber numberWithFloat:[col alphaComponent]]];
    }
 
 NSColor *colourFromArray(NSArray* arr)
    {
-	return [NSColor colorWithDeviceRed:[[arr objectAtIndex:0]floatValue] green:[[arr objectAtIndex:1]floatValue]blue:[[arr objectAtIndex:2]floatValue]alpha:[[arr objectAtIndex:3]floatValue]];
+	return [NSColor colorWithDeviceRed:[arr[0]floatValue] green:[arr[1]floatValue]blue:[arr[2]floatValue]alpha:[arr[3]floatValue]];
    }
 
 - (IBAction)pdfLinkHighlightingColourWellHit:(id)sender
@@ -112,7 +112,7 @@ NSColor *colourFromArray(NSArray* arr)
 
 - (IBAction)pdfLinkHighlightingStrokeHit:(id)sender
    {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithFloat:[sender floatValue]] forKey:prefsPDFLinkStrokeKey];
+	[[NSUserDefaults standardUserDefaults] setObject:@([sender floatValue]) forKey:prefsPDFLinkStrokeKey];
    }
 
 - (IBAction)pdfLinkHighlightingMatrixhit:(id)sender
@@ -120,14 +120,14 @@ NSColor *colourFromArray(NSArray* arr)
 	NSUInteger sel = [sender selectedRow];
 	if (sel > 0)
 		sel = 1 << (sel - 1);
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:sel] forKey:prefsPDFLinkModeKey];
+	[[NSUserDefaults standardUserDefaults] setObject:@(sel) forKey:prefsPDFLinkModeKey];
    }
 
 - (IBAction)guideColourHit:(id)sender
    {
 	[[NSUserDefaults standardUserDefaults] setObject:archivedObject([sender color]) forKey:prefsGuideColourKey];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDGuideColourDidChangeNotification object:self 
-		userInfo:[NSDictionary dictionaryWithObject:(NSColor*)[sender color]forKey:@"col"]];
+                                                      userInfo:@{@"col":[sender color]}];
    }
 
 - (IBAction)hotSpotSizeHit:(id)sender

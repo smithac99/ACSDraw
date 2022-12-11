@@ -446,7 +446,7 @@ void MoveRowsFromIndexSetToPosition(NSMutableArray* arr,NSIndexSet *ixs,NSIntege
             return NO;
         ACSDGraphic *g = graphics[0];
         NSData* rowData = [pboard dataForType:ACSDrawGraphicAttribIdxPasteboardType];
-        NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+        NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSIndexSet class] fromData:rowData error:NULL];
         NSMutableArray *newArray = [[g attributes]mutableCopy];
         MoveRowsFromIndexSetToPosition(newArray,rowIndexes,row);
         [g uSetAttributes:newArray];
@@ -597,7 +597,7 @@ void MoveRowsFromIndexSetToPosition(NSMutableArray* arr,NSIndexSet *ixs,NSIntege
 	if (action == @selector(copyAttributes:))
 		return [self.graphicsTableView clickedRow] > -1;
 	if (action == @selector(pasteAttributes:))
-		return ([self.graphicsTableView clickedRow] > -1) && ([[NSPasteboard generalPasteboard]availableTypeFromArray:@[NSStringPboardType]]);
+        return ([self.graphicsTableView clickedRow] > -1) && ([[NSPasteboard generalPasteboard]availableTypeFromArray:@[NSPasteboardTypeString]]);
 	if (action == @selector(copySelectedAttributes:))
 		return [self.attributesTableView clickedRow] > -1;
     return NO;
