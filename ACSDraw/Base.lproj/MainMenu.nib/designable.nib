@@ -342,6 +342,12 @@
                                     <action selector="pastePath:" target="-1" id="1091"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Paste and Match Style" tag="250" keyEquivalent="V" id="DSt-jR-Q7I">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="pasteAsPlainText:" target="-1" id="lXW-Ed-Uvy"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Duplicate" tag="260" keyEquivalent="d" id="275">
                                 <connections>
                                     <action selector="duplicate:" target="-1" id="296"/>
@@ -2006,7 +2012,7 @@ CA
                                             <rect key="frame" x="17" y="198" width="320" height="140"/>
                                             <clipView key="contentView" id="YcS-Ex-3uJ">
                                                 <rect key="frame" x="1" y="0.0" width="318" height="139"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="kKP-V3-1ER" id="8gb-rX-UY4">
                                                         <rect key="frame" x="0.0" y="0.0" width="318" height="114"/>

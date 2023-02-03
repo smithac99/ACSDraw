@@ -1109,6 +1109,12 @@ static BOOL isCSSIdent(unichar ch)
 			}
 		}
 	}
+    NSString *ws = [root attributeStringValue:@"width"];
+    NSString *hs = [root attributeStringValue:@"height"];
+    if ([ws hasSuffix:@"%"] || [hs hasSuffix:@"%"])
+    {
+        
+    }
     _documentSize.width = ceilf([root attributeFloatValue:@"width"]);
 	if (self.documentSize.width < vbw)
 		_documentSize.width = vbw;

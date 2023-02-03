@@ -57,32 +57,35 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
    }
 
 - (IBAction)copy:(id)sender
-   {
-	NSArray *selectedRanges = [self selectedRanges];
-	NSUInteger count;
-	if ((count = [selectedRanges count]) == 0)
-		return;
-	if (count == 1)
-	   {
-		NSRange r = [[selectedRanges objectAtIndex:0]rangeValue];
-		if (r.length == 0)
-			return;
-	   }
-    [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObjects:NSRTFDPboardType,ACSDrawTextPBoardType,nil] owner:self];
-	NSMutableAttributedString *mas = [[NSMutableAttributedString alloc]init];
-	for (int i = 0;i < count;i++)
-		[mas appendAttributedString:[[self textStorage] attributedSubstringFromRange:[[selectedRanges objectAtIndex:i]rangeValue]]];
-	NSData *data = [mas RTFDFromRange:NSMakeRange(0,[mas length]) documentAttributes:[NSDictionary dictionary]];
-	[[NSPasteboard generalPasteboard] setData:data forType:NSRTFDPboardType];
-	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:mas,@"text",stylesUsedByAttributedString(mas),@"styles",nil];
-	NSMutableData *mdat = [NSMutableData data];
-	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
-	[archiver setDelegate:[ArchiveTextDelegate archiveTextDelegateWithType:ARCHIVE_PASTEBOARD styleMatching:0 styles:0 document:[(ACSDText*)[self delegate]document]enclosingGraphic:(ACSDText*)[self delegate]]];
-	[archiver encodeObject:dict forKey:@"root"];
-	[archiver encodeObject:[[(ACSDText*)[self delegate]document]documentKey] forKey:@"docKey"];
-	[archiver finishEncoding];
-	[[NSPasteboard generalPasteboard] setData:mdat forType:ACSDrawTextPBoardType];
-   }
+{
+    NSArray *selectedRanges = [self selectedRanges];
+    NSUInteger count;
+    if ((count = [selectedRanges count]) == 0)
+        return;
+    if (count == 1)
+    {
+        NSRange r = [[selectedRanges objectAtIndex:0]rangeValue];
+        if (r.length == 0)
+            return;
+    }
+    [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeRTFD,NSPasteboardTypeString,ACSDrawTextPBoardType,nil] owner:self];
+    NSMutableAttributedString *mas = [[NSMutableAttributedString alloc]init];
+    for (int i = 0;i < count;i++)
+        [mas appendAttributedString:[[self textStorage] attributedSubstringFromRange:[[selectedRanges objectAtIndex:i]rangeValue]]];
+    NSData *data = [mas RTFDFromRange:NSMakeRange(0,[mas length]) documentAttributes:[NSDictionary dictionary]];
+    [[NSPasteboard generalPasteboard] setData:data forType:NSPasteboardTypeRTFD];
+    NSString *str = [mas string];
+    [[NSPasteboard generalPasteboard] setString:str forType:NSPasteboardTypeString];
+
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:mas,@"text",stylesUsedByAttributedString(mas),@"styles",nil];
+    NSMutableData *mdat = [NSMutableData data];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
+    [archiver setDelegate:[ArchiveTextDelegate archiveTextDelegateWithType:ARCHIVE_PASTEBOARD styleMatching:0 styles:0 document:[(ACSDText*)[self delegate]document]enclosingGraphic:(ACSDText*)[self delegate]]];
+    [archiver encodeObject:dict forKey:@"root"];
+    [archiver encodeObject:[[(ACSDText*)[self delegate]document]documentKey] forKey:@"docKey"];
+    [archiver finishEncoding];
+    [[NSPasteboard generalPasteboard] setData:mdat forType:ACSDrawTextPBoardType];
+}
 
 -(void)fixAnchorsInAttributedString:(NSMutableAttributedString*)mas
    {
