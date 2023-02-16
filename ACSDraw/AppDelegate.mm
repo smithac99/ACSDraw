@@ -62,18 +62,21 @@ BOOL show_error_alert(NSString *msg1)
    }
 
 - (void)hideShowPallettes
-   {
-	if ([[[ToolWindowController sharedToolWindowController:nil]window]isVisible])
-	   {
-		toolsVisible = [[[ToolWindowController sharedToolWindowController:nil]window]isVisible];
-		[[[ToolWindowController sharedToolWindowController:nil]window]orderOut:self];
-	   }
-	else
-	   {
-		if (toolsVisible)
-			[[ToolWindowController sharedToolWindowController:nil]showWindow:self];
-	   }
-   }
+{
+    if ([[[ToolWindowController sharedToolWindowController:nil]window]isVisible])
+    {
+        toolsVisible = [[[ToolWindowController sharedToolWindowController:nil]window]isVisible];
+        [[[ToolWindowController sharedToolWindowController:nil]window]orderOut:self];
+    }
+    else
+    {
+        if (toolsVisible)
+        {
+            [[ToolWindowController sharedToolWindowController:nil]showWindow:self];
+            [[PalletteViewController sharedPalletteViewController]showAllPallettes];
+        }
+    }
+}
 
 
 @end

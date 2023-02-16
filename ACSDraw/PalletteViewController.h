@@ -37,5 +37,6 @@
 -(void)createPanels;
 -(void)showPanel:(int)i;
 -(ContainerPalletteController*)newPanelWithController:(ViewController*)v atTopLeft:(NSPoint)topLeft;
+-(void)showAllPallettes;
 
 @end

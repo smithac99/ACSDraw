@@ -16,6 +16,7 @@
 #import "HighLightLayer.h"
 #import "StyleWindowController.h"
 #import "TextSubstitution.h"
+#import "geometry.h"
 
 NSSet* stylesUsedByAttributedString(NSAttributedString* as);
 
@@ -125,49 +126,49 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
    }
 
 - (IBAction)paste:(id)sender
-   {
-       NSArray *pasteTypes = [NSArray arrayWithObjects:ACSDrawTextPBoardType,NSPasteboardTypeRTFD,NSPasteboardTypeRTF,NSPasteboardTypeString, nil];
-	NSString *bestType = [[NSPasteboard generalPasteboard] availableTypeFromArray:pasteTypes];
-	if (bestType == nil)
-		return;
-	if ([bestType isEqualToString:ACSDrawTextPBoardType])
-	   {
-		NSData *data = [[NSPasteboard generalPasteboard] dataForType:ACSDrawTextPBoardType];
-		NSDictionary *dict;
-		NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
-		id docKey = [unarch decodeObjectForKey:@"docKey"];
-		int styleMatching;
-		id styleCollection;
-		NSLog(@"before stylesByKey");
-		if ([docKey isEqual:[[(ACSDText*)[self delegate]document]documentKey]])
-		   {
-			styleMatching = MATCH_KEYS;
-			styleCollection = [ACSDStyle stylesByKey:[[(ACSDText*)[self delegate]document]styles]];
-		   }
-		else
-		   {
-			styleMatching = MATCH_SIMILAR;
-			styleCollection = [ACSDStyle stylesByName:[[(ACSDText*)[self delegate]document]styles]];
-		   }
-		[unarch setDelegate:[ArchiveTextDelegate archiveTextDelegateWithType:ARCHIVE_PASTEBOARD styleMatching:styleMatching 
-																	  styles:styleCollection document:[(ACSDText*)[self delegate]document]enclosingGraphic:(ACSDText*)[self delegate]]];
-		NSLog(@"Before Decode");
-		id a = [unarch decodeObjectForKey:@"root"];
-		if ([a isKindOfClass:[NSDictionary class]])
-			dict = a;
-		else
-			return;
-		id mas = [dict objectForKey:@"text"];
-		[self fixAnchorsInAttributedString:mas];
-		[[self textStorage] beginEditing];
-		NSLog(@"Before ReplaceChars");
-		[[self textStorage] replaceCharactersInRange:[[[self selectedRanges] objectAtIndex:0]rangeValue]withAttributedString:mas];
-		NSLog(@"After ReplaceChars");
-		[[self textStorage] endEditing];
-	   }
-	else
-		[super paste:sender];
-   }
+{
+    NSArray *pasteTypes = @[ACSDrawTextPBoardType,NSPasteboardTypeRTFD,NSPasteboardTypeRTF,NSPasteboardTypeString];
+    NSString *bestType = [[NSPasteboard generalPasteboard] availableTypeFromArray:pasteTypes];
+    if (bestType == nil)
+        return;
+    if ([bestType isEqualToString:ACSDrawTextPBoardType])
+    {
+        NSData *data = [[NSPasteboard generalPasteboard] dataForType:ACSDrawTextPBoardType];
+        NSDictionary *dict;
+        NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
+        id docKey = [unarch decodeObjectForKey:@"docKey"];
+        int styleMatching;
+        id styleCollection;
+        NSLog(@"before stylesByKey");
+        if ([docKey isEqual:[[(ACSDText*)[self delegate]document]documentKey]])
+        {
+            styleMatching = MATCH_KEYS;
+            styleCollection = [ACSDStyle stylesByKey:[[(ACSDText*)[self delegate]document]styles]];
+        }
+        else
+        {
+            styleMatching = MATCH_SIMILAR;
+            styleCollection = [ACSDStyle stylesByName:[[(ACSDText*)[self delegate]document]styles]];
+        }
+        [unarch setDelegate:[ArchiveTextDelegate archiveTextDelegateWithType:ARCHIVE_PASTEBOARD styleMatching:styleMatching
+                                                                      styles:styleCollection document:[(ACSDText*)[self delegate]document]enclosingGraphic:(ACSDText*)[self delegate]]];
+        NSLog(@"Before Decode");
+        id a = [unarch decodeObjectForKey:@"root"];
+        if ([a isKindOfClass:[NSDictionary class]])
+            dict = a;
+        else
+            return;
+        id mas = [dict objectForKey:@"text"];
+        [self fixAnchorsInAttributedString:mas];
+        [[self textStorage] beginEditing];
+        NSLog(@"Before ReplaceChars");
+        [[self textStorage] replaceCharactersInRange:[[[self selectedRanges] objectAtIndex:0]rangeValue]withAttributedString:mas];
+        NSLog(@"After ReplaceChars");
+        [[self textStorage] endEditing];
+    }
+    else
+        [super paste:sender];
+}
 
 - (IBAction)createStyleFromText:(id)sender
    {
@@ -221,18 +222,85 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
    }
 
 - (IBAction)removeTextLink:(id)sender
-   {
-	NSArray *arr = [self selectedRanges];
-	for (unsigned i = 0; i < [arr count];i++)
-		[self removeLinkForRange:[[arr objectAtIndex:i]rangeValue]];
-   }
-/*
+{
+    NSArray *arr = [self selectedRanges];
+    for (unsigned i = 0; i < [arr count];i++)
+        [self removeLinkForRange:[[arr objectAtIndex:i]rangeValue]];
+}
+
+-(void)uReplaceRange:(NSRange)r withAttributedString:(NSAttributedString*)astr
+{
+    [[[self undoManager] prepareWithInvocationTarget:self]uReplaceRange:NSMakeRange(r.location, [astr length])withAttributedString:[[self textStorage]attributedSubstringFromRange:r]];
+    [[self textStorage] beginEditing];
+    [[self textStorage]replaceCharactersInRange:r withAttributedString:astr];
+    [[self textStorage] endEditing];
+}
+
+- (IBAction)graduateTextSize:(id)sender
+{
+    NSArray *arr = [self selectedRanges];
+    if ([arr count] != 1)
+        return;
+    NSRange r = [arr[0]rangeValue];
+    if (r.length < 3)
+        return;
+    NSMutableAttributedString *as = [[[self textStorage]attributedSubstringFromRange:r]mutableCopy];
+    NSFont *f = [as attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+    float startFontSize = [f pointSize];
+    f = [as attribute:NSFontAttributeName atIndex:r.length - 1 effectiveRange:NULL];
+    float endFontSize = [f pointSize];
+    for (NSInteger i = 1;i < r.length - 1;i++)
+    {
+        NSFont *f = [as attribute:NSFontAttributeName atIndex:i effectiveRange:NULL];
+        float sz = startFontSize + (endFontSize - startFontSize) * i / (r.length - 1);
+        f = [f fontWithSize:sz];
+        [as addAttributes:@{NSFontAttributeName:f} range:NSMakeRange(i, 1)];
+    }
+    /*[[self textStorage] beginEditing];
+    [[self textStorage]replaceCharactersInRange:r withAttributedString:as];
+    [[self textStorage] endEditing];*/
+    [self uReplaceRange:r withAttributedString:as];
+    [[self undoManager]setActionName:@"Text Gradient"];
+}
+
+- (IBAction)graduateTextSizeByScale:(id)sender
+{
+    NSArray *arr = [self selectedRanges];
+    if ([arr count] != 1)
+        return;
+    NSRange r = [arr[0]rangeValue];
+    if (r.length < 3)
+        return;
+    NSMutableAttributedString *as = [[[self textStorage]attributedSubstringFromRange:r]mutableCopy];
+    NSFont *f = [as attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+    float startFontSize = [f pointSize];
+    f = [as attribute:NSFontAttributeName atIndex:r.length - 1 effectiveRange:NULL];
+    float endFontSize = [f pointSize];
+    float startlog = log10(startFontSize);
+    float endlog = log10(endFontSize);
+    for (NSInteger i = 1;i < r.length - 1;i++)
+    {
+        NSFont *f = [as attribute:NSFontAttributeName atIndex:i effectiveRange:NULL];
+        float sz = pow(10,interpolateVal(startlog, endlog, i * 1.0 / (r.length - 1)));
+        f = [f fontWithSize:sz];
+        [as addAttributes:@{NSFontAttributeName:f} range:NSMakeRange(i, 1)];
+    }
+    [self uReplaceRange:r withAttributedString:as];
+    [[self undoManager]setActionName:@"Text Gradient by Scale"];
+}
+
 - (BOOL)validateMenuItem:(id)menuItem
    {
 	SEL action = [menuItem action];
-	if (action == @selector(removeLink:))
-		return YES;
+	if (action == @selector(graduateTextSize:))
+    {
+        NSArray *arr = [self selectedRanges];
+        if ([arr count] != 1)
+            return NO;
+        NSRange r = [arr[0]rangeValue];
+        return (r.length >= 3);
+    }
 	return [super validateMenuItem:menuItem];
    }
-*/
+
 @end

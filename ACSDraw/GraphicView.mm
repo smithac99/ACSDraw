@@ -6864,9 +6864,9 @@ static ACSDGraphic *parg(ACSDGraphic *g)
    }
 
 - (void)insertTab:(id)sender
-   {
-	[(AppDelegate*)[NSApp delegate]hideShowPallettes];
-   }
+{
+    [(AppDelegate*)[NSApp delegate]hideShowPallettes];
+}
 
 - (void)cropToRectangle:(id)sender
 {

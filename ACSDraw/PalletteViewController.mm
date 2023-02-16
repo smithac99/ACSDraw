@@ -135,10 +135,21 @@
 			break;
 		case 6: [self activateController:self.textController];
 			break;
-		case 7: [self activateController:self.colourController];
-			break;
-			
+        case 7: [self activateController:self.colourController];
+            break;
+        case 8: [self activateController:self.animationsController];
+            break;
+        case 9: [self activateController:self.graphicOtherController];
+            break;
+
 	}
 }
+
+-(void)showAllPallettes
+{
+    for (int i = 0;i < 10;i++)
+        [self showPanel:i];
+}
+
 
 @end
