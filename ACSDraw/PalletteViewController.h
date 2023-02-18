@@ -35,8 +35,9 @@
 
 + (PalletteViewController*)sharedPalletteViewController;
 -(void)createPanels;
--(void)showPanel:(int)i;
+-(void)activatePanel:(int)i;
 -(ContainerPalletteController*)newPanelWithController:(ViewController*)v atTopLeft:(NSPoint)topLeft;
 -(void)showAllPallettes;
+-(void)hideAllPallettes;
 
 @end

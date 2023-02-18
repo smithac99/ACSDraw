@@ -29,26 +29,41 @@ BOOL show_error_alert(NSString *msg1)
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
-   {
-	[[NSColorPanel sharedColorPanel]setShowsAlpha:YES];
-	toolsVisible = [[[ToolWindowController sharedToolWindowController:nil]window]isVisible];
-	inspectorVisible = NO;
-	NSMenu *m = [NSTextView defaultMenu];
-	if (m)
-	   {
-		while ([textMenu numberOfItems] > 0)
-		   {
-			NSMenuItem *mi = (NSMenuItem*)[textMenu itemAtIndex:0];
-			[textMenu removeItem:mi];
-			[m addItem:mi];
-		   }
-	   }
-	[[PalletteViewController sharedPalletteViewController]createPanels];
-   }
+{
+    [[NSColorPanel sharedColorPanel]setShowsAlpha:YES];
+    inspectorVisible = NO;
+    NSMenu *m = [NSTextView defaultMenu];
+    if (m)
+    {
+        while ([textMenu numberOfItems] > 0)
+        {
+            NSMenuItem *mi = (NSMenuItem*)[textMenu itemAtIndex:0];
+            [textMenu removeItem:mi];
+            [m addItem:mi];
+        }
+    }
+    [[PalletteViewController sharedPalletteViewController]createPanels];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self afterLaunch];
+    });
+}
+
+-(void)afterLaunch
+{
+    toolsVisible = YES;
+    NSWindow *toolWindow = [[ToolWindowController sharedToolWindowController:nil]window];
+    NSWindowOcclusionState occ = toolWindow.occlusionState;
+    if (!(occ & NSWindowOcclusionStateVisible))
+        //[toolWindow makeKeyAndOrderFront:nil];
+    //[toolWindow setIsVisible:YES];
+        [[ToolWindowController sharedToolWindowController:nil]showWindow:self];
+    [[PalletteViewController sharedPalletteViewController]showAllPallettes];
+}
+
 
 - (IBAction)showPanel:(id)sender
 {
-	[[PalletteViewController sharedPalletteViewController]showPanel:(int)[sender tag]];
+	[[PalletteViewController sharedPalletteViewController]activatePanel:(int)[sender tag]];
 }
 
 - (IBAction)showStylesPanelAction:(id)sender
@@ -63,19 +78,18 @@ BOOL show_error_alert(NSString *msg1)
 
 - (void)hideShowPallettes
 {
-    if ([[[ToolWindowController sharedToolWindowController:nil]window]isVisible])
+    if (toolsVisible)
     {
-        toolsVisible = [[[ToolWindowController sharedToolWindowController:nil]window]isVisible];
         [[[ToolWindowController sharedToolWindowController:nil]window]orderOut:self];
+        [[PalletteViewController sharedPalletteViewController]hideAllPallettes];
     }
     else
     {
-        if (toolsVisible)
-        {
-            [[ToolWindowController sharedToolWindowController:nil]showWindow:self];
-            [[PalletteViewController sharedPalletteViewController]showAllPallettes];
-        }
+        [[ToolWindowController sharedToolWindowController:nil]showWindow:nil];
+        [[PalletteViewController sharedPalletteViewController]showAllPallettes];
     }
+    toolsVisible = !toolsVisible;
+
 }
 
 

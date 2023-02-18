@@ -13,7 +13,7 @@
 @interface ViewController : NSObject
 {
 	NSString *title;
-	GraphicView *inspectingGraphicView;
+	__weak GraphicView *inspectingGraphicView;
 	BOOL actionsDisabled,rebuildPending;
 	int rowForContextualMenu,displayRowForContextualMenu;
 	ACSDTableView *tableViewForContextualMenu;
@@ -22,7 +22,7 @@
 @property (retain) IBOutlet NSView *contentView;
 
 @property NSUInteger changed;
-@property BOOL fieldsEditable;
+@property BOOL fieldsEditable,wasShowing;
 
 -(id)initWithTitle:(NSString*)t;
 -(NSString*)title;
@@ -47,5 +47,6 @@
 -(ACSDTableView*)tableViewForContextualMenu;
 -(void)setTableViewForContextualMenu:(ACSDTableView*)tv;
 - (void)unsetRowForContextualMenu:(NSNotification *)notification;
+-(BOOL)visible;
 
 @end

@@ -2190,7 +2190,7 @@ CA
             </connections>
         </customObject>
         <window identifier="toolwindow" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" frameAutosaveName="ACSDToolPalette" animationBehavior="default" id="376" userLabel="ToolPanel" customClass="ToolWindow">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="24" y="509" width="64" height="353"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
