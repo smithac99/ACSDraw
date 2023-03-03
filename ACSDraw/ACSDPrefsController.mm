@@ -142,6 +142,23 @@ NSData *archivedObject(id obj)
     return [NSArchiver archivedDataWithRootObject:obj];
 }
 
+NSData *keyArchivedObject(id obj)
+{
+    return [NSKeyedArchiver archivedDataWithRootObject:obj requiringSecureCoding:NO error:NULL];
+}
+
+id unarchivedObject(NSData *d)
+{
+    NSError *err = nil;
+    id res = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSObject class] fromData:d error:&err];
+    if (err)
+    {
+        NSLog(@"%@",[err localizedDescription]);
+        res = [NSUnarchiver unarchiveObjectWithData:d];
+    }
+    return res;
+}
+
 - (IBAction)selectionColourHit:(id)sender
    {
 	[[NSUserDefaults standardUserDefaults] setObject:archivedObject([sender color]) forKey:prefsSelectionColourKey];
@@ -208,7 +225,8 @@ NSData *archivedObject(id obj)
 {
 	id d = [[NSUserDefaults standardUserDefaults] objectForKey:prefsBackgroundColour];
 	if (d)
-		return [NSUnarchiver unarchiveObjectWithData:d];
+		//return [NSUnarchiver unarchiveObjectWithData:d];
+        return unarchivedObject(d);
 	return nil;
 }
 
@@ -254,13 +272,13 @@ NSData *archivedObject(id obj)
 
 -(void)setValuesFromGuidePrefsUndo:(BOOL)undo
 {
-	NSColor *col = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:prefsSelectionColourKey]];
+	NSColor *col = unarchivedObject([[NSUserDefaults standardUserDefaults] objectForKey:prefsSelectionColourKey]);
 	if (col)
 		[selectionColour setColor:col];
-	col = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:prefsGuideColourKey]];
+	col = unarchivedObject([[NSUserDefaults standardUserDefaults] objectForKey:prefsGuideColourKey]);
 	if (col)
 		[guideColour setColor:col];
-	col = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:prefsHiliteColourKey]];
+	col = unarchivedObject([[NSUserDefaults standardUserDefaults] objectForKey:prefsHiliteColourKey]);
 	if (col)
 		[hiliteColour setColor:col];
 	
@@ -280,7 +298,7 @@ NSData *archivedObject(id obj)
 
 -(void)setValuesFromPDFPrefsUndo:(BOOL)undo
    {
-	NSColor *col = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:prefsPDFLinkColourKey]];
+	NSColor *col = unarchivedObject([[NSUserDefaults standardUserDefaults] objectForKey:prefsPDFLinkColourKey]);
 	if (col)
 		[pdfLinkHighlightingColourWell setColor:col];
 	unsigned num = [[[NSUserDefaults standardUserDefaults] objectForKey:prefsPDFLinkModeKey]intValue];
@@ -384,7 +402,7 @@ NSData *archivedObject(id obj)
 
 - (BOOL)tableView:(NSTableView *)tableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
 {
-    return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes] forType:ixPBType];
+    return [pboard setData:archivedObject(rowIndexes) forType:ixPBType];
 }
 
 - (NSDragOperation)tableView:(NSTableView*)tabView validateDrop:(id <NSDraggingInfo>)info
@@ -417,7 +435,7 @@ static void MoveRowsFromIndexSetToPosition(NSMutableArray* arr,NSIndexSet *ixs,N
 {
     NSPasteboard* pboard = [info draggingPasteboard];
     NSData* rowData = [pboard dataForType:ixPBType];
-    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+    NSIndexSet* rowIndexes = unarchivedObject(rowData);
     NSMutableArray *libs = [[[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs]mutableCopy];
     MoveRowsFromIndexSetToPosition(libs,rowIndexes,row);
     [[NSUserDefaults standardUserDefaults]setObject:libs forKey:prefsImageLibs];

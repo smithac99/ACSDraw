@@ -52,7 +52,7 @@ HTMLAccumulator *_sharedHTMLAccumulator = nil;
 						 [[name stringByReplacingOccurrencesOfString:@" " withString:@"_"]
 						  stringByReplacingOccurrencesOfString:@"\n" withString:@"_"]
 						 ];
-	NSURL *url = [NSURL URLWithString:[targetPage stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+	NSURL *url = [NSURL URLWithString:[targetPage stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLPathAllowedCharacterSet]];
 	if (!url)
 		return NO;
 	NSURLRequest *req = [NSURLRequest requestWithURL:url];
@@ -147,7 +147,7 @@ HTMLAccumulator *_sharedHTMLAccumulator = nil;
 -(void)exportSavedHTML:(NSString*)nm
 {
 	[cLock lock];
-    NSData *data  = [NSKeyedArchiver archivedDataWithRootObject:htmlDict];
+    NSData *data  = [NSKeyedArchiver archivedDataWithRootObject:htmlDict requiringSecureCoding:NO error:NULL];
 	[data writeToFile:[NSString stringWithFormat:@"%@.htmlexport",nm] atomically:NO];
 	[cLock unlock];
 }

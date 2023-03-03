@@ -509,7 +509,7 @@ static NSArray *decomposed(NSString *command)
 - (BOOL)tableView:(NSTableView *)tableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
 {
 	[pboard declareTypes:@[ACSDrawAEIdxType] owner:self];
-	return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes] forType:ACSDrawAEIdxType];
+	return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes requiringSecureCoding:NO error:nil] forType:ACSDrawAEIdxType];
 }
 
 - (NSDragOperation)tableView:(NSTableView*)tabView validateDrop:(id <NSDraggingInfo>)info
@@ -550,7 +550,7 @@ static NSArray *decomposed(NSString *command)
 		return NO;
 	NSPasteboard* pboard = [info draggingPasteboard];
     NSData* rowData = [pboard dataForType:ACSDrawAEIdxType];
-    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSIndexSet class] fromData:rowData error:NULL];
     NSUInteger dragRow = [rowIndexes firstIndex];
 	row = [self moveAnimationEntryFromIndex:dragRow toIndex:row];
     self.actionsDisabled = YES;

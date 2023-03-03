@@ -229,7 +229,7 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 	NSString *dPath = [[NSBundle mainBundle]pathForResource:@"systemLineEndings" ofType:@"acsdl"];
 	if (dPath)
 	   {
-		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:[NSData dataWithContentsOfFile:dPath]];
+		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:[NSData dataWithContentsOfFile:dPath]error:NULL];
 		[unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
 		id d = [unarchiver decodeObjectForKey:@"root"];
 //		id d = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:dPath]];
@@ -442,7 +442,7 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 {
 	NSDictionary *dict;
 	dict = [self setupDictionaryFromMemory];
-	return [NSKeyedArchiver archivedDataWithRootObject:dict];
+	return [NSKeyedArchiver archivedDataWithRootObject:dict requiringSecureCoding:NO error:NULL];
 }
 
 -(BOOL)writeToURL:(NSURL *)url ofType:(NSString *)typeName error:(NSError * _Nullable *)outError
@@ -1289,8 +1289,8 @@ NSString* Creator()
         if (result == NSModalResponseOK)
 		 {
 			 NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-			 [dictionary setObject:lineEndings forKey:lineEndingsKey];
-			 NSData *leData  = [NSKeyedArchiver archivedDataWithRootObject:dictionary];
+			 [dictionary setObject:self->lineEndings forKey:lineEndingsKey];
+			 NSData *leData  = archivedObject(dictionary);
 			 [self setExportDirectory:[sp directoryURL]];
 			 if (![leData writeToURL:[sp URL] atomically:NO])
 				 NSBeep();
@@ -1558,7 +1558,7 @@ NSString* Creator()
                  show_error_alert([NSString stringWithFormat:@"Error creating directory: %@, %@",[url path],[err localizedDescription]]);
                  return;
              }
-             NSString *evn = [textAccessoryTextField stringValue];
+             NSString *evn = [self->textAccessoryTextField stringValue];
              for (ACSDPage *page in self.pages)
              {
                  if ([page pageType] == PAGE_TYPE_NORMAL)
@@ -1590,7 +1590,7 @@ NSString* Creator()
 		 {
 			 NSError *err = nil;
              self.exportDirectory = [sp directoryURL];
-			 miscValues[@"exporteventxml"] = [sp URL];
+			 self->miscValues[@"exporteventxml"] = [sp URL];
              if (!([[self eventsXMLString:self.pages] writeToURL:[sp URL] atomically:YES encoding:NSUTF8StringEncoding error:&err]))
 				 show_error_alert([NSString stringWithFormat:@"Error writing xml: %@, %@",[sp URL],[err localizedDescription]]);
 		 }

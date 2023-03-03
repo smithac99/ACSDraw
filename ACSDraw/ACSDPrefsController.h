@@ -82,4 +82,6 @@ enum
 @end
 
 NSData *archivedObject(id obj);
+NSData *keyArchivedObject(id obj);
+id unarchivedObject(NSData *d);
 

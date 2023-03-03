@@ -1264,7 +1264,7 @@ static NSMutableArray *parseRenameString(NSString* str)
         tocController = [[TOCController alloc]initWithController:self];
     [tocController setStyles:[[self document]styles]];
     [[self window]beginSheet:[tocController tocSheet] completionHandler:^(NSModalResponse returnCode) {
-        [[tocController tocSheet] orderOut:self];
+        [[self->tocController tocSheet] orderOut:self];
     }];
 }
 

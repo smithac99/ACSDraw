@@ -10,6 +10,7 @@
 #import "GraphicView.h"
 #import "ACSDGraphic.h"
 #import "ArrayAdditions.h"
+#import "ACSDPrefsController.h"
 
 NSString *ACSDrawGraphicIdxPasteboardType = @"ACSDrawGraphicIdx";
 NSString *ACSDrawGraphicAttribIdxPasteboardType = @"ACSDrawGraphicAttribidx";
@@ -379,7 +380,7 @@ static NSIndexSet *ReversedIndexSet(NSIndexSet *ixs,NSInteger arrayCount)
     {
         NSArray *typeArray = [NSArray arrayWithObjects:ACSDrawGraphicIdxPasteboardType,nil];
         [pboard declareTypes:typeArray owner:self];
-        return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes] forType:ACSDrawGraphicIdxPasteboardType];
+        return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes requiringSecureCoding:NO error:NULL] forType:ACSDrawGraphicIdxPasteboardType];
     }
     else
     {
@@ -388,7 +389,7 @@ static NSIndexSet *ReversedIndexSet(NSIndexSet *ixs,NSInteger arrayCount)
             return NO;
         NSArray *typeArray = [NSArray arrayWithObjects:ACSDrawGraphicAttribIdxPasteboardType,nil];
         [pboard declareTypes:typeArray owner:self];
-        return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes] forType:ACSDrawGraphicAttribIdxPasteboardType];
+        return [pboard setData:archivedObject(rowIndexes) forType:ACSDrawGraphicAttribIdxPasteboardType];
     }
     return YES;
 }
@@ -433,7 +434,7 @@ void MoveRowsFromIndexSetToPosition(NSMutableArray* arr,NSIndexSet *ixs,NSIntege
         if (l == nil)
             return NO;
         NSData* rowData = [pboard dataForType:ACSDrawGraphicIdxPasteboardType];
-        NSIndexSet* rowIndexes = ReversedIndexSet([NSKeyedUnarchiver unarchiveObjectWithData:rowData],[[l graphics]count]);
+        NSIndexSet* rowIndexes = ReversedIndexSet(unarchivedObject(rowData),[[l graphics]count]);
         NSMutableArray *newArray = [[l graphics]mutableCopy];
         MoveRowsFromIndexSetToPosition(newArray,rowIndexes,[[l graphics]count] - row);
         [graphicView uSetGraphics:newArray forLayer:l];

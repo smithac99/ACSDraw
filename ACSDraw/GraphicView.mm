@@ -1172,10 +1172,10 @@ NSInteger sortPositionalObjects(id obj1,id obj2,void *context)
    }
 
 - (void)insertArchivedElements:(NSData*)data
-   {
-	NSMutableArray *poArray = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-	[self insertselectedGraphics:poArray];
-   }
+{
+    NSMutableArray *poArray = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSMutableArray class] fromData:data error:NULL];
+    [self insertselectedGraphics:poArray];
+}
 
 - (void)insertGraphic:(ACSDGraphic*)graphic atIndex:(NSInteger)i
 {
@@ -2561,7 +2561,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	ACSDrawDocument *doc = [self document];
 	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[NSData dataWithBytes:&doc length:sizeof(void*)],@"doc",
 		[NSData dataWithBytes:&self length:sizeof(void*)],@"view",nil];
-	[pboard setData:[NSKeyedArchiver archivedDataWithRootObject:dict] forType:ACSDrawGraphicRefPasteboardType];
+	[pboard setData:keyArchivedObject(dict) forType:ACSDrawGraphicRefPasteboardType];
 	[self copySelectedGraphicsToPasteBoard:pboard draggedGraphic:graphic altDown:NO];
 	NSRect b = [graphic displayBounds];
 	dragGraphic = graphic;
@@ -2584,10 +2584,10 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		NSData *data = [pboard dataForType:ACSDrawGraphicRefPasteboardType];
 		if (data)
 		   {
-			NSDictionary *dict = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+			NSDictionary *dict = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSDictionary class] fromData:data error:NULL];
 			ACSDrawDocument *doc;
 			NSData *d = [dict objectForKey:@"doc"];
-			[d getBytes:&doc];
+			[d getBytes:&doc length:sizeof(ACSDrawDocument*)];
 			if (doc == [self document])
 				return NSDragOperationMove;
 		   }

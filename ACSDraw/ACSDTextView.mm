@@ -135,7 +135,7 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
     {
         NSData *data = [[NSPasteboard generalPasteboard] dataForType:ACSDrawTextPBoardType];
         NSDictionary *dict;
-        NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
+        NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingFromData:data error:NULL];
         id docKey = [unarch decodeObjectForKey:@"docKey"];
         int styleMatching;
         id styleCollection;
