@@ -3,6 +3,9 @@
 #import "StyleWindowController.h"
 #import "ACSDImageRep.h"
 #import "PalletteViewController.h"
+#import "ACSDDocumentController.h"
+
+ACSDDocumentController *docController;
 
 BOOL show_error_alert(NSString *msg1)
 {
@@ -18,6 +21,7 @@ BOOL show_error_alert(NSString *msg1)
     {
 		appKey = [NSDate date];
 		[ACSDImageRep class];
+        docController = [[ACSDDocumentController alloc]init];
         self.copiedScreens = [NSMutableArray arrayWithCapacity:5];
     }
 	return self;

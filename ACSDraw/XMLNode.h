@@ -16,6 +16,7 @@
 @property (retain) NSMutableArray *children;
 
 -(NSArray*)childrenOfType:(NSString*)typeName;
+-(XMLNode*)childOfType:(NSString*)typeName identifier:(NSString*)ident;
 -(NSString*)attributeStringValue:(NSString*)attrname;
 -(float)attributeFloatValue:(NSString*)attrname;
 -(NSInteger)attributeIntValue:(NSString*)attrname;

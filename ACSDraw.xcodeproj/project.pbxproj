@@ -270,6 +270,10 @@
 		E751D30E230E990500D35BE2 /* noimagecross64.png in Resources */ = {isa = PBXBuildFile; fileRef = E751D30C230E990500D35BE2 /* noimagecross64.png */; };
 		E751D30F230E990500D35BE2 /* noimagecross.svg in Resources */ = {isa = PBXBuildFile; fileRef = E751D30D230E990500D35BE2 /* noimagecross.svg */; };
 		E767B7291A3890F20048C6BA /* GraphicOtherController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E767B7281A3890F20048C6BA /* GraphicOtherController.mm */; };
+		E76AC00729B29A5A005DE06A /* NSDocumentController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC00629B29A5A005DE06A /* NSDocumentController+Additions.m */; };
+		E76AC00A29B2A02B005DE06A /* ACSDDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC00929B2A02B005DE06A /* ACSDDocumentController.m */; };
+		E76AC00D29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E76AC00C29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm */; };
+		E76AC00F29B34980005DE06A /* booktemplate.xml in Resources */ = {isa = PBXBuildFile; fileRef = E76AC00E29B34976005DE06A /* booktemplate.xml */; };
 		E77102E4279E77B4000FF4FB /* expand.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E77102E2279E77B4000FF4FB /* expand.tiff */; };
 		E77102E5279E77B4000FF4FB /* expandalt.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E77102E3279E77B4000FF4FB /* expandalt.tiff */; };
 		E77A36DD196841FB0050264B /* OverlayFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = E77A36DC196841FB0050264B /* OverlayFilter.m */; };
@@ -710,6 +714,13 @@
 		E751D30D230E990500D35BE2 /* noimagecross.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = noimagecross.svg; sourceTree = "<group>"; };
 		E767B7271A3890F20048C6BA /* GraphicOtherController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicOtherController.h; sourceTree = "<group>"; };
 		E767B7281A3890F20048C6BA /* GraphicOtherController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphicOtherController.mm; sourceTree = "<group>"; };
+		E76AC00529B29A5A005DE06A /* NSDocumentController+Additions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDocumentController+Additions.h"; sourceTree = "<group>"; };
+		E76AC00629B29A5A005DE06A /* NSDocumentController+Additions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDocumentController+Additions.m"; sourceTree = "<group>"; };
+		E76AC00829B2A02B005DE06A /* ACSDDocumentController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACSDDocumentController.h; sourceTree = "<group>"; };
+		E76AC00929B2A02B005DE06A /* ACSDDocumentController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACSDDocumentController.m; sourceTree = "<group>"; };
+		E76AC00B29B32649005DE06A /* ACSDrawDocument+bookAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ACSDrawDocument+bookAdditions.h"; sourceTree = "<group>"; };
+		E76AC00C29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "ACSDrawDocument+bookAdditions.mm"; sourceTree = "<group>"; };
+		E76AC00E29B34976005DE06A /* booktemplate.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = booktemplate.xml; sourceTree = "<group>"; };
 		E77102E2279E77B4000FF4FB /* expand.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = expand.tiff; sourceTree = "<group>"; };
 		E77102E3279E77B4000FF4FB /* expandalt.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = expandalt.tiff; sourceTree = "<group>"; };
 		E77A36DB196841FB0050264B /* OverlayFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayFilter.h; sourceTree = "<group>"; };
@@ -997,6 +1008,7 @@
 		E74054C815B1ED040040F590 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E76AC00E29B34976005DE06A /* booktemplate.xml */,
 				E798F30215C3F0C60079B4D9 /* ACSDraw.icns */,
 				E74054C915B1ED040040F590 /* ACSDraw-Info.plist */,
 				E74054CA15B1ED040040F590 /* InfoPlist.strings */,
@@ -1132,6 +1144,8 @@
 				E740551115B1EF2D0040F590 /* ACSDrawDefs.h */,
 				E740551215B1EF2D0040F590 /* ACSDrawDocument.h */,
 				E740551315B1EF2D0040F590 /* ACSDrawDocument.mm */,
+				E76AC00B29B32649005DE06A /* ACSDrawDocument+bookAdditions.h */,
+				E76AC00C29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm */,
 				E740551415B1EF2D0040F590 /* ACSDrawTextAttachmentCell.h */,
 				E740551515B1EF2D0040F590 /* ACSDrawTextAttachmentCell.mm */,
 				E740552015B1EF2D0040F590 /* ACSDTableView.h */,
@@ -1166,6 +1180,8 @@
 				E71E28CE1823BAAE00F5C5B9 /* XMLManager.m */,
 				E71E28CF1823BAAE00F5C5B9 /* XMLNode.h */,
 				E71E28D01823BAAE00F5C5B9 /* XMLNode.m */,
+				E76AC00829B2A02B005DE06A /* ACSDDocumentController.h */,
+				E76AC00929B2A02B005DE06A /* ACSDDocumentController.m */,
 			);
 			name = "Main UI";
 			sourceTree = "<group>";
@@ -1258,6 +1274,8 @@
 				E7F50037179410A1009FEC7D /* NSString+StringAdditions.m */,
 				E7BB1B431BD8361C0053B9DE /* NSView+Additions.h */,
 				E7BB1B441BD8361C0053B9DE /* NSView+Additions.m */,
+				E76AC00529B29A5A005DE06A /* NSDocumentController+Additions.h */,
+				E76AC00629B29A5A005DE06A /* NSDocumentController+Additions.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -1441,6 +1459,7 @@
 				E74057AF15B2D3060040F590 /* squiggle.tif in Resources */,
 				E74057B015B2D3060040F590 /* squigglealt.tif in Resources */,
 				E74057B115B2D3060040F590 /* tinyminus.tiff in Resources */,
+				E76AC00F29B34980005DE06A /* booktemplate.xml in Resources */,
 				E74057B215B2D3060040F590 /* tinyplus.tiff in Resources */,
 				E74057B315B2D3060040F590 /* whitearrow1.tif in Resources */,
 				E74057B415B2D3060040F590 /* whitearrow1alt.tif in Resources */,
@@ -1485,6 +1504,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E76AC00729B29A5A005DE06A /* NSDocumentController+Additions.m in Sources */,
 				E74054CE15B1ED040040F590 /* main.m in Sources */,
 				E740563215B1EF2D0040F590 /* ACSDAttribute.mm in Sources */,
 				E740563315B1EF2D0040F590 /* ACSDCircle.mm in Sources */,
@@ -1557,6 +1577,7 @@
 				E740567415B1EF2E0040F590 /* FontFamilyTableSource.mm in Sources */,
 				E740567515B1EF2E0040F590 /* FontSizeTableSource.mm in Sources */,
 				E740567615B1EF2E0040F590 /* FreeHandPoint.mm in Sources */,
+				E76AC00D29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm in Sources */,
 				E740567715B1EF2E0040F590 /* gCurve.mm in Sources */,
 				E740567815B1EF2E0040F590 /* geometry.mm in Sources */,
 				E740567915B1EF2E0040F590 /* gLine.mm in Sources */,
@@ -1637,6 +1658,7 @@
 				E74056D215B1EF2E0040F590 /* ToolWindowController.mm in Sources */,
 				E74056D315B1EF2E0040F590 /* TriggerController.mm in Sources */,
 				E74056D415B1EF2E0040F590 /* TriggerTableSource.mm in Sources */,
+				E76AC00A29B2A02B005DE06A /* ACSDDocumentController.m in Sources */,
 				E74056D515B1EF2E0040F590 /* ViewController.mm in Sources */,
 				E74056D715B1EF2E0040F590 /* WindowAdditions.mm in Sources */,
 				E740570915B2ACB00040F590 /* SnapLine.mm in Sources */,

@@ -464,6 +464,7 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     return data;
 }
 
+
 -(BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
     if ([[typeName lowercaseString]isEqualToString:@"svg"])
