@@ -53,12 +53,50 @@
     float width = [xmlnode attributeFloatValue:@"width"];
     float height = [xmlnode attributeFloatValue:@"height"];
     float cornerrad = [xmlnode attributeFloatValue:@"cornerradius"];
-
     //parentRect = InvertedRect(parentRect, docHeight);
     width = width * parentRect.size.width;
     height = height * parentRect.size.height;
     NSPoint pos = LocationForRect(x, 1 - y, parentRect);
-    ACSDGraphic *r = [[ACSDRect alloc]initWithName:@"" fill:nil stroke:nil rect:NSMakeRect(pos.x, pos.y - height, width, height) layer:nil];
+    CGRect b = NSMakeRect(pos.x, pos.y - height, width, height);
+    
+    if ([xmlnode.attributes[@"widthtracksheight"]isEqualToString:@"true"])
+    {
+        CGFloat origheight = [xmlnode.attributes[@"pxheight"]floatValue];
+        if (origheight > 0)
+        {
+            CGFloat ratio = b.size.height / origheight;
+            CGFloat newWidth = [xmlnode.attributes[@"pxwidth"]floatValue] * ratio;
+            CGFloat tratio = newWidth / b.size.width;
+            CGAffineTransform t = CGAffineTransformIdentity;
+            CGFloat midx = CGRectGetMidX(b);
+            CGFloat midy = CGRectGetMidY(b);
+            t = CGAffineTransformTranslate(t, midx, midy);
+            t = CGAffineTransformScale(t, tratio, 1.0);
+            t = CGAffineTransformTranslate(t, -midx, -midy);
+            //[p applyTransform:t];
+            b = CGRectApplyAffineTransform(b, t);
+        }
+    }
+    else if ([xmlnode.attributes[@"heighttrackswidth"]isEqualToString:@"true"])
+    {
+        CGFloat origwidth = [xmlnode.attributes[@"pxwidth"]floatValue];
+        if (origwidth > 0)
+        {
+            CGFloat ratio = b.size.width / origwidth;
+            CGFloat newHeight = [xmlnode.attributes[@"pxheight"]floatValue] * ratio;
+            CGFloat tratio = newHeight / b.size.height;
+            CGAffineTransform t = CGAffineTransformIdentity;
+            CGFloat midx = CGRectGetMidX(b);
+            CGFloat midy = CGRectGetMidY(b);
+            t = CGAffineTransformTranslate(t, midx, midy);
+            t = CGAffineTransformScale(t, 1.0, tratio);
+            t = CGAffineTransformTranslate(t, -midx, -midy);
+            //[p applyTransform:t];
+            b = CGRectApplyAffineTransform(b, t);
+        }
+    }
+
+    ACSDGraphic *r = [[ACSDRect alloc]initWithName:@"" fill:nil stroke:nil rect:b layer:nil];
     if (cornerrad != 0)
         [((ACSDRect*)r) setCornerRadius:cornerrad * height];
     //[r setPosition:pos];
