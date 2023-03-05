@@ -19,7 +19,7 @@
 #import "ACSDPath.h"
 #import "GXPArchiveDelegate.h"
 #import "XMLManager.h"
-#import "SVGGradient.h"
+#import "SVG_Gradient.h"
 #import "ACSDRect.h"
 #import "ACSDCircle.h"
 #import "ACSDGroup.h"
@@ -220,9 +220,9 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
                 id obj = defs[url];
                 if (obj)
                 {
-                    if ([obj isKindOfClass:[SVGGradient class]])
+                    if ([obj isKindOfClass:[SVG_Gradient class]])
                     {
-                        SVGGradient *svgg = [obj copy];
+                        SVG_Gradient *svgg = [obj copy];
                         NSRect bounds = NSZeroRect;
                         bounds.size = doc.documentSize;
                         [svgg resolveSettingsForOriginalBoundingBox:[g bounds] frame:bounds];

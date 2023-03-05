@@ -2030,7 +2030,7 @@ CA
                                             <rect key="frame" x="17" y="198" width="320" height="140"/>
                                             <clipView key="contentView" id="YcS-Ex-3uJ">
                                                 <rect key="frame" x="1" y="1" width="318" height="138"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="kKP-V3-1ER" id="8gb-rX-UY4">
                                                         <rect key="frame" x="0.0" y="0.0" width="318" height="113"/>
