@@ -11,18 +11,21 @@
 #import "ACSDLayer.h"
 #import "ACSDImage.h"
 #import "ACSDText.h"
+#import "ACSDPrefsController.h"
 #import "AffineTransformAdditions.h"
 
 @implementation ACSDrawDocument (bookAdditions)
 
 -(NSString*)bookLingo
 {
-    return @"en_001";
+    return [[NSUserDefaults standardUserDefaults]objectForKey:prefBooksLanguage];
 }
 
 -(NSSize)bookDocSize
 {
-    return NSMakeSize(1024, 768);
+    float w = [[NSUserDefaults standardUserDefaults]floatForKey:prefBooksDocWidth];
+    float h = [[NSUserDefaults standardUserDefaults]floatForKey:prefBooksDocHeight];
+    return NSMakeSize(w,h);
 }
 
 -(XMLNode*)mergeBookNode1:(XMLNode*)b1 node2:(XMLNode*)b2
@@ -192,7 +195,7 @@ void FitImageToBox(ACSDImage *im,NSRect box)
     float fontSize = [self applyGraphicScale:[rootNode attributeFloatValue:@"fontsize"]];
     NSString *templateSuffix = [rootNode attributeStringValue:@"templatesuffix"];
     NSString *textjustify = [rootNode attributeStringValue:@"textjustify"];
-    float largeFontSize = fontSize;
+    float largeFontSize = -1;
     NSString *str;
     if ((str = [rootNode attributeStringValue:@"largefontsize"]))
         largeFontSize = [self applyGraphicScale:[str floatValue]];
@@ -227,7 +230,7 @@ void FitImageToBox(ACSDImage *im,NSRect box)
     settings[@"parentrect"] = [NSValue valueWithRect:NSMakeRect(0, 0, self.documentSize.width, self.documentSize.height)];
     [settingsStack addObject:settings];
     NSMutableDictionary *objectDict = [NSMutableDictionary dictionary];
-
+    BOOL showBoxes = [[NSUserDefaults standardUserDefaults]boolForKey:prefBooksShowBoxes];
     for (XMLNode *pageNode in [rootNode childrenOfType:@"page"])
     {
         NSString *pageNo = [pageNode attributeStringValue:@"pageno"];
@@ -268,8 +271,17 @@ void FitImageToBox(ACSDImage *im,NSRect box)
             [ms appendString:contents];
         }
         float fsz = fontSize;
-        if ([pageNo isEqualToString:@"0"] && largeFontSize > 0)
+        if ([pageNo isEqualToString:@"0"])
+        {
             fsz = largeFontSize;
+            if (largeFontSize > 0)
+                fsz = largeFontSize;
+            else
+                fsz = [self  applyGraphicScale:[eventNode attributeFloatValue:@"largefontsize"]];
+            lineHeightMultiplier = [eventNode attributeFloatValue:@"largelineheight"];
+            letterSpacing = [self  applyGraphicScale:[eventNode attributeFloatValue:@"largespacing"]];
+        }
+
         NSFont *fnt = [NSFont fontWithName:@"onebillionreader-Regular" size:fsz];
         NSMutableDictionary *attrs = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:fnt}];
         if (letterSpacing != 0)
@@ -290,16 +302,46 @@ void FitImageToBox(ACSDImage *im,NSRect box)
         attrs[NSParagraphStyleAttributeName] = mps;
         NSAttributedString *as = [[NSAttributedString alloc]initWithString:ms attributes:attrs];
         ACSDGraphic *textBox = [layer graphicsWithName:@"textbox"][0];
-        ACSDText *atext = [[ACSDText alloc]initWithName:@"t" fill:nil stroke:nil rect:[textBox bounds] layer:layer];
+        NSRect destBounds = [textBox bounds];
+        float height = [as boundingRectWithSize:NSMakeSize(destBounds.size.width, 10000) options:NSStringDrawingUsesLineFragmentOrigin].size.height;
+        if (height > destBounds.size.height)
+        {
+            if ([pageNo isEqualToString:@"0"])
+            {
+                fsz = [self applyGraphicScale:[eventNode attributeFloatValue:@"smallfontsize"]];
+                fnt = [NSFont fontWithName:@"onebillionreader-Regular" size:fsz];
+                NSMutableDictionary *attrs = [NSMutableDictionary dictionaryWithDictionary:@{NSFontAttributeName:fnt}];
+                if ([eventNode attributeFloatValue:@"smallspacing"])
+                {
+                    letterSpacing = [self applyGraphicScale:[eventNode attributeFloatValue:@"smallspacing"]];
+                    attrs[NSKernAttributeName] = @(letterSpacing);
+                }
+                if ([eventNode attributeFloatValue:@"smalllineheight"])
+                    mps.lineHeightMultiple = [eventNode attributeFloatValue:@"smalllineheight"];
+                attrs[NSParagraphStyleAttributeName] = mps;
+                as = [[NSAttributedString alloc]initWithString:ms attributes:attrs];
+            }
+            else
+            {
+                float diff = height - destBounds.size.height;
+                destBounds.size.height += diff;
+                destBounds.origin.y -= diff / 2;
+            }
+        }
+        ACSDText *atext = [[ACSDText alloc]initWithName:@"tx" fill:nil stroke:nil rect:destBounds layer:layer];
         [atext setTopMargin:0];
         [atext setLeftMargin:0];
         [atext setBottomMargin:0];
         [atext setRightMargin:0];
         atext.contents = [[NSTextStorage alloc]initWithAttributedString:as];
         [layer addGraphic:atext];
+        if (!showBoxes)
+        {
+            [imageBox setHidden:YES];
+            [textBox setHidden:YES];
+        }
     }
 }
-
 
 - (BOOL)readFromURL:(NSURL *)url ofType:(NSString *)typeName error:(NSError * _Nullable *)outError
 {

@@ -23,6 +23,10 @@ extern NSString *prefsBatchScalePage;
 extern NSString *prefsBatchScaleLayer;
 extern NSString *prefsBatchScaleObject;
 extern NSString *prefsBatchScaleScale;
+extern NSString *prefBooksDocWidth;
+extern NSString *prefBooksDocHeight;
+extern NSString *prefBooksShowBoxes;
+extern NSString *prefBooksLanguage;
 
 #define BACKGROUND_DRAW_NONE 0
 #define BACKGROUND_DRAW_CHECKERS 1

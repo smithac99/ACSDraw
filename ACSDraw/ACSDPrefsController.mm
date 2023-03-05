@@ -38,6 +38,10 @@ NSString *prefsBatchScalePage = @"ACSDrawprefsBatchscalePage";
 NSString *prefsBatchScaleLayer = @"ACSDrawprefsBatchscaleLayer";
 NSString *prefsBatchScaleObject = @"ACSDrawprefsBatchscaleObject";
 NSString *prefsBatchScaleScale = @"ACSDrawprefsBatchscaleScale";
+NSString *prefBooksDocWidth = @"prefBooksDocWidth";
+NSString *prefBooksDocHeight = @"prefBooksDocHeight";
+NSString *prefBooksShowBoxes = @"prefBooksShowBoxes";
+NSString *prefBooksLanguage = @"prefBooksLanguage";
 
 NSString *ixPBType = @"indexpbtype";
 NSArray *arrayFromColour(NSColor *col);
@@ -58,21 +62,25 @@ NSColor *colourFromArray(NSArray* arr);
     static NSDictionary *appDefaults = nil;
 	if (appDefaults == nil)
     {
-		appDefaults = [NSDictionary
-                        dictionaryWithObjectsAndKeys:archivedObject([NSColor cyanColor]),prefsSelectionColourKey,
-                       archivedObject([NSColor purpleColor]),prefsGuideColourKey,
-                       archivedObject([NSColor redColor]),prefsHiliteColourKey,
-                        @(4),prefsSnapSizeKey,
-                        @(20),prefsHotSpotSizeKey,
-                        @(PDF_LINK_STROKE),prefsPDFLinkModeKey,
-                        @(PDF_LINK_STROKE),prefsPDFLinkStrokeKey,
-                        archivedObject([[NSColor redColor]colorWithAlphaComponent:0.25]),prefsPDFLinkColourKey,
-                        @(BACKGROUND_DRAW_COLOUR),prefsBackgroundType,
-                        archivedObject([NSColor whiteColor]),prefsBackgroundColour,
-                       @NO,prefsShowPathDirection,
-                       @(1),prefsDocScale,
-                       @[@"/"],prefsImageLibs,
-                        nil];
+        appDefaults = @{
+            prefsSelectionColourKey : archivedObject([NSColor cyanColor]),
+            prefsGuideColourKey : archivedObject([NSColor purpleColor]),
+            prefsHiliteColourKey : archivedObject([NSColor redColor]),
+            prefsSnapSizeKey : @(4),
+            prefsHotSpotSizeKey : @(20),
+            prefsPDFLinkModeKey : @(PDF_LINK_STROKE),
+            prefsPDFLinkStrokeKey : @(PDF_LINK_STROKE),
+            prefsPDFLinkColourKey : archivedObject([[NSColor redColor]colorWithAlphaComponent:0.25]),
+            prefsBackgroundType : @(BACKGROUND_DRAW_COLOUR),
+            prefsBackgroundColour : archivedObject([NSColor whiteColor]),
+            prefsShowPathDirection : @NO,
+            prefsDocScale : @(1),
+            prefsImageLibs : @[@"/"],
+            prefBooksDocWidth : @1024,
+            prefBooksDocHeight: @768,
+            prefBooksShowBoxes: @NO,
+            prefBooksLanguage: @"en_001"
+        };
     }
 	return appDefaults;
 }
