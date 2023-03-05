@@ -41,6 +41,7 @@ NSString *prefsBatchScaleScale = @"ACSDrawprefsBatchscaleScale";
 NSString *prefBooksDocWidth = @"prefBooksDocWidth";
 NSString *prefBooksDocHeight = @"prefBooksDocHeight";
 NSString *prefBooksShowBoxes = @"prefBooksShowBoxes";
+NSString *prefBooksShowButtons = @"prefBooksShowButtons";
 NSString *prefBooksLanguage = @"prefBooksLanguage";
 
 NSString *ixPBType = @"indexpbtype";
@@ -79,6 +80,7 @@ NSColor *colourFromArray(NSArray* arr);
             prefBooksDocWidth : @1024,
             prefBooksDocHeight: @768,
             prefBooksShowBoxes: @NO,
+            prefBooksShowButtons: @YES,
             prefBooksLanguage: @"en_001"
         };
     }

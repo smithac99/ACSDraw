@@ -2266,8 +2266,8 @@ CA
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9SU-au-3cv">
                                             <rect key="frame" x="32" y="212" width="99" height="18"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="16" id="XG0-Zi-1xy"/>
-                                                <constraint firstAttribute="width" priority="250" constant="97" id="ZKi-FZ-vbc"/>
+                                                <constraint firstAttribute="height" constant="16" id="8o1-df-j9T"/>
+                                                <constraint firstAttribute="width" priority="750" constant="97" id="pwZ-DA-QiZ"/>
                                             </constraints>
                                             <buttonCell key="cell" type="check" title="Show boxes" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="p4B-D2-BFS">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -2319,20 +2319,38 @@ CA
                                                 <constraint firstItem="WxJ-6M-5nH" firstAttribute="top" secondItem="QfI-ZB-3DA" secondAttribute="top" id="tjH-59-afp"/>
                                             </constraints>
                                         </customView>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JlD-xe-nye">
+                                            <rect key="frame" x="32" y="169" width="110" height="18"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" priority="750" constant="108" id="PPb-cy-eOX"/>
+                                                <constraint firstAttribute="height" constant="16" id="w28-be-9B5"/>
+                                            </constraints>
+                                            <buttonCell key="cell" type="check" title="Show buttons" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="6Po-9W-0Uv">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <binding destination="1098" name="value" keyPath="values.prefBooksShowButtons" id="BVy-rP-Z3B"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="8xh-WP-Whv" firstAttribute="leading" secondItem="Eh0-RR-aCv" secondAttribute="leading" constant="17" id="2aX-No-wDU"/>
                                         <constraint firstItem="PYQ-rM-fue" firstAttribute="top" secondItem="8xh-WP-Whv" secondAttribute="bottom" constant="8" symbolic="YES" id="3iG-KT-qC3"/>
+                                        <constraint firstItem="JlD-xe-nye" firstAttribute="top" secondItem="9SU-au-3cv" secondAttribute="bottom" constant="27" id="51e-ZQ-Ovv"/>
+                                        <constraint firstAttribute="trailing" secondItem="JlD-xe-nye" secondAttribute="trailing" priority="250" constant="237" id="520-dE-GLb"/>
+                                        <constraint firstAttribute="bottom" secondItem="JlD-xe-nye" secondAttribute="bottom" constant="170" id="HQc-7O-VsV"/>
                                         <constraint firstItem="PYQ-rM-fue" firstAttribute="top" secondItem="8xh-WP-Whv" secondAttribute="bottom" constant="8" symbolic="YES" id="IOD-Gr-JmF"/>
+                                        <constraint firstAttribute="trailing" secondItem="9SU-au-3cv" secondAttribute="trailing" priority="250" constant="248" id="JfP-Iz-LA0"/>
                                         <constraint firstAttribute="trailing" secondItem="PYQ-rM-fue" secondAttribute="trailing" priority="250" constant="152" id="JgO-rh-jeZ"/>
                                         <constraint firstItem="8xh-WP-Whv" firstAttribute="top" secondItem="Eh0-RR-aCv" secondAttribute="top" constant="3" id="RHm-lG-8iR"/>
-                                        <constraint firstItem="9SU-au-3cv" firstAttribute="top" secondItem="QfI-ZB-3DA" secondAttribute="bottom" constant="20" id="Wjz-6M-Q7M"/>
+                                        <constraint firstItem="JlD-xe-nye" firstAttribute="leading" secondItem="Eh0-RR-aCv" secondAttribute="leading" constant="34" id="b0q-qS-wMy"/>
                                         <constraint firstItem="PYQ-rM-fue" firstAttribute="leading" secondItem="Eh0-RR-aCv" secondAttribute="leading" constant="17" id="bq9-NY-pli"/>
                                         <constraint firstItem="QfI-ZB-3DA" firstAttribute="top" secondItem="PYQ-rM-fue" secondAttribute="bottom" constant="18" id="dcz-Es-E6R"/>
-                                        <constraint firstItem="9SU-au-3cv" firstAttribute="leading" secondItem="Eh0-RR-aCv" secondAttribute="leading" constant="34" id="i9u-kn-Mm3"/>
                                         <constraint firstAttribute="trailing" secondItem="QfI-ZB-3DA" secondAttribute="trailing" priority="250" constant="194" id="kZZ-cI-bUe"/>
+                                        <constraint firstItem="9SU-au-3cv" firstAttribute="top" secondItem="QfI-ZB-3DA" secondAttribute="bottom" constant="20" id="kqh-TD-Mef"/>
                                         <constraint firstAttribute="trailing" secondItem="8xh-WP-Whv" secondAttribute="trailing" priority="250" constant="152" id="lZK-ke-tuA"/>
-                                        <constraint firstAttribute="trailing" secondItem="9SU-au-3cv" secondAttribute="trailing" priority="750" constant="248" id="lg6-Bf-BkV"/>
+                                        <constraint firstItem="9SU-au-3cv" firstAttribute="leading" secondItem="Eh0-RR-aCv" secondAttribute="leading" constant="34" id="lpS-gr-UpO"/>
                                         <constraint firstItem="QfI-ZB-3DA" firstAttribute="leading" secondItem="Eh0-RR-aCv" secondAttribute="leading" constant="17" id="vs8-uO-M2e"/>
                                     </constraints>
                                 </view>

@@ -25,7 +25,7 @@ extern NSString *prefsBatchScaleObject;
 extern NSString *prefsBatchScaleScale;
 extern NSString *prefBooksDocWidth;
 extern NSString *prefBooksDocHeight;
-extern NSString *prefBooksShowBoxes;
+extern NSString *prefBooksShowBoxes,*prefBooksShowButtons;
 extern NSString *prefBooksLanguage;
 
 #define BACKGROUND_DRAW_NONE 0

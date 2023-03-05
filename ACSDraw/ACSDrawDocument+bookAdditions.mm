@@ -249,7 +249,7 @@ void FitImageToBox(ACSDImage *im,NSRect box)
     NSString *xmlPath = [[NSBundle mainBundle]pathForResource:@"booktemplate" ofType:@"xml"];
     XMLManager *xmlman = [[XMLManager alloc]init];
     XMLNode *templateroot = [xmlman parseFile:xmlPath];
-
+    BOOL showButtons = [[NSUserDefaults standardUserDefaults]boolForKey:prefBooksShowButtons];
 
     [[self pages]removeObjectAtIndex:0];
     NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
@@ -381,11 +381,14 @@ void FitImageToBox(ACSDImage *im,NSRect box)
             [imageBox setHidden:YES];
             [textBox setHidden:YES];
         }
-        [self loadButton:@"back" pos:@"tl" intoLayer:layer];
-        [self loadButton:@"repeataudio" pos:@"tr" intoLayer:layer];
-        [self loadButton:@"next" pos:@"br" intoLayer:layer];
-        if (![pageNo isEqualToString:@"0"])
-            [self loadButton:@"prev" pos:@"bl" intoLayer:layer];
+        if (showButtons)
+        {
+            [self loadButton:@"back" pos:@"tl" intoLayer:layer];
+            [self loadButton:@"repeataudio" pos:@"tr" intoLayer:layer];
+            [self loadButton:@"next" pos:@"br" intoLayer:layer];
+            if (![pageNo isEqualToString:@"0"])
+                [self loadButton:@"prev" pos:@"bl" intoLayer:layer];
+        }
     }
 }
 
