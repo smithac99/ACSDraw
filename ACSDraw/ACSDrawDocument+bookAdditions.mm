@@ -116,6 +116,18 @@
     return NO;
 }
 
+-(NSString*)imagePathForImgDir:(NSString*)path
+{
+    NSFileManager *fm = [NSFileManager defaultManager];
+    for (NSString *sdir in @[@"shared_3",@"shared_4",@"shared_2"])
+    {
+        NSString *fullPath = [path stringByAppendingPathComponent:sdir];
+        if ([fm fileExistsAtPath:fullPath])
+            return fullPath;
+    }
+    return nil;
+}
+
 - (BOOL)readBookFromURL:(NSURL *)url error:(NSError * _Nullable *)outError
 {
     NSString *rootPath = [url path];
@@ -146,7 +158,7 @@
     if (localNode == nil)
         return [self bookError:-1 desc:@"Could not parse local xml" path:localXMLPath error:outError];
     XMLNode *rootNode = [self mergeBookNode1:configNode node2:localNode];
-    NSString *imgPath = [[rootPath stringByAppendingPathComponent:@"img"]stringByAppendingPathComponent:@"shared_3"];
+    NSString *imgPath = [self imagePathForImgDir:[rootPath stringByAppendingPathComponent:@"img"]];
     exists = [fm fileExistsAtPath:imgPath isDirectory:&isDir];
     if (!(exists && isDir))
         return [self bookError:-1 desc:@"No img path" path:imgPath error:outError];

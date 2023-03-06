@@ -88,7 +88,7 @@
         float alpha = [opacityAttr floatValue];
         if (alpha < 1.0)
         {
-            CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+            CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] CGContext];
             CGContextBeginTransparencyLayer (currentContext, NULL);
             CGContextSetAlpha(currentContext,alpha);
             self.mustEndTransparencyLayer = YES;
@@ -101,7 +101,7 @@
 {
     if ([self mustEndTransparencyLayer])
     {
-        CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+        CGContextRef currentContext = (CGContextRef)[[NSGraphicsContext currentContext] CGContext];
         CGContextEndTransparencyLayer(currentContext);
     }
     [[NSGraphicsContext currentContext]restoreGraphicsState];

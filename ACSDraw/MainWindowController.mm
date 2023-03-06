@@ -339,7 +339,7 @@ CGColorSpaceRef getRGBColorSpace()
 	//CFRelease(url);
 	NSMutableDictionary *substitutions = [NSMutableDictionary dictionaryWithCapacity:5];
 	NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
-	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:pdfContext flipped:YES]];
+       [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:pdfContext flipped:YES]];
 	checkSet = [NSMutableSet setWithCapacity:100];
 	for (unsigned i = 0;i < [pages count];i++)
 	   {
