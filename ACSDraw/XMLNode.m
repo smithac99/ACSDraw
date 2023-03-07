@@ -20,6 +20,14 @@
 	return self;
 }
 
+-(instancetype)initWithName:(NSString*)n
+{
+    if (self = [self init])
+    {
+        self.nodeName = n;
+    }
+    return self;
+}
 -(NSArray*)childrenOfType:(NSString*)typeName
 {
     NSIndexSet *ixs = [_children indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
@@ -33,7 +41,7 @@
 {
     NSIndexSet *ixs = [_children indexesOfObjectsPassingTest:^BOOL(XMLNode *obj, NSUInteger idx, BOOL *stop)
                        {
-                           return ([[obj nodeName]isEqualToString:typeName] && [[obj attributeStringValue:@"id"]isEqualToString:ident]);
+                           return ([[obj nodeName]isEqualToString:typeName] && (ident == nil || [[obj attributeStringValue:@"id"]isEqualToString:ident]));
                        }];
     NSArray *arr = [_children objectsAtIndexes:ixs];
     if ([arr count] > 0)

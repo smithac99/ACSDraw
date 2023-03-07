@@ -295,7 +295,7 @@ void FitImageToBox(ACSDImage *im,NSRect box)
             eventName = [NSString stringWithFormat:@"%@_%@",eventName,templateSuffix];
         XMLNode *eventNode = [templateroot childOfType:@"event" identifier:eventName];
         ACSDPage *p = [[ACSDPage alloc]initWithXMLNode:eventNode document:self settingsStack:settingsStack objectDict:objectDict];
-        [p setPageTitle:pageNo];
+        [p setPageTitle:[NSString stringWithFormat:@"p%@",pageNo]];
         [[self pages]addObject:p];
         ACSDLayer *layer = p.layers[1];
         NSRect bounds = NSZeroRect;
@@ -381,7 +381,7 @@ void FitImageToBox(ACSDImage *im,NSRect box)
             }
         }
         destBounds = NSInsetRect(destBounds, -5, -5);
-        ACSDText *atext = [[ACSDText alloc]initWithName:@"tx" fill:nil stroke:nil rect:destBounds layer:layer];
+        ACSDText *atext = [[ACSDText alloc]initWithName:@"t1_1" fill:nil stroke:nil rect:destBounds layer:layer];
         [atext setTopMargin:0];
         [atext setLeftMargin:0];
         [atext setBottomMargin:0];

@@ -1909,7 +1909,7 @@ NSString* Creator()
     }
 }
 
--(void)updateWithBookXML:(XMLNode*)xmlNode
+-(void)updateWithBookXML:(XMLNode*)xmlNode runParasTogether:(BOOL)runParas
 {
     NSDictionary *pagesDict = [self pagesDict];
     NSArray *pageNodes = [xmlNode childrenOfType:@"page"];
@@ -1931,8 +1931,21 @@ NSString* Creator()
                     if ([gs count] > 0)
                         pageGraphic = gs[0];
                 }
-                NSArray<XMLNode*>*paraNodes = [pageNode childrenOfType:@"para"];
                 CGFloat y = self.documentSize.height - 300,x = 100;
+                NSArray<XMLNode*>*paraNodes = [pageNode childrenOfType:@"para"];
+                if ([paraNodes count] > 1 && runParas)
+                {
+                    XMLNode *pNode = [[XMLNode alloc]initWithName:@"para"];
+                    NSMutableString *mstr = [@"" mutableCopy];
+                    for (XMLNode *para in paraNodes)
+                    {
+                        if ([mstr length] > 0)
+                            [mstr appendString:@"\n"];
+                        [mstr appendString:para.contents];
+                    }
+                    pNode.contents = mstr;
+                    paraNodes = @[pNode];
+                }
                 int idx = 1;
                 for (XMLNode *para in paraNodes)
                 {
@@ -2055,7 +2068,73 @@ NSString* Creator()
                 NSString *path = [url path];
                 XMLNode *root = [[[XMLManager alloc]init]parseFile:path];
                 if (root)
-                    [self updateWithBookXML:root];
+                    [self updateWithBookXML:root runParasTogether:NO];
+             }
+        }
+    }];
+}
+
+-(id)xmlErr:(NSString*)msg
+{
+    NSLog(@"%@",msg);
+    return nil;
+}
+
+-(XMLNode*)bookXMLFromXliff:(XMLNode*)xliffNode
+{
+    if (![xliffNode.nodeName isEqualToString:@"xliff"])
+        return [self xmlErr:@"no xliff node"];
+    NSArray *arr = [xliffNode childrenOfType:@"file"];
+    if ([arr count] == 0)
+        return [self xmlErr:@"no file node"];
+    XMLNode *n = arr[0];
+    arr = [n childrenOfType:@"body"];
+    if ([arr count] == 0)
+        return [self xmlErr:@"no body node"];
+    XMLNode *bookNode = [[XMLNode alloc]initWithName:@"book"];
+    NSMutableArray *outputPageNodes = [NSMutableArray array];
+    NSArray *transUnits = [arr[0] childrenOfType:@"trans-unit"];
+    NSInteger i = 0;
+    NSString *currPage = nil;
+    XMLNode *pageNode;
+    while (i < [transUnits count])
+    {
+        XMLNode *transUnitNode = transUnits[i];
+        NSString *key = [transUnitNode attributeStringValue:@"id"];
+        NSInteger idx = [key rangeOfString:@"_"].location;
+        NSString *pageNoStr = [key substringToIndex:idx];
+        XMLNode *targetNode = [transUnitNode childOfType:@"target" identifier:nil];
+        if (![pageNoStr isEqualToString:currPage])
+        {
+            pageNode = [[XMLNode alloc]initWithName:@"page"];
+            pageNode.attributes = @{@"pageno":[pageNoStr substringFromIndex:1]};
+            currPage = pageNoStr;
+            [outputPageNodes addObject:pageNode];
+        }
+        XMLNode *paraNode = [[XMLNode alloc]initWithName:@"para"];
+        paraNode.contents = targetNode.contents;
+        [pageNode.children addObject:paraNode];
+        i++;
+    }
+    bookNode.children = outputPageNodes;
+    return bookNode;
+}
+
+- (IBAction)importXliff:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowedFileTypes:@[@"xliff"]];
+    [panel beginSheetModalForWindow:[[self frontmostMainWindowController] window]
+                  completionHandler:^(NSInteger result)
+     {
+        if (result == NSModalResponseOK)
+        {
+            for (NSURL *url in [panel URLs])
+            {
+                NSString *path = [url path];
+                XMLNode *root = [[[XMLManager alloc]init]parseFile:path];
+                if (root)
+                    [self updateWithBookXML:[self bookXMLFromXliff:root]runParasTogether:YES];
             }
         }
     }];

@@ -264,6 +264,11 @@
                                                 <action selector="importBookXML:" target="-1" id="bJi-Wy-yNH"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Xliff…" id="1hY-Eh-z0c">
+                                            <connections>
+                                                <action selector="importXliff:" target="-1" id="6wv-Vb-MSB"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

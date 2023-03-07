@@ -27,6 +27,7 @@
 {
     NSOpenPanel *pan = [NSOpenPanel openPanel];
     [pan setCanChooseDirectories:YES];
+    //[pan setAllowsMultipleSelection:YES];
     NSInteger res = [self runModalOpenPanel:pan forTypes:@[]];
     if (res == NSModalResponseOK)
     {
