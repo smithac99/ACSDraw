@@ -307,6 +307,8 @@
 		E76AC07429B53BC0005DE06A /* TocPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07229B53BC0005DE06A /* TocPanel.xib */; };
 		E76AC07729B53C25005DE06A /* PolySides.xib in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07529B53C25005DE06A /* PolySides.xib */; };
 		E76AC07A29B53CFF005DE06A /* LineEndingWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07829B53CFF005DE06A /* LineEndingWindow.xib */; };
+		E76AC07D29B73F67005DE06A /* arrowlf.tif in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07B29B73F67005DE06A /* arrowlf.tif */; };
+		E76AC07E29B73F67005DE06A /* arrowrf.tif in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07C29B73F67005DE06A /* arrowrf.tif */; };
 		E77102E4279E77B4000FF4FB /* expand.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E77102E2279E77B4000FF4FB /* expand.tiff */; };
 		E77102E5279E77B4000FF4FB /* expandalt.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E77102E3279E77B4000FF4FB /* expandalt.tiff */; };
 		E77A36DD196841FB0050264B /* OverlayFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = E77A36DC196841FB0050264B /* OverlayFilter.m */; };
@@ -820,6 +822,8 @@
 		E76AC07329B53BC0005DE06A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TocPanel.xib; sourceTree = "<group>"; };
 		E76AC07629B53C25005DE06A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PolySides.xib; sourceTree = "<group>"; };
 		E76AC07929B53CFF005DE06A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LineEndingWindow.xib; sourceTree = "<group>"; };
+		E76AC07B29B73F67005DE06A /* arrowlf.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = arrowlf.tif; sourceTree = "<group>"; };
+		E76AC07C29B73F67005DE06A /* arrowrf.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = arrowrf.tif; sourceTree = "<group>"; };
 		E77102E2279E77B4000FF4FB /* expand.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = expand.tiff; sourceTree = "<group>"; };
 		E77102E3279E77B4000FF4FB /* expandalt.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = expandalt.tiff; sourceTree = "<group>"; };
 		E77A36DB196841FB0050264B /* OverlayFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayFilter.h; sourceTree = "<group>"; };
@@ -1141,6 +1145,8 @@
 		E740575C15B2D2D60040F590 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				E76AC07B29B73F67005DE06A /* arrowlf.tif */,
+				E76AC07C29B73F67005DE06A /* arrowrf.tif */,
 				E77102E2279E77B4000FF4FB /* expand.tiff */,
 				E77102E3279E77B4000FF4FB /* expandalt.tiff */,
 				E746F6E615E8BCC900110247 /* arrowplus.tiff */,
@@ -1561,6 +1567,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E74054CC15B1ED040040F590 /* InfoPlist.strings in Resources */,
+				E76AC07D29B73F67005DE06A /* arrowlf.tif in Resources */,
 				E74054D215B1ED040040F590 /* Credits.rtf in Resources */,
 				E74056F815B1EF950040F590 /* DocPadding.nib in Resources */,
 				E70E81C8249E5D27003CDF0D /* scalealt.tiff in Resources */,
@@ -1576,6 +1583,7 @@
 				E77102E5279E77B4000FF4FB /* expandalt.tiff in Resources */,
 				E740570315B1EF950040F590 /* RotationSheet.nib in Resources */,
 				E740570415B1EF950040F590 /* StylePanel.nib in Resources */,
+				E76AC07E29B73F67005DE06A /* arrowrf.tif in Resources */,
 				E740570615B1EF950040F590 /* ToolPalette.nib in Resources */,
 				E740578915B2D3060040F590 /* arrow2.tif in Resources */,
 				E740578A15B2D3060040F590 /* arrow2alt.tif in Resources */,

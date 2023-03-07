@@ -123,7 +123,7 @@ Gw
                     <button toolTip="Add to TOC" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="26">
                         <rect key="frame" x="235" y="159" width="50" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="arrowrf" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="80">
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="arrowrf" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="80">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -134,7 +134,7 @@ Gw
                     <button toolTip="Remove from TOC" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="27">
                         <rect key="frame" x="235" y="119" width="50" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="arrowlf" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="81">
+                        <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="arrowlf" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="81">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -246,7 +246,7 @@ Gw
         </customObject>
     </objects>
     <resources>
-        <image name="arrowlf" width="128" height="128"/>
-        <image name="arrowrf" width="128" height="128"/>
+        <image name="arrowlf" width="50" height="23"/>
+        <image name="arrowrf" width="50" height="23"/>
     </resources>
 </document>
