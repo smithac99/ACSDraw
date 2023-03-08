@@ -185,8 +185,8 @@ NSString *substitute_characters(NSString* string)
 - (id)copyWithZone:(NSZone *)zone
 {
     NSTextStorage *c = [[NSTextStorage alloc] initWithAttributedString:contents];
-	id obj = [[ACSDText alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:layer
-									xScale:xScale yScale:yScale rotation:rotation shadowType:shadowType label:textLabel alpha:alpha contents:c
+	id obj = [[ACSDText alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:self.layer
+									xScale:self.xScale yScale:self.yScale rotation:self.rotation shadowType:shadowType label:textLabel alpha:self.alpha contents:c
 								 topMargin:topMargin leftMargin:leftMargin bottomMargin:bottomMargin rightMargin:rightMargin verticalAlignment:verticalAlignment];
 	[(ACSDText*)obj setCornerRadius:cornerRadius];
     [obj setAttributes:[self.attributes mutableCopy]];
@@ -601,10 +601,10 @@ NSString *substitute_characters(NSString* string)
 	if ([self stroke] && [[self stroke]colour])
 		[p appendBezierPath:[self bezierPath]];
 	ACSDGraphic *obj =  [[ACSDPath alloc] initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:[self bounds] layer:nil bezierPath:p];
-	[obj setRotation:rotation];
-	if (rotation != 0.0)
+	[obj setRotation:self.rotation];
+	if (self.rotation != 0.0)
 	   {
-		[obj setRotationPoint:rotationPoint];
+		[obj setRotationPoint:self.rotationPoint];
 		[obj computeTransform];
 	   }
 	return (ACSDPath*)obj;
@@ -818,7 +818,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 {
     [self writeSVGDefs:svgWriter];
     [[svgWriter contents]appendFormat:@"<g id=\"%@\" ",self.name];
-    if (transform)
+    if (self.transform)
     {
         //[[svgWriter contents]appendFormat:@"transform=\"%@\"",string_from_transform(transform)];
         [[svgWriter contents]appendString:[self svgTransform:svgWriter]];
@@ -1167,7 +1167,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
    {
 	[NSGraphicsContext saveGraphicsState];
 	NSBezierPath *path = [self bezierPath];
-	if (isMask)
+	if (self.isMask)
 	   {
 		NSBezierPath *clipPath = [self bezierPath];
 		[clipPath appendBezierPath:[self pathFromText]];
@@ -1183,7 +1183,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	if (stroke)
 		[stroke strokePath:path];
 	[NSGraphicsContext saveGraphicsState];
-    if (!(([gView editingGraphic] == self) || ([gView creatingGraphic] == self) || isMask))
+    if (!(([gView editingGraphic] == self) || ([gView creatingGraphic] == self) || self.isMask))
 	   {
 //		if (![self visible])
 //			return;
@@ -1307,11 +1307,11 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
     b.origin.y += (b.size.height/2.0);
 	NSAffineTransform *trans = [NSAffineTransform transform];
 	[trans translateXBy:b.origin.x yBy:b.origin.y];
-	[trans rotateByDegrees:rotation];
+	[trans rotateByDegrees:self.rotation];
 	[trans translateXBy:-b.origin.x yBy:-b.origin.y];
 	pt = [trans transformPoint:pt];
 	[editor setFrame:b];
-	[editor setFrameRotation:rotation];
+	[editor setFrameRotation:self.rotation];
 	[editor setFrameOrigin:pt];
 //    [cont addLayoutManager:[editor layoutManager]];
     [view addSubview:editor];
@@ -1387,9 +1387,9 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 		if (r.length == 0)
 			return;
 	   }
-    [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObjects:NSRTFDPboardType,ACSDrawTextPBoardType,nil] owner:self];
+       [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeRTFD,ACSDrawTextPBoardType,nil] owner:self];
 	NSData *data = [textView RTFDFromRange:[[selectedRanges objectAtIndex:0]rangeValue]];
-	[[NSPasteboard generalPasteboard] setData:data forType:NSRTFDPboardType];
+       [[NSPasteboard generalPasteboard] setData:data forType:NSPasteboardTypeRTFD];
 	[[NSPasteboard generalPasteboard] setData:data forType:ACSDrawTextPBoardType];
    }
 
@@ -1540,8 +1540,8 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 - (void)drawOtherHandlesMagnification:(float)mag
    {
 	[NSGraphicsContext saveGraphicsState];
-	if (transform)
-		[transform concat];
+	if (self.transform)
+		[self.transform concat];
 	NSRect r = [self preFlowRectMagnification:mag];
 	[[NSColor whiteColor]set];
 	NSRectFill(r);
@@ -1676,7 +1676,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 		objectsInFront = [NSMutableSet setWithCapacity:10];
 	else
 		[objectsInFront removeAllObjects];
-	[layer addGraphicsInFrontOfGraphic:self toSet:objectsInFront];
+	[self.layer addGraphicsInFrontOfGraphic:self toSet:objectsInFront];
 	objectsInFrontValid = YES;
 	return objectsInFront;
    }
@@ -1915,7 +1915,7 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 						if (![style nullStyle])
 							[mas addAttributes:[style textAndStyleAttributes] range:NSMakeRange(0,[mas length])];
 						[mas endEditing];
-						NSString *endBit = [NSString stringWithFormat:@"%ld",[[layer page]pageNo]];
+						NSString *endBit = [NSString stringWithFormat:@"%ld",[[self.layer page]pageNo]];
 						NSMutableAttributedString *p = [[NSMutableAttributedString alloc]initWithString:endBit];
 						l = [ACSDLink linkFrom:target to:self anchorID:anchor substitutePageNo:YES changeAttributes:NO];
 						[p addAttributes:[NSDictionary dictionaryWithObject:l forKey:NSLinkAttributeName] range:NSMakeRange(0,[[p string]length])];
@@ -2282,7 +2282,7 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 
 -(BOOL)htmlMustBeDoneAsImage
 {
-	return (transform != nil || alpha < 1.0 || (shadowType != nil && [shadowType colour]) || cornerRadius != 0.0);
+	return (self.transform != nil || self.alpha < 1.0 || (shadowType != nil && [shadowType colour]) || cornerRadius != 0.0);
 }
 
 -(void)processHTMLOptions:(NSMutableDictionary*)options
@@ -2295,7 +2295,7 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 	NSMutableString *cssString = [options objectForKey:@"cssString"];
 	NSMutableString *bodyString = [options objectForKey:@"bodyString"];
 	NSMutableDictionary *fontDict = [options objectForKey:@"fontDict"];
-	NSSize sz = [[[layer page] document]documentSize];
+	NSSize sz = [[[self.layer page] document]documentSize];
 	NSRect b = [self bounds];
 	NSString *objName = imageNameForOptions(options);
 	float lpad = [textContainer lineFragmentPadding],rpad=lpad,tpad=topMargin,bpad=bottomMargin,strokeWidth=0.0,halfStrokeWidth=0.0;

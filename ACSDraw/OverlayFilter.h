@@ -5,7 +5,7 @@
 //  Created by alan on 05/07/14.
 //
 //
-
+@import CoreImage;
 #import <QuartzCore/QuartzCore.h>
 
 @interface OverlayFilter : CIFilter

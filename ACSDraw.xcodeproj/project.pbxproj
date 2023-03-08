@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -31,7 +31,7 @@
 		E740563615B1EF2D0040F590 /* ACSDFill.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054EA15B1EF2D0040F590 /* ACSDFill.mm */; };
 		E740563715B1EF2D0040F590 /* ACSDFreeHand.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054EC15B1EF2D0040F590 /* ACSDFreeHand.mm */; };
 		E740563815B1EF2D0040F590 /* ACSDGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054EE15B1EF2D0040F590 /* ACSDGradient.mm */; };
-		E740563915B1EF2D0040F590 /* ACSDGraphic.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F015B1EF2D0040F590 /* ACSDGraphic.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740563915B1EF2D0040F590 /* ACSDGraphic.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F015B1EF2D0040F590 /* ACSDGraphic.mm */; };
 		E740563A15B1EF2D0040F590 /* ACSDGrid.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F215B1EF2D0040F590 /* ACSDGrid.mm */; };
 		E740563B15B1EF2D0040F590 /* ACSDGroup.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F415B1EF2D0040F590 /* ACSDGroup.mm */; };
 		E740563C15B1EF2D0040F590 /* ACSDImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054F615B1EF2D0040F590 /* ACSDImage.mm */; };
@@ -40,7 +40,7 @@
 		E740563F15B1EF2D0040F590 /* ACSDLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FC15B1EF2D0040F590 /* ACSDLayer.mm */; };
 		E740564015B1EF2D0040F590 /* ACSDLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74054FE15B1EF2D0040F590 /* ACSDLine.mm */; };
 		E740564115B1EF2D0040F590 /* ACSDLineEnding.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550015B1EF2D0040F590 /* ACSDLineEnding.mm */; };
-		E740564215B1EF2D0040F590 /* ACSDLink.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550215B1EF2D0040F590 /* ACSDLink.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740564215B1EF2D0040F590 /* ACSDLink.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550215B1EF2D0040F590 /* ACSDLink.mm */; };
 		E740564315B1EF2D0040F590 /* ACSDMatrix.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550415B1EF2D0040F590 /* ACSDMatrix.mm */; };
 		E740564415B1EF2D0040F590 /* ACSDPage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550615B1EF2D0040F590 /* ACSDPage.mm */; };
 		E740564515B1EF2D0040F590 /* ACSDPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550815B1EF2D0040F590 /* ACSDPath.mm */; };
@@ -48,7 +48,7 @@
 		E740564715B1EF2D0040F590 /* ACSDPattern.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550C15B1EF2D0040F590 /* ACSDPattern.mm */; };
 		E740564815B1EF2D0040F590 /* ACSDPolygon.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740550E15B1EF2D0040F590 /* ACSDPolygon.mm */; };
 		E740564915B1EF2D0040F590 /* ACSDPrefsController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551015B1EF2D0040F590 /* ACSDPrefsController.mm */; };
-		E740564A15B1EF2D0040F590 /* ACSDrawDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551315B1EF2D0040F590 /* ACSDrawDocument.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E740564A15B1EF2D0040F590 /* ACSDrawDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551315B1EF2D0040F590 /* ACSDrawDocument.mm */; };
 		E740564B15B1EF2D0040F590 /* ACSDrawTextAttachmentCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551515B1EF2D0040F590 /* ACSDrawTextAttachmentCell.mm */; };
 		E740564C15B1EF2D0040F590 /* ACSDRect.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551715B1EF2D0040F590 /* ACSDRect.mm */; };
 		E740564E15B1EF2D0040F590 /* ACSDStroke.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740551B15B1EF2D0040F590 /* ACSDStroke.mm */; };
@@ -168,16 +168,12 @@
 		E74056F815B1EF950040F590 /* DocPadding.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056DA15B1EF950040F590 /* DocPadding.nib */; };
 		E74056F915B1EF950040F590 /* HTMLExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056DC15B1EF950040F590 /* HTMLExport.nib */; };
 		E74056FA15B1EF950040F590 /* ImageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74056DE15B1EF950040F590 /* ImageController.xib */; };
-		E74056FC15B1EF950040F590 /* LineEndingWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056E215B1EF950040F590 /* LineEndingWindow.nib */; };
-		E74056FD15B1EF950040F590 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056E415B1EF950040F590 /* MainMenu.nib */; };
 		E74056FE15B1EF950040F590 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056E615B1EF950040F590 /* MainWindow.nib */; };
 		E74056FF15B1EF950040F590 /* PallettePanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74056E815B1EF950040F590 /* PallettePanel.xib */; };
 		E740570015B1EF950040F590 /* Pallettes.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74056EA15B1EF950040F590 /* Pallettes.xib */; };
 		E740570115B1EF950040F590 /* PatternWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056EC15B1EF950040F590 /* PatternWindow.nib */; };
-		E740570215B1EF950040F590 /* PolySides.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056EE15B1EF950040F590 /* PolySides.nib */; };
 		E740570315B1EF950040F590 /* RotationSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056F015B1EF950040F590 /* RotationSheet.nib */; };
 		E740570415B1EF950040F590 /* StylePanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056F215B1EF950040F590 /* StylePanel.nib */; };
-		E740570515B1EF950040F590 /* TocPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056F415B1EF950040F590 /* TocPanel.nib */; };
 		E740570615B1EF950040F590 /* ToolPalette.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056F615B1EF950040F590 /* ToolPalette.nib */; };
 		E740570915B2ACB00040F590 /* SnapLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740570815B2ACAF0040F590 /* SnapLine.mm */; };
 		E740573315B2B18C0040F590 /* XXAffineTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740572415B2B18C0040F590 /* XXAffineTransform.mm */; };
@@ -266,10 +262,53 @@
 		E74A50431C620FE300A83A52 /* GroupViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74A50421C620FE300A83A52 /* GroupViewController.mm */; };
 		E74A50451C6228A000A83A52 /* GroupWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74A50441C6228A000A83A52 /* GroupWindow.xib */; };
 		E74A50471C62583200A83A52 /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E74A50461C62583200A83A52 /* SceneKit.framework */; };
-		E74CC8BF1AB1D78B00430A8A /* SVGGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74CC8BE1AB1D78B00430A8A /* SVGGradient.mm */; };
+		E74CC8BF1AB1D78B00430A8A /* SVG_Gradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74CC8BE1AB1D78B00430A8A /* SVG_Gradient.mm */; };
 		E751D30E230E990500D35BE2 /* noimagecross64.png in Resources */ = {isa = PBXBuildFile; fileRef = E751D30C230E990500D35BE2 /* noimagecross64.png */; };
 		E751D30F230E990500D35BE2 /* noimagecross.svg in Resources */ = {isa = PBXBuildFile; fileRef = E751D30D230E990500D35BE2 /* noimagecross.svg */; };
 		E767B7291A3890F20048C6BA /* GraphicOtherController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E767B7281A3890F20048C6BA /* GraphicOtherController.mm */; };
+		E76AC00729B29A5A005DE06A /* NSDocumentController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC00629B29A5A005DE06A /* NSDocumentController+Additions.m */; };
+		E76AC00A29B2A02B005DE06A /* ACSDDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC00929B2A02B005DE06A /* ACSDDocumentController.m */; };
+		E76AC00D29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E76AC00C29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm */; };
+		E76AC00F29B34980005DE06A /* booktemplate.xml in Resources */ = {isa = PBXBuildFile; fileRef = E76AC00E29B34976005DE06A /* booktemplate.xml */; };
+		E76AC01429B4D495005DE06A /* back.svg in Resources */ = {isa = PBXBuildFile; fileRef = E76AC01329B4CF16005DE06A /* back.svg */; };
+		E76AC01529B4D49C005DE06A /* next.svg in Resources */ = {isa = PBXBuildFile; fileRef = E76AC01129B4CF16005DE06A /* next.svg */; };
+		E76AC01629B4D49C005DE06A /* prev.svg in Resources */ = {isa = PBXBuildFile; fileRef = E76AC01029B4CF16005DE06A /* prev.svg */; };
+		E76AC01729B4D49C005DE06A /* repeataudio.svg in Resources */ = {isa = PBXBuildFile; fileRef = E76AC01229B4CF16005DE06A /* repeataudio.svg */; };
+		E76AC05329B50ED3005DE06A /* SVG_svg.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC02029B50EA6005DE06A /* SVG_svg.m */; };
+		E76AC05429B50ED3005DE06A /* SVG_rect.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC01D29B50EA6005DE06A /* SVG_rect.m */; };
+		E76AC05529B50ED3005DE06A /* SVGContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC01E29B50EA6005DE06A /* SVGContainer.m */; };
+		E76AC05629B50EFE005DE06A /* SVGGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC02A29B50EA6005DE06A /* SVGGradient.m */; };
+		E76AC05729B50EFE005DE06A /* SVG_pattern.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC04F29B50EA6005DE06A /* SVG_pattern.m */; };
+		E76AC05829B50EFE005DE06A /* SVG_path.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC04929B50EA6005DE06A /* SVG_path.m */; };
+		E76AC05929B50EFE005DE06A /* SVG_stop.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03D29B50EA6005DE06A /* SVG_stop.m */; };
+		E76AC05A29B50EFE005DE06A /* SVGGraphicalObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC02629B50EA6005DE06A /* SVGGraphicalObject.m */; };
+		E76AC05B29B50EFE005DE06A /* SVGShape.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC02B29B50EA6005DE06A /* SVGShape.m */; };
+		E76AC05C29B50EFE005DE06A /* SVG_ellipse.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03029B50EA6005DE06A /* SVG_ellipse.m */; };
+		E76AC05D29B50EFE005DE06A /* SVG_text.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC04429B50EA6005DE06A /* SVG_text.m */; };
+		E76AC05E29B50EFE005DE06A /* SVG_defs.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03F29B50EA6005DE06A /* SVG_defs.m */; };
+		E76AC05F29B50EFE005DE06A /* SVGTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC05129B50EA6005DE06A /* SVGTransform.m */; };
+		E76AC06029B50EFE005DE06A /* SVG_symbol.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03629B50EA6005DE06A /* SVG_symbol.m */; };
+		E76AC06129B50EFE005DE06A /* SVGPaintServer.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC04C29B50EA6005DE06A /* SVGPaintServer.m */; };
+		E76AC06229B50EFE005DE06A /* SVG_clipPath.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC04729B50EA6005DE06A /* SVG_clipPath.m */; };
+		E76AC06329B50EFE005DE06A /* SVG_use.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03E29B50EA6005DE06A /* SVG_use.m */; };
+		E76AC06429B50EFE005DE06A /* SVGNode.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03529B50EA6005DE06A /* SVGNode.m */; };
+		E76AC06529B50EFE005DE06A /* SVG_radialGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC04529B50EA6005DE06A /* SVG_radialGradient.m */; };
+		E76AC06629B50EFE005DE06A /* SVG_style.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03929B50EA6005DE06A /* SVG_style.m */; };
+		E76AC06729B50EFE005DE06A /* SVG_polygon.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03C29B50EA6005DE06A /* SVG_polygon.m */; };
+		E76AC06829B50EFE005DE06A /* SVG_line.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC02D29B50EA6005DE06A /* SVG_line.m */; };
+		E76AC06929B50EFE005DE06A /* SVGPaint.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC04029B50EA6005DE06A /* SVGPaint.m */; };
+		E76AC06A29B50EFE005DE06A /* SVG_polyline.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC02929B50EA6005DE06A /* SVG_polyline.m */; };
+		E76AC06B29B50EFE005DE06A /* SVGDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC04B29B50EA6005DE06A /* SVGDocument.m */; };
+		E76AC06C29B50EFE005DE06A /* SVG_linearGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC05029B50EA6005DE06A /* SVG_linearGradient.m */; };
+		E76AC06D29B50EFE005DE06A /* SVG_g.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03129B50EA6005DE06A /* SVG_g.m */; };
+		E76AC06E29B50EFE005DE06A /* SVG_circle.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC03729B50EA6005DE06A /* SVG_circle.m */; };
+		E76AC06F29B50EFE005DE06A /* SVGDimension.m in Sources */ = {isa = PBXBuildFile; fileRef = E76AC04629B50EA6005DE06A /* SVGDimension.m */; };
+		E76AC07129B514F5005DE06A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07029B514F5005DE06A /* MainMenu.xib */; };
+		E76AC07429B53BC0005DE06A /* TocPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07229B53BC0005DE06A /* TocPanel.xib */; };
+		E76AC07729B53C25005DE06A /* PolySides.xib in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07529B53C25005DE06A /* PolySides.xib */; };
+		E76AC07A29B53CFF005DE06A /* LineEndingWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07829B53CFF005DE06A /* LineEndingWindow.xib */; };
+		E76AC07D29B73F67005DE06A /* arrowlf.tif in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07B29B73F67005DE06A /* arrowlf.tif */; };
+		E76AC07E29B73F67005DE06A /* arrowrf.tif in Resources */ = {isa = PBXBuildFile; fileRef = E76AC07C29B73F67005DE06A /* arrowrf.tif */; };
 		E77102E4279E77B4000FF4FB /* expand.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E77102E2279E77B4000FF4FB /* expand.tiff */; };
 		E77102E5279E77B4000FF4FB /* expandalt.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E77102E3279E77B4000FF4FB /* expandalt.tiff */; };
 		E77A36DD196841FB0050264B /* OverlayFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = E77A36DC196841FB0050264B /* OverlayFilter.m */; };
@@ -704,12 +743,87 @@
 		E74A50421C620FE300A83A52 /* GroupViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GroupViewController.mm; sourceTree = "<group>"; };
 		E74A50441C6228A000A83A52 /* GroupWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GroupWindow.xib; sourceTree = "<group>"; };
 		E74A50461C62583200A83A52 /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
-		E74CC8BD1AB1D78B00430A8A /* SVGGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGGradient.h; sourceTree = "<group>"; };
-		E74CC8BE1AB1D78B00430A8A /* SVGGradient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGGradient.mm; sourceTree = "<group>"; };
+		E74CC8BD1AB1D78B00430A8A /* SVG_Gradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVG_Gradient.h; sourceTree = "<group>"; };
+		E74CC8BE1AB1D78B00430A8A /* SVG_Gradient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVG_Gradient.mm; sourceTree = "<group>"; };
 		E751D30C230E990500D35BE2 /* noimagecross64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noimagecross64.png; sourceTree = "<group>"; };
 		E751D30D230E990500D35BE2 /* noimagecross.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = noimagecross.svg; sourceTree = "<group>"; };
 		E767B7271A3890F20048C6BA /* GraphicOtherController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicOtherController.h; sourceTree = "<group>"; };
 		E767B7281A3890F20048C6BA /* GraphicOtherController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphicOtherController.mm; sourceTree = "<group>"; };
+		E76AC00529B29A5A005DE06A /* NSDocumentController+Additions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDocumentController+Additions.h"; sourceTree = "<group>"; };
+		E76AC00629B29A5A005DE06A /* NSDocumentController+Additions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDocumentController+Additions.m"; sourceTree = "<group>"; };
+		E76AC00829B2A02B005DE06A /* ACSDDocumentController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACSDDocumentController.h; sourceTree = "<group>"; };
+		E76AC00929B2A02B005DE06A /* ACSDDocumentController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACSDDocumentController.m; sourceTree = "<group>"; };
+		E76AC00B29B32649005DE06A /* ACSDrawDocument+bookAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ACSDrawDocument+bookAdditions.h"; sourceTree = "<group>"; };
+		E76AC00C29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "ACSDrawDocument+bookAdditions.mm"; sourceTree = "<group>"; };
+		E76AC00E29B34976005DE06A /* booktemplate.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = booktemplate.xml; sourceTree = "<group>"; };
+		E76AC01029B4CF16005DE06A /* prev.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = prev.svg; sourceTree = "<group>"; };
+		E76AC01129B4CF16005DE06A /* next.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = next.svg; sourceTree = "<group>"; };
+		E76AC01229B4CF16005DE06A /* repeataudio.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = repeataudio.svg; sourceTree = "<group>"; };
+		E76AC01329B4CF16005DE06A /* back.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = back.svg; sourceTree = "<group>"; };
+		E76AC01929B50EA6005DE06A /* SVG_defs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_defs.h; sourceTree = "<group>"; };
+		E76AC01A29B50EA6005DE06A /* SVG_polygon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_polygon.h; sourceTree = "<group>"; };
+		E76AC01B29B50EA6005DE06A /* SVG_stop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_stop.h; sourceTree = "<group>"; };
+		E76AC01C29B50EA6005DE06A /* SVG_use.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_use.h; sourceTree = "<group>"; };
+		E76AC01D29B50EA6005DE06A /* SVG_rect.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_rect.m; sourceTree = "<group>"; };
+		E76AC01E29B50EA6005DE06A /* SVGContainer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGContainer.m; sourceTree = "<group>"; };
+		E76AC01F29B50EA6005DE06A /* SVG_style.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_style.h; sourceTree = "<group>"; };
+		E76AC02029B50EA6005DE06A /* SVG_svg.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_svg.m; sourceTree = "<group>"; };
+		E76AC02129B50EA6005DE06A /* SVG_circle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_circle.h; sourceTree = "<group>"; };
+		E76AC02229B50EA6005DE06A /* SVG_symbol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_symbol.h; sourceTree = "<group>"; };
+		E76AC02329B50EA6005DE06A /* SVG_path.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_path.h; sourceTree = "<group>"; };
+		E76AC02429B50EA6005DE06A /* SVGDimension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGDimension.h; sourceTree = "<group>"; };
+		E76AC02529B50EA6005DE06A /* SVG_clipPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_clipPath.h; sourceTree = "<group>"; };
+		E76AC02629B50EA6005DE06A /* SVGGraphicalObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGGraphicalObject.m; sourceTree = "<group>"; };
+		E76AC02729B50EA6005DE06A /* SVG_radialGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_radialGradient.h; sourceTree = "<group>"; };
+		E76AC02829B50EA6005DE06A /* SVG_text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_text.h; sourceTree = "<group>"; };
+		E76AC02929B50EA6005DE06A /* SVG_polyline.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_polyline.m; sourceTree = "<group>"; };
+		E76AC02A29B50EA6005DE06A /* SVGGradient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGGradient.m; sourceTree = "<group>"; };
+		E76AC02B29B50EA6005DE06A /* SVGShape.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGShape.m; sourceTree = "<group>"; };
+		E76AC02C29B50EA6005DE06A /* SVGPaint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGPaint.h; sourceTree = "<group>"; };
+		E76AC02D29B50EA6005DE06A /* SVG_line.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_line.m; sourceTree = "<group>"; };
+		E76AC02E29B50EA6005DE06A /* SVGPaintServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGPaintServer.h; sourceTree = "<group>"; };
+		E76AC02F29B50EA6005DE06A /* SVGDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGDocument.h; sourceTree = "<group>"; };
+		E76AC03029B50EA6005DE06A /* SVG_ellipse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_ellipse.m; sourceTree = "<group>"; };
+		E76AC03129B50EA6005DE06A /* SVG_g.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_g.m; sourceTree = "<group>"; };
+		E76AC03229B50EA6005DE06A /* SVGTransform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGTransform.h; sourceTree = "<group>"; };
+		E76AC03329B50EA6005DE06A /* SVG_linearGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_linearGradient.h; sourceTree = "<group>"; };
+		E76AC03429B50EA6005DE06A /* SVG_pattern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_pattern.h; sourceTree = "<group>"; };
+		E76AC03529B50EA6005DE06A /* SVGNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGNode.m; sourceTree = "<group>"; };
+		E76AC03629B50EA6005DE06A /* SVG_symbol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_symbol.m; sourceTree = "<group>"; };
+		E76AC03729B50EA6005DE06A /* SVG_circle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_circle.m; sourceTree = "<group>"; };
+		E76AC03829B50EA6005DE06A /* SVG_svg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_svg.h; sourceTree = "<group>"; };
+		E76AC03929B50EA6005DE06A /* SVG_style.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_style.m; sourceTree = "<group>"; };
+		E76AC03A29B50EA6005DE06A /* SVG_rect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_rect.h; sourceTree = "<group>"; };
+		E76AC03B29B50EA6005DE06A /* SVGContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGContainer.h; sourceTree = "<group>"; };
+		E76AC03C29B50EA6005DE06A /* SVG_polygon.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_polygon.m; sourceTree = "<group>"; };
+		E76AC03D29B50EA6005DE06A /* SVG_stop.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_stop.m; sourceTree = "<group>"; };
+		E76AC03E29B50EA6005DE06A /* SVG_use.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_use.m; sourceTree = "<group>"; };
+		E76AC03F29B50EA6005DE06A /* SVG_defs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_defs.m; sourceTree = "<group>"; };
+		E76AC04029B50EA6005DE06A /* SVGPaint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGPaint.m; sourceTree = "<group>"; };
+		E76AC04129B50EA6005DE06A /* SVGShape.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGShape.h; sourceTree = "<group>"; };
+		E76AC04229B50EA6005DE06A /* SVGGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGGradient.h; sourceTree = "<group>"; };
+		E76AC04329B50EA6005DE06A /* SVG_polyline.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_polyline.h; sourceTree = "<group>"; };
+		E76AC04429B50EA6005DE06A /* SVG_text.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_text.m; sourceTree = "<group>"; };
+		E76AC04529B50EA6005DE06A /* SVG_radialGradient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_radialGradient.m; sourceTree = "<group>"; };
+		E76AC04629B50EA6005DE06A /* SVGDimension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGDimension.m; sourceTree = "<group>"; };
+		E76AC04729B50EA6005DE06A /* SVG_clipPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_clipPath.m; sourceTree = "<group>"; };
+		E76AC04829B50EA6005DE06A /* SVGGraphicalObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGGraphicalObject.h; sourceTree = "<group>"; };
+		E76AC04929B50EA6005DE06A /* SVG_path.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_path.m; sourceTree = "<group>"; };
+		E76AC04A29B50EA6005DE06A /* SVG_ellipse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_ellipse.h; sourceTree = "<group>"; };
+		E76AC04B29B50EA6005DE06A /* SVGDocument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGDocument.m; sourceTree = "<group>"; };
+		E76AC04C29B50EA6005DE06A /* SVGPaintServer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGPaintServer.m; sourceTree = "<group>"; };
+		E76AC04D29B50EA6005DE06A /* SVG_line.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_line.h; sourceTree = "<group>"; };
+		E76AC04E29B50EA6005DE06A /* SVGNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGNode.h; sourceTree = "<group>"; };
+		E76AC04F29B50EA6005DE06A /* SVG_pattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_pattern.m; sourceTree = "<group>"; };
+		E76AC05029B50EA6005DE06A /* SVG_linearGradient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVG_linearGradient.m; sourceTree = "<group>"; };
+		E76AC05129B50EA6005DE06A /* SVGTransform.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGTransform.m; sourceTree = "<group>"; };
+		E76AC05229B50EA6005DE06A /* SVG_g.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVG_g.h; sourceTree = "<group>"; };
+		E76AC07029B514F5005DE06A /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		E76AC07329B53BC0005DE06A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TocPanel.xib; sourceTree = "<group>"; };
+		E76AC07629B53C25005DE06A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PolySides.xib; sourceTree = "<group>"; };
+		E76AC07929B53CFF005DE06A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LineEndingWindow.xib; sourceTree = "<group>"; };
+		E76AC07B29B73F67005DE06A /* arrowlf.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = arrowlf.tif; sourceTree = "<group>"; };
+		E76AC07C29B73F67005DE06A /* arrowrf.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = arrowrf.tif; sourceTree = "<group>"; };
 		E77102E2279E77B4000FF4FB /* expand.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = expand.tiff; sourceTree = "<group>"; };
 		E77102E3279E77B4000FF4FB /* expandalt.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = expandalt.tiff; sourceTree = "<group>"; };
 		E77A36DB196841FB0050264B /* OverlayFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayFilter.h; sourceTree = "<group>"; };
@@ -726,16 +840,12 @@
 		E7CF357627AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/DocPadding.nib; sourceTree = "<group>"; };
 		E7CF357727AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/HTMLExport.nib; sourceTree = "<group>"; };
 		E7CF357827AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ImageController.xib; sourceTree = "<group>"; };
-		E7CF357927AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/LineEndingWindow.nib; sourceTree = "<group>"; };
-		E7CF357A27AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		E7CF357B27AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainWindow.nib; sourceTree = "<group>"; };
 		E7CF357C27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PallettePanel.xib; sourceTree = "<group>"; };
 		E7CF357D27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Pallettes.xib; sourceTree = "<group>"; };
 		E7CF357E27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/PatternWindow.nib; sourceTree = "<group>"; };
-		E7CF357F27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/PolySides.nib; sourceTree = "<group>"; };
 		E7CF358027AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/RotationSheet.nib; sourceTree = "<group>"; };
 		E7CF358127AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/StylePanel.nib; sourceTree = "<group>"; };
-		E7CF358227AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/TocPanel.nib; sourceTree = "<group>"; };
 		E7CF358327AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/ToolPalette.nib; sourceTree = "<group>"; };
 		E7CFC2681C92C68600114E18 /* ACSDReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACSDReference.h; sourceTree = "<group>"; };
 		E7CFC2691C92C68600114E18 /* ACSDReference.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ACSDReference.mm; sourceTree = "<group>"; };
@@ -975,17 +1085,17 @@
 				E74056DA15B1EF950040F590 /* DocPadding.nib */,
 				E74056DC15B1EF950040F590 /* HTMLExport.nib */,
 				E74056DE15B1EF950040F590 /* ImageController.xib */,
-				E74056E215B1EF950040F590 /* LineEndingWindow.nib */,
-				E74056E415B1EF950040F590 /* MainMenu.nib */,
+				E76AC07829B53CFF005DE06A /* LineEndingWindow.xib */,
+				E76AC07029B514F5005DE06A /* MainMenu.xib */,
 				E74056E615B1EF950040F590 /* MainWindow.nib */,
 				E74056E815B1EF950040F590 /* PallettePanel.xib */,
 				E74056EA15B1EF950040F590 /* Pallettes.xib */,
 				E7D218B42895974500B0ABEC /* TextAccessory.xib */,
 				E74056EC15B1EF950040F590 /* PatternWindow.nib */,
-				E74056EE15B1EF950040F590 /* PolySides.nib */,
+				E76AC07529B53C25005DE06A /* PolySides.xib */,
 				E74056F015B1EF950040F590 /* RotationSheet.nib */,
 				E74056F215B1EF950040F590 /* StylePanel.nib */,
-				E74056F415B1EF950040F590 /* TocPanel.nib */,
+				E76AC07229B53BC0005DE06A /* TocPanel.xib */,
 				E74056F615B1EF950040F590 /* ToolPalette.nib */,
 				E74A50441C6228A000A83A52 /* GroupWindow.xib */,
 				E740575C15B2D2D60040F590 /* images */,
@@ -997,6 +1107,7 @@
 		E74054C815B1ED040040F590 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E76AC00E29B34976005DE06A /* booktemplate.xml */,
 				E798F30215C3F0C60079B4D9 /* ACSDraw.icns */,
 				E74054C915B1ED040040F590 /* ACSDraw-Info.plist */,
 				E74054CA15B1ED040040F590 /* InfoPlist.strings */,
@@ -1034,6 +1145,8 @@
 		E740575C15B2D2D60040F590 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				E76AC07B29B73F67005DE06A /* arrowlf.tif */,
+				E76AC07C29B73F67005DE06A /* arrowrf.tif */,
 				E77102E2279E77B4000FF4FB /* expand.tiff */,
 				E77102E3279E77B4000FF4FB /* expandalt.tiff */,
 				E746F6E615E8BCC900110247 /* arrowplus.tiff */,
@@ -1112,8 +1225,77 @@
 				E740578815B2D3050040F590 /* whitearrow1alt.tif */,
 				E751D30D230E990500D35BE2 /* noimagecross.svg */,
 				E751D30C230E990500D35BE2 /* noimagecross64.png */,
+				E76AC01329B4CF16005DE06A /* back.svg */,
+				E76AC01129B4CF16005DE06A /* next.svg */,
+				E76AC01029B4CF16005DE06A /* prev.svg */,
+				E76AC01229B4CF16005DE06A /* repeataudio.svg */,
 			);
 			name = images;
+			sourceTree = "<group>";
+		};
+		E76AC01829B50EA6005DE06A /* svg nodes */ = {
+			isa = PBXGroup;
+			children = (
+				E76AC01929B50EA6005DE06A /* SVG_defs.h */,
+				E76AC01A29B50EA6005DE06A /* SVG_polygon.h */,
+				E76AC01B29B50EA6005DE06A /* SVG_stop.h */,
+				E76AC01C29B50EA6005DE06A /* SVG_use.h */,
+				E76AC01D29B50EA6005DE06A /* SVG_rect.m */,
+				E76AC01E29B50EA6005DE06A /* SVGContainer.m */,
+				E76AC01F29B50EA6005DE06A /* SVG_style.h */,
+				E76AC02029B50EA6005DE06A /* SVG_svg.m */,
+				E76AC02129B50EA6005DE06A /* SVG_circle.h */,
+				E76AC02229B50EA6005DE06A /* SVG_symbol.h */,
+				E76AC02329B50EA6005DE06A /* SVG_path.h */,
+				E76AC02429B50EA6005DE06A /* SVGDimension.h */,
+				E76AC02529B50EA6005DE06A /* SVG_clipPath.h */,
+				E76AC02629B50EA6005DE06A /* SVGGraphicalObject.m */,
+				E76AC02729B50EA6005DE06A /* SVG_radialGradient.h */,
+				E76AC02829B50EA6005DE06A /* SVG_text.h */,
+				E76AC02929B50EA6005DE06A /* SVG_polyline.m */,
+				E76AC02A29B50EA6005DE06A /* SVGGradient.m */,
+				E76AC02B29B50EA6005DE06A /* SVGShape.m */,
+				E76AC02C29B50EA6005DE06A /* SVGPaint.h */,
+				E76AC02D29B50EA6005DE06A /* SVG_line.m */,
+				E76AC02E29B50EA6005DE06A /* SVGPaintServer.h */,
+				E76AC02F29B50EA6005DE06A /* SVGDocument.h */,
+				E76AC03029B50EA6005DE06A /* SVG_ellipse.m */,
+				E76AC03129B50EA6005DE06A /* SVG_g.m */,
+				E76AC03229B50EA6005DE06A /* SVGTransform.h */,
+				E76AC03329B50EA6005DE06A /* SVG_linearGradient.h */,
+				E76AC03429B50EA6005DE06A /* SVG_pattern.h */,
+				E76AC03529B50EA6005DE06A /* SVGNode.m */,
+				E76AC03629B50EA6005DE06A /* SVG_symbol.m */,
+				E76AC03729B50EA6005DE06A /* SVG_circle.m */,
+				E76AC03829B50EA6005DE06A /* SVG_svg.h */,
+				E76AC03929B50EA6005DE06A /* SVG_style.m */,
+				E76AC03A29B50EA6005DE06A /* SVG_rect.h */,
+				E76AC03B29B50EA6005DE06A /* SVGContainer.h */,
+				E76AC03C29B50EA6005DE06A /* SVG_polygon.m */,
+				E76AC03D29B50EA6005DE06A /* SVG_stop.m */,
+				E76AC03E29B50EA6005DE06A /* SVG_use.m */,
+				E76AC03F29B50EA6005DE06A /* SVG_defs.m */,
+				E76AC04029B50EA6005DE06A /* SVGPaint.m */,
+				E76AC04129B50EA6005DE06A /* SVGShape.h */,
+				E76AC04229B50EA6005DE06A /* SVGGradient.h */,
+				E76AC04329B50EA6005DE06A /* SVG_polyline.h */,
+				E76AC04429B50EA6005DE06A /* SVG_text.m */,
+				E76AC04529B50EA6005DE06A /* SVG_radialGradient.m */,
+				E76AC04629B50EA6005DE06A /* SVGDimension.m */,
+				E76AC04729B50EA6005DE06A /* SVG_clipPath.m */,
+				E76AC04829B50EA6005DE06A /* SVGGraphicalObject.h */,
+				E76AC04929B50EA6005DE06A /* SVG_path.m */,
+				E76AC04A29B50EA6005DE06A /* SVG_ellipse.h */,
+				E76AC04B29B50EA6005DE06A /* SVGDocument.m */,
+				E76AC04C29B50EA6005DE06A /* SVGPaintServer.m */,
+				E76AC04D29B50EA6005DE06A /* SVG_line.h */,
+				E76AC04E29B50EA6005DE06A /* SVGNode.h */,
+				E76AC04F29B50EA6005DE06A /* SVG_pattern.m */,
+				E76AC05029B50EA6005DE06A /* SVG_linearGradient.m */,
+				E76AC05129B50EA6005DE06A /* SVGTransform.m */,
+				E76AC05229B50EA6005DE06A /* SVG_g.h */,
+			);
+			path = "svg nodes";
 			sourceTree = "<group>";
 		};
 		E7E1B46B16F475660090AB26 /* Main UI */ = {
@@ -1132,6 +1314,8 @@
 				E740551115B1EF2D0040F590 /* ACSDrawDefs.h */,
 				E740551215B1EF2D0040F590 /* ACSDrawDocument.h */,
 				E740551315B1EF2D0040F590 /* ACSDrawDocument.mm */,
+				E76AC00B29B32649005DE06A /* ACSDrawDocument+bookAdditions.h */,
+				E76AC00C29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm */,
 				E740551415B1EF2D0040F590 /* ACSDrawTextAttachmentCell.h */,
 				E740551515B1EF2D0040F590 /* ACSDrawTextAttachmentCell.mm */,
 				E740552015B1EF2D0040F590 /* ACSDTableView.h */,
@@ -1166,6 +1350,8 @@
 				E71E28CE1823BAAE00F5C5B9 /* XMLManager.m */,
 				E71E28CF1823BAAE00F5C5B9 /* XMLNode.h */,
 				E71E28D01823BAAE00F5C5B9 /* XMLNode.m */,
+				E76AC00829B2A02B005DE06A /* ACSDDocumentController.h */,
+				E76AC00929B2A02B005DE06A /* ACSDDocumentController.m */,
 			);
 			name = "Main UI";
 			sourceTree = "<group>";
@@ -1173,6 +1359,7 @@
 		E7E1B46C16F475840090AB26 /* Graphics Objects */ = {
 			isa = PBXGroup;
 			children = (
+				E76AC01829B50EA6005DE06A /* svg nodes */,
 				E74054E115B1EF2D0040F590 /* ACSDAttribute.h */,
 				E74054E215B1EF2D0040F590 /* ACSDAttribute.mm */,
 				E74054E315B1EF2D0040F590 /* ACSDCircle.h */,
@@ -1237,8 +1424,8 @@
 				E7D18F0E1988EA67000664F6 /* gElement.m */,
 				E740558515B1EF2D0040F590 /* gSubPath.h */,
 				E740558615B1EF2D0040F590 /* gSubPath.mm */,
-				E74CC8BD1AB1D78B00430A8A /* SVGGradient.h */,
-				E74CC8BE1AB1D78B00430A8A /* SVGGradient.mm */,
+				E74CC8BD1AB1D78B00430A8A /* SVG_Gradient.h */,
+				E74CC8BE1AB1D78B00430A8A /* SVG_Gradient.mm */,
 			);
 			name = "Graphics Objects";
 			sourceTree = "<group>";
@@ -1258,6 +1445,8 @@
 				E7F50037179410A1009FEC7D /* NSString+StringAdditions.m */,
 				E7BB1B431BD8361C0053B9DE /* NSView+Additions.h */,
 				E7BB1B441BD8361C0053B9DE /* NSView+Additions.m */,
+				E76AC00529B29A5A005DE06A /* NSDocumentController+Additions.h */,
+				E76AC00629B29A5A005DE06A /* NSDocumentController+Additions.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -1348,9 +1537,14 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0920;
+				TargetAttributes = {
+					E74054BC15B1ED040040F590 = {
+						DevelopmentTeam = 73G67QZ25Y;
+					};
+				};
 			};
 			buildConfigurationList = E74054B715B1ED040040F590 /* Build configuration list for PBXProject "ACSDraw" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1373,23 +1567,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				E74054CC15B1ED040040F590 /* InfoPlist.strings in Resources */,
+				E76AC07D29B73F67005DE06A /* arrowlf.tif in Resources */,
 				E74054D215B1ED040040F590 /* Credits.rtf in Resources */,
 				E74056F815B1EF950040F590 /* DocPadding.nib in Resources */,
 				E70E81C8249E5D27003CDF0D /* scalealt.tiff in Resources */,
 				E74056F915B1EF950040F590 /* HTMLExport.nib in Resources */,
 				E74056FA15B1EF950040F590 /* ImageController.xib in Resources */,
-				E74056FC15B1EF950040F590 /* LineEndingWindow.nib in Resources */,
+				E76AC01429B4D495005DE06A /* back.svg in Resources */,
 				E7D218B52895974500B0ABEC /* TextAccessory.xib in Resources */,
-				E74056FD15B1EF950040F590 /* MainMenu.nib in Resources */,
 				E74056FE15B1EF950040F590 /* MainWindow.nib in Resources */,
+				E76AC07A29B53CFF005DE06A /* LineEndingWindow.xib in Resources */,
 				E74056FF15B1EF950040F590 /* PallettePanel.xib in Resources */,
 				E740570015B1EF950040F590 /* Pallettes.xib in Resources */,
 				E740570115B1EF950040F590 /* PatternWindow.nib in Resources */,
 				E77102E5279E77B4000FF4FB /* expandalt.tiff in Resources */,
-				E740570215B1EF950040F590 /* PolySides.nib in Resources */,
 				E740570315B1EF950040F590 /* RotationSheet.nib in Resources */,
 				E740570415B1EF950040F590 /* StylePanel.nib in Resources */,
-				E740570515B1EF950040F590 /* TocPanel.nib in Resources */,
+				E76AC07E29B73F67005DE06A /* arrowrf.tif in Resources */,
 				E740570615B1EF950040F590 /* ToolPalette.nib in Resources */,
 				E740578915B2D3060040F590 /* arrow2.tif in Resources */,
 				E740578A15B2D3060040F590 /* arrow2alt.tif in Resources */,
@@ -1407,12 +1601,16 @@
 				E740579415B2D3060040F590 /* letteraalt.tif in Resources */,
 				E740579515B2D3060040F590 /* line2.tif in Resources */,
 				E751D30F230E990500D35BE2 /* noimagecross.svg in Resources */,
+				E76AC07429B53BC0005DE06A /* TocPanel.xib in Resources */,
 				E740579615B2D3060040F590 /* line2alt.tif in Resources */,
 				E740579715B2D3060040F590 /* pat1.tif in Resources */,
 				E73184BF1A71BEC30011A1BB /* eye3.tiff in Resources */,
 				E740579815B2D3060040F590 /* pat1a.tif in Resources */,
 				E740579915B2D3060040F590 /* pat2.tif in Resources */,
 				E740579A15B2D3060040F590 /* pat2a.tif in Resources */,
+				E76AC01529B4D49C005DE06A /* next.svg in Resources */,
+				E76AC07729B53C25005DE06A /* PolySides.xib in Resources */,
+				E76AC01629B4D49C005DE06A /* prev.svg in Resources */,
 				E740579B15B2D3060040F590 /* pat3.tif in Resources */,
 				E740579C15B2D3060040F590 /* pat3a.tif in Resources */,
 				E740579D15B2D3060040F590 /* pat4.tif in Resources */,
@@ -1432,10 +1630,12 @@
 				E74057AB15B2D3060040F590 /* snap2.tif in Resources */,
 				E74057AC15B2D3060040F590 /* snap3.tif in Resources */,
 				E74057AD15B2D3060040F590 /* splitpoint.tif in Resources */,
+				E76AC07129B514F5005DE06A /* MainMenu.xib in Resources */,
 				E74057AE15B2D3060040F590 /* splitpointalt.tif in Resources */,
 				E74057AF15B2D3060040F590 /* squiggle.tif in Resources */,
 				E74057B015B2D3060040F590 /* squigglealt.tif in Resources */,
 				E74057B115B2D3060040F590 /* tinyminus.tiff in Resources */,
+				E76AC00F29B34980005DE06A /* booktemplate.xml in Resources */,
 				E74057B215B2D3060040F590 /* tinyplus.tiff in Resources */,
 				E74057B315B2D3060040F590 /* whitearrow1.tif in Resources */,
 				E74057B415B2D3060040F590 /* whitearrow1alt.tif in Resources */,
@@ -1461,6 +1661,7 @@
 				E746F70815E8BCCA00110247 /* markersmall90.tif in Resources */,
 				E746F70915E8BCCA00110247 /* oblique.tiff in Resources */,
 				E746F70A15E8BCCA00110247 /* oblique2.tiff in Resources */,
+				E76AC01729B4D49C005DE06A /* repeataudio.svg in Resources */,
 				E746F70B15E8BCCA00110247 /* redarrowcs.tif in Resources */,
 				E746F70C15E8BCCA00110247 /* rotatecursor.tif in Resources */,
 				E746F70D15E8BCCA00110247 /* selectionimage.tif in Resources */,
@@ -1480,11 +1681,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E76AC00729B29A5A005DE06A /* NSDocumentController+Additions.m in Sources */,
 				E74054CE15B1ED040040F590 /* main.m in Sources */,
 				E740563215B1EF2D0040F590 /* ACSDAttribute.mm in Sources */,
 				E740563315B1EF2D0040F590 /* ACSDCircle.mm in Sources */,
 				E740563415B1EF2D0040F590 /* ACSDConnector.mm in Sources */,
+				E76AC05E29B50EFE005DE06A /* SVG_defs.m in Sources */,
 				E740563515B1EF2D0040F590 /* ACSDCursor.mm in Sources */,
+				E76AC06229B50EFE005DE06A /* SVG_clipPath.m in Sources */,
 				E740563615B1EF2D0040F590 /* ACSDFill.mm in Sources */,
 				E740563715B1EF2D0040F590 /* ACSDFreeHand.mm in Sources */,
 				E7BB1B451BD8361C0053B9DE /* NSView+Additions.m in Sources */,
@@ -1494,6 +1698,7 @@
 				E740563B15B1EF2D0040F590 /* ACSDGroup.mm in Sources */,
 				E740563C15B1EF2D0040F590 /* ACSDImage.mm in Sources */,
 				E740563D15B1EF2D0040F590 /* ACSDImageRep.mm in Sources */,
+				E76AC05629B50EFE005DE06A /* SVGGradient.m in Sources */,
 				E740563E15B1EF2D0040F590 /* ACSDLabel.mm in Sources */,
 				E740563F15B1EF2D0040F590 /* ACSDLayer.mm in Sources */,
 				E740564015B1EF2D0040F590 /* ACSDLine.mm in Sources */,
@@ -1501,18 +1706,20 @@
 				E740564215B1EF2D0040F590 /* ACSDLink.mm in Sources */,
 				E740564315B1EF2D0040F590 /* ACSDMatrix.mm in Sources */,
 				E740564415B1EF2D0040F590 /* ACSDPage.mm in Sources */,
+				E76AC06529B50EFE005DE06A /* SVG_radialGradient.m in Sources */,
 				E740564515B1EF2D0040F590 /* ACSDPath.mm in Sources */,
 				E740564615B1EF2D0040F590 /* ACSDPathElement.mm in Sources */,
 				E740564715B1EF2D0040F590 /* ACSDPattern.mm in Sources */,
 				E7CFC26A1C92C68600114E18 /* ACSDReference.mm in Sources */,
 				E79139421A607B7C00A9B1C4 /* ACSDDocImage.mm in Sources */,
 				E740564815B1EF2D0040F590 /* ACSDPolygon.mm in Sources */,
+				E76AC06D29B50EFE005DE06A /* SVG_g.m in Sources */,
 				E74A50431C620FE300A83A52 /* GroupViewController.mm in Sources */,
 				E740564915B1EF2D0040F590 /* ACSDPrefsController.mm in Sources */,
 				E740564A15B1EF2D0040F590 /* ACSDrawDocument.mm in Sources */,
 				E740564B15B1EF2D0040F590 /* ACSDrawTextAttachmentCell.mm in Sources */,
 				E740564C15B1EF2D0040F590 /* ACSDRect.mm in Sources */,
-				E74CC8BF1AB1D78B00430A8A /* SVGGradient.mm in Sources */,
+				E74CC8BF1AB1D78B00430A8A /* SVG_Gradient.mm in Sources */,
 				E740564E15B1EF2D0040F590 /* ACSDStroke.mm in Sources */,
 				E740564F15B1EF2D0040F590 /* ACSDStyle.mm in Sources */,
 				E740565015B1EF2D0040F590 /* ACSDSubPath.mm in Sources */,
@@ -1534,8 +1741,11 @@
 				E740566015B1EF2E0040F590 /* ColourCell.mm in Sources */,
 				E740566115B1EF2E0040F590 /* ColourController.mm in Sources */,
 				E740566315B1EF2E0040F590 /* ConditionalObject.mm in Sources */,
+				E76AC06B29B50EFE005DE06A /* SVGDocument.m in Sources */,
 				E740566415B1EF2E0040F590 /* ConnectorAttachment.mm in Sources */,
+				E76AC05D29B50EFE005DE06A /* SVG_text.m in Sources */,
 				E740566515B1EF2E0040F590 /* ContainerContentView.mm in Sources */,
+				E76AC06029B50EFE005DE06A /* SVG_symbol.m in Sources */,
 				E740566615B1EF2E0040F590 /* ContainerPalletteController.mm in Sources */,
 				E740566715B1EF2E0040F590 /* ContainerTab.mm in Sources */,
 				E740566815B1EF2E0040F590 /* ContainerTabSubview.mm in Sources */,
@@ -1544,16 +1754,23 @@
 				E740566B15B1EF2E0040F590 /* DocController.mm in Sources */,
 				E740566E15B1EF2E0040F590 /* FaceTableSource.mm in Sources */,
 				E703A7991A5D7D7E00262DC1 /* SMTextView.m in Sources */,
+				E76AC06A29B50EFE005DE06A /* SVG_polyline.m in Sources */,
+				E76AC05C29B50EFE005DE06A /* SVG_ellipse.m in Sources */,
 				E740567015B1EF2E0040F590 /* FillsController.mm in Sources */,
+				E76AC06929B50EFE005DE06A /* SVGPaint.m in Sources */,
 				E7066F1B1961B749009C3F30 /* AnimationsController.mm in Sources */,
+				E76AC05A29B50EFE005DE06A /* SVGGraphicalObject.m in Sources */,
 				E7D18F0F1988EA67000664F6 /* gElement.m in Sources */,
 				E740567115B1EF2E0040F590 /* FlippableView.mm in Sources */,
 				E740567315B1EF2E0040F590 /* FocusCell.mm in Sources */,
 				E740567415B1EF2E0040F590 /* FontFamilyTableSource.mm in Sources */,
+				E76AC06629B50EFE005DE06A /* SVG_style.m in Sources */,
 				E740567515B1EF2E0040F590 /* FontSizeTableSource.mm in Sources */,
 				E740567615B1EF2E0040F590 /* FreeHandPoint.mm in Sources */,
+				E76AC00D29B32649005DE06A /* ACSDrawDocument+bookAdditions.mm in Sources */,
 				E740567715B1EF2E0040F590 /* gCurve.mm in Sources */,
 				E740567815B1EF2E0040F590 /* geometry.mm in Sources */,
+				E76AC06F29B50EFE005DE06A /* SVGDimension.m in Sources */,
 				E740567915B1EF2E0040F590 /* gLine.mm in Sources */,
 				E740567A15B1EF2E0040F590 /* gParent.mm in Sources */,
 				E740567B15B1EF2E0040F590 /* GradientControl.mm in Sources */,
@@ -1564,14 +1781,17 @@
 				E740567F15B1EF2E0040F590 /* GraphicCache.mm in Sources */,
 				E740568015B1EF2E0040F590 /* GraphicRulerView.mm in Sources */,
 				E740568115B1EF2E0040F590 /* GraphicView.mm in Sources */,
+				E76AC06C29B50EFE005DE06A /* SVG_linearGradient.m in Sources */,
 				E740568215B1EF2E0040F590 /* GreyView.mm in Sources */,
 				E73BDA9E1A7D44C100557A74 /* SelView.m in Sources */,
+				E76AC05F29B50EFE005DE06A /* SVGTransform.m in Sources */,
 				E740568315B1EF2E0040F590 /* gSubPath.mm in Sources */,
 				E740568415B1EF2E0040F590 /* GXPArchiveDelegate.mm in Sources */,
 				E740568515B1EF2E0040F590 /* HighLightLayer.mm in Sources */,
 				E740568615B1EF2E0040F590 /* HistogramView.m in Sources */,
 				E740568715B1EF2E0040F590 /* HTMLAccumulator.mm in Sources */,
 				E740568815B1EF2E0040F590 /* HtmlExportController.mm in Sources */,
+				E76AC05729B50EFE005DE06A /* SVG_pattern.m in Sources */,
 				E740568915B1EF2E0040F590 /* IComponent.mm in Sources */,
 				E740568A15B1EF2E0040F590 /* ICurve.mm in Sources */,
 				E740568B15B1EF2E0040F590 /* ICurveElement.mm in Sources */,
@@ -1582,9 +1802,13 @@
 				E740569415B1EF2E0040F590 /* ISegElement.mm in Sources */,
 				E740569515B1EF2E0040F590 /* ISegment.mm in Sources */,
 				E740569A15B1EF2E0040F590 /* IVertex.mm in Sources */,
+				E76AC06429B50EFE005DE06A /* SVGNode.m in Sources */,
+				E76AC05829B50EFE005DE06A /* SVG_path.m in Sources */,
 				E740569B15B1EF2E0040F590 /* KeyedAttributeObject.mm in Sources */,
+				E76AC05329B50ED3005DE06A /* SVG_svg.m in Sources */,
 				E740569C15B1EF2E0040F590 /* KeyedObject.mm in Sources */,
 				E740569D15B1EF2E0040F590 /* LayerListTableSource.mm in Sources */,
+				E76AC06729B50EFE005DE06A /* SVG_polygon.m in Sources */,
 				E740569E15B1EF2E0040F590 /* LayerTableView.mm in Sources */,
 				E740569F15B1EF2E0040F590 /* LineEndingWindowController.mm in Sources */,
 				E74056A015B1EF2E0040F590 /* LineEndPreview.mm in Sources */,
@@ -1593,22 +1817,28 @@
 				E74056A315B1EF2E0040F590 /* MarkerView.mm in Sources */,
 				E74056A415B1EF2E0040F590 /* MasterListTableSource.mm in Sources */,
 				E73BDA9B1A7D428900557A74 /* FillView.m in Sources */,
+				E76AC06329B50EFE005DE06A /* SVG_use.m in Sources */,
 				E74056A615B1EF2E0040F590 /* ObjectAdditions.mm in Sources */,
 				E74056A715B1EF2E0040F590 /* ObjectPDFData.mm in Sources */,
 				E74056A815B1EF2E0040F590 /* ObjectView.mm in Sources */,
 				E74056A915B1EF2E0040F590 /* PageListTableSource.mm in Sources */,
+				E76AC05429B50ED3005DE06A /* SVG_rect.m in Sources */,
 				E74056AA15B1EF2E0040F590 /* PagesController.mm in Sources */,
 				E74056AC15B1EF2E0040F590 /* PalletteViewController.mm in Sources */,
 				E74056AD15B1EF2E0040F590 /* Panel.mm in Sources */,
 				E74056B015B1EF2E0040F590 /* ParaStyleHolder.mm in Sources */,
+				E76AC06129B50EFE005DE06A /* SVGPaintServer.m in Sources */,
 				E74056B115B1EF2E0040F590 /* PatternDisplay.mm in Sources */,
 				E74056B215B1EF2E0040F590 /* PatternPreview.mm in Sources */,
+				E76AC05929B50EFE005DE06A /* SVG_stop.m in Sources */,
 				E74056B315B1EF2E0040F590 /* PatternWindowController.mm in Sources */,
 				E74056B415B1EF2E0040F590 /* PositionalObject.mm in Sources */,
 				E74056B515B1EF2E0040F590 /* QuartzImage.mm in Sources */,
 				E74056B615B1EF2E0040F590 /* RotateSheetController.m in Sources */,
 				E74056B715B1EF2E0040F590 /* SelCell.mm in Sources */,
 				E74056B815B1EF2E0040F590 /* SelectedElement.mm in Sources */,
+				E76AC05B29B50EFE005DE06A /* SVGShape.m in Sources */,
+				E76AC06E29B50EFE005DE06A /* SVG_circle.m in Sources */,
 				E74056B915B1EF2E0040F590 /* SelectionSet.mm in Sources */,
 				E74056BB15B1EF2E0040F590 /* ShadowCell.mm in Sources */,
 				E74056BC15B1EF2E0040F590 /* ShadowListTableSource.mm in Sources */,
@@ -1632,10 +1862,13 @@
 				E74056D215B1EF2E0040F590 /* ToolWindowController.mm in Sources */,
 				E74056D315B1EF2E0040F590 /* TriggerController.mm in Sources */,
 				E74056D415B1EF2E0040F590 /* TriggerTableSource.mm in Sources */,
+				E76AC05529B50ED3005DE06A /* SVGContainer.m in Sources */,
+				E76AC00A29B2A02B005DE06A /* ACSDDocumentController.m in Sources */,
 				E74056D515B1EF2E0040F590 /* ViewController.mm in Sources */,
 				E74056D715B1EF2E0040F590 /* WindowAdditions.mm in Sources */,
 				E740570915B2ACB00040F590 /* SnapLine.mm in Sources */,
 				E740573315B2B18C0040F590 /* XXAffineTransform.mm in Sources */,
+				E76AC06829B50EFE005DE06A /* SVG_line.m in Sources */,
 				E740573415B2B18C0040F590 /* XXAffineTransformAdditions.mm in Sources */,
 				E740573515B2B18C0040F590 /* XXAttributedString.mm in Sources */,
 				E740573615B2B18C0040F590 /* XXAttributedStringAdditions.mm in Sources */,
@@ -1696,22 +1929,6 @@
 			name = ImageController.xib;
 			sourceTree = "<group>";
 		};
-		E74056E215B1EF950040F590 /* LineEndingWindow.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E7CF357927AE6D1A00DABEF9 /* Base */,
-			);
-			name = LineEndingWindow.nib;
-			sourceTree = "<group>";
-		};
-		E74056E415B1EF950040F590 /* MainMenu.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E7CF357A27AE6D1A00DABEF9 /* Base */,
-			);
-			name = MainMenu.nib;
-			sourceTree = "<group>";
-		};
 		E74056E615B1EF950040F590 /* MainWindow.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1744,14 +1961,6 @@
 			name = PatternWindow.nib;
 			sourceTree = "<group>";
 		};
-		E74056EE15B1EF950040F590 /* PolySides.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E7CF357F27AE6D1B00DABEF9 /* Base */,
-			);
-			name = PolySides.nib;
-			sourceTree = "<group>";
-		};
 		E74056F015B1EF950040F590 /* RotationSheet.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1768,20 +1977,36 @@
 			name = StylePanel.nib;
 			sourceTree = "<group>";
 		};
-		E74056F415B1EF950040F590 /* TocPanel.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E7CF358227AE6D1B00DABEF9 /* Base */,
-			);
-			name = TocPanel.nib;
-			sourceTree = "<group>";
-		};
 		E74056F615B1EF950040F590 /* ToolPalette.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				E7CF358327AE6D1B00DABEF9 /* Base */,
 			);
 			name = ToolPalette.nib;
+			sourceTree = "<group>";
+		};
+		E76AC07229B53BC0005DE06A /* TocPanel.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E76AC07329B53BC0005DE06A /* Base */,
+			);
+			name = TocPanel.xib;
+			sourceTree = "<group>";
+		};
+		E76AC07529B53C25005DE06A /* PolySides.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E76AC07629B53C25005DE06A /* Base */,
+			);
+			name = PolySides.xib;
+			sourceTree = "<group>";
+		};
+		E76AC07829B53CFF005DE06A /* LineEndingWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E76AC07929B53CFF005DE06A /* Base */,
+			);
+			name = LineEndingWindow.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1886,12 +2111,13 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.043;
+				CURRENT_PROJECT_VERSION = 001;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 73G67QZ25Y;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACSDraw/ACSDraw-Prefix.pch";
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.043;
+				MARKETING_VERSION = 1.045;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -1905,12 +2131,13 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.043;
+				CURRENT_PROJECT_VERSION = 001;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 73G67QZ25Y;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ACSDraw/ACSDraw-Prefix.pch";
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.043;
+				MARKETING_VERSION = 1.045;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

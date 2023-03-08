@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,7 +20,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="379" y="565" width="547" height="432"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="94" height="86"/>
             <view key="contentView" id="6" customClass="BackingView">
                 <rect key="frame" x="0.0" y="0.0" width="547" height="432"/>
@@ -200,7 +200,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="272" y="172" width="528" height="378"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <view key="contentView" id="ZaQ-uq-q8T">
                 <rect key="frame" x="0.0" y="0.0" width="528" height="378"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -221,7 +221,7 @@
                         <rect key="frame" x="20" y="61" width="488" height="267"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="wKb-0X-qFV">
                             <rect key="frame" x="0.0" y="0.0" width="473" height="267"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" smartInsertDelete="YES" id="W1p-Pe-a0a">
                                     <rect key="frame" x="0.0" y="0.0" width="473" height="267"/>
@@ -229,7 +229,7 @@
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <size key="minSize" width="473" height="267"/>
-                                    <size key="maxSize" width="478" height="10000000"/>
+                                    <size key="maxSize" width="488" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
                             </subviews>
@@ -248,7 +248,7 @@
                         </scroller>
                     </scrollView>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Od5-Fu-x0k">
-                        <rect key="frame" x="430" y="13" width="87" height="32"/>
+                        <rect key="frame" x="429" y="13" width="89" height="33"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="0aX-aN-ElV"/>
                             <constraint firstAttribute="width" priority="250" constant="75" id="Q5i-Fl-tyT"/>

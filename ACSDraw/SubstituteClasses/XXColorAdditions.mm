@@ -20,7 +20,7 @@
 {
 	if (self = [super init])
 	{
-		NSColor *c = [nsc colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+		NSColor *c = [nsc colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]];
 		_r = [c redComponent];
 		_g = [c greenComponent];
 		_b = [c blueComponent];

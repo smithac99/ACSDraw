@@ -802,10 +802,10 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 
 -(void)applyTransform
    {
-	if (!transform)
+	if (!self.transform)
 		return;
 	NSMutableArray *arr = [self copySubPaths];
-	[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:transform];
+	[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:self.transform];
 	[self setGraphicTransform:nil];
 	[self setSubPathsAndRebuild:arr];
 	[self setGraphicRotation:0.0 notify:YES];
@@ -824,8 +824,8 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
 -(NSMutableArray*)transformedSubPaths
    {
 	NSMutableArray *arr = [self copySubPaths];
-	if (transform)
-		[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:transform];
+	if (self.transform)
+		[arr makeObjectsPerformSelector:@selector(applyTransform:) withObject:self.transform];
 	return arr;
    }
 
@@ -1200,10 +1200,10 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 -(NSRect)displayBoundsSansShadow
    {
 	NSInteger ct = [[self pathElements] count];
-	if ((ct  == 0) && !(addingPoints && addingPointPath))
+	if ((ct  == 0) && !(self.addingPoints && addingPointPath))
 		return NSZeroRect;
 	NSRect r = [super displayBoundsSansShadow];
-	if (addingPoints && addingPointPath)
+	if (self.addingPoints && addingPointPath)
 	   {
 		NSRect pr = [addingPointPath controlPointBounds];
 		if (pr.size.width == 0.0)
@@ -1228,13 +1228,12 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 - (void)moveBy:(NSPoint)vector
 {
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
-	vector.x /= xScale;
-	vector.y /= yScale;
+	vector.x /= self.xScale;
+	vector.y /= self.yScale;
 	[self offsetPointValue:[NSValue valueWithPoint:vector]];
-	if (rotation != 0.0)
+	if (self.rotation != 0.0)
 	{
-		rotationPoint.x += vector.x;
-		rotationPoint.y += vector.y;
+        self.rotationPoint = offset_point(self.rotationPoint, vector);
 		[self computeTransform];
 	}
 	[self generatePath];
@@ -1357,7 +1356,7 @@ void bezierPathFromSubPath(NSArray* subPaths,NSBezierPath *path)
 	BOOL can = NO,periodicStarted=NO;
 	while (1)
 	{
-		if (opCancelled)
+		if (self.opCancelled)
 		{
 			[self setOpCancelled:NO];
 			can = YES;
@@ -1742,7 +1741,7 @@ selectedGraphics:(NSSet*)selectedGraphics
         {
             ACSDPathElement *el = [[subPath pathElements] objectAtIndex:i];
             NSPoint point = el.point;
-            if (transform)
+            if (self.transform)
                 point = [self invertPoint:point];
             if (NSPointInRect(point,rect))
             {
@@ -1756,7 +1755,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 
 - (KnobDescriptor)knobUnderPoint:(NSPoint)point view:(GraphicView*)gView
    {
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
 	for (unsigned int j = 0;j < [subPaths count];j++)
 	   {
@@ -1829,7 +1828,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 
 - (KnobDescriptor)resizeByMovingKnob:(KnobDescriptor)kd by:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain
    {
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
 	NSPoint curPoint = [[self pathElementForKnob:kd]point];
 	if (point.x != 0.0 || point.y != 0.0)
@@ -1839,7 +1838,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 
 - (KnobDescriptor)resizeByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain aroundCentre:(BOOL)aroundCentre
 {
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
     if (constrain)
     {
@@ -1881,7 +1880,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 
 -(void)constructAddingPointPath
    {
-	if (addingPoints)
+	if (self.addingPoints)
 	   {
 		NSInteger ct = [subPaths count];
 		if (ct > 0)
@@ -1889,8 +1888,8 @@ selectedGraphics:(NSSet*)selectedGraphics
 			NSMutableArray *tempSubPaths = [NSMutableArray arrayWithCapacity:ct];
 			for (int i = 0;i < ct;i++)
 				[tempSubPaths addObject:[[subPaths objectAtIndex:i]copy]];
-			ACSDPathElement *el = [[ACSDPathElement alloc]initWithPoint:addingPoint preControlPoint:addingPoint 
-				postControlPoint:addingPoint hasPreControlPoint:NO hasPostControlPoint:NO isLineToPoint:YES];
+			ACSDPathElement *el = [[ACSDPathElement alloc]initWithPoint:self.addingPoint preControlPoint:self.addingPoint
+				postControlPoint:self.addingPoint hasPreControlPoint:NO hasPostControlPoint:NO isLineToPoint:YES];
 			[[[tempSubPaths objectAtIndex:(ct - 1)]pathElements]addObject:el];
 			NSBezierPath *p = [NSBezierPath bezierPath];
 			bezierPathFromSubPath(tempSubPaths,p);
@@ -1951,7 +1950,7 @@ selectedGraphics:(NSSet*)selectedGraphics
 -(NSInteger)totalElementCount:(NSBezierPath*)p
 {
 	NSInteger tot = 0;
-	if (addingPoints)
+	if (self.addingPoints)
 		tot += [addingPointPath elementCount];
 	return [p elementCount] + tot;
 }
@@ -2014,18 +2013,18 @@ selectedGraphics:(NSSet*)selectedGraphics
 - (void)drawHandlesGuide:(BOOL)forGuide magnification:(float)mg options:(NSUInteger)options
 {
     [NSGraphicsContext saveGraphicsState];
-    if (moving)
-        [[NSAffineTransform transformWithTranslateXBy:moveOffset.x yBy:moveOffset.y] concat];
-    if (transform)
+    if (self.moving)
+        [[NSAffineTransform transformWithTranslateXBy:self.moveOffset.x yBy:self.moveOffset.y] concat];
+    if (self.transform)
     {
-        [transform concat];
+        [self.transform concat];
     }
     NSColor *mainCol = [self setHandleColour:forGuide];
     NSColor *firstCol = mainCol;
     if (options & DRAW_HANDLES_PATH_DIR)
         firstCol = [NSColor blackColor];
-    float mag = fmax(xScale,yScale)*mg;
-    if (addingPoints)
+    float mag = fmax(self.xScale,self.yScale)*mg;
+    if (self.addingPoints)
         [addingPointPath stroke];
     else
     {

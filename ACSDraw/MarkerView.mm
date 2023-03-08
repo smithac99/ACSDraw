@@ -82,7 +82,7 @@
 	if (theLayer == self.mainLayer)
 	{
 		[NSGraphicsContext saveGraphicsState];
-		[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:theContext flipped:NO]];
+		[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:theContext flipped:NO]];
 		[[NSGraphicsContext currentContext]saveGraphicsState];
 		CGRect dirtyRect = CGContextGetClipBoundingBox(theContext);
 		[self drawRect:dirtyRect];

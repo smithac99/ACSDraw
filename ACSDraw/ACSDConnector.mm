@@ -229,7 +229,7 @@
 	BOOL can = NO,periodicStarted=NO;
     while (1)
 	   {
-		if (opCancelled)
+		if (self.opCancelled)
 		   {
 			[self setOpCancelled:NO];
 			can = YES;
@@ -372,7 +372,7 @@
 
 - (BOOL)intersectsWithRect:(NSRect)selectionRect	//used for selecting with rubberband
    {
-	if (transform == nil)
+	if (self.transform == nil)
 		return lineInRect(selectionRect,[self fromPt],[self toPt]);
 	return [super intersectsWithRect:selectionRect];
    }

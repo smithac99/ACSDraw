@@ -143,47 +143,27 @@ struct KnobDescriptor
 	ACSDStroke *stroke;
 	id link;
 	NSMutableSet *linkedObjects;
-	float alpha;
 	NSRect bounds,			//bounds of path
 		displayBounds;		//cache bounds rotated + shadow
-	BOOL displayBoundsValid,deleted;
-	float rotation;
-	float xScale,yScale;
+	BOOL deleted;
 	float textPad;
-	GraphicMode graphicMode;
-	NSPoint rotationPoint;
-	ACSDLayer *layer;
-	ACSDGroup *parent;
 	ACSDLabel *textLabel;
 	NSString *toolTip;
 	NSPoint *handlePoints;
-	NSAffineTransform *transform;
 	int noHandlePoints;
-	NSDate *selectionTimeStamp;
 	ShadowType *shadowType;
-	BOOL manipulatingBounds,moving;
-	NSPoint moveOffset;
+	BOOL manipulatingBounds;
 	NSRect originalBounds;
 	float originalXScale,originalYScale;
-	NSMutableDictionary *events,*filterSettings;
+	NSMutableDictionary *events;
 	GraphicCache *graphicCache;
-	BOOL usesCache;
 	BOOL drawingToCache;
-	BOOL addingPoints;
-	BOOL isMask;
-	NSPoint addingPoint,actualAddingPoint;
 	ObjectPDFData *objectPdfData;
 	FlippableView *currentDrawingDestination;
 	NSMutableArray *connectors;
 	NSBezierPath *outlinePath;
-	BOOL outlinePathValid;
 	NSBezierPath *bezierPath;
-	BOOL bezierPathValid;
-	ACSDStroke *preOutlineStroke;
-	ACSDFill *preOutlineFill;
-	BOOL opCancelled;
 	NSMutableArray *triggers;
-	float exposure,saturation,brightness,contrast,unsharpmaskRadius,unsharpmaskIntensity,gaussianBlurRadius;
    }
 
 @property (nonatomic) float xScale,yScale,alpha,rotation;

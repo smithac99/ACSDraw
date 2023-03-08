@@ -38,37 +38,43 @@ NSString* Creator();
 @interface ACSDrawDocument : NSDocument
 {
 	NSMutableArray<ACSDPage*> *pages;
-	NSSize documentSize;
 	MainWindowController *mainWindowController;
 	NSMutableArray *strokes;
 	NSMutableArray *fills;
-	NSMutableArray *shadows;
 	NSMutableArray *lineEndings;
 	NSMutableArray *styles;
-	NSMutableDictionary *nameCounts;
 	NSMutableDictionary *miscValues;
 	NSURL *exportDirectory;
 	saveContextInfo sci;
 	id hPaddingField,vPaddingField,selectNameField;
-	NSString *docTitle;
-	NSString *scriptURL;
-	NSMutableDictionary *htmlSettings,*exportImageSettings;
-	NSString *additionalCSS;
 	NSColor *backgroundColour;
 // Transient stuff
 	int maxViewNumber;
-	NSSet *linkGraphics;
-	NSArray *linkRanges;
 	//NSCalendarDate *documentKey;
 	unsigned nextObjectKey;
 	NSMutableDictionary *keyedObjects;
 }
 
+@property NSSize documentSize;
+
+@property (strong) NSMutableDictionary *nameCounts;
+@property (strong) NSString *scriptURL;
+@property (strong,nonatomic) NSMutableArray *shadows;
+@property (strong) NSString *additionalCSS;
+
+@property (strong) NSSet *linkGraphics;
+@property (strong) NSArray *linkRanges;
+@property (strong) NSString *docTitle;
+
+
 @property (retain) HtmlExportController *exportHTMLController;
 @property (retain) ImageExportController *exportImageController;
+@property (strong) NSMutableDictionary *htmlSettings,*exportImageSettings;
+
 @property (retain) IBOutlet NSPanel *paddingSheet,*selectNameSheet;
 @property (retain) NSDate *documentKey;
 
+-(MainWindowController*)frontmostMainWindowController;
 -(NSSize)documentSize;
 -(NSMutableArray*)strokes;
 -(NSMutableArray*)fills;
@@ -117,8 +123,6 @@ NSString* Creator();
 -(void)deleteLineEndingAtIndex:(NSInteger)i;
 -(void)insertLineEnding:(id)le atIndex:(NSInteger)i;
 
--(id)linkGraphics;
--(void)setLinkGraphics:(id)lg;
 -(NSArray*)linkRanges;
 -(void)setLinkRanges:(NSArray*)r;
 -(void)sizeToRect:(NSRect)r;

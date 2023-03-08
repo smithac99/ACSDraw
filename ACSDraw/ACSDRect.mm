@@ -29,13 +29,13 @@
 
 - (void)postChangeOfBounds
 {
-	if (!layer)
+	if (!self.layer)
 		return;
-	if ([[layer selectedGraphics]count] == 1)
+	if ([[self.layer selectedGraphics]count] == 1)
 	{
 		NSRect r = bounds;
-		if (moving)
-			r = NSOffsetRect(r,moveOffset.x,moveOffset.y);
+		if (self.moving)
+			r = NSOffsetRect(r,self.moveOffset.x,self.moveOffset.y);
 		NSDictionary *dict1 = @{@"bounds":[NSValue valueWithRect:r],
 								@"cornerRadius":[NSNumber numberWithFloat:self.cornerRadius],
 								@"maxCornerRadius":[NSNumber numberWithFloat:[self maxCornerRadius]]};
@@ -53,12 +53,50 @@
     float width = [xmlnode attributeFloatValue:@"width"];
     float height = [xmlnode attributeFloatValue:@"height"];
     float cornerrad = [xmlnode attributeFloatValue:@"cornerradius"];
-
     //parentRect = InvertedRect(parentRect, docHeight);
     width = width * parentRect.size.width;
     height = height * parentRect.size.height;
     NSPoint pos = LocationForRect(x, 1 - y, parentRect);
-    ACSDGraphic *r = [[ACSDRect alloc]initWithName:@"" fill:nil stroke:nil rect:NSMakeRect(pos.x, pos.y - height, width, height) layer:nil];
+    CGRect b = NSMakeRect(pos.x, pos.y - height, width, height);
+    
+    if ([xmlnode.attributes[@"widthtracksheight"]isEqualToString:@"true"])
+    {
+        CGFloat origheight = [xmlnode.attributes[@"pxheight"]floatValue];
+        if (origheight > 0)
+        {
+            CGFloat ratio = b.size.height / origheight;
+            CGFloat newWidth = [xmlnode.attributes[@"pxwidth"]floatValue] * ratio;
+            CGFloat tratio = newWidth / b.size.width;
+            CGAffineTransform t = CGAffineTransformIdentity;
+            CGFloat midx = CGRectGetMidX(b);
+            CGFloat midy = CGRectGetMidY(b);
+            t = CGAffineTransformTranslate(t, midx, midy);
+            t = CGAffineTransformScale(t, tratio, 1.0);
+            t = CGAffineTransformTranslate(t, -midx, -midy);
+            //[p applyTransform:t];
+            b = CGRectApplyAffineTransform(b, t);
+        }
+    }
+    else if ([xmlnode.attributes[@"heighttrackswidth"]isEqualToString:@"true"])
+    {
+        CGFloat origwidth = [xmlnode.attributes[@"pxwidth"]floatValue];
+        if (origwidth > 0)
+        {
+            CGFloat ratio = b.size.width / origwidth;
+            CGFloat newHeight = [xmlnode.attributes[@"pxheight"]floatValue] * ratio;
+            CGFloat tratio = newHeight / b.size.height;
+            CGAffineTransform t = CGAffineTransformIdentity;
+            CGFloat midx = CGRectGetMidX(b);
+            CGFloat midy = CGRectGetMidY(b);
+            t = CGAffineTransformTranslate(t, midx, midy);
+            t = CGAffineTransformScale(t, 1.0, tratio);
+            t = CGAffineTransformTranslate(t, -midx, -midy);
+            //[p applyTransform:t];
+            b = CGRectApplyAffineTransform(b, t);
+        }
+    }
+
+    ACSDGraphic *r = [[ACSDRect alloc]initWithName:@"" fill:nil stroke:nil rect:b layer:nil];
     if (cornerrad != 0)
         [((ACSDRect*)r) setCornerRadius:cornerrad * height];
     //[r setPosition:pos];
@@ -94,7 +132,7 @@
 
 - (BOOL)intersectsWithRect:(NSRect)selectionRect	//used for selecting with rubberband
    {
-	if (transform == nil)
+	if (self.transform == nil)
 		return NSIntersectsRect(selectionRect,[self bounds]);
 	else
 		return [super intersectsWithRect:selectionRect];
@@ -111,11 +149,11 @@
 {
     float inset = -[self paddingRequired];
 	NSRect r;
-	if (transform)
-		r = [[transform transformBezierPath:[NSBezierPath bezierPathWithRect:bounds]]controlPointBounds];
+	if (self.transform)
+		r = [[self.transform transformBezierPath:[NSBezierPath bezierPathWithRect:bounds]]controlPointBounds];
 	else
 		r = [[NSBezierPath bezierPathWithRect:bounds]controlPointBounds];
-	if (graphicMode == GRAPHIC_MODE_OUTLINE)
+	if (self.graphicMode == GRAPHIC_MODE_OUTLINE)
 	   {
 		NSRect r2 = [[self transformedOutlinePath]controlPointBounds];
 		r = NSUnionRect(r,r2);
@@ -278,9 +316,9 @@
 
 -(void)applyTransform
 {
-    if (!transform)
+    if (!self.transform)
         return;
-    if (xScale == 1.0 && yScale == 1.0)
+    if (self.xScale == 1.0 && self.yScale == 1.0)
         return;
     CGRect tb = [self transformedBounds];
     //[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];

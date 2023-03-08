@@ -44,10 +44,10 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 			frame.origin = NSMakePoint(0.0,0.0);
 			frame.size = [im size];
 		}
-		exposure = 0.0;
-		saturation = 1.0;
-		brightness = 0.0;
-		contrast = 1.0;
+        self.exposure = 0.0;
+        self.saturation = 1.0;
+        self.brightness = 0.0;
+        self.contrast = 1.0;
 	}
 	return self;
 }
@@ -64,10 +64,10 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 			frame.origin = NSMakePoint(0.0,0.0);
 			frame.size = [im size];
 		}
-		exposure = e;
-		saturation = sat;
-		brightness = bri;
-		contrast = con;
+        self.exposure = e;
+        self.saturation = sat;
+        self.brightness = bri;
+        self.contrast = con;
 		[self invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
 	}
 	return self;
@@ -77,10 +77,10 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 {
 	[super encodeWithCoder:coder];
 	[coder encodeObject:image forKey:@"ACSDImage_image"];
-	[coder encodeFloat:exposure forKey:@"ACSDImage_exposure"];
-	[coder encodeFloat:saturation forKey:@"ACSDImage_saturation"];
-	[coder encodeFloat:brightness forKey:@"ACSDImage_brightness"];
-	[coder encodeFloat:contrast forKey:@"ACSDImage_contrast"];
+	[coder encodeFloat:self.exposure forKey:@"ACSDImage_exposure"];
+	[coder encodeFloat:self.saturation forKey:@"ACSDImage_saturation"];
+	[coder encodeFloat:self.brightness forKey:@"ACSDImage_brightness"];
+	[coder encodeFloat:self.contrast forKey:@"ACSDImage_contrast"];
 	[ACSDGraphic encodeRect:frame coder:coder forKey:@"ACSDImage_frame"];
 }
 
@@ -95,10 +95,10 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 		frame.size = bounds.size;
 		frame.origin.x = frame.origin.y = 0.0;
 	}
-	exposure = [coder decodeFloatForKey:@"ACSDImage_exposure" withDefault:0.0];
-	saturation = [coder decodeFloatForKey:@"ACSDImage_saturation" withDefault:1.0];
-	brightness = [coder decodeFloatForKey:@"ACSDImage_brightness" withDefault:0.0];
-	contrast = [coder decodeFloatForKey:@"ACSDImage_contrast" withDefault:1.0];
+    self.exposure = [coder decodeFloatForKey:@"ACSDImage_exposure" withDefault:0.0];
+    self.saturation = [coder decodeFloatForKey:@"ACSDImage_saturation" withDefault:1.0];
+    self.brightness = [coder decodeFloatForKey:@"ACSDImage_brightness" withDefault:0.0];
+    self.contrast = [coder decodeFloatForKey:@"ACSDImage_contrast" withDefault:1.0];
 	return self;
 }
 
@@ -138,7 +138,7 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 	NSRect r = NSMakeRect(0.0,0.0,w,h);
 	NSBezierPath *rectPath = [NSBezierPath bezierPathWithRect:r];
 	NSAffineTransform *trans = [NSAffineTransform transformWithTranslateXBy:-w/2.0 yBy:-h/2.0];
-	[trans rotateByDegrees:rotation];
+	[trans rotateByDegrees:self.rotation];
 	[trans translateXBy:w/2.0 yBy:h/2.0];
 	rectPath = [trans transformBezierPath:rectPath];
 	NSRect transformedRect = [rectPath bounds];
@@ -162,7 +162,7 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 	[[NSColor clearColor]set];
 	NSRectFill(NSMakeRect(0.0,0.0,iw,ih));
 	[[NSAffineTransform transformWithTranslateXBy:iw/2.0 yBy:ih/2.0] concat];
-	[[NSAffineTransform transformWithRotationByDegrees:rotation] concat];
+	[[NSAffineTransform transformWithRotationByDegrees:self.rotation] concat];
 	[[NSAffineTransform transformWithTranslateXBy:-w/2.0 yBy:-h/2.0] concat];
 	[oldImageRep drawInRect:NSMakeRect(0.0,0.0,w,h)];
 	[newImage unlockFocus];
@@ -282,8 +282,8 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	b.size.width = [im size].width;
 	b.size.height = [im size].height;
     ACSDImage* obj = [[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
-									  layer:[self layer] xScale:xScale yScale:yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:alpha 
-									  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast];
+									  layer:[self layer] xScale:self.xScale yScale:self.yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:self.alpha
+									  image:im exposure:self.exposure saturation:self.saturation brightness:self.brightness contrast:self.contrast];
 	return obj;
 }
 
@@ -298,8 +298,8 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	b.size.width = [im size].width;
 	b.size.height = [im size].height;
     ACSDImage* obj = [[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
-											  layer:[self layer] xScale:xScale yScale:yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:alpha 
-											  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast];
+											  layer:[self layer] xScale:self.xScale yScale:self.yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:self.alpha
+											  image:im exposure:self.exposure saturation:self.saturation brightness:self.brightness contrast:self.contrast];
 	return obj;
 }
 
@@ -314,8 +314,8 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	b.size.width = [im size].width;
 	b.size.height = [im size].height;
     ACSDImage* obj = [[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
-											  layer:[self layer] xScale:xScale yScale:yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:alpha 
-											  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast];
+											  layer:[self layer] xScale:self.xScale yScale:self.yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:self.alpha
+											  image:im exposure:self.exposure saturation:self.saturation brightness:self.brightness contrast:self.contrast];
 	return obj;
 }
 
@@ -330,8 +330,8 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	b.size.width = [im size].width;
 	b.size.height = [im size].height;
     ACSDImage* obj = [[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:b
-											  layer:[self layer] xScale:xScale yScale:yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:alpha 
-											  image:im exposure:exposure saturation:saturation brightness:brightness contrast:contrast];
+											  layer:[self layer] xScale:self.xScale yScale:self.yScale rotation:0.0 shadowType:[self shadowType] label:textLabel alpha:self.alpha
+											  image:im exposure:self.exposure saturation:self.saturation brightness:self.brightness contrast:self.contrast];
 	return obj;
 }
 
@@ -358,7 +358,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	CIImage *resultImage = ciImage;
 	for (NSString *s in [NSArray arrayWithObjects:@"ACSLevels",nil])
 	{
-		NSDictionary *d = [filterSettings objectForKey:s];
+		NSDictionary *d = self.filterSettings[s];
 		if (d)
 		{
 			CIFilter *f = [CIFilter filterWithName:s];
@@ -372,39 +372,39 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 			}
 		}
 	}
-	if (exposure != 0.0)
+	if (self.exposure != 0.0)
 	   {
 		CIFilter *exposureFilter = [CIFilter filterWithName:@"CIExposureAdjust"];
 		[exposureFilter setDefaults];
 		[exposureFilter setValue: resultImage forKey: @"inputImage"];
-		[exposureFilter setValue: [NSNumber numberWithFloat: exposure]forKey: @"inputEV"];
+		[exposureFilter setValue: [NSNumber numberWithFloat: self.exposure]forKey: @"inputEV"];
 		resultImage = [exposureFilter valueForKey: @"outputImage"];
 	   }
-	if (saturation != 1.0 || brightness != 0.0 ||contrast != 1.0)
+	if (self.saturation != 1.0 || self.brightness != 0.0 ||self.contrast != 1.0)
 	   {
 		CIFilter *colourFilter = [CIFilter filterWithName:@"CIColorControls"];
 		[colourFilter setDefaults];
 		[colourFilter setValue: resultImage forKey: @"inputImage"];
-		[colourFilter setValue: [NSNumber numberWithFloat: saturation]forKey: @"inputSaturation"];
-		[colourFilter setValue: [NSNumber numberWithFloat: brightness]forKey: @"inputBrightness"];
-		[colourFilter setValue: [NSNumber numberWithFloat: contrast]forKey: @"inputContrast"];
+		[colourFilter setValue: [NSNumber numberWithFloat: self.saturation]forKey: @"inputSaturation"];
+		[colourFilter setValue: [NSNumber numberWithFloat: self.brightness]forKey: @"inputBrightness"];
+		[colourFilter setValue: [NSNumber numberWithFloat: self.contrast]forKey: @"inputContrast"];
 		resultImage = [colourFilter valueForKey: @"outputImage"];
 	   }
-	if (unsharpmaskRadius > 0.0 && unsharpmaskIntensity > 0.0)
+	if (self.unsharpmaskRadius > 0.0 && self.unsharpmaskIntensity > 0.0)
 	{
 		CIFilter *unsharpmaskFilter = [CIFilter filterWithName:@"CIUnsharpMask"];
 		[unsharpmaskFilter setDefaults];
 		[unsharpmaskFilter setValue: resultImage forKey: @"inputImage"];
-		[unsharpmaskFilter setValue: [NSNumber numberWithFloat: unsharpmaskRadius]forKey: @"inputRadius"];
-		[unsharpmaskFilter setValue: [NSNumber numberWithFloat: unsharpmaskIntensity]forKey: @"inputIntensity"];
+		[unsharpmaskFilter setValue: [NSNumber numberWithFloat: self.unsharpmaskRadius]forKey: @"inputRadius"];
+		[unsharpmaskFilter setValue: [NSNumber numberWithFloat: self.unsharpmaskIntensity]forKey: @"inputIntensity"];
 		resultImage = [unsharpmaskFilter valueForKey: @"outputImage"];
 	}
-	if (gaussianBlurRadius > 0.0)
+	if (self.gaussianBlurRadius > 0.0)
 	{
 		CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
 		[filter setDefaults];
 		[filter setValue: resultImage forKey: @"inputImage"];
-		[filter setValue: [NSNumber numberWithFloat: gaussianBlurRadius]forKey: @"inputRadius"];
+		[filter setValue: @(self.gaussianBlurRadius)forKey: @"inputRadius"];
 		resultImage = [filter valueForKey: @"outputImage"];
 	}
 	if (!ciContext)
@@ -506,25 +506,25 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 - (void)startBoundsManipulation
    {
     [super startBoundsManipulation];
-	originalCentrePoint = rotationPoint;
+	originalCentrePoint = self.rotationPoint;
     originalFrame = frame;
-	originalXScale = xScale;
-	originalYScale = yScale;
+	originalXScale = self.xScale;
+	originalYScale = self.yScale;
    }
 
 -(NSAffineTransform*)computeFrameTransform
 {
 	NSAffineTransform *t = [NSAffineTransform transform];
 	[t translateXBy:[self bounds].origin.x yBy:[self bounds].origin.y];
-	[t translateXBy:-rotationPoint.x yBy:-rotationPoint.y];
+	[t translateXBy:-self.rotationPoint.x yBy:-self.rotationPoint.y];
 	NSAffineTransform *t2 = [NSAffineTransform transform];
-	[t2 scaleXBy:xScale yBy:yScale];
+	[t2 scaleXBy:self.xScale yBy:self.yScale];
 	[t appendTransform:t2];
 	t2 = [NSAffineTransform transform];
-	[t2 rotateByDegrees:rotation];
+	[t2 rotateByDegrees:self.rotation];
 	[t appendTransform:t2];
 	t2 = [NSAffineTransform transform];
-	[t2 translateXBy:rotationPoint.x yBy:rotationPoint.y];
+	[t2 translateXBy:self.rotationPoint.x yBy:self.rotationPoint.y];
 	[t appendTransform:t2];
 	return t;
 }
@@ -622,16 +622,16 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	b.origin.y = newCentrePoint.y - (bounds.size.height / 2.0);
 //	rotationPoint = [self centrePoint];
 	[self setGraphicBoundsTo:b from:bounds];
-	[self setGraphicXScale:xScale * sc notify:NO];
-	[self setGraphicYScale:yScale * sc notify:NO];
+	[self setGraphicXScale:self.xScale * sc notify:NO];
+	[self setGraphicYScale:self.yScale * sc notify:NO];
 }
 
 - (KnobDescriptor)resizeFrameByMovingKnob:(KnobDescriptor)kd toPoint:(NSPoint)point event:(NSEvent *)theEvent constrain:(BOOL)constrain
 {
-	NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
-	[aff appendTransform:[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale]];
-	[aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:rotation]];
-	[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
+	NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-self.rotationPoint.x yBy:-self.rotationPoint.y];
+	[aff appendTransform:[NSAffineTransform transformWithScaleXBy:self.xScale yBy:self.yScale]];
+	[aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:self.rotation]];
+	[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:self.rotationPoint.x yBy:self.rotationPoint.y]];
 	[aff invert];
 	point = [aff transformPoint:point];
     BOOL altDown = (([theEvent modifierFlags] & NSEventModifierFlagOption)!=0);
@@ -703,11 +703,11 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
     BOOL commandDown = (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0);
 	if (commandDown)
 		return [self resizeFrameByMovingKnob:kd toPoint:point event:theEvent constrain:(BOOL)constrain];
-	if (rotation != 0.0)
+	if (self.rotation != 0.0)
 	   {
-		NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
-		[aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:rotation]];
-		[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x yBy:rotationPoint.y]];
+		NSAffineTransform *aff = [NSAffineTransform transformWithTranslateXBy:-self.rotationPoint.x yBy:-self.rotationPoint.y];
+		[aff appendTransform:[NSAffineTransform transformWithRotationByDegrees:self.rotation]];
+		[aff appendTransform:[NSAffineTransform transformWithTranslateXBy:self.rotationPoint.x yBy:self.rotationPoint.y]];
 		[aff invert];
 		point = [aff transformPoint:point];
 	   }
@@ -717,15 +717,15 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 	tFrame.origin.y += tBounds.origin.y;
 	float xRatio = (NSMidX(tBounds) - NSMinX(tFrame)) / tFrame.size.width;
 	float yRatio = (NSMidY(tBounds) - NSMinY(tFrame)) / tFrame.size.height;
-	if (transform)
+	if (self.transform)
 	   {
 		NSPoint cp = [self centrePoint];
 		tBounds = [[NSAffineTransform transformWithTranslateXBy:-cp.x yBy:-cp.y] transformRect:tBounds];
-		tBounds = [[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale] transformRect:tBounds];
+		tBounds = [[NSAffineTransform transformWithScaleXBy:self.xScale yBy:self.yScale] transformRect:tBounds];
 		tBounds = [[NSAffineTransform transformWithTranslateXBy:cp.x yBy:cp.y] transformRect:tBounds];
 //		tFrame = [[NSAffineTransform transformWithTranslateXBy:-(cp.x - NSMinX(bounds)) yBy:-(cp.y - NSMinY(bounds))] transformRect:tFrame];
 		tFrame = [[NSAffineTransform transformWithTranslateXBy:-cp.x yBy:-cp.y] transformRect:tFrame];
-		tFrame = [[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale] transformRect:tFrame];
+		tFrame = [[NSAffineTransform transformWithScaleXBy:self.xScale yBy:self.yScale] transformRect:tFrame];
 		tFrame = [[NSAffineTransform transformWithTranslateXBy:cp.x yBy:cp.y] transformRect:tFrame];
 	   }
     if (leftKnob(kd.knob))
@@ -853,7 +853,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 //	[self renderInContext:context];
     [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
 	NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:-p.x yBy:-p.y];
-	if (transform)
+	if (self.transform)
 	{
 		//[transform concat];
 		//[t prependTransform:transform];
@@ -869,7 +869,7 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 {
 	if (isSelected && ([self knobUnderPoint:point view:gView].knob != NoKnob))
         return YES;
-	if (transform)
+	if (self.transform)
 		point = [self invertPoint:point];
 	if (!NSPointInRect(point, [self bounds]))
 		return NO;
@@ -886,10 +886,10 @@ NSBitmapImageRep *createRGBBitmap(int width,int height)
 {
 	NSRect db = NSIntegralRect([self displayBounds]);
 	NSImage *im = [[NSImage alloc]initWithSize:db.size];
-	NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:-rotationPoint.x yBy:-rotationPoint.y];
-	[t appendTransform:[NSAffineTransform transformWithScaleXBy:xScale yBy:yScale]];
-	[t appendTransform:[NSAffineTransform transformWithRotationByDegrees:rotation]];
-	[t appendTransform:[NSAffineTransform transformWithTranslateXBy:rotationPoint.x - db.origin.x yBy:rotationPoint.y - db.origin.y]];
+	NSAffineTransform *t = [NSAffineTransform transformWithTranslateXBy:-self.rotationPoint.x yBy:-self.rotationPoint.y];
+	[t appendTransform:[NSAffineTransform transformWithScaleXBy:self.xScale yBy:self.yScale]];
+	[t appendTransform:[NSAffineTransform transformWithRotationByDegrees:self.rotation]];
+	[t appendTransform:[NSAffineTransform transformWithTranslateXBy:self.rotationPoint.x - db.origin.x yBy:self.rotationPoint.y - db.origin.y]];
 	[im lockFocus];
 	[[shadowType itsShadow]set];
 	[t concat];

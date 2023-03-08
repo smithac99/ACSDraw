@@ -11,12 +11,10 @@
 
 
 @interface ACSDLink : KeyedObject 
-   {
-	id fromObject,toObject;
-	BOOL overflow,substitutePageNo,changeAttributes;
-   }
 
+@property (strong,nonatomic) id fromObject,toObject;
 @property int anchorID,tempToKey;
+@property BOOL overflow,substitutePageNo,changeAttributes;
 
 +(ACSDLink*)linkFrom:(id)from to:(id)to;
 +(ACSDLink*)linkFrom:(id)from to:(id)to anchorID:(int)anchorID;

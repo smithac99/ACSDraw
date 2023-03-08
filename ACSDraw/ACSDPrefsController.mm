@@ -38,6 +38,11 @@ NSString *prefsBatchScalePage = @"ACSDrawprefsBatchscalePage";
 NSString *prefsBatchScaleLayer = @"ACSDrawprefsBatchscaleLayer";
 NSString *prefsBatchScaleObject = @"ACSDrawprefsBatchscaleObject";
 NSString *prefsBatchScaleScale = @"ACSDrawprefsBatchscaleScale";
+NSString *prefBooksDocWidth = @"prefBooksDocWidth";
+NSString *prefBooksDocHeight = @"prefBooksDocHeight";
+NSString *prefBooksShowBoxes = @"prefBooksShowBoxes";
+NSString *prefBooksShowButtons = @"prefBooksShowButtons";
+NSString *prefBooksLanguage = @"prefBooksLanguage";
 
 NSString *ixPBType = @"indexpbtype";
 NSArray *arrayFromColour(NSColor *col);
@@ -58,21 +63,26 @@ NSColor *colourFromArray(NSArray* arr);
     static NSDictionary *appDefaults = nil;
 	if (appDefaults == nil)
     {
-		appDefaults = [NSDictionary
-                        dictionaryWithObjectsAndKeys:archivedObject([NSColor cyanColor]),prefsSelectionColourKey,
-                       archivedObject([NSColor purpleColor]),prefsGuideColourKey,
-                       archivedObject([NSColor redColor]),prefsHiliteColourKey,
-                        @(4),prefsSnapSizeKey,
-                        @(20),prefsHotSpotSizeKey,
-                        @(PDF_LINK_STROKE),prefsPDFLinkModeKey,
-                        @(PDF_LINK_STROKE),prefsPDFLinkStrokeKey,
-                        archivedObject([[NSColor redColor]colorWithAlphaComponent:0.25]),prefsPDFLinkColourKey,
-                        @(BACKGROUND_DRAW_COLOUR),prefsBackgroundType,
-                        archivedObject([NSColor whiteColor]),prefsBackgroundColour,
-                       @NO,prefsShowPathDirection,
-                       @(1),prefsDocScale,
-                       @[@"/"],prefsImageLibs,
-                        nil];
+        appDefaults = @{
+            prefsSelectionColourKey : archivedObject([NSColor cyanColor]),
+            prefsGuideColourKey : archivedObject([NSColor purpleColor]),
+            prefsHiliteColourKey : archivedObject([NSColor redColor]),
+            prefsSnapSizeKey : @(4),
+            prefsHotSpotSizeKey : @(20),
+            prefsPDFLinkModeKey : @(PDF_LINK_STROKE),
+            prefsPDFLinkStrokeKey : @(PDF_LINK_STROKE),
+            prefsPDFLinkColourKey : archivedObject([[NSColor redColor]colorWithAlphaComponent:0.25]),
+            prefsBackgroundType : @(BACKGROUND_DRAW_COLOUR),
+            prefsBackgroundColour : archivedObject([NSColor whiteColor]),
+            prefsShowPathDirection : @NO,
+            prefsDocScale : @(1),
+            prefsImageLibs : @[@"/"],
+            prefBooksDocWidth : @1024,
+            prefBooksDocHeight: @768,
+            prefBooksShowBoxes: @NO,
+            prefBooksShowButtons: @YES,
+            prefBooksLanguage: @"en_001"
+        };
     }
 	return appDefaults;
 }
@@ -97,12 +107,12 @@ NSColor *colourFromArray(NSArray* arr);
 NSArray *arrayFromColour(NSColor *col)
    {
 	col = [col colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]];
-	return [NSArray arrayWithObjects:[NSNumber numberWithFloat:[col redComponent]],[NSNumber numberWithFloat:[col greenComponent]],[NSNumber numberWithFloat:[col blueComponent]],[NSNumber numberWithFloat:[col alphaComponent]],nil];
+	return @[[NSNumber numberWithFloat:[col redComponent]],[NSNumber numberWithFloat:[col greenComponent]],[NSNumber numberWithFloat:[col blueComponent]],[NSNumber numberWithFloat:[col alphaComponent]]];
    }
 
 NSColor *colourFromArray(NSArray* arr)
    {
-	return [NSColor colorWithDeviceRed:[[arr objectAtIndex:0]floatValue] green:[[arr objectAtIndex:1]floatValue]blue:[[arr objectAtIndex:2]floatValue]alpha:[[arr objectAtIndex:3]floatValue]];
+	return [NSColor colorWithDeviceRed:[arr[0]floatValue] green:[arr[1]floatValue]blue:[arr[2]floatValue]alpha:[arr[3]floatValue]];
    }
 
 - (IBAction)pdfLinkHighlightingColourWellHit:(id)sender
@@ -112,7 +122,7 @@ NSColor *colourFromArray(NSArray* arr)
 
 - (IBAction)pdfLinkHighlightingStrokeHit:(id)sender
    {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithFloat:[sender floatValue]] forKey:prefsPDFLinkStrokeKey];
+	[[NSUserDefaults standardUserDefaults] setObject:@([sender floatValue]) forKey:prefsPDFLinkStrokeKey];
    }
 
 - (IBAction)pdfLinkHighlightingMatrixhit:(id)sender
@@ -120,14 +130,14 @@ NSColor *colourFromArray(NSArray* arr)
 	NSUInteger sel = [sender selectedRow];
 	if (sel > 0)
 		sel = 1 << (sel - 1);
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:sel] forKey:prefsPDFLinkModeKey];
+	[[NSUserDefaults standardUserDefaults] setObject:@(sel) forKey:prefsPDFLinkModeKey];
    }
 
 - (IBAction)guideColourHit:(id)sender
    {
 	[[NSUserDefaults standardUserDefaults] setObject:archivedObject([sender color]) forKey:prefsGuideColourKey];
 	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDGuideColourDidChangeNotification object:self 
-		userInfo:[NSDictionary dictionaryWithObject:(NSColor*)[sender color]forKey:@"col"]];
+                                                      userInfo:@{@"col":[sender color]}];
    }
 
 - (IBAction)hotSpotSizeHit:(id)sender
@@ -140,6 +150,23 @@ NSColor *colourFromArray(NSArray* arr)
 NSData *archivedObject(id obj)
 {
     return [NSArchiver archivedDataWithRootObject:obj];
+}
+
+NSData *keyArchivedObject(id obj)
+{
+    return [NSKeyedArchiver archivedDataWithRootObject:obj requiringSecureCoding:NO error:NULL];
+}
+
+id unarchivedObject(NSData *d)
+{
+    NSError *err = nil;
+    id res = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSObject class] fromData:d error:&err];
+    if (err)
+    {
+        NSLog(@"%@",[err localizedDescription]);
+        res = [NSUnarchiver unarchiveObjectWithData:d];
+    }
+    return res;
 }
 
 - (IBAction)selectionColourHit:(id)sender
@@ -208,7 +235,8 @@ NSData *archivedObject(id obj)
 {
 	id d = [[NSUserDefaults standardUserDefaults] objectForKey:prefsBackgroundColour];
 	if (d)
-		return [NSUnarchiver unarchiveObjectWithData:d];
+		//return [NSUnarchiver unarchiveObjectWithData:d];
+        return unarchivedObject(d);
 	return nil;
 }
 
@@ -254,13 +282,13 @@ NSData *archivedObject(id obj)
 
 -(void)setValuesFromGuidePrefsUndo:(BOOL)undo
 {
-	NSColor *col = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:prefsSelectionColourKey]];
+	NSColor *col = unarchivedObject([[NSUserDefaults standardUserDefaults] objectForKey:prefsSelectionColourKey]);
 	if (col)
 		[selectionColour setColor:col];
-	col = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:prefsGuideColourKey]];
+	col = unarchivedObject([[NSUserDefaults standardUserDefaults] objectForKey:prefsGuideColourKey]);
 	if (col)
 		[guideColour setColor:col];
-	col = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:prefsHiliteColourKey]];
+	col = unarchivedObject([[NSUserDefaults standardUserDefaults] objectForKey:prefsHiliteColourKey]);
 	if (col)
 		[hiliteColour setColor:col];
 	
@@ -280,7 +308,7 @@ NSData *archivedObject(id obj)
 
 -(void)setValuesFromPDFPrefsUndo:(BOOL)undo
    {
-	NSColor *col = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:prefsPDFLinkColourKey]];
+	NSColor *col = unarchivedObject([[NSUserDefaults standardUserDefaults] objectForKey:prefsPDFLinkColourKey]);
 	if (col)
 		[pdfLinkHighlightingColourWell setColor:col];
 	unsigned num = [[[NSUserDefaults standardUserDefaults] objectForKey:prefsPDFLinkModeKey]intValue];
@@ -384,7 +412,7 @@ NSData *archivedObject(id obj)
 
 - (BOOL)tableView:(NSTableView *)tableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
 {
-    return [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:rowIndexes] forType:ixPBType];
+    return [pboard setData:archivedObject(rowIndexes) forType:ixPBType];
 }
 
 - (NSDragOperation)tableView:(NSTableView*)tabView validateDrop:(id <NSDraggingInfo>)info
@@ -417,7 +445,7 @@ static void MoveRowsFromIndexSetToPosition(NSMutableArray* arr,NSIndexSet *ixs,N
 {
     NSPasteboard* pboard = [info draggingPasteboard];
     NSData* rowData = [pboard dataForType:ixPBType];
-    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+    NSIndexSet* rowIndexes = unarchivedObject(rowData);
     NSMutableArray *libs = [[[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs]mutableCopy];
     MoveRowsFromIndexSetToPosition(libs,rowIndexes,row);
     [[NSUserDefaults standardUserDefaults]setObject:libs forKey:prefsImageLibs];

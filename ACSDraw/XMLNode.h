@@ -15,7 +15,9 @@
 @property (retain) NSDictionary *attributes;
 @property (retain) NSMutableArray *children;
 
+-(instancetype)initWithName:(NSString*)n;
 -(NSArray*)childrenOfType:(NSString*)typeName;
+-(XMLNode*)childOfType:(NSString*)typeName identifier:(NSString*)ident;
 -(NSString*)attributeStringValue:(NSString*)attrname;
 -(float)attributeFloatValue:(NSString*)attrname;
 -(NSInteger)attributeIntValue:(NSString*)attrname;

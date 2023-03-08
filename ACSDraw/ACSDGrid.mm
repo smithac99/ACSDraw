@@ -21,7 +21,7 @@
    {
     if (self = [super initWithName:n fill:f stroke:str rect:r layer:l])
 	   {
-		GraphicView *gView = [[[[layer page]graphicViews]allObjects]objectAtIndex:0];
+		GraphicView *gView = [[[[self.layer page]graphicViews]allObjects]objectAtIndex:0];
 		if (gView)
 		   {
 			rows = [gView defaultMatrixRows];
@@ -220,9 +220,9 @@
 
 - (NSBezierPath *)transformedCellPath
    {
-    if (rotation == 0.0)
+    if (self.rotation == 0.0)
 		return [self cellPath];
-	return [transform transformBezierPath:[self cellPath]];
+	return [self.transform transformBezierPath:[self cellPath]];
    }
 
 - (NSBezierPath *)bezierPath

@@ -57,27 +57,26 @@
 
 - (void)moveBy:(NSPoint)vector
 {
-	if (vector.x == 0.0 && vector.y == 0.0)
-		return;
-	if ([points count] == 0)
-		return;
-	if (layer)
-		[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
-	rotationPoint.x += vector.x;
-	rotationPoint.y += vector.y;
-	for (FreeHandPoint *fhp in points)
-		[fhp moveBy:vector];
-	[self buildBezierPath];
-	[self computeTransform];
-	[self computeTransformedHandlePoints];
-	bounds = NSOffsetRect([self bounds], vector.x, vector.y);
-	
-	if (layer)
-	{
-		[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-		[self invalidateConnectors];
-		[self postChangeOfBounds];
-	}
+    if (vector.x == 0.0 && vector.y == 0.0)
+        return;
+    if ([points count] == 0)
+        return;
+    if (self.layer)
+        [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+    self.rotationPoint = offset_point(self.rotationPoint, vector);
+    for (FreeHandPoint *fhp in points)
+        [fhp moveBy:vector];
+    [self buildBezierPath];
+    [self computeTransform];
+    [self computeTransformedHandlePoints];
+    bounds = NSOffsetRect([self bounds], vector.x, vector.y);
+    
+    if (self.layer)
+    {
+        [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+        [self invalidateConnectors];
+        [self postChangeOfBounds];
+    }
 }
 
 -(void)calculateLengths
@@ -155,13 +154,13 @@
 	{
 		[self setOutlinePathValid:NO];
 	}
-	if (graphicCache && usesCache && sizeChanged)
+	if (graphicCache && self.usesCache && sizeChanged)
 		[self readjustCache];
 	if (graphicCache && redraw)
 		[graphicCache setValid:NO];
 	[self invalidateInView];
-	if (parent)
-		[parent invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
+	if (self.parent)
+		[self.parent invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
 	if (notify)
 		[[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicDidChangeNotification object:self];
 }
@@ -192,7 +191,7 @@
 
 - (NSBezierPath *)bezierPath
 {
-	if (!addingPoints && !bezierPathValid && points && ([points count] > 1))
+	if (!self.addingPoints && !self.bezierPathValid && points && ([points count] > 1))
 	{
 		NSMutableArray *curves = [NSMutableArray arrayWithCapacity:100];
 		[self calcCurveFromInd:0 toInd:(int)[points count]-1 currLevel:0 maxLevel:level curves:curves];
@@ -209,7 +208,7 @@
 	[bezierPath moveToPoint:anchorPoint];
     [self setBounds:NSMakeRect(anchorPoint.x, anchorPoint.y, 0.0, 0.0)];
 	[self setBezierPathValid:YES];
-	addingPoints = YES;
+    self.addingPoints = YES;
 }
 
 -(void)createMid:(NSPoint)anchorPoint currentPoint:(NSPoint*)currPoint event:(NSEvent*)theEvent

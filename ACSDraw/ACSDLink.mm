@@ -22,7 +22,7 @@
 
 +(ACSDLink*)linkFrom:(id)from to:(id)to anchorID:(int)a
    {
-	return [[[ACSDLink alloc]initFrom:from to:to anchorID:a]autorelease];
+	return [[ACSDLink alloc]initFrom:from to:to anchorID:a];
    }
 
 +(ACSDLink*)linkFrom:(id)from to:(id)to anchorID:(int)anchorID substitutePageNo:(BOOL)substitutePageNo changeAttributes:(BOOL)changeAttributes
@@ -30,136 +30,78 @@
 	ACSDLink *l = [[ACSDLink alloc]initFrom:from to:to anchorID:anchorID];
 	[l setSubstitutePageNo:substitutePageNo];
 	[l setChangeAttributes:changeAttributes];
-	return [l autorelease];
+	return l;
    }
 
 -(id)initFrom:(id)from to:(id)to anchorID:(int)a
    {
 	if (self = [super init])
 	   {
-		fromObject = [from retain];
-		toObject = [to retain];
+		_fromObject = from;
+		_toObject = to;
 		self.anchorID = a;
-		overflow = NO;
-		substitutePageNo = NO;
-		changeAttributes = YES;
+		self.overflow = NO;
+		self.substitutePageNo = NO;
+		self.changeAttributes = YES;
 	   }
 	return self;
    }
 
-- (void) dealloc
-{
-    [fromObject release];
-    [toObject release];
-    //NSLog(@"ACSDLink dealloc %lx",(NSUInteger)self);
-    [super dealloc];
-}
-
 - (void) encodeWithCoder:(NSCoder*)coder
    {
-	[coder encodeConditionalObject:fromObject forKey:@"ACSDLink_fromObject"];
-	[coder encodeConditionalObject:toObject forKey:@"ACSDLink_toObject"];
+	[coder encodeConditionalObject:_fromObject forKey:@"ACSDLink_fromObject"];
+	[coder encodeConditionalObject:_toObject forKey:@"ACSDLink_toObject"];
 	[coder encodeInt:self.anchorID forKey:@"ACSDLink_anchorID"];
-	[coder encodeBool:changeAttributes forKey:@"ACSDLink_changeAttributes"];
-	[coder encodeBool:substitutePageNo forKey:@"ACSDLink_substitutePageNo"];
+	[coder encodeBool:self.changeAttributes forKey:@"ACSDLink_changeAttributes"];
+	[coder encodeBool:self.substitutePageNo forKey:@"ACSDLink_substitutePageNo"];
 	id delegate = [(NSKeyedUnarchiver*)coder delegate];
 	if (delegate && [delegate respondsToSelector:@selector(archiveType)] && [delegate archiveType] == ARCHIVE_PASTEBOARD)
-		[coder encodeInt:[toObject objectKey] forKey:@"toObjectKey"];
+		[coder encodeInt:[_toObject objectKey] forKey:@"toObjectKey"];
    }
 
 - (id) initWithCoder:(NSCoder*)coder
    {
 	self = [super init];
-	fromObject = [[coder decodeObjectForKey:@"ACSDLink_fromObject"]retain];
-	toObject = [[coder decodeObjectForKey:@"ACSDLink_toObject"]retain];
+	self.fromObject = [coder decodeObjectForKey:@"ACSDLink_fromObject"];
+	self.toObject = [coder decodeObjectForKey:@"ACSDLink_toObject"];
 	self.anchorID = [coder decodeIntForKey:@"ACSDLink_anchorID"];
 	self.tempToKey = [coder decodeIntForKey:@"toObjectKey"];
-//	substitutePageNo = NO;
-	substitutePageNo = [coder decodeBoolForKey:@"ACSDLink_substitutePageNo"];
+	self.substitutePageNo = [coder decodeBoolForKey:@"ACSDLink_substitutePageNo"];
 	if ([coder containsValueForKey:@"ACSDLink_changeAttributes"])
-		changeAttributes = [coder decodeBoolForKey:@"ACSDLink_changeAttributes"];
+		self.changeAttributes = [coder decodeBoolForKey:@"ACSDLink_changeAttributes"];
 	else
-		changeAttributes = YES;
+		self.changeAttributes = YES;
 	return self;
-   }
-
-- (BOOL)changeAttributes
-   {
-    return changeAttributes;
-   }
-
-- (BOOL)substitutePageNo
-   {
-    return substitutePageNo;
-   }
-
-- (BOOL)overflow
-   {
-    return overflow;
-   }
-
--(void)setSubstitutePageNo:(BOOL)a
-   {
-	substitutePageNo = a;
-   }
-
--(void)setChangeAttributes:(BOOL)a
-   {
-	changeAttributes = a;
-   }
-
-- (id)fromObject
-   {
-    return fromObject;
-   }
-
-- (id)toObject
-   {
-    return toObject;
    }
 
 - (void)removeFromLinkedObjects
    {
-	if ([fromObject link] == self)
-		[fromObject setLink:nil];
-	else if ([fromObject isKindOfClass:[ACSDText class]])
-		[(ACSDText*)fromObject removeTextLink:self];
-	[toObject uRemoveLinkedObject:self];
-   }
-
--(void)setFromObject:(id)newFrom
-   {
-	if (fromObject == newFrom)
-		return;
-	if (fromObject)
-		[fromObject release];
-	fromObject = newFrom;
-	if (fromObject)
-		[fromObject retain];
+	if ([_fromObject link] == self)
+		[_fromObject setLink:nil];
+	else if ([_fromObject isKindOfClass:[ACSDText class]])
+		[(ACSDText*)_fromObject removeTextLink:self];
+	[_toObject uRemoveLinkedObject:self];
    }
 
 -(void)setToObject:(id)newTo
    {
-	if (toObject == newTo)
+	if (_toObject == newTo)
 		return;
-	if (toObject)
+	if (_toObject)
 	   {
-		[toObject release];
-		[toObject uRemoveLinkedObject:self];
+		[_toObject uRemoveLinkedObject:self];
 	   }
-	toObject = newTo;
-	if (toObject)
-		[toObject retain];
-	[toObject uAddLinkedObject:self];
+	_toObject = newTo;
+	[_toObject uAddLinkedObject:self];
    }
 
 -(BOOL)checkToObj
    {
 	if (self.anchorID < 0)
 		return NO;
-	overflow = NO;
-	id newTo = [toObject checkLink:self overflow:&overflow];
-	if (newTo != toObject)
+	self.overflow = NO;
+	id newTo = [_toObject checkLink:self overflow:&_overflow];
+	if (newTo != _toObject)
 	   {
 		[self setToObject:newTo];
 		return YES;
@@ -199,8 +141,8 @@
 
 -(NSString*)anchorNameForFromObject
    {
-	if ([fromObject isKindOfClass:[ACSDPage class]])
-		return [NSString stringWithFormat:@"Page%ld",[fromObject pageNo]];
+	if ([_fromObject isKindOfClass:[ACSDPage class]])
+		return [NSString stringWithFormat:@"Page%ld",[_fromObject pageNo]];
 	return [NSString stringWithFormat:@"a%lx",(NSUInteger)[self fromObject]];
    }
 
@@ -211,13 +153,11 @@
 		[ACSDLink uDeleteLinkForObject:fromObject undoManager:undoManager];
 	else
 	   {
-		[l retain];
 		NSRange r = [fromObject removeTextLink:l];
 		if (r.location != NSNotFound)
 			[[undoManager prepareWithInvocationTarget:self] uLinkFromObject:fromObject range:r toObject:[l toObject] anchor:[l anchorID]
 														   substitutePageNo:[l substitutePageNo] changeAttributes:[l changeAttributes] undoManager:undoManager];			
 		[[l toObject] uRemoveLinkedObject:l];
-		[l release];
 	   }
    }
 

@@ -219,4 +219,10 @@
 	}
 }
 
+-(BOOL)visible
+{
+    NSWindow *w = [self.contentView window];
+    NSWindowOcclusionState occ = w.occlusionState;
+    return (occ & NSWindowOcclusionStateVisible);
+}
 @end

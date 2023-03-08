@@ -639,7 +639,7 @@ NSString *ACSDrawPageIntPasteboardType = @"ACSDrawPageInt";
 {
 	SEL action = [menuItem action];
 	if (action == @selector(pasteAttributes:))
-		return ([[NSPasteboard generalPasteboard]availableTypeFromArray:@[NSStringPboardType]]!=nil);
+        return ([[NSPasteboard generalPasteboard]availableTypeFromArray:@[NSPasteboardTypeString]]!=nil);
 	if (action == @selector(copySelectedAttributes:))
 		return [self.attributeTableView clickedRow] > -1;
 	return YES;

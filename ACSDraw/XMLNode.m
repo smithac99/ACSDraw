@@ -20,13 +20,33 @@
 	return self;
 }
 
+-(instancetype)initWithName:(NSString*)n
+{
+    if (self = [self init])
+    {
+        self.nodeName = n;
+    }
+    return self;
+}
 -(NSArray*)childrenOfType:(NSString*)typeName
 {
-	NSIndexSet *ixs = [_children indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
-					   {
-						   return ([[obj nodeName]isEqualToString:typeName]);
-					   }];
-	return [_children objectsAtIndexes:ixs];
+    NSIndexSet *ixs = [_children indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
+                       {
+                           return ([[obj nodeName]isEqualToString:typeName]);
+                       }];
+    return [_children objectsAtIndexes:ixs];
+}
+
+-(XMLNode*)childOfType:(NSString*)typeName identifier:(NSString*)ident
+{
+    NSIndexSet *ixs = [_children indexesOfObjectsPassingTest:^BOOL(XMLNode *obj, NSUInteger idx, BOOL *stop)
+                       {
+                           return ([[obj nodeName]isEqualToString:typeName] && (ident == nil || [[obj attributeStringValue:@"id"]isEqualToString:ident]));
+                       }];
+    NSArray *arr = [_children objectsAtIndexes:ixs];
+    if ([arr count] > 0)
+        return arr[0];
+    return nil;
 }
 
 -(NSString*)attributeStringValue:(NSString*)attrname

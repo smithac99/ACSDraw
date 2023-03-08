@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -53,11 +53,11 @@
                     <rect key="frame" x="8" y="63" width="264" height="135"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <clipView key="contentView" id="Wb4-Rb-Dr3">
-                        <rect key="frame" x="1" y="0.0" width="251" height="123"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="1" y="1" width="251" height="122"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="17" id="16">
-                                <rect key="frame" x="0.0" y="0.0" width="251" height="106"/>
+                                <rect key="frame" x="0.0" y="0.0" width="251" height="105"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -95,7 +95,7 @@
                                         </popUpButtonCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="layer" width="80" minWidth="10" maxWidth="3.4028229999999999e+38" id="46">
+                                    <tableColumn identifier="layer" width="71" minWidth="10" maxWidth="3.4028229999999999e+38" id="46">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Layer">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -124,7 +124,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" controlSize="small" horizontal="NO" id="14">
-                        <rect key="frame" x="252" y="17" width="11" height="106"/>
+                        <rect key="frame" x="252" y="18" width="11" height="105"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <tableHeaderView key="headerView" id="17">
@@ -717,7 +717,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <clipView key="contentView" drawsBackground="NO" id="hJa-ee-Lhq">
                         <rect key="frame" x="1" y="1" width="239" height="54"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textView importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" spellingCorrection="YES" id="170">
                                 <rect key="frame" x="0.0" y="0.0" width="255" height="54"/>
@@ -968,7 +968,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <clipView key="contentView" drawsBackground="NO" id="o02-8D-n4W">
                         <rect key="frame" x="1" y="1" width="225" height="110"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textView importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" spellingCorrection="YES" id="261">
                                 <rect key="frame" x="0.0" y="0.0" width="225" height="110"/>
@@ -1202,7 +1202,7 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="20" id="316" customClass="ACSDTableView">
-                                                <rect key="frame" x="0.0" y="0.0" width="273" height="193"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="282" height="193"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1334,7 +1334,7 @@
                                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                     <tableColumns>
-                                                                        <tableColumn width="124" minWidth="40" maxWidth="1000" id="310">
+                                                                        <tableColumn width="115" minWidth="40" maxWidth="1000" id="310">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -1401,11 +1401,11 @@
                                                         <rect key="frame" x="0.0" y="17" width="135" height="151"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" id="Rm3-DQ-WYE">
-                                                            <rect key="frame" x="1" y="0.0" width="133" height="150"/>
+                                                            <rect key="frame" x="1" y="1" width="133" height="149"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" typeSelect="NO" autosaveName="attrtable" headerView="esq-mS-s66" id="734-yY-Hkc" customClass="ACSDTableView">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="133" height="133"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="133" height="132"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1557,7 +1557,7 @@
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         </textFieldCell>
                                                     </tableColumn>
-                                                    <tableColumn identifier="name" width="131" minWidth="20" maxWidth="1000" id="335">
+                                                    <tableColumn identifier="name" width="126.5" minWidth="20" maxWidth="1000" id="335">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -1569,7 +1569,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn identifier="sel" editable="NO" width="20" minWidth="4" maxWidth="1000" id="334">
+                                                    <tableColumn identifier="sel" editable="NO" width="15.5" minWidth="4" maxWidth="1000" id="334">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2418,7 +2418,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="OKh-5z-Kdv">
                                         <rect key="frame" x="1" y="1" width="208" height="115"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" id="539" customClass="ACSDTableView">
                                                 <rect key="frame" x="0.0" y="0.0" width="208" height="115"/>
@@ -2427,7 +2427,7 @@
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="gridColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <tableColumns>
-                                                    <tableColumn identifier="stroke" editable="NO" width="164" minWidth="8" maxWidth="1000" id="541">
+                                                    <tableColumn identifier="stroke" editable="NO" width="159.5" minWidth="8" maxWidth="1000" id="541">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -2439,7 +2439,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn identifier="linewidth" width="38" minWidth="4" maxWidth="1000" id="540">
+                                                    <tableColumn identifier="linewidth" width="33.5" minWidth="4" maxWidth="1000" id="540">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2659,17 +2659,17 @@
                                     <rect key="frame" x="0.0" y="32" width="246" height="118"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="1Yd-c2-0BP">
-                                        <rect key="frame" x="1" y="0.0" width="233" height="117"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <rect key="frame" x="1" y="1" width="233" height="116"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="20" headerView="571" id="574" customClass="ACSDTableView">
-                                                <rect key="frame" x="0.0" y="0.0" width="233" height="100"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="233" height="99"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                 <tableColumns>
-                                                    <tableColumn identifier="lineEnding" width="68.057010000000005" minWidth="8" maxWidth="1000" id="578">
+                                                    <tableColumn identifier="lineEnding" width="68" minWidth="8" maxWidth="1000" id="578">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Line Ending">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -2700,7 +2700,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn identifier="scale" width="50.941000000000003" minWidth="30.940999999999999" maxWidth="1000" id="576">
+                                                    <tableColumn identifier="scale" width="51" minWidth="30.940999999999999" maxWidth="1000" id="576">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Scale">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2719,7 +2719,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn identifier="aspect" width="52.997009999999989" minWidth="39.997" maxWidth="1000" id="575">
+                                                    <tableColumn identifier="aspect" width="40" minWidth="39.997" maxWidth="1000" id="575">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Aspect">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2755,7 +2755,7 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
                                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" controlSize="small" horizontal="NO" id="573">
-                                        <rect key="frame" x="234" y="17" width="11" height="100"/>
+                                        <rect key="frame" x="234" y="18" width="11" height="99"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
                                     <tableHeaderView key="headerView" id="571">
@@ -2962,7 +2962,7 @@
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <color key="gridColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <tableColumns>
-                                            <tableColumn identifier="col" editable="NO" width="208" minWidth="8" maxWidth="1000" id="828">
+                                            <tableColumn identifier="col" editable="NO" width="192" minWidth="8" maxWidth="1000" id="828">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -2975,11 +2975,11 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView id="Pw7-Oc-KrB">
-                                                        <rect key="frame" x="1" y="1" width="208" height="17"/>
+                                                        <rect key="frame" x="1" y="1" width="197" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a9r-Ha-CKs">
-                                                                <rect key="frame" x="0.0" y="0.0" width="208" height="17"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="197" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="4S1-LD-dOi">
                                                                     <font key="font" metaFont="system"/>
@@ -2994,7 +2994,7 @@
                                                     </tableCellView>
                                                 </prototypeCellViews>
                                             </tableColumn>
-                                            <tableColumn identifier="sel" width="15" minWidth="10" maxWidth="1000" id="827">
+                                            <tableColumn identifier="sel" width="22" minWidth="10" maxWidth="1000" id="827">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -3007,11 +3007,11 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView id="9M7-hF-eNc">
-                                                        <rect key="frame" x="212" y="1" width="15" height="17"/>
+                                                        <rect key="frame" x="201" y="1" width="26" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cNs-xl-q5x">
-                                                                <rect key="frame" x="0.0" y="0.0" width="15" height="17"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="26" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="BrB-p9-iqc">
                                                                     <font key="font" metaFont="system"/>
@@ -3631,17 +3631,17 @@
                     <rect key="frame" x="9" y="104" width="263" height="206"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <clipView key="contentView" id="DG1-z7-hEd">
-                        <rect key="frame" x="1" y="0.0" width="250" height="205"/>
+                        <rect key="frame" x="1" y="1" width="250" height="204"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="20" headerView="869" id="872" customClass="ACSDTableView">
-                                <rect key="frame" x="0.0" y="0.0" width="250" height="188"/>
+                                <rect key="frame" x="0.0" y="0.0" width="250" height="187"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <tableColumns>
-                                    <tableColumn identifier="shadow" width="41" minWidth="40" maxWidth="1000" id="877">
+                                    <tableColumn identifier="shadow" width="45" minWidth="40" maxWidth="1000" id="877">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="shadow">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -3653,7 +3653,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="radius" width="14" minWidth="10" maxWidth="1000" id="876">
+                                    <tableColumn identifier="radius" width="15" minWidth="10" maxWidth="1000" id="876">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="radius">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -3672,7 +3672,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="xoff" width="75.499979999999994" minWidth="10" maxWidth="1000" id="875">
+                                    <tableColumn identifier="xoff" width="66" minWidth="10" maxWidth="1000" id="875">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="xoff">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -3691,7 +3691,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="yoff" width="94.500020000000006" minWidth="10" maxWidth="1000" id="873">
+                                    <tableColumn identifier="yoff" width="86" minWidth="10" maxWidth="1000" id="873">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="yoff">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -3710,7 +3710,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="sel" editable="NO" width="10" minWidth="10" maxWidth="1000" id="874">
+                                    <tableColumn identifier="sel" editable="NO" width="14" minWidth="10" maxWidth="1000" id="874">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -3736,7 +3736,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" controlSize="small" horizontal="NO" id="871">
-                        <rect key="frame" x="251" y="17" width="11" height="188"/>
+                        <rect key="frame" x="251" y="18" width="11" height="187"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <tableHeaderView key="headerView" id="869">
@@ -3991,11 +3991,11 @@
                                     <rect key="frame" x="20" y="0.0" width="242" height="157"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="mPA-Ky-zR9">
-                                        <rect key="frame" x="1" y="0.0" width="240" height="156"/>
+                                        <rect key="frame" x="1" y="1" width="240" height="155"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="xhR-tG-AFk" id="gkN-oB-iYi" customClass="ACSDTableView">
-                                                <rect key="frame" x="0.0" y="0.0" width="240" height="139"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="240" height="138"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4013,7 +4013,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn identifier="name" width="190" minWidth="10" maxWidth="3.4028234663852886e+38" id="wk6-Nu-6dc">
+                                                    <tableColumn identifier="name" width="181" minWidth="10" maxWidth="3.4028234663852886e+38" id="wk6-Nu-6dc">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Graphic">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -4079,11 +4079,11 @@
                                     <rect key="frame" x="20" y="0.0" width="236" height="164"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="RkT-UK-tuB">
-                                        <rect key="frame" x="1" y="0.0" width="234" height="163"/>
+                                        <rect key="frame" x="1" y="1" width="234" height="162"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" autosaveColumns="NO" typeSelect="NO" autosaveName="attrstv" headerView="Tmd-vZ-eCA" id="1bb-a9-7Kh" customClass="ACSDTableView">
-                                                <rect key="frame" x="0.0" y="0.0" width="234" height="146"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="234" height="145"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4101,7 +4101,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn identifier="value" width="110" minWidth="40" maxWidth="1000" id="0Fd-l5-pfl">
+                                                    <tableColumn identifier="value" width="101" minWidth="40" maxWidth="1000" id="0Fd-l5-pfl">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Value">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>

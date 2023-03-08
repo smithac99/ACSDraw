@@ -8,7 +8,7 @@
 
 #import "ACSDGradient.h"
 
-@interface SVGGradient : ACSDGradient
+@interface SVG_Gradient : ACSDGradient
 @property (retain) NSMutableDictionary *attrs;
 
 -(void)resolveSettingsForOriginalBoundingBox:(NSRect)bb frame:(NSRect)f;

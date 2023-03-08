@@ -339,7 +339,7 @@ CGColorSpaceRef getRGBColorSpace()
 	//CFRelease(url);
 	NSMutableDictionary *substitutions = [NSMutableDictionary dictionaryWithCapacity:5];
 	NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
-	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:pdfContext flipped:YES]];
+       [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:pdfContext flipped:YES]];
 	checkSet = [NSMutableSet setWithCapacity:100];
 	for (unsigned i = 0;i < [pages count];i++)
 	   {
@@ -633,11 +633,6 @@ NSImage *ImageFromFile(NSString* str)
 	[NSApp endSheet:_abslinkSheet];
    }
 
-- (void)abslinkSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-	[_abslinkSheet orderOut:self];
-}
-
 -(void)loadSheetNib
 {
 	[[NSBundle mainBundle]loadNibNamed:@"RotationSheet" owner:self topLevelObjects:nil];
@@ -654,11 +649,9 @@ NSImage *ImageFromFile(NSString* str)
 		if ([l isKindOfClass:[NSURL class]])
 			[linkTextField setStringValue:[l description]];
 	   }
-    [NSApp beginSheet: _abslinkSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(abslinkSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+       [[self window]beginSheet:_abslinkSheet completionHandler:^(NSModalResponse returnCode) {
+           [self.abslinkSheet orderOut:self];
+       }];
    }
 
 -(void)showGenTextFieldWithTitle:(NSString*)title completionBlock:(void (^)(NSString *str))completionBlock
@@ -709,21 +702,14 @@ NSImage *ImageFromFile(NSString* str)
 	[NSApp endSheet:_rotateSheet];
 }
 
-- (void)rotateSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-	[graphicView setCursorMode:GV_MODE_NONE];
-	[_rotateSheet orderOut:self];
-}
-
 - (void)showRotateDialog
 {
 	if (!_rotateSheet)
 		[self loadSheetNib];
-    [NSApp beginSheet: _rotateSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(rotateSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+    [[self window]beginSheet:_rotateSheet completionHandler:^(NSModalResponse returnCode) {
+        [self->graphicView setCursorMode:GV_MODE_NONE];
+        [self.rotateSheet orderOut:self];
+    }];
 }
 
 #pragma mark -
@@ -745,11 +731,6 @@ NSImage *ImageFromFile(NSString* str)
     [NSApp endSheet:self.editPointSheet];
 }
 
-- (void)editPointSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-    [self.editPointSheet orderOut:self];
-}
-
 -(void)showEditPointDialogForPathElement:(ACSDPathElement*)pe
 {
     if (!_rotateSheet)
@@ -762,11 +743,9 @@ NSImage *ImageFromFile(NSString* str)
     [epCP2Y setFloatValue:pe.postControlPoint.y];
     [epCBCP1 setIntegerValue:pe.hasPreControlPoint];
     [epCBCP2 setIntegerValue:pe.hasPostControlPoint];
-    [NSApp beginSheet: self.editPointSheet
-       modalForWindow: [self window]
-        modalDelegate: self
-       didEndSelector: @selector(editPointSheetDidEnd:returnCode:contextInfo:)
-          contextInfo: nil];
+    [[self window]beginSheet:self.editPointSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.editPointSheet orderOut:self];
+    }];
 }
 
 -(IBAction)showGroupView:(id)sender
@@ -838,11 +817,6 @@ static NSMutableArray *parseRenameString(NSString* str)
 	[NSApp endSheet:_renameSheet];
 }
 
-- (void)renameSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-	[_renameSheet orderOut:self];
-}
-
 - (IBAction)showRenameDialog: (id)sender
 {
 	if (!_renameSheet)
@@ -856,7 +830,7 @@ static NSMutableArray *parseRenameString(NSString* str)
             if (idx != NSNotFound)
             {
 				dispatch_async(dispatch_get_main_queue(), ^{
-					[[renameTextField currentEditor]setSelectedRange:NSMakeRange(0, idx)];
+                    [[self->renameTextField currentEditor]setSelectedRange:NSMakeRange(0, idx)];
 				});
             }
         }
@@ -864,11 +838,9 @@ static NSMutableArray *parseRenameString(NSString* str)
         if (rena != nil)
             [renameStartFromTextField setStringValue:rena];
     }
-    [NSApp beginSheet: _renameSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(renameSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+    [[self window]beginSheet:self.renameSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.renameSheet orderOut:self];
+    }];
 }
 
 #pragma mark
@@ -937,7 +909,7 @@ static NSMutableArray *parseRenameString(NSString* str)
             }
             else
             {
-                [batchScaleMsg setStringValue:[err localizedDescription]];
+                [self->batchScaleMsg setStringValue:[err localizedDescription]];
                 return nil;
             }
 
@@ -970,7 +942,7 @@ static NSMutableArray *parseRenameString(NSString* str)
             }
             else
             {
-                [batchScaleMsg setStringValue:[err localizedDescription]];
+                [self->batchScaleMsg setStringValue:[err localizedDescription]];
                 return nil;
             }
             return nil;
@@ -1095,11 +1067,6 @@ static NSMutableArray *parseRenameString(NSString* str)
     [regexpPattern setStringValue:[s substringToIndex:r.location]];
     [regexpTemplate setStringValue:[s substringFromIndex:r.location + r.length]];
 }
-- (void)regexpSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-	[_renameRegexpSheet orderOut:self];
-}
-
 - (IBAction)showRegexpDialog: (id)sender
 {
 	if (!_renameRegexpSheet)
@@ -1113,11 +1080,9 @@ static NSMutableArray *parseRenameString(NSString* str)
 			[regexpTemplate setStringValue:rena];
 		[regexpMsg setStringValue:@""];
 	}
-	[NSApp beginSheet: _renameRegexpSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(regexpSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+    [[self window]beginSheet:_renameRegexpSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.renameRegexpSheet orderOut:self];
+    }];
 }
 
 -(NSArray*)processBatchScaleFields
@@ -1236,11 +1201,6 @@ static NSMutableArray *parseRenameString(NSString* str)
     [NSApp endSheet:_repeatSheet];
 }
 
-- (void)repeatSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-{
-    [_repeatSheet orderOut:self];
-}
-
 - (IBAction)showRepeatDialog: (id)sender
 {
     if (!_repeatSheet)
@@ -1258,11 +1218,9 @@ static NSMutableArray *parseRenameString(NSString* str)
         [repeathtextField setFloatValue:b.size.height];
         [repeatxincTextField setFloatValue:b.size.width];
         [repeatyincTextField setFloatValue:b.size.height];
-        [NSApp beginSheet: _repeatSheet
-           modalForWindow: [self window]
-            modalDelegate: self
-           didEndSelector: @selector(repeatSheetDidEnd:returnCode:contextInfo:)
-              contextInfo: nil];
+        [[self window]beginSheet:_repeatSheet completionHandler:^(NSModalResponse returnCode) {
+            [self.repeatSheet orderOut:self];
+        }];
     }
 }
 
@@ -1300,22 +1258,15 @@ static NSMutableArray *parseRenameString(NSString* str)
 	[graphicView addGraphic:t];
    }
 
-- (void)tocSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
-   {
-	[sheet orderOut:self];
-   }
-
 - (IBAction)showTOCSheet: (id)sender
-   {
-	if (!tocController)
-		tocController = [[TOCController alloc]initWithController:self];
-	[tocController setStyles:[[self document]styles]];
-    [NSApp beginSheet: [tocController tocSheet]
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(tocSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
-   }
+{
+    if (!tocController)
+        tocController = [[TOCController alloc]initWithController:self];
+    [tocController setStyles:[[self document]styles]];
+    [[self window]beginSheet:[tocController tocSheet] completionHandler:^(NSModalResponse returnCode) {
+        [[self->tocController tocSheet] orderOut:self];
+    }];
+}
 
 - (IBAction)closeDocSizeSheet: (id)sender
 {
@@ -1373,29 +1324,25 @@ static NSMutableArray *parseRenameString(NSString* str)
    }
 
 - (IBAction)showDocSizeDialog: (id)sender
-   {
-	if (!_docSizeSheet)
-		[self loadSheetNib];
-	NSSize sz = [graphicView bounds].size;
-	[docSizeWidth setIntValue:(int)sz.width];
-	[docSizeHeight setIntValue:(int)sz.height];
-    [NSApp beginSheet: _docSizeSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(generalSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
-   }
+{
+    if (!_docSizeSheet)
+        [self loadSheetNib];
+    NSSize sz = [graphicView bounds].size;
+    [docSizeWidth setIntValue:(int)sz.width];
+    [docSizeHeight setIntValue:(int)sz.height];
+    [[self window]beginSheet:_docSizeSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.docSizeSheet orderOut:self];
+    }];
+}
 
 - (IBAction)showScaleDocDialog: (id)sender
 {
 	if (!_scaleSheet)
 		[self loadSheetNib];
 	[scaleTextField setFloatValue:[[NSUserDefaults standardUserDefaults]floatForKey:prefsDocScale]];
-    [NSApp beginSheet: _scaleSheet
-	   modalForWindow: [self window]
-		modalDelegate: self
-	   didEndSelector: @selector(generalSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo: nil];
+    [[self window]beginSheet:_scaleSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.scaleSheet orderOut:self];
+    }];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName

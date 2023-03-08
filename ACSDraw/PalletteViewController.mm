@@ -117,28 +117,64 @@
     return c;
 }
 
+-(ViewController*)panelController:(int)i
+{
+    switch(i)
+    {
+        case 0: return self.sizeController;
+            break;
+        case 1: return self.docController;
+            break;
+        case 2: return self.pagesController;
+            break;
+        case 3: return self.strokeController;
+            break;
+        case 4: return self.fillController;
+            break;
+        case 5: return self.shadowController;
+            break;
+        case 6: return self.textController;
+            break;
+        case 7: return self.colourController;
+            break;
+        case 8: return self.animationsController;
+            break;
+        case 9: return self.graphicOtherController;
+            break;
+    }
+    return nil;
+}
+
+-(void)activatePanel:(int)i
+{
+    [self activateController:[self panelController:i]];
+}
+
 -(void)showPanel:(int)i
 {
-	switch(i)
-	{
-		case 0: [self activateController:self.sizeController];
-			break;
-		case 1: [self activateController:self.docController];
-			break;
-		case 2: [self activateController:self.pagesController];
-			break;
-		case 3: [self activateController:self.strokeController];
-			break;
-		case 4: [self activateController:self.fillController];
-			break;
-		case 5: [self activateController:self.shadowController];
-			break;
-		case 6: [self activateController:self.textController];
-			break;
-		case 7: [self activateController:self.colourController];
-			break;
-			
-	}
+    [[[[self panelController:i]contentView]window]orderFront:nil];
 }
+
+-(void)hidePanel:(int)i
+{
+    [[[[self panelController:i]contentView]window]orderOut:nil];
+}
+
+-(void)showAllPallettes
+{
+    for (int i = 0;i < 10;i++)
+        [self showPanel:i];
+}
+
+-(void)hideAllPallettes
+{
+    for (int i = 0;i < 10;i++)
+    {
+        ViewController *vc = [self panelController:i];
+        vc.wasShowing = vc.visible;
+        [self hidePanel:i];
+    }
+}
+
 
 @end

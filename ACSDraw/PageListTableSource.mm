@@ -85,7 +85,7 @@
 
 -(BOOL)dragPageData:(NSData*)rowData row:(NSInteger)row
 {
-    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSIndexSet class] fromData:rowData error:NULL];
     NSUInteger dragRow = [rowIndexes firstIndex];
     GraphicView *graphicView = [windowController inspectingGraphicView];
     row = [graphicView movePageFromIndex:dragRow toIndex:row];
@@ -97,7 +97,7 @@
 -(BOOL)dragLayerIndexData:(NSData*)rowData row:(NSInteger)row dragType:(int)dragType
 {
     GraphicView *graphicView = [windowController inspectingGraphicView];
-    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSIndexSet class] fromData:rowData error:NULL];
     if (dragType == DRAG_TYPE_SELECTION)
     {
         ACSDLayer *sourceLayer = [graphicView currentEditableLayer];
