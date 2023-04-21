@@ -29,7 +29,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="Panel" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="7" userLabel="Panel" customClass="NSPanel">
+        <window title="Styles" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="7" userLabel="Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="432" y="276" width="408" height="391"/>
@@ -55,7 +55,7 @@
                         <rect key="frame" x="-7" y="-1" width="422" height="365"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <box fixedFrame="YES" boxType="oldStyle" borderType="none" titlePosition="noTitle" id="126">
+                            <box fixedFrame="YES" borderType="none" titlePosition="noTitle" id="126">
                                 <rect key="frame" x="0.0" y="0.0" width="422" height="112"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <view key="contentView" id="H84-e7-0FY">
@@ -896,7 +896,7 @@
                     <constraint firstItem="18" firstAttribute="leading" secondItem="8" secondAttribute="leading" constant="11" id="aai-kL-X2b"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="140" y="149.5"/>
+            <point key="canvasLocation" x="120" y="173"/>
         </window>
         <customObject id="40" userLabel="StyleTableSource" customClass="StyleTableSource">
             <connections>
