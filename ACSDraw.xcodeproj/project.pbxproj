@@ -313,6 +313,14 @@
 		E77A36DD196841FB0050264B /* OverlayFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = E77A36DC196841FB0050264B /* OverlayFilter.m */; };
 		E77A36DF196844E20050264B /* OverlayFilter.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = E77A36DE196844E20050264B /* OverlayFilter.cikernel */; };
 		E78463A229B8AE6E00227A21 /* StylePanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = E78463A029B8AE6E00227A21 /* StylePanel.xib */; };
+		E78463AB29B92BEA00227A21 /* justifyright.tif in Resources */ = {isa = PBXBuildFile; fileRef = E78463A329B92BE900227A21 /* justifyright.tif */; };
+		E78463AC29B92BEA00227A21 /* justifyfull.tif in Resources */ = {isa = PBXBuildFile; fileRef = E78463A429B92BE900227A21 /* justifyfull.tif */; };
+		E78463AD29B92BEA00227A21 /* justifycentre.tif in Resources */ = {isa = PBXBuildFile; fileRef = E78463A529B92BEA00227A21 /* justifycentre.tif */; };
+		E78463AE29B92BEA00227A21 /* justifyleft.tif in Resources */ = {isa = PBXBuildFile; fileRef = E78463A629B92BEA00227A21 /* justifyleft.tif */; };
+		E78463AF29B92BEA00227A21 /* justifyrightalt.tif in Resources */ = {isa = PBXBuildFile; fileRef = E78463A729B92BEA00227A21 /* justifyrightalt.tif */; };
+		E78463B029B92BEA00227A21 /* justifyleftalt.tif in Resources */ = {isa = PBXBuildFile; fileRef = E78463A829B92BEA00227A21 /* justifyleftalt.tif */; };
+		E78463B129B92BEA00227A21 /* justifyfullalt.tif in Resources */ = {isa = PBXBuildFile; fileRef = E78463A929B92BEA00227A21 /* justifyfullalt.tif */; };
+		E78463B229B92BEA00227A21 /* justifycentrealt.tif in Resources */ = {isa = PBXBuildFile; fileRef = E78463AA29B92BEA00227A21 /* justifycentrealt.tif */; };
 		E79139421A607B7C00A9B1C4 /* ACSDDocImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E79139411A607B7C00A9B1C4 /* ACSDDocImage.mm */; };
 		E79458B51C66085F00FA88A8 /* SceneView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E79458B41C66085F00FA88A8 /* SceneView.mm */; };
 		E798F30315C3F0C70079B4D9 /* ACSDraw.icns in Resources */ = {isa = PBXBuildFile; fileRef = E798F30215C3F0C60079B4D9 /* ACSDraw.icns */; };
@@ -830,6 +838,14 @@
 		E77A36DC196841FB0050264B /* OverlayFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayFilter.m; sourceTree = "<group>"; };
 		E77A36DE196844E20050264B /* OverlayFilter.cikernel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OverlayFilter.cikernel; sourceTree = "<group>"; };
 		E78463A129B8AE6E00227A21 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/StylePanel.xib; sourceTree = "<group>"; };
+		E78463A329B92BE900227A21 /* justifyright.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifyright.tif; sourceTree = "<group>"; };
+		E78463A429B92BE900227A21 /* justifyfull.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifyfull.tif; sourceTree = "<group>"; };
+		E78463A529B92BEA00227A21 /* justifycentre.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifycentre.tif; sourceTree = "<group>"; };
+		E78463A629B92BEA00227A21 /* justifyleft.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifyleft.tif; sourceTree = "<group>"; };
+		E78463A729B92BEA00227A21 /* justifyrightalt.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifyrightalt.tif; sourceTree = "<group>"; };
+		E78463A829B92BEA00227A21 /* justifyleftalt.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifyleftalt.tif; sourceTree = "<group>"; };
+		E78463A929B92BEA00227A21 /* justifyfullalt.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifyfullalt.tif; sourceTree = "<group>"; };
+		E78463AA29B92BEA00227A21 /* justifycentrealt.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifycentrealt.tif; sourceTree = "<group>"; };
 		E79139401A607B7C00A9B1C4 /* ACSDDocImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACSDDocImage.h; sourceTree = "<group>"; };
 		E79139411A607B7C00A9B1C4 /* ACSDDocImage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ACSDDocImage.mm; sourceTree = "<group>"; };
 		E79458B31C66085F00FA88A8 /* SceneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneView.h; sourceTree = "<group>"; };
@@ -1155,6 +1171,14 @@
 				E74155091C2580F400D5493D /* close.tiff */,
 				E746F6E915E8BCC900110247 /* eye.tif */,
 				E746F6EA15E8BCC900110247 /* eye2.tif */,
+				E78463A529B92BEA00227A21 /* justifycentre.tif */,
+				E78463AA29B92BEA00227A21 /* justifycentrealt.tif */,
+				E78463A429B92BE900227A21 /* justifyfull.tif */,
+				E78463A929B92BEA00227A21 /* justifyfullalt.tif */,
+				E78463A629B92BEA00227A21 /* justifyleft.tif */,
+				E78463A829B92BEA00227A21 /* justifyleftalt.tif */,
+				E78463A329B92BE900227A21 /* justifyright.tif */,
+				E78463A729B92BEA00227A21 /* justifyrightalt.tif */,
 				E746F6EB15E8BCC900110247 /* leftright.tiff */,
 				E746F6EC15E8BCC900110247 /* lock.tif */,
 				E746F6ED15E8BCC900110247 /* lock2.tif */,
@@ -1576,6 +1600,7 @@
 				E76AC01429B4D495005DE06A /* back.svg in Resources */,
 				E7D218B52895974500B0ABEC /* TextAccessory.xib in Resources */,
 				E74056FE15B1EF950040F590 /* MainWindow.nib in Resources */,
+				E78463AC29B92BEA00227A21 /* justifyfull.tif in Resources */,
 				E76AC07A29B53CFF005DE06A /* LineEndingWindow.xib in Resources */,
 				E74056FF15B1EF950040F590 /* PallettePanel.xib in Resources */,
 				E740570015B1EF950040F590 /* Pallettes.xib in Resources */,
@@ -1586,6 +1611,7 @@
 				E740570615B1EF950040F590 /* ToolPalette.nib in Resources */,
 				E740578915B2D3060040F590 /* arrow2.tif in Resources */,
 				E740578A15B2D3060040F590 /* arrow2alt.tif in Resources */,
+				E78463B129B92BEA00227A21 /* justifyfullalt.tif in Resources */,
 				E740578B15B2D3060040F590 /* elbow.tif in Resources */,
 				E740578C15B2D3060040F590 /* elbowalt.tif in Resources */,
 				E740578D15B2D3060040F590 /* ellipse.tif in Resources */,
@@ -1612,6 +1638,7 @@
 				E76AC01629B4D49C005DE06A /* prev.svg in Resources */,
 				E740579B15B2D3060040F590 /* pat3.tif in Resources */,
 				E740579C15B2D3060040F590 /* pat3a.tif in Resources */,
+				E78463AE29B92BEA00227A21 /* justifyleft.tif in Resources */,
 				E740579D15B2D3060040F590 /* pat4.tif in Resources */,
 				E740579E15B2D3060040F590 /* pat4a.tif in Resources */,
 				E78463A229B8AE6E00227A21 /* StylePanel.xib in Resources */,
@@ -1630,6 +1657,7 @@
 				E74057AB15B2D3060040F590 /* snap2.tif in Resources */,
 				E74057AC15B2D3060040F590 /* snap3.tif in Resources */,
 				E74057AD15B2D3060040F590 /* splitpoint.tif in Resources */,
+				E78463B229B92BEA00227A21 /* justifycentrealt.tif in Resources */,
 				E76AC07129B514F5005DE06A /* MainMenu.xib in Resources */,
 				E74057AE15B2D3060040F590 /* splitpointalt.tif in Resources */,
 				E74057AF15B2D3060040F590 /* squiggle.tif in Resources */,
@@ -1639,6 +1667,7 @@
 				E74057B215B2D3060040F590 /* tinyplus.tiff in Resources */,
 				E74057B315B2D3060040F590 /* whitearrow1.tif in Resources */,
 				E74057B415B2D3060040F590 /* whitearrow1alt.tif in Resources */,
+				E78463AF29B92BEA00227A21 /* justifyrightalt.tif in Resources */,
 				E74057BD15B8965B0040F590 /* gradientmarker.tif in Resources */,
 				E77102E4279E77B4000FF4FB /* expand.tiff in Resources */,
 				E741550A1C2580F400D5493D /* close.tiff in Resources */,
@@ -1647,6 +1676,7 @@
 				E798F30315C3F0C70079B4D9 /* ACSDraw.icns in Resources */,
 				E746F6FD15E8BCCA00110247 /* arrowplus.tiff in Resources */,
 				E746F6FE15E8BCCA00110247 /* celticcross.tif in Resources */,
+				E78463B029B92BEA00227A21 /* justifyleftalt.tif in Resources */,
 				E746F6FF15E8BCCA00110247 /* closehairs.tiff in Resources */,
 				E746F70015E8BCCA00110247 /* eye.tif in Resources */,
 				E74A50451C6228A000A83A52 /* GroupWindow.xib in Resources */,
@@ -1663,8 +1693,10 @@
 				E746F70A15E8BCCA00110247 /* oblique2.tiff in Resources */,
 				E76AC01729B4D49C005DE06A /* repeataudio.svg in Resources */,
 				E746F70B15E8BCCA00110247 /* redarrowcs.tif in Resources */,
+				E78463AB29B92BEA00227A21 /* justifyright.tif in Resources */,
 				E746F70C15E8BCCA00110247 /* rotatecursor.tif in Resources */,
 				E746F70D15E8BCCA00110247 /* selectionimage.tif in Resources */,
+				E78463AD29B92BEA00227A21 /* justifycentre.tif in Resources */,
 				E746F70E15E8BCCA00110247 /* splitcsplus.tiff in Resources */,
 				E746F70F15E8BCCA00110247 /* splitpointcs.tif in Resources */,
 				E746F71015E8BCCA00110247 /* splitpointcsr.tif in Resources */,

@@ -248,8 +248,8 @@
 - (void)windowDidLoad
    {
     [super windowDidLoad];
-	[[self window]setOpaque:NO];
-	[[self window]setBackgroundColor:[[NSColor blackColor]colorWithAlphaComponent:0.5]];
+	//[[self window]setOpaque:NO];
+	//[[self window]setBackgroundColor:[[NSColor blackColor]colorWithAlphaComponent:0.5]];
     [(NSPanel *)[self window] setBecomesKeyOnlyIfNeeded:YES];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowChanged:) name:NSWindowDidBecomeMainNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowResigned:) name:NSWindowDidResignMainNotification object:nil];
