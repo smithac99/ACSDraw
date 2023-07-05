@@ -302,7 +302,7 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
     }
 	return [super validateMenuItem:menuItem];
    }
-*/
+
 
 /*-(NSDictionary*)typingAttributes
 {
