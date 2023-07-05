@@ -326,6 +326,7 @@
 		E798F30315C3F0C70079B4D9 /* ACSDraw.icns in Resources */ = {isa = PBXBuildFile; fileRef = E798F30215C3F0C60079B4D9 /* ACSDraw.icns */; };
 		E7A2E0E41A6A4C85009DD659 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7A2E0E31A6A4C85009DD659 /* CoreGraphics.framework */; };
 		E7BB1B451BD8361C0053B9DE /* NSView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E7BB1B441BD8361C0053B9DE /* NSView+Additions.m */; };
+		E7BDF8B129F2EB3700BA0C64 /* ACSDSVGImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7BDF8AD29F2EB3700BA0C64 /* ACSDSVGImage.mm */; };
 		E7CFC26A1C92C68600114E18 /* ACSDReference.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7CFC2691C92C68600114E18 /* ACSDReference.mm */; };
 		E7D18F0F1988EA67000664F6 /* gElement.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D18F0E1988EA67000664F6 /* gElement.m */; };
 		E7D202D81889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7D202D61889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm */; };
@@ -854,6 +855,8 @@
 		E7A2E0E31A6A4C85009DD659 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		E7BB1B431BD8361C0053B9DE /* NSView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+Additions.h"; sourceTree = "<group>"; };
 		E7BB1B441BD8361C0053B9DE /* NSView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+Additions.m"; sourceTree = "<group>"; };
+		E7BDF8AD29F2EB3700BA0C64 /* ACSDSVGImage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ACSDSVGImage.mm; sourceTree = "<group>"; };
+		E7BDF8AF29F2EB3700BA0C64 /* ACSDSVGImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACSDSVGImage.h; sourceTree = "<group>"; };
 		E7CF357627AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/DocPadding.nib; sourceTree = "<group>"; };
 		E7CF357727AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/HTMLExport.nib; sourceTree = "<group>"; };
 		E7CF357827AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ImageController.xib; sourceTree = "<group>"; };
@@ -1383,6 +1386,8 @@
 		E7E1B46C16F475840090AB26 /* Graphics Objects */ = {
 			isa = PBXGroup;
 			children = (
+				E7BDF8AF29F2EB3700BA0C64 /* ACSDSVGImage.h */,
+				E7BDF8AD29F2EB3700BA0C64 /* ACSDSVGImage.mm */,
 				E76AC01829B50EA6005DE06A /* svg nodes */,
 				E74054E115B1EF2D0040F590 /* ACSDAttribute.h */,
 				E74054E215B1EF2D0040F590 /* ACSDAttribute.mm */,
@@ -1861,6 +1866,7 @@
 				E74056B015B1EF2E0040F590 /* ParaStyleHolder.mm in Sources */,
 				E76AC06129B50EFE005DE06A /* SVGPaintServer.m in Sources */,
 				E74056B115B1EF2E0040F590 /* PatternDisplay.mm in Sources */,
+				E7BDF8B129F2EB3700BA0C64 /* ACSDSVGImage.mm in Sources */,
 				E74056B215B1EF2E0040F590 /* PatternPreview.mm in Sources */,
 				E76AC05929B50EFE005DE06A /* SVG_stop.m in Sources */,
 				E74056B315B1EF2E0040F590 /* PatternWindowController.mm in Sources */,
