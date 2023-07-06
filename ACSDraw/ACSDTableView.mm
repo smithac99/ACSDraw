@@ -2,6 +2,7 @@
 #import "TableViewDelegate.h"
 //#import "PanelController.h"
 #import "ViewController.h"
+#import "ACSDKeyAcceptor.h"
 
 @implementation ACSDTableView
 
@@ -142,6 +143,24 @@
         [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row - 1] byExtendingSelection:NO];
         [self editColumn:col row:row - 1 withEvent:nil select:YES];
     }
+}
+
+- (void)keyDown:(NSEvent *)event
+{
+    NSString *str = [event charactersIgnoringModifiers];
+    unichar uc = 0;
+    if ([str length] > 0)
+        uc = [str characterAtIndex:0];
+
+    if (uc == 9)
+    {
+        NSLog(@"got there");
+        id del = self.delegate;
+        if ([del respondsToSelector:@selector(keyHit:)])
+            [(id)del keyHit:uc];
+    }
+    else
+        [self interpretKeyEvents:[NSArray arrayWithObject:event]];
 }
 
 @end

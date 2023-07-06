@@ -846,6 +846,7 @@
 		E78463A829B92BEA00227A21 /* justifyleftalt.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifyleftalt.tif; sourceTree = "<group>"; };
 		E78463A929B92BEA00227A21 /* justifyfullalt.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifyfullalt.tif; sourceTree = "<group>"; };
 		E78463AA29B92BEA00227A21 /* justifycentrealt.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = justifycentrealt.tif; sourceTree = "<group>"; };
+		E78E76BB2A57056E00B94E44 /* ACSDKeyAcceptor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACSDKeyAcceptor.h; sourceTree = "<group>"; };
 		E79139401A607B7C00A9B1C4 /* ACSDDocImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACSDDocImage.h; sourceTree = "<group>"; };
 		E79139411A607B7C00A9B1C4 /* ACSDDocImage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ACSDDocImage.mm; sourceTree = "<group>"; };
 		E79458B31C66085F00FA88A8 /* SceneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneView.h; sourceTree = "<group>"; };
@@ -1375,6 +1376,7 @@
 				E71E28CF1823BAAE00F5C5B9 /* XMLNode.h */,
 				E71E28D01823BAAE00F5C5B9 /* XMLNode.m */,
 				E76AC00829B2A02B005DE06A /* ACSDDocumentController.h */,
+				E78E76BB2A57056E00B94E44 /* ACSDKeyAcceptor.h */,
 				E76AC00929B2A02B005DE06A /* ACSDDocumentController.m */,
 			);
 			name = "Main UI";

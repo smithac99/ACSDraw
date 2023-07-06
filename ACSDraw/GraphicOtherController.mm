@@ -604,4 +604,9 @@ void MoveRowsFromIndexSetToPosition(NSMutableArray* arr,NSIndexSet *ixs,NSIntege
     return NO;
 }
 
+-(void)keyHit:(unichar)uc
+{
+    if (uc == 9)
+        [[self.inspectingGraphicView window]makeKeyAndOrderFront:self];
+}
 @end
