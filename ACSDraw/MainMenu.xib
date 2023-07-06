@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21225" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21225"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -965,6 +965,17 @@ CA
                             <menuItem title="Select By Name…" id="1037">
                                 <connections>
                                     <action selector="showSelectByNameDialog:" target="-1" id="1041"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Select Visible" keyEquivalent="'" id="rdz-xo-KIV">
+                                <connections>
+                                    <action selector="selectVisible:" target="-1" id="ABg-zL-VJg"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Select Invisible" alternate="YES" keyEquivalent="'" id="He6-s5-p0h">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="selectInvisible:" target="-1" id="h4X-hP-Tc6"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Rename…" keyEquivalent="r" id="9Hl-3w-y1m">

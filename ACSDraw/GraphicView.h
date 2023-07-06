@@ -264,5 +264,7 @@ NSString *IncrementString(NSString *s);
 -(NSArray*)graphicsMatchingName:(NSString*)nm;
 +(NSMutableArray*)subPathsFromSelectedObjects:(NSArray*)arr;
 -(CGImageRef)cgImageFromCurrentPageOfSize:(NSSize)sz;
+- (IBAction)selectVisible:(id)sender;
+- (IBAction)selectInvisible:(id)sender;
 
 @end

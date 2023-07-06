@@ -14,6 +14,11 @@
 @class AnimationsController;
 @class ContainerPalletteController;
 
+enum
+{
+    GRAPHIC_OTHER_CONTROLLER = 9
+};
+
 @interface PalletteViewController : NSObject 
 {
 	NSMutableArray *pallettePanels;

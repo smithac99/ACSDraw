@@ -60,6 +60,7 @@
 #import "ACSDDocImage.h"
 #import "NSView+Additions.h"
 #import "SelectedElement.h"
+#import "GraphicOtherController.h"
 
 #define MINN(a,b) ((a)<(b))?(a):(b)
 
@@ -3244,6 +3245,28 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     if (selectionChanged)
         [[self undoManager] setActionName:@"Change Selection"];
 }
+
+-(void)selectGraphicsVisible:(BOOL)vis
+{
+    [self clearSelection];
+    BOOL selectionChanged=NO;
+    for (ACSDGraphic *g in [[self currentEditableLayer]graphics])
+        if ([g visible] == vis)
+            selectionChanged = [self selectGraphic:g]|| selectionChanged;
+    if (selectionChanged)
+        [[self undoManager] setActionName:[NSString stringWithFormat:@"Select %@",vis?@"visible":@"hidden"]];
+}
+
+- (IBAction)selectVisible:(id)sender
+{
+    [self selectGraphicsVisible:YES];
+}
+
+- (IBAction)selectInvisible:(id)sender
+{
+    [self selectGraphicsVisible:NO];
+}
+
 
 -(NSArray*)graphicsMatchingName:(NSString*)nm
 {
@@ -6928,6 +6951,9 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 - (void)keyDown:(NSEvent *)event
 {
 	NSString *str = [event charactersIgnoringModifiers];
+    unichar uc = 0;
+    if ([str length] > 0)
+        uc = [str characterAtIndex:0];
 	if ([str isEqualToString:@" "])
 	{
 	    spaceDown = YES;
@@ -6955,7 +6981,20 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         else
             [self interpretKeyEvents:[NSArray arrayWithObject:event]];
     }
-	else
+	else if (uc == 9)
+    {
+        if ([[self selectedGraphics]count] == 1)
+        {
+            PalletteViewController *pvc = [PalletteViewController sharedPalletteViewController];
+            [pvc activatePanel:GRAPHIC_OTHER_CONTROLLER];
+            GraphicOtherController *goc = pvc.graphicOtherController;
+            NSInteger idx = [goc.graphicsTableView selectedRow];
+            [[goc.graphicsTableView window]makeKeyAndOrderFront:self];
+            [goc.graphicsTableView editColumn:1 row:idx withEvent:nil select:YES];
+            
+        }
+    }
+    else
 		[self interpretKeyEvents:[NSArray arrayWithObject:event]];
 }
 
@@ -7023,7 +7062,6 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	else if ([[ToolWindowController sharedToolWindowController:nil] currentTool])
 		[[ToolWindowController sharedToolWindowController:nil] selectArrowTool];
 }
-
 
 - (void)cancelOperation:(id)sender
    {

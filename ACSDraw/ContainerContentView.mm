@@ -25,4 +25,19 @@
 	NSRectFill([self bounds]);
 }
 
+- (void)keyDown:(NSEvent *)event
+{
+    NSString *str = [event charactersIgnoringModifiers];
+    unichar uc = 0;
+    if ([str length] > 0)
+        uc = [str characterAtIndex:0];
+
+    if (uc == 9)
+    {
+        NSLog(@"got there");
+    }
+    else
+        [self interpretKeyEvents:[NSArray arrayWithObject:event]];
+}
+
 @end
