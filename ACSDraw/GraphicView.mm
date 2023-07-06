@@ -60,6 +60,8 @@
 #import "ACSDDocImage.h"
 #import "NSView+Additions.h"
 #import "SelectedElement.h"
+#import "SVGDocument.h"
+#import "ACSDSVGImage.h"
 #import "GraphicOtherController.h"
 
 #define MINN(a,b) ((a)<(b))?(a):(b)
@@ -2094,6 +2096,34 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	[self selectGraphic:g];
 	[[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
    }
+
+- (void)createSVGImage:(SVGDocument*)svgdoc name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
+{
+    NSSize iSize = [svgdoc size];
+    NSSize vSize = [self bounds].size;
+    float ratio = 1.0;
+    if (iSize.width > vSize.width || iSize.height > vSize.height)
+    {
+        float wRatio = 0.9 * vSize.width / iSize.width;
+        float hRatio = 0.9 * vSize.height / iSize.height;
+        ratio = (wRatio < hRatio)?wRatio:hRatio;
+    }
+    NSPoint location;
+    if (loc)
+        location = *loc;
+    else
+        location = NSMakePoint(floor((vSize.width - iSize.width*ratio)/2.0),floor((vSize.height - iSize.height*ratio)/2.0));
+    NSRect r = NSMakeRect(location.x - floor(iSize.width/2.0),location.y-floor(iSize.height/2.0),iSize.width,iSize.height);
+    ACSDSVGImage *image = [[ACSDSVGImage alloc]initWithName:name fill:nil stroke:nil rect:r layer:[self currentEditableLayer] document:svgdoc];
+    image.sourcePath = fileName;
+    [image setGraphicXScale:ratio yScale:ratio undo:NO];
+    [self clearSelection];
+    [self selectGraphic:image];
+    [self addGraphicToCurrentLayer:(ACSDGraphic*)[[self document]registerObject:image]];
+    [[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
+    [[self undoManager] setActionName:@"Import document"];
+    [[self window] invalidateCursorRectsForView:self];
+}
 
 - (void)createDocImage:(ACSDrawDocument*)adoc name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
 {
@@ -5098,7 +5128,7 @@ NSInteger findSame(id obj,NSArray *arr)
 			{
 				NSString *fileStr = [files objectAtIndex:i];
 				NSString *extension = [[fileStr pathExtension]lowercaseString];
-				if ([extension isEqualTo:@"acsd"] || [extension isEqualTo:@"svg"])
+				if ([extension isEqualTo:@"acsd"])
 				{
 					NSData *d = [NSData dataWithContentsOfFile:fileStr];
 					ACSDrawDocument *adoc = [[ACSDrawDocument alloc]init];
@@ -5106,6 +5136,13 @@ NSInteger findSame(id obj,NSArray *arr)
 					[adoc readFromData:d ofType:extension error:nil];
 					[self createDocImage:adoc name:[[fileStr lastPathComponent]stringByDeletingPathExtension] location:loc fileName:fileStr];
 				}
+                else if ([extension isEqualTo:@"svg"])
+                {
+                    NSData *d = [NSData dataWithContentsOfFile:fileStr];
+                    SVGDocument *adoc = [[SVGDocument alloc]initWithData:d];
+                    [adoc setFileURL:[NSURL fileURLWithPath:fileStr]];
+                    [self createSVGImage:adoc name:[[fileStr lastPathComponent]stringByDeletingPathExtension] location:loc fileName:fileStr];
+                }
 				else
 				{
 					if (!(im = ImageFromFile(fileStr)))
