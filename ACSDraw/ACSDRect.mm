@@ -287,8 +287,8 @@
     p1 = RelativePointInRect(p1.x,p1.y, invrect);
     NSRect r = rectFromPoints(p0, p1);
     [attrString appendFormat:@" x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\"",r.origin.x,r.origin.y,r.size.width,r.size.height];
-    for (NSArray *arr in self.attributes)
-		if ([arr[0]isEqualToString:@"widthtracksheight"] || [arr[0]isEqualToString:@"heighttrackswidth"])
+    //for (NSArray *arr in self.attributes)
+		//if ([arr[0]isEqualToString:@"widthtracksheight"] || [arr[0]isEqualToString:@"heighttrackswidth"])
 			[attrString appendFormat:@" pxwidth=\"%g\" pxheight=\"%g\"",b.size.width,b.size.height];
     if (self.cornerRadius != 0.0)
         [attrString appendFormat:@" cornerradius=\"%g\"",self.cornerRadius / b.size.height];

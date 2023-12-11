@@ -1867,6 +1867,7 @@ float normalisedAngle(float ang)
     if (self.layer)
     {
         [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+        //[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
         [self invalidateConnectors];
         [self postChangeOfBounds];
     }

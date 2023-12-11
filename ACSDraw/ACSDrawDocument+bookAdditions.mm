@@ -16,6 +16,63 @@
 #import "ACSDDocImage.h"
 #import "ACSDLink.h"
 #import "NSString+StringAdditions.h"
+#import <Vision/Vision.h>
+
+NSFont* FontToFitSize(NSFont *fnt, NSString *txt,CGSize sz, BOOL width, BOOL height,BOOL wrapped);
+CGRect boundingBoxForString(NSString* str,NSFont* font,CGSize sz);
+CGRect boundingBoxForWrappedString(NSString* str,NSFont* font,CGSize sz);
+
+CGRect boundingBoxForString(NSString* str,NSFont* font,CGSize sz)
+{
+    NSDictionary *attrs = @{NSFontAttributeName:font};
+    CGRect r = [str boundingRectWithSize:sz options:0 attributes:attrs
+                                 context:nil];
+    return r;
+}
+
+CGRect boundingBoxForWrappedString(NSString* str,NSFont* font,CGSize sz)
+{
+    NSDictionary *attrs = @{NSFontAttributeName:font};
+    CGRect r = [str boundingRectWithSize:sz options:NSStringDrawingUsesLineFragmentOrigin attributes:attrs
+                                 context:nil];
+    return r;
+}
+
+static BOOL textFits(NSFont *fnt, NSString *txt,CGSize targetSz, BOOL width, BOOL height,BOOL wrapped)
+{
+    CGSize insz = targetSz;
+    if (wrapped)
+        insz.height = CGFLOAT_MAX;
+    else
+        insz.width = CGFLOAT_MAX;
+    CGSize thisSz;
+    if (wrapped)
+        thisSz = boundingBoxForWrappedString(txt, fnt, insz).size;
+    else
+        thisSz = boundingBoxForString(txt, fnt, insz).size;
+    return !((height && (thisSz.height > targetSz.height)) || (width && (thisSz.width > targetSz.width)));
+}
+
+NSFont* FontToFitSize(NSFont *fnt, NSString *txt,CGSize sz, BOOL width, BOOL height,BOOL wrapped)
+{
+    sz.width -= 10;
+    sz.height -= 10;
+    if (textFits(fnt,txt,sz, width, height,wrapped))
+        return fnt;
+    float pointSize = [fnt pointSize];
+    float upperBound = pointSize,lowerBound = 1;
+    float threshold = fminf(1.0, pointSize / 50.0);
+    while (upperBound - lowerBound > threshold)
+    {
+        float mid = (upperBound + lowerBound) / 2.0;
+        fnt = [fnt fontWithSize:mid];
+        if (textFits(fnt,txt,sz, width, height,wrapped))
+            lowerBound = mid;
+        else
+            upperBound = mid;
+    }
+    return [fnt fontWithSize:lowerBound];
+}
 
 @implementation ACSDrawDocument (bookAdditions)
 
@@ -501,6 +558,71 @@ void FitImageToBox(ACSDImage *im,NSRect box)
     return dict;
 }
 
+-(NSArray*)textRectsForBookPage:(NSString *)pno
+{
+    //pno = [NSString stringWithFormat:@"p%@",pno];
+    NSMutableArray *rects = [NSMutableArray array];
+    ACSDPage *page = [self pagesDict][pno];
+    if (page)
+    {
+        ACSDGraphic *pageGraphic = nil;
+        NSArray *ls = [page layersWithName:@"preview"];
+        if ([ls count] > 0)
+        {
+            ACSDLayer *imageLayer = ls[0];
+            NSArray *gs = [imageLayer graphicsWithName:pno];
+            if ([gs count] > 0)
+                pageGraphic = gs[0];
+        }
+        if (pageGraphic)
+        {
+            NSBitmapImageRep *bm = newBitmap(self.documentSize.width,self.documentSize.height);
+            NSImage *im = [[NSImage alloc]initWithSize:self.documentSize];
+            [im addRepresentation:bm];
+            [im lockFocusFlipped:YES];
+            NSRect bnds = NSZeroRect;
+            bnds.size = self.documentSize;
+            [[NSAffineTransform transformWithTranslateXBy:0 yBy:bnds.size.height]concat];
+            [[NSAffineTransform transformWithScaleXBy:1.0 yBy:-1.0]concat];
+            [pageGraphic draw:bnds inView:nil selected:NO isGuide:NO cacheDrawing:NO options:nil];
+            [im unlockFocus];
+            CGImageRef cgim = [im CGImageForProposedRect:&bnds context:nil hints:@{}];
+            VNImageRequestHandler *irh = [[VNImageRequestHandler alloc]initWithCGImage:cgim options:@{}];
+            VNRecognizeTextRequest *req = [[VNRecognizeTextRequest alloc]initWithCompletionHandler:^(VNRequest * _Nonnull request, NSError * _Nullable error) {
+                if (error == nil)
+                {
+                    NSArray<VNRecognizedTextObservation*> *obs = request.results;
+                    for (VNRecognizedTextObservation *ob in obs)
+                    {
+                        NSArray<VNRecognizedText*>*txts = [ob topCandidates:1];
+                        for (VNRecognizedText *txt in txts)
+                        {
+                            NSError *er = nil;
+                            VNRectangleObservation *rectobj = [txt boundingBoxForRange:NSMakeRange(0, [txt.string length]) error:&er];
+                            CGRect r = rectobj.boundingBox;
+                            [rects addObject:[NSValue valueWithRect:VNImageRectForNormalizedRect(r,bnds.size.width,bnds.size.height)]];
+                        }
+                    }
+                }
+            }];
+            NSError *err;
+            [irh performRequests:@[req] error:&err];
+        }
+    }
+    return rects;
+}
+
+-(NSArray*)consolidateTextRects:(NSArray<NSValue*>*)textRects
+{
+    if ([textRects count] <= 1)
+        return textRects;
+    NSRect r0 = [textRects[0]rectValue];
+    NSRect r1 = [textRects[1]rectValue];
+    NSRect rx = NSUnionRect(r0, r1);
+    NSMutableArray *marr = [NSMutableArray arrayWithObject:[NSValue valueWithRect:rx]];
+    [marr addObjectsFromArray:[textRects subarrayWithRange:NSMakeRange(2, [textRects count] - 2)]];
+    return marr;
+}
 -(void)updateWithBookXML:(XMLNode*)xmlNode runParasTogether:(BOOL)runParas
 {
     NSDictionary *pagesDict = [self pagesDict];
@@ -523,6 +645,7 @@ void FitImageToBox(ACSDImage *im,NSRect box)
                     if ([gs count] > 0)
                         pageGraphic = gs[0];
                 }
+                NSArray *textRects = [self textRectsForBookPage:pno];
                 CGFloat y = self.documentSize.height - 300,x = 100;
                 NSArray<XMLNode*>*paraNodes = [pageNode childrenOfType:@"para"];
                 if ([paraNodes count] > 1 && runParas)
@@ -538,6 +661,8 @@ void FitImageToBox(ACSDImage *im,NSRect box)
                     pNode.contents = mstr;
                     paraNodes = @[pNode];
                 }
+                while ([textRects count] > [paraNodes count])
+                    textRects = [self consolidateTextRects:textRects];
                 int idx = 1;
                 for (XMLNode *para in paraNodes)
                 {
@@ -580,13 +705,17 @@ void FitImageToBox(ACSDImage *im,NSRect box)
                     else
                     {
                         ACSDLayer *layer = page.layers[1];
-                        ACSDText *t = [[ACSDText alloc]initWithName:textBoxName fill:nil stroke:nil rect:NSMakeRect(x,y,300,200) layer:layer];
+                        NSRect r = NSMakeRect(x,y,300,200);
+                        if ([textRects count] > idx - 1)
+                            r = [textRects[idx - 1]rectValue];
+                        ACSDText *t = [[ACSDText alloc]initWithName:textBoxName fill:nil stroke:nil rect:r layer:layer];
                         x += 100;
                         y -= 100;
                         NSColor *textFill = [NSColor blackColor];
-                        NSFont *f = [NSFont fontWithName:@"onebillionreader-Regular" size:40];
+                        NSFont *f = [NSFont fontWithName:@"onebillionreader-Regular" size:200];
                         if (f == nil)
-                            f = [NSFont systemFontOfSize:40];
+                            f = [NSFont systemFontOfSize:200];
+                        f = FontToFitSize(f, text, r.size, YES, YES, YES);
                         NSAttributedString *mas = [[NSAttributedString alloc]initWithString:text attributes:@{NSFontAttributeName:f,NSForegroundColorAttributeName:textFill}];
                         NSTextStorage *contents = [[NSTextStorage alloc]initWithAttributedString:mas];
                         [contents addLayoutManager:[t layoutManager]];
@@ -668,7 +797,22 @@ void FitImageToBox(ACSDImage *im,NSRect box)
         {
             if (imageDict[name])
             {
-                NSArray<ACSDLayer*>*layers = [page layersWithName:@"preview"];
+                NSImage *oldim = nil;
+                NSArray<ACSDLayer*>*layers = [page layersWithName:@"image"];
+                if ([layers count] > 0)
+                {
+                    ACSDLayer *l = layers[0];
+                    NSArray *gs = [l graphicsWithName:name];
+                    if ([gs count] > 0)
+                    {
+                        ACSDGraphic *g = gs[0];
+                        if (g && [g isKindOfClass:[ACSDImage class]])
+                        {
+                            oldim = [((ACSDImage*)g) image];
+                        }
+                    }
+                }
+                layers = [page layersWithName:@"preview"];
                 if ([layers count] > 0)
                 {
                     ACSDLayer *layer = layers[0];
@@ -676,6 +820,20 @@ void FitImageToBox(ACSDImage *im,NSRect box)
                     [gview setCurrentPageIndex:idx force:NO withUndo:YES];
                     [gview setCurrentEditableLayerIndex:[page.layers indexOfObject:layer] force:NO select:NO withUndo:YES];
                     ACSDImage *im = [gview createImage:imageDict[name][0] name:name location:&loc fileName:imageDict[name][1]];
+                    
+/*                    NSError *err;
+                    VNImageRequestHandler *reqHandler = [[VNImageRequestHandler alloc]initWithCGImage:[oldim CGImageForProposedRect:NULL context:nil hints:nil] options:@{}];
+                    VNImageRegistrationRequest *imageRegReq = [[VNTranslationalImageRegistrationRequest alloc]initWithTargetedCGImage:[imageDict[name][0] CGImageForProposedRect:NULL context:nil hints:nil] options:@{}];
+                    [reqHandler performRequests:@[imageRegReq] error:nil];
+                    VNImageTranslationAlignmentObservation *obs = [imageRegReq.results firstObject];
+                    CGAffineTransform trans = obs.alignmentTransform;
+                    NSLog(@"tr %g %g %g %g",trans.a,trans.d,trans.tx,trans.ty);
+                    
+                    VNImageRequestHandler *reqHandler2 = [[VNImageRequestHandler alloc]initWithCGImage:[oldim CGImageForProposedRect:NULL context:nil hints:nil] options:@{}];
+                    VNImageRegistrationRequest *imageRegReq2 = [[VNHomographicImageRegistrationRequest alloc]initWithTargetedCGImage:[imageDict[name][0] CGImageForProposedRect:NULL context:nil hints:nil] options:@{}];
+                    [reqHandler2 performRequests:@[imageRegReq2] error:&err];
+                    VNImageHomographicAlignmentObservation *obs2 = [imageRegReq2.results firstObject];
+*/
                     [im setAlpha:0.6];
                     [im setGraphicXScale:1.417 yScale:1.417 undo:NO];
                 }

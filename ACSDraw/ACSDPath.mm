@@ -2477,8 +2477,8 @@ selectedGraphics:(NSSet*)selectedGraphics
 {
     NSMutableString *attrString = [NSMutableString stringWithCapacity:100];
     [attrString appendString:[super graphicAttributesXML:options]];
-	for (NSArray *arr in self.attributes)
-		if ([arr[0]isEqualToString:@"widthtracksheight"] || [arr[0]isEqualToString:@"heighttrackswidth"])
+	//for (NSArray *arr in self.attributes)
+		//if ([arr[0]isEqualToString:@"widthtracksheight"] || [arr[0]isEqualToString:@"heighttrackswidth"])
 			[attrString appendFormat:@" pxwidth=\"%g\" pxheight=\"%g\"",[self bounds].size.width,[self bounds].size.height];
     NSBezierPath *p = [self transformedBezierPath];
     NSRect parR = [self parentRect:options];

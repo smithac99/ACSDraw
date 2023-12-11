@@ -25,6 +25,9 @@
 #import "ACSDGroup.h"
 #import "ACSDDocImage.h"
 #import "ACSDLink.h"
+#import "SVGDocument.h"
+#import "ACSDSVGImage.h"
+#import "geometry.h"
 int weight_from_float(float w);
 NSString* stringForAlignment(int ali);
 
@@ -150,16 +153,25 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
                 svgPath = [[NSBundle mainBundle]pathForResource:@"noimagecross" ofType:@"svg"];
             
             NSData *d = [NSData dataWithContentsOfFile:svgPath];
-            ACSDrawDocument *adoc = [[ACSDrawDocument alloc]init];
-            [adoc setFileURL:[NSURL fileURLWithPath:svgPath]];
-            [adoc readFromData:d ofType:@"svg" error:nil];
+            
+            SVGDocument *svgdoc = [[SVGDocument alloc]initWithData:d];
+            [svgdoc setFileURL:[NSURL fileURLWithPath:svgPath]];
+
             NSRect b = NSZeroRect;
-            b.size = [adoc documentSize];
-            ACSDDocImage *image = [[ACSDDocImage alloc]initWithName:@"" fill:nil stroke:nil rect:b layer:nil drawDoc:adoc];
+            b.size = svgdoc.size;
+            ACSDSVGImage *image = [[ACSDSVGImage alloc]initWithName:src fill:nil stroke:nil rect:b layer:nil document:svgdoc];
+
             image.sourcePath = svgPath;
             NSString *pos = [objNode attributeStringValue:@"pos"];
             NSArray *comps = [pos componentsSeparatedByString:@","];
-            CGPoint pt = CGPointMake([comps[0]floatValue]*f.size.width,f.size.height - [comps[1]floatValue]*f.size.height);
+            CGFloat rx = [comps[0]floatValue];
+            CGFloat ry = [comps[1]floatValue];
+            CGPoint pt;
+            NSRect parentRect = [settings[@"parentrect"]rectValue];
+            if (parent == nil)
+                pt = CGPointMake(rx*f.size.width,f.size.height - ry*f.size.height);
+            else
+                pt = LocationForRect(rx, 1 - ry, parentRect);
             [image setPosition:pt];
             
             g = image;
