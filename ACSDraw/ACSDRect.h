@@ -9,7 +9,7 @@
 #import "ACSDGraphic.h"
 @class XMLNode;
 
-@interface ACSDRect : ACSDGraphic<ACSDGraphicCornerRadius>
+@interface ACSDRect : ACSDGraphic<ACSDGraphicCornerRadius,ACSDGraphicIndentable>
 
 @property 	float cornerRadius,originalCornerRadius,originalCornerRatio;
 

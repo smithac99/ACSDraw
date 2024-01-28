@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21225" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21225"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -1310,6 +1310,30 @@ CA
                                         <menuItem title="Size to Width" id="pxk-d8-ikR">
                                             <connections>
                                                 <action selector="sizeToWidth:" target="-1" id="Mf1-U5-3Qc"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Indent" id="LNb-tM-Sa9">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Indent" id="mkr-Qm-LEv">
+                                    <items>
+                                        <menuItem title="Indent…" tag="411" id="kfI-sc-51m">
+                                            <connections>
+                                                <action selector="showIndentPanel:" target="-1" id="agM-nu-nSz"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Indent by 1" tag="411" keyEquivalent="i" id="ELu-2J-T45">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES"/>
+                                            <connections>
+                                                <action selector="indentBy1:" target="-1" id="xZr-5r-tlv"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Outdent by 1" tag="411" keyEquivalent="o" id="ihT-v7-JKM">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES"/>
+                                            <connections>
+                                                <action selector="outdentBy1:" target="-1" id="V3P-1O-pbw"/>
                                             </connections>
                                         </menuItem>
                                     </items>

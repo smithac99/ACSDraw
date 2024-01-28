@@ -79,13 +79,12 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
     [[NSPasteboard generalPasteboard] setString:str forType:NSPasteboardTypeString];
 
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:mas,@"text",stylesUsedByAttributedString(mas),@"styles",nil];
-    NSMutableData *mdat = [NSMutableData data];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:NO];
     [archiver setDelegate:[ArchiveTextDelegate archiveTextDelegateWithType:ARCHIVE_PASTEBOARD styleMatching:0 styles:0 document:[(ACSDText*)[self delegate]document]enclosingGraphic:(ACSDText*)[self delegate]]];
     [archiver encodeObject:dict forKey:@"root"];
     [archiver encodeObject:[[(ACSDText*)[self delegate]document]documentKey] forKey:@"docKey"];
     [archiver finishEncoding];
-    [[NSPasteboard generalPasteboard] setData:mdat forType:ACSDrawTextPBoardType];
+    [[NSPasteboard generalPasteboard] setData:archiver.encodedData forType:ACSDrawTextPBoardType];
 }
 
 -(void)fixAnchorsInAttributedString:(NSMutableAttributedString*)mas
@@ -135,7 +134,8 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
     {
         NSData *data = [[NSPasteboard generalPasteboard] dataForType:ACSDrawTextPBoardType];
         NSDictionary *dict;
-        NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingFromData:data error:NULL];
+        //NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingFromData:data error:NULL];
+        NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
         id docKey = [unarch decodeObjectForKey:@"docKey"];
         int styleMatching;
         id styleCollection;

@@ -1940,12 +1940,26 @@ NSString* Creator()
 - (IBAction)closePaddingSheet: (id)sender
    {
     NSInteger reply = [sender tag];
-	if (reply < 2)
-	   {
-		if (reply == 0)				//OK
-			[self sizeToObjectsHPad:(int)[[NSUserDefaults standardUserDefaults]integerForKey:@"hPadding"] vPad:(int)[[NSUserDefaults standardUserDefaults]integerForKey:@"vPadding"]];
-	   }
-	[NSApp endSheet:_paddingSheet];
+    if (reply < 2)
+       {
+        if (reply == 0)                //OK
+            [self sizeToObjectsHPad:(int)[[NSUserDefaults standardUserDefaults]integerForKey:@"hPadding"] vPad:(int)[[NSUserDefaults standardUserDefaults]integerForKey:@"vPadding"]];
+       }
+    [NSApp endSheet:_paddingSheet];
+   }
+
+- (IBAction)closeIndentSheet: (id)sender
+   {
+    NSInteger reply = [sender tag];
+    if (reply < 2)
+       {
+        if (reply == 0)                //OK
+        {
+            
+            [[[self frontmostMainWindowController] graphicView]indentHBy:[_indentH floatValue] vBy:[_indentV floatValue]];
+        }
+       }
+    [NSApp endSheet:_indentSheet];
    }
 
 - (IBAction)closeSelectNameSheet: (id)sender
@@ -1961,12 +1975,23 @@ NSString* Creator()
 
 - (void)showSelectByNameDialog:(id)sender
 {
-	if (!_selectNameSheet)
-	{
-		[[NSBundle mainBundle]loadNibNamed:@"DocPadding" owner:self topLevelObjects:nil];
-	}
+    if (!_selectNameSheet)
+    {
+        [[NSBundle mainBundle]loadNibNamed:@"DocPadding" owner:self topLevelObjects:nil];
+    }
     [[[self frontmostMainWindowController] window]beginSheet:_selectNameSheet completionHandler:^(NSModalResponse returnCode) {
         [self.selectNameSheet orderOut:self];
+    }];
+}
+
+- (void)showIndentPanel:(id)sender
+{
+    if (!_indentSheet)
+    {
+        [[NSBundle mainBundle]loadNibNamed:@"DocPadding" owner:self topLevelObjects:nil];
+    }
+    [[[self frontmostMainWindowController] window]beginSheet:_indentSheet completionHandler:^(NSModalResponse returnCode) {
+        [self.indentSheet orderOut:self];
     }];
 }
 

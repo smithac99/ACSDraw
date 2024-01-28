@@ -39,12 +39,16 @@
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super initWithCoder:coder];
-	NSData *svgData = [coder decodeObjectForKey:@"ACSDSVGImage_svgData"];
+	NSData *svgData = [coder decodeObjectOfClass:[NSData class] forKey:@"ACSDSVGImage_svgData"];
 	self.svgDocument = [[SVGDocument alloc]initWithData:svgData];
 	[self setUpSubstitutionColours:[self fill]];
 	return self;
 }
 
++(BOOL)supportsSecureCoding
+{
+    return YES;
+}
 - (id)copyWithZone:(NSZone *)zone
 {
 	ACSDSVGImage *obj = [super copyWithZone:zone];

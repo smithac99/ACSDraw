@@ -4624,7 +4624,10 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 
 -(void)uGroupGraphicsFromIndexSet:(NSIndexSet*)ixs intoGroup:(ACSDGroup*)gp atIndex:(NSInteger)ind
 {
-    [[[self currentEditableLayer] graphics] addObject:gp];
+    if (ind == NSNotFound)
+        [[[self currentEditableLayer] graphics] addObject:gp];
+    else
+        [[[self currentEditableLayer] graphics] insertObject:gp atIndex:ind];
 	[gp registerWithDocument:[self document]];
 	NSMutableArray *arr = [NSMutableArray arrayWithCapacity:[ixs count]];
 	NSUInteger i = [ixs firstIndex];
@@ -6014,6 +6017,55 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	[[self undoManager] setActionName:@"Align Top Edges"];
 }
 
+-(void)indentHBy:(float)h vBy:(float)v
+{
+    for (ACSDGraphic *g in [[self selectedGraphics]allObjects])
+    {
+        if ([g conformsToProtocol:@protocol(ACSDGraphicIndentable)])
+        {
+            ACSDGraphic<ACSDGraphicIndentable> *graphic = (id)g;
+            NSRect bnds = [graphic bounds];
+            bnds = NSInsetRect(bnds, h, v);
+            [graphic invalidateInView];
+            [graphic setGraphicBoundsTo:bnds from:[graphic bounds]];
+            [graphic invalidateInView];
+        }
+    }
+    [[self undoManager] setActionName:[NSString stringWithFormat:@"Indent by %g, %g",h,v]];
+}
+
+-(void)indentBy1:(id)sender
+{
+    for (ACSDGraphic *g in [[self selectedGraphics]allObjects])
+    {
+        if ([g conformsToProtocol:@protocol(ACSDGraphicIndentable)])
+        {
+            ACSDGraphic<ACSDGraphicIndentable> *graphic = (id)g;
+            NSRect bnds = [graphic bounds];
+            bnds = NSInsetRect(bnds, 1, 1);
+            [graphic invalidateInView];
+            [graphic setGraphicBoundsTo:bnds from:[graphic bounds]];
+            [graphic invalidateInView];
+        }
+    }
+    [[self undoManager] setActionName:@"Indent by 1"];
+}
+-(void)outdentBy1:(id)sender
+{
+    for (ACSDGraphic *g in [[self selectedGraphics]allObjects])
+    {
+        if ([g conformsToProtocol:@protocol(ACSDGraphicIndentable)])
+        {
+            ACSDGraphic<ACSDGraphicIndentable> *graphic = (id)g;
+            NSRect bnds = [graphic bounds];
+            bnds = NSInsetRect(bnds, -1, -1);
+            [graphic invalidateInView];
+            [graphic setGraphicBoundsTo:bnds from:[graphic bounds]];
+            [graphic invalidateInView];
+        }
+    }
+    [[self undoManager] setActionName:@"Indent by 1"];
+}
 - (void)alignBottomEdges:(id)sender
 {
 	NSInteger count = [[self selectedGraphics]count];

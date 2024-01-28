@@ -445,17 +445,28 @@
 	return @"";
 }
 
+static void AddLinksFromGraphicToSet(ACSDGraphic *g,NSMutableSet *set)
+{
+    if (g.link != nil)
+    {
+        if ([g.link isKindOfClass:[ACSDLink class]])
+            [set addObject:[NSValue valueWithNonretainedObject:((ACSDLink*)g.link).toObject]];
+    }
+    if ([g isKindOfClass:[ACSDGroup class]])
+    {
+        ACSDGroup *gp = (ACSDGroup*)g;
+        for (ACSDGraphic *mem in [gp graphics])
+            AddLinksFromGraphicToSet(mem,set);
+    }
+}
+
 NSArray* OrderGraphics(NSArray* toDo)
 {
     if ([toDo count] == 0)
         return toDo;
     NSMutableSet *set = [NSMutableSet set];
     for (ACSDGraphic *g in toDo)
-        if (g.link != nil)
-        {
-            if ([g.link isKindOfClass:[ACSDLink class]])
-                [set addObject:[NSValue valueWithNonretainedObject:((ACSDLink*)g.link).toObject]];
-        }
+        AddLinksFromGraphicToSet(g, set);
     NSMutableArray *parents = [NSMutableArray array];
     NSMutableArray *nonparents = [NSMutableArray array];
     for (ACSDGraphic *g in toDo)

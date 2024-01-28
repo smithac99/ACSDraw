@@ -62,7 +62,7 @@
     if ([points count] == 0)
         return;
     if (self.layer)
-        [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+        [self invalidateGraphicPositionChanged:NO sizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
     self.rotationPoint = offset_point(self.rotationPoint, vector);
     for (FreeHandPoint *fhp in points)
         [fhp moveBy:vector];
@@ -73,7 +73,7 @@
     
     if (self.layer)
     {
-        [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+        [self invalidateGraphicPositionChanged:YES sizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
         [self invalidateConnectors];
         [self postChangeOfBounds];
     }

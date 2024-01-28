@@ -72,7 +72,12 @@ NSString* Creator();
 @property (strong) NSMutableDictionary *htmlSettings,*exportImageSettings;
 
 @property (retain) IBOutlet NSPanel *paddingSheet,*selectNameSheet;
+@property (strong) IBOutlet NSPanel *indentSheet;
 @property (retain) NSDate *documentKey;
+
+@property (weak) IBOutlet NSTextField *indentH;
+@property (weak) IBOutlet NSTextField *indentV;
+
 
 -(MainWindowController*)frontmostMainWindowController;
 -(NSSize)documentSize;

@@ -1026,23 +1026,43 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 
 -(void)invalidateGraphicSizeChanged:(BOOL)sizeChanged shapeChanged:(BOOL)shapeChanged redraw:(BOOL)redraw notify:(BOOL)notify
    {
-	if (sizeChanged)
-		[self setDisplayBoundsValid:NO];
-	if (shapeChanged)
-	   {
-		[self setOutlinePathValid:NO];
-		[self setBezierPathValid:NO];
-	   }
-	if (graphicCache && self.usesCache && sizeChanged)
-		[self readjustCache];
-	if (graphicCache && redraw)
-		[graphicCache setValid:NO];
-	[self invalidateInView];
-	if (self.parent)
-		[self.parent invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
-	if (notify)
-		[[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicDidChangeNotification object:self];
+    if (sizeChanged)
+        [self setDisplayBoundsValid:NO];
+    if (shapeChanged)
+       {
+        [self setOutlinePathValid:NO];
+        [self setBezierPathValid:NO];
+       }
+    if (graphicCache && self.usesCache && sizeChanged)
+        [self readjustCache];
+    if (graphicCache && redraw)
+        [graphicCache setValid:NO];
+    [self invalidateInView];
+    if (self.parent)
+        [self.parent invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
+    if (notify)
+        [[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicDidChangeNotification object:self];
    }
+
+-(void)invalidateGraphicPositionChanged:(BOOL)posChanged sizeChanged:(BOOL)sizeChanged shapeChanged:(BOOL)shapeChanged redraw:(BOOL)redraw notify:(BOOL)notify
+{
+    if (sizeChanged ||posChanged)
+        [self setDisplayBoundsValid:NO];
+    if (shapeChanged)
+    {
+        [self setOutlinePathValid:NO];
+        [self setBezierPathValid:NO];
+    }
+    if (graphicCache && self.usesCache && sizeChanged)
+        [self readjustCache];
+    if (graphicCache && redraw)
+        [graphicCache setValid:NO];
+    [self invalidateInView];
+    if (self.parent)
+        [self.parent invalidateGraphicPositionChanged:posChanged sizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
+    if (notify)
+        [[NSNotificationCenter defaultCenter] postNotificationName:ACSDGraphicDidChangeNotification object:self];
+}
 
 -(void)setValue:(id)value forKey:(NSString *)key invalidateFlags:(NSInteger)invalFlags
 {
@@ -1299,7 +1319,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
     [[[self undoManager] prepareWithInvocationTarget:self] setGraphicHidden:self.hidden];
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
     self.hidden = b;
-    [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:YES notify:NO];
+    [self invalidateGraphicPositionChanged:NO sizeChanged:NO shapeChanged:NO redraw:YES notify:NO];
     return YES;
 }
 
@@ -1856,7 +1876,7 @@ float normalisedAngle(float ang)
     if (vector.x == 0.0 && vector.y == 0.0)
         return;
     if (self.layer)
-        [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+        [self invalidateGraphicPositionChanged:NO sizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
     _rotationPoint.x += vector.x;
     _rotationPoint.y += vector.y;
     [self computeTransform];
@@ -1866,8 +1886,8 @@ float normalisedAngle(float ang)
         [self.clipGraphic moveBy:vector];
     if (self.layer)
     {
-        [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-        //[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+        //[self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+        [self invalidateGraphicPositionChanged:YES sizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
         [self invalidateConnectors];
         [self postChangeOfBounds];
     }

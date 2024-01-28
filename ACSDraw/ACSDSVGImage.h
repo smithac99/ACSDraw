@@ -8,7 +8,7 @@
 #import "ACSDImage.h"
 @class SVGDocument;
 
-@interface ACSDSVGImage : ACSDImage
+@interface ACSDSVGImage : ACSDImage<NSSecureCoding>
 
 @property (retain) SVGDocument *svgDocument;
 

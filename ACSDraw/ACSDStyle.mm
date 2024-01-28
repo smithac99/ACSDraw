@@ -236,7 +236,7 @@ NSString *StyleGenAppleHelpKey = @"Style_genapplehelp";
 - (id) initWithCoder:(NSCoder*)coder
 {
     self = [super initWithCoder:coder];
-    self.name = [coder decodeObjectForKey:StyleNameKey];
+    self.name = [coder decodeObjectOfClass:[NSString class] forKey:StyleNameKey];
     nullStyle = [coder decodeBoolForKey:StyleNullKey];
     id b = [coder decodeObjectForKey:StyleBasedOnKey];
     if (b)

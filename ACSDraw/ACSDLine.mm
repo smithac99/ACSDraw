@@ -115,6 +115,8 @@
 {
     if (vector.x == 0.0 && vector.y == 0.0)
         return;
+    if (self.layer)
+        [self invalidateGraphicPositionChanged:NO sizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
     _fromPt.x += vector.x;
     _fromPt.y += vector.y;
     _toPt.x += vector.x;
@@ -122,9 +124,12 @@
     [self setBoundsTo:NSOffsetRect([self bounds], vector.x, vector.y) from:bounds];
     self.rotationPoint = offset_point(self.rotationPoint, vector);
     [self computeTransform];
-    [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-    [self invalidateConnectors];
-    [self postChangeOfBounds];
+    if (self.layer)
+    {
+        [self invalidateGraphicPositionChanged:YES sizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+        [self invalidateConnectors];
+        [self postChangeOfBounds];
+    }
 }
 
 - (void)flipV

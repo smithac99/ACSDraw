@@ -240,7 +240,8 @@
 {
     if (vector.x == 0.0 && vector.y == 0.0)
         return;
-    [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+    if (self.layer)
+        [self invalidateGraphicPositionChanged:NO sizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
     self.rotationPoint = offset_point(self.rotationPoint, vector);
     centrePoint.x += vector.x;
     centrePoint.y += vector.y;
@@ -250,9 +251,12 @@
     pt1 = handlePoints[1];
     bounds = [[self bezierPath]bounds];
     [self computeTransform];
-    [self invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-    [self invalidateConnectors];
-    [self postChangeOfBounds];
+    if (self.layer)
+    {
+        [self invalidateGraphicPositionChanged:YES sizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
+        [self invalidateConnectors];
+        [self postChangeOfBounds];
+    }
 }
 
 -(KnobDescriptor)nearestKnobForPoint:(NSPoint)pt

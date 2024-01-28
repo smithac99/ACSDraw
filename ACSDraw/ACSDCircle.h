@@ -9,7 +9,7 @@
 #import "ACSDGraphic.h"
 @class XMLNode;
 
-@interface ACSDCircle : ACSDGraphic
+@interface ACSDCircle : ACSDGraphic<ACSDGraphicIndentable>
    {
    }
 

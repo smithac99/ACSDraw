@@ -137,6 +137,9 @@ struct KnobDescriptor
 -(void)setGraphicCornerRadius:(float)rad from:(float)oldRad notify:(BOOL)notify;
 @end
 
+@protocol ACSDGraphicIndentable <NSObject>
+@end
+
 @interface ACSDGraphic : KeyedObject<NSCopying,NSCoding>
    {
 	ACSDFill *fill;
@@ -440,6 +443,7 @@ selectedGraphics:(NSSet*)selectedGraphics;
 -(NSString*)svgTransform:(SVGWriter*)svgWriter;
 -(NSString*)graphicAttributesXML:(NSMutableDictionary*)options;
 -(NSRect)parentRect:(NSMutableDictionary*)options;
+-(void)invalidateGraphicPositionChanged:(BOOL)posChanged sizeChanged:(BOOL)sizeChanged shapeChanged:(BOOL)shapeChanged redraw:(BOOL)redraw notify:(BOOL)notify;
 
 -(ACSDGroup*)primogenitor;
 -(NSMutableSet*)linkedObjects;
