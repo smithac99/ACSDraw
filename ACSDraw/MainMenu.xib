@@ -729,6 +729,12 @@ CA
                                     <action selector="updateStyleFromText:" target="-1" id="692"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Apply Style…" id="5PG-Ns-0WK">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="applyStyleDialog:" target="-1" id="pSV-N0-q3e"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="686">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>

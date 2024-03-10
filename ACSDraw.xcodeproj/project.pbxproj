@@ -166,7 +166,6 @@
 		E74056D515B1EF2E0040F590 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740562B15B1EF2D0040F590 /* ViewController.mm */; };
 		E74056D715B1EF2E0040F590 /* WindowAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740563115B1EF2D0040F590 /* WindowAdditions.mm */; };
 		E74056F815B1EF950040F590 /* DocPadding.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056DA15B1EF950040F590 /* DocPadding.nib */; };
-		E74056F915B1EF950040F590 /* HTMLExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056DC15B1EF950040F590 /* HTMLExport.nib */; };
 		E74056FA15B1EF950040F590 /* ImageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74056DE15B1EF950040F590 /* ImageController.xib */; };
 		E74056FE15B1EF950040F590 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056E615B1EF950040F590 /* MainWindow.nib */; };
 		E74056FF15B1EF950040F590 /* PallettePanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74056E815B1EF950040F590 /* PallettePanel.xib */; };
@@ -327,6 +326,8 @@
 		E7A2E0E41A6A4C85009DD659 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7A2E0E31A6A4C85009DD659 /* CoreGraphics.framework */; };
 		E7BB1B451BD8361C0053B9DE /* NSView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E7BB1B441BD8361C0053B9DE /* NSView+Additions.m */; };
 		E7BDF8B129F2EB3700BA0C64 /* ACSDSVGImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7BDF8AD29F2EB3700BA0C64 /* ACSDSVGImage.mm */; };
+		E7C963BF2B9CB0FE00879139 /* ApplyStyleDialogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7C963BE2B9CB0FE00879139 /* ApplyStyleDialogController.mm */; };
+		E7C963C22B9CCA0900879139 /* HTMLExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7C963C02B9CCA0900879139 /* HTMLExport.xib */; };
 		E7CFC26A1C92C68600114E18 /* ACSDReference.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7CFC2691C92C68600114E18 /* ACSDReference.mm */; };
 		E7D18F0F1988EA67000664F6 /* gElement.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D18F0E1988EA67000664F6 /* gElement.m */; };
 		E7D202D81889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7D202D61889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm */; };
@@ -859,8 +860,10 @@
 		E7BB1B441BD8361C0053B9DE /* NSView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+Additions.m"; sourceTree = "<group>"; };
 		E7BDF8AD29F2EB3700BA0C64 /* ACSDSVGImage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ACSDSVGImage.mm; sourceTree = "<group>"; };
 		E7BDF8AF29F2EB3700BA0C64 /* ACSDSVGImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACSDSVGImage.h; sourceTree = "<group>"; };
+		E7C963BD2B9CB0FE00879139 /* ApplyStyleDialogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplyStyleDialogController.h; sourceTree = "<group>"; };
+		E7C963BE2B9CB0FE00879139 /* ApplyStyleDialogController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ApplyStyleDialogController.mm; sourceTree = "<group>"; };
+		E7C963C12B9CCA0900879139 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/HTMLExport.xib; sourceTree = "<group>"; };
 		E7CF357627AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/DocPadding.nib; sourceTree = "<group>"; };
-		E7CF357727AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/HTMLExport.nib; sourceTree = "<group>"; };
 		E7CF357827AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ImageController.xib; sourceTree = "<group>"; };
 		E7CF357B27AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainWindow.nib; sourceTree = "<group>"; };
 		E7CF357C27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PallettePanel.xib; sourceTree = "<group>"; };
@@ -1094,6 +1097,8 @@
 				E740561D15B1EF2D0040F590 /* TextSubstitution.mm */,
 				E740561E15B1EF2D0040F590 /* TOCController.h */,
 				E740561F15B1EF2D0040F590 /* TOCController.mm */,
+				E7C963BD2B9CB0FE00879139 /* ApplyStyleDialogController.h */,
+				E7C963BE2B9CB0FE00879139 /* ApplyStyleDialogController.mm */,
 				E740562015B1EF2D0040F590 /* TOCTableSource.h */,
 				E740562115B1EF2D0040F590 /* TOCTableSource.mm */,
 				E740562215B1EF2D0040F590 /* ToolWindow.h */,
@@ -1107,10 +1112,10 @@
 				E740563015B1EF2D0040F590 /* WindowAdditions.h */,
 				E740563115B1EF2D0040F590 /* WindowAdditions.mm */,
 				E74056DA15B1EF950040F590 /* DocPadding.nib */,
-				E74056DC15B1EF950040F590 /* HTMLExport.nib */,
 				E74056DE15B1EF950040F590 /* ImageController.xib */,
 				E76AC07829B53CFF005DE06A /* LineEndingWindow.xib */,
 				E76AC07029B514F5005DE06A /* MainMenu.xib */,
+				E7C963C02B9CCA0900879139 /* HTMLExport.xib */,
 				E74056E615B1EF950040F590 /* MainWindow.nib */,
 				E74056E815B1EF950040F590 /* PallettePanel.xib */,
 				E74056EA15B1EF950040F590 /* Pallettes.xib */,
@@ -1606,7 +1611,6 @@
 				E74054D215B1ED040040F590 /* Credits.rtf in Resources */,
 				E74056F815B1EF950040F590 /* DocPadding.nib in Resources */,
 				E70E81C8249E5D27003CDF0D /* scalealt.tiff in Resources */,
-				E74056F915B1EF950040F590 /* HTMLExport.nib in Resources */,
 				E74056FA15B1EF950040F590 /* ImageController.xib in Resources */,
 				E76AC01429B4D495005DE06A /* back.svg in Resources */,
 				E7D218B52895974500B0ABEC /* TextAccessory.xib in Resources */,
@@ -1706,6 +1710,7 @@
 				E746F70B15E8BCCA00110247 /* redarrowcs.tif in Resources */,
 				E78463AB29B92BEA00227A21 /* justifyright.tif in Resources */,
 				E746F70C15E8BCCA00110247 /* rotatecursor.tif in Resources */,
+				E7C963C22B9CCA0900879139 /* HTMLExport.xib in Resources */,
 				E746F70D15E8BCCA00110247 /* selectionimage.tif in Resources */,
 				E78463AD29B92BEA00227A21 /* justifycentre.tif in Resources */,
 				E746F70E15E8BCCA00110247 /* splitcsplus.tiff in Resources */,
@@ -1918,6 +1923,7 @@
 				E740573615B2B18C0040F590 /* XXAttributedStringAdditions.mm in Sources */,
 				E740573715B2B18C0040F590 /* XXColor.mm in Sources */,
 				E740573815B2B18C0040F590 /* XXColorAdditions.mm in Sources */,
+				E7C963BF2B9CB0FE00879139 /* ApplyStyleDialogController.mm in Sources */,
 				E740573915B2B18C0040F590 /* XXImage.mm in Sources */,
 				E740573A15B2B18C0040F590 /* XXImageAdditions.mm in Sources */,
 				E7F50038179410A1009FEC7D /* NSString+StringAdditions.m in Sources */,
@@ -1955,14 +1961,6 @@
 				E7CF357627AE6D1A00DABEF9 /* Base */,
 			);
 			name = DocPadding.nib;
-			sourceTree = "<group>";
-		};
-		E74056DC15B1EF950040F590 /* HTMLExport.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E7CF357727AE6D1A00DABEF9 /* Base */,
-			);
-			name = HTMLExport.nib;
 			sourceTree = "<group>";
 		};
 		E74056DE15B1EF950040F590 /* ImageController.xib */ = {
@@ -2051,6 +2049,14 @@
 				E78463A129B8AE6E00227A21 /* Base */,
 			);
 			name = StylePanel.xib;
+			sourceTree = "<group>";
+		};
+		E7C963C02B9CCA0900879139 /* HTMLExport.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E7C963C12B9CCA0900879139 /* Base */,
+			);
+			name = HTMLExport.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -2154,6 +2160,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 001;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 73G67QZ25Y;
@@ -2174,6 +2181,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 001;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 73G67QZ25Y;

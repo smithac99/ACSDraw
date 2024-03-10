@@ -731,7 +731,8 @@ void FitImageToBox(ACSDImage *im,NSRect box)
                 }
             }
         }
-
+        NSView *graphicView = [[self frontmostMainWindowController] graphicView];
+        [graphicView setNeedsDisplay:YES];
     }
 }- (IBAction)importBookXML:(id)sender
 {

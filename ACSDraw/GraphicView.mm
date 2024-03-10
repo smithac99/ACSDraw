@@ -7558,7 +7558,6 @@ NSString *IncrementString(NSString *str)
     [self reCalcHandleBitsIgnoreSelected:NO];
     creatingGraphic = nil;
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
-    
 }
 
 

@@ -363,9 +363,9 @@ NSString *substitute_characters(NSString* string)
 }
 
 - (void)setGraphicContents:(id)cont
-   {
+{
     if (cont != contents)
-	   {
+    {
         NSAttributedString *contentsCopy = [[NSAttributedString alloc] initWithAttributedString:contents];
         [[[self undoManager] prepareWithInvocationTarget:self] setGraphicContents:contentsCopy];
         // We are willing to accept either a string or an attributed string.
@@ -373,9 +373,9 @@ NSString *substitute_characters(NSString* string)
             [contents replaceCharactersInRange:NSMakeRange(0, [contents length]) withAttributedString:cont];
         else
             [contents replaceCharactersInRange:NSMakeRange(0, [contents length]) withString:cont];
-		[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:YES notify:NO];
-       }
-   }
+        [self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:YES notify:NO];
+    }
+}
 
 - (float)topMargin
    {
@@ -1833,6 +1833,72 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	   }
 	[[[self layoutManager] textStorage] endEditing];
   }
+
++(void)processAttributedString:(NSMutableAttributedString*)mstr attributesInRange:(NSRange)totalRange forStyle:(ACSDStyle*)style oldAttributes:(NSDictionary*)oldAttrs
+{
+    NSRange longestRange;
+    NSUInteger index = totalRange.location;
+    while (index < totalRange.location + totalRange.length)
+    {
+        NSDictionary *textAttrs = [mstr attributesAtIndex:index longestEffectiveRange:&longestRange inRange:totalRange];
+        NSDictionary *existingAttrs = [ACSDStyle attributesFromTypingAttributes:textAttrs];
+        NSDictionary *diff = [ACSDStyle attributesFrom:existingAttrs differingFrom:oldAttrs];
+        diff = [ACSDStyle attributesFrom:[style attributes] notIn:diff];
+        NSDictionary *diffAttrs = [ACSDStyle typingAttributesFromAttributes:diff existingAttributes:existingAttrs existingParagraphStyle:[textAttrs objectForKey:NSParagraphStyleAttributeName]];
+        [mstr addAttributes:diffAttrs range:longestRange];
+        index = longestRange.location + longestRange.length;
+    }
+}
+
++(NSAttributedString*)applyStyle:(ACSDStyle*)newStyle toAttributedString:(NSAttributedString*)atstr
+{
+    NSDictionary *attrs = @{};
+    NSAttributedString *as;
+    if (newStyle == nil || [newStyle nullStyle])
+    {
+        as = [[NSAttributedString alloc]initWithString:[atstr string]];
+    }
+    else
+    {
+        attrs = [newStyle textAndStyleAttributes];
+        as = [[NSAttributedString alloc]initWithString:[atstr string]attributes:attrs];
+    }
+    return as;
+/*    NSRange longestRange;
+    NSRange allRange = NSMakeRange(0, [atstr length]);
+    NSUInteger index = 0;
+    NSDictionary *styleAttr=[NSDictionary dictionaryWithObject:newStyle forKey:StyleAttribute];
+    NSMutableAttributedString *mstr = [atstr mutableCopy];
+    [mstr beginEditing];
+    while (index < [atstr length])
+    {
+        ACSDStyle *st = [atstr attribute:StyleAttribute atIndex:index longestEffectiveRange:&longestRange inRange:allRange];
+        NSDictionary *oldAttrs = (st)?[st attributes]:nil;
+        if ([newStyle nullStyle])
+            [mstr removeAttribute:StyleAttribute range:longestRange];
+        else
+            [mstr addAttributes:styleAttr range:longestRange];
+        //[ACSDText processAttributedString:mstr attributesInRange:longestRange forStyle:newStyle oldAttributes:oldAttrs];
+        index = longestRange.location + longestRange.length;
+    }
+    if (![newStyle nullStyle])
+    {
+        [mstr setAttributes:[newStyle attributes] range:NSMakeRange(0, [mstr length])];
+    }
+    [mstr endEditing];
+    return mstr;*/
+  }
+
+-(NSAttributedString*)attributedString
+{
+    return [[self layoutManager] textStorage];
+}
+
+-(void)updateWholeWithNewStyle:(ACSDStyle*)newStyle
+{
+    NSRange r = NSMakeRange(0, [[[self layoutManager] textStorage]length]);
+    [self updateRange:r forNewStyle:newStyle];
+}
 
 -(void)forceUpdateRange:(NSRange)allRange forStyle:(ACSDStyle*)style
    {

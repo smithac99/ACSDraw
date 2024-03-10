@@ -9,6 +9,7 @@ NSImage *ImageFromFileCG(NSString* str);
 @class GraphicView;
 @class ACSDPathElement;
 @class GroupViewController;
+@class ApplyStyleDialogController;
 
 CGColorSpaceRef getRGBColorSpace();
 
@@ -29,6 +30,7 @@ CGColorSpaceRef getRGBColorSpace();
 	IBOutlet NSTextField *renameTextField,*renameStartFromTextField;
 	IBOutlet NSTextField *regexpPattern,*regexpTemplate,*regexpMsg;
     
+    IBOutlet NSPanel *applyStyleDialog;
     IBOutlet NSTextField *pageRegexp;
     IBOutlet NSTextField *layerRegexp;
     IBOutlet NSTextField *objRegexp;
@@ -52,6 +54,7 @@ CGColorSpaceRef getRGBColorSpace();
 @property (retain) IBOutlet NSWindow *groupWindow;
 @property (assign) IBOutlet NSPanel *errorPanel;
 @property (assign) IBOutlet NSTextView *errorTextView;
+@property (strong) IBOutlet ApplyStyleDialogController *applyStyleDialogController;
 
 - (id)initWithPages:(NSMutableArray*)list;
 - (GraphicView*)graphicView;
@@ -77,5 +80,7 @@ NSBitmapImageRep *newBitmap(int width,int height);
 - (IBAction)closeSheet: (id)sender;
 - (IBAction)selectLayerWithName:(id)sender;
 -(void)showEditPointDialogForPathElement:(ACSDPathElement*)pe;
+-(IBAction)applyStyleDialog:(id)sender;
+-(NSArray<ACSDGraphic*>*)graphicsForScope:(int)scope;
 
 @end

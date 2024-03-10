@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -63,22 +63,22 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="ohs-5b-IiY">
-                                            <rect key="frame" x="16" y="0.0" width="382" height="110"/>
+                                            <rect key="frame" x="16" y="0.0" width="382" height="108"/>
                                             <subviews>
                                                 <scrollView horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="10">
-                                                    <rect key="frame" x="0.0" y="0.0" width="351" height="110"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="351" height="108"/>
                                                     <clipView key="contentView" id="K7Q-6h-RBI">
-                                                        <rect key="frame" x="1" y="1" width="338" height="108"/>
+                                                        <rect key="frame" x="1" y="1" width="338" height="106"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="15" id="11" customClass="ACSDTableView">
-                                                                <rect key="frame" x="0.0" y="0.0" width="338" height="108"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="338" height="106"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                 <tableColumns>
-                                                                    <tableColumn identifier="style" width="326" minWidth="40" maxWidth="1000" id="13">
+                                                                    <tableColumn identifier="style" width="297" minWidth="40" maxWidth="1000" id="13">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                             <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -107,12 +107,12 @@
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                     <scroller key="verticalScroller" verticalHuggingPriority="750" controlSize="small" horizontal="NO" id="184">
-                                                        <rect key="frame" x="339" y="1" width="11" height="108"/>
+                                                        <rect key="frame" x="339" y="1" width="11" height="106"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                 </scrollView>
                                                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="cPN-Dg-EbH">
-                                                    <rect key="frame" x="360" y="63" width="22" height="47"/>
+                                                    <rect key="frame" x="360" y="61" width="22" height="47"/>
                                                     <subviews>
                                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="124">
                                                             <rect key="frame" x="0.0" y="23" width="22" height="24"/>
@@ -167,7 +167,7 @@
                                 <tabViewItems>
                                     <tabViewItem label="Font" identifier="1" id="29">
                                         <view key="view" id="30">
-                                            <rect key="frame" x="10" y="25" width="416" height="219"/>
+                                            <rect key="frame" x="10" y="29" width="416" height="215"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="3qe-SJ-l2p">
@@ -189,7 +189,7 @@
                                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                                 <tableColumns>
-                                                                                    <tableColumn editable="NO" width="98.5" minWidth="40" maxWidth="1000" id="37">
+                                                                                    <tableColumn editable="NO" width="99" minWidth="40" maxWidth="1000" id="37">
                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -274,7 +274,7 @@
                                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                                 <tableColumns>
-                                                                                    <tableColumn editable="NO" width="140" minWidth="40" maxWidth="1000" id="66">
+                                                                                    <tableColumn editable="NO" width="111" minWidth="40" maxWidth="1000" id="66">
                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                             <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -816,7 +816,7 @@
                                                     <rect key="frame" x="20" y="48" width="379" height="149"/>
                                                     <clipView key="contentView" id="CDu-Hp-DXQ">
                                                         <rect key="frame" x="1" y="1" width="366" height="136"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="15" id="132" customClass="ACSDTableView">
                                                                 <rect key="frame" x="0.0" y="0.0" width="366" height="136"/>

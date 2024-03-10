@@ -109,6 +109,10 @@ enum
 - (BOOL)uLinkToText:(ACSDText*)sText;
 -(BOOL)htmlMustBeDoneAsImage;
 -(void)scaleFontsBy:(CGFloat)sc;
+-(void)updateWholeWithNewStyle:(ACSDStyle*)newStyle;
++(NSAttributedString*)applyStyle:(ACSDStyle*)newStyle toAttributedString:(NSAttributedString*)atstr;
+-(NSAttributedString*)attributedString;
+- (void)setGraphicContents:(id)cont;
 
 @end
 

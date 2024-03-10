@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,7 +24,7 @@
             </connections>
         </customObject>
         <customView id="2" userLabel="AccessoryView">
-            <rect key="frame" x="0.0" y="0.0" width="368" height="137"/>
+            <rect key="frame" x="0.0" y="0.0" width="368" height="135"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="nCB-Vh-NGf">
@@ -39,13 +39,13 @@
                             </textFieldCell>
                         </textField>
                         <slider verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5">
-                            <rect key="frame" x="65" y="0.0" width="136" height="15"/>
+                            <rect key="frame" x="65" y="-1" width="136" height="17"/>
                             <constraints>
                                 <constraint firstAttribute="width" relation="lessThanOrEqual" constant="300" id="9Io-ZB-6xo"/>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="136" id="NMJ-Pk-f8U"/>
                             </constraints>
                             <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="12">
-                                <font key="font" metaFont="user"/>
+                                <font key="font" usesAppearanceFont="YES"/>
                             </sliderCell>
                             <connections>
                                 <action selector="compressionQualitySliderHit:" target="1" id="21"/>
@@ -87,7 +87,7 @@
                     </constraints>
                 </customView>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6">
-                    <rect key="frame" x="35" y="100" width="297" height="22"/>
+                    <rect key="frame" x="34" y="99" width="299" height="22"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="291" id="0c9-bc-c8w"/>
                     </constraints>
@@ -106,7 +106,7 @@
                         <action selector="fileTypeMenuHit:" target="1" id="23"/>
                     </connections>
                 </popUpButton>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="KvZ-i7-kDV">
+                <customView ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KvZ-i7-kDV">
                     <rect key="frame" x="0.0" y="0.0" width="183" height="75"/>
                     <subviews>
                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="26">
@@ -117,7 +117,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="24">
+                        <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="24">
                             <rect key="frame" x="65" y="41" width="96" height="19"/>
                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="25">
                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" localizesFormat="NO" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="39">
@@ -141,7 +141,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30">
+                        <textField verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="30">
                             <rect key="frame" x="65" y="16" width="96" height="19"/>
                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="31">
                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="40">
@@ -176,8 +176,8 @@
                         <constraint firstItem="28" firstAttribute="top" secondItem="26" secondAttribute="bottom" constant="11" id="zcm-a9-Lam"/>
                     </constraints>
                 </customView>
-                <button translatesAutoresizingMaskIntoConstraints="NO" id="41">
-                    <rect key="frame" x="200" y="32" width="120" height="18"/>
+                <button ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41">
+                    <rect key="frame" x="200" y="31" width="120" height="18"/>
                     <constraints>
                         <constraint firstAttribute="width" priority="250" constant="116" id="4vS-If-cyB"/>
                     </constraints>
