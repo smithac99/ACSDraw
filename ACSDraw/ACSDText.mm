@@ -1755,7 +1755,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 -(void)uSetFont:(NSFont*)font forRange:(NSRange)r oldFont:(NSFont*)oldfont
 {
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetFont:oldfont forRange:r oldFont:font];
-	[[layoutManager textStorage]setAttributes:[NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName] range:r];
+	[[layoutManager textStorage]addAttribute:NSFontAttributeName value:font range:r];
 }
 
 -(void)uScale:(float)sc pointSizeInRange:(NSRange)r
