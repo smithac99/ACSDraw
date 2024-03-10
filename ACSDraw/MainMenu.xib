@@ -314,6 +314,12 @@
                                     <action selector="copy:" target="-1" id="181"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Copy Append" tag="240" keyEquivalent="c" id="whh-2o-CHZ">
+                                <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                <connections>
+                                    <action selector="copyAppend:" target="-1" id="2Ye-XD-VGF"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Copy (invert y)" tag="240" alternate="YES" keyEquivalent="c" id="1045">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
@@ -1380,6 +1386,12 @@ CA
                                                 <action selector="copyPageNamesFromClipboard:" target="-1" id="7Yo-Bj-bJl"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Book – Clean Up Parentage" id="pJE-d5-TO3">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="bookUpdateParentage:" target="-1" id="kTa-05-JVj"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -1552,7 +1564,7 @@ CA
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="141" y="220"/>
+            <point key="canvasLocation" x="-15" y="201"/>
         </menu>
         <customObject id="200" userLabel="AppDelegate" customClass="AppDelegate">
             <connections>

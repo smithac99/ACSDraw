@@ -138,6 +138,7 @@ NSString* Creator();
 -(NSArray*)svgBodyString;
 -(NSSet*)getAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings;
 -(void)createPagesFromStrings:(NSArray*)pageNames;
+-(BOOL)bookUpdateParentage;
 
 @end
 

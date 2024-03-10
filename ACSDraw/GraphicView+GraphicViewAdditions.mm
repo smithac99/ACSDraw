@@ -257,4 +257,5 @@ static NSPoint relativePositionInRect(CGPoint p,NSRect r)
         [[self document]createPagesFromStrings:splitStrings];
 }
 
+
 @end

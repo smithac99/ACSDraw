@@ -2159,4 +2159,53 @@ static NSString *LastX(NSString* path,int ct)
         [super updateChangeCount:change];
 }
 
+-(BOOL)bookUpdateParentage
+{
+    int affectedCount = 0;
+    for (ACSDPage *page in self.pages)
+    {
+        ACSDGraphic *pageImage = nil;
+        NSArray *imageLayers = [page layersWithName:@"image"];
+        if ([imageLayers count] == 0)
+            continue;
+        for (ACSDLayer *il in imageLayers)
+        {
+            NSArray *gs = [il graphicsWithName:@"p[0-9]+"];
+            for (ACSDGraphic *g in gs)
+                if ([g isKindOfClass:[ACSDImage class]])
+                {
+                    pageImage = g;
+                    break;
+                }
+        }
+        if (pageImage)
+        {
+            for (ACSDLayer *layer in page.layers)
+            {
+                if (layer.exportable)
+                {
+                    for (ACSDGraphic *g in layer.graphics)
+                    {
+                        if (g.link == nil)
+                        {
+                            [ACSDLink uLinkFromObject:g toObject:pageImage anchor:-1 substitutePageNo:NO changeAttributes:YES undoManager:[self undoManager]];
+                            affectedCount++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (affectedCount > 0)
+    {
+        NSString *pl = affectedCount > 1 ? @"s" : @"";
+        [[self undoManager]setActionName:[NSString stringWithFormat:@"Update parentage of %d graphic%@",(int)affectedCount,pl]];
+    }
+    return affectedCount > 0;
+}
+
+-(IBAction)bookUpdateParentage:(id)sender
+{
+    [self bookUpdateParentage];
+}
 @end

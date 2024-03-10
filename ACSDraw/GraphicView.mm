@@ -4817,29 +4817,80 @@ NSString *dragGraphicKey = @"dragGraphic";
 	[[self undoManager] setActionName:[sender title]];
 }
 
+-(void)copyAppendSelectedGraphicsToPasteBoard:(NSPasteboard*)pb draggedGraphic:(ACSDGraphic*)dg altDown:(BOOL)altDown
+{
+    NSData *prevdata = [pb dataForType:ACSDrawGraphicPasteboardType];
+    if (!prevdata)
+    {
+        [self copySelectedGraphicsToPasteBoard:pb draggedGraphic:nil altDown:altDown];
+        return;
+    }
+    NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingWithData:prevdata];
+    [unarch setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
+    id docKey = [unarch decodeObjectForKey:@"docKey"];
+    [(ArchiveDelegate*)[unarch delegate]setSameDocument:[docKey isEqual:[[self document]documentKey]]];
+    id a = [unarch decodeObjectForKey:@"root"];
+    NSDictionary *prevdict = nil;
+    if ([a isKindOfClass:[NSDictionary class]])
+        prevdict = a;
+    else
+    {
+        [self copySelectedGraphicsToPasteBoard:pb draggedGraphic:nil altDown:altDown];
+        return;
+    }
+    NSMutableArray *graphics = [[NSMutableArray alloc]initWithArray:prevdict[pbElementsKey]];
+    NSArray *newGraphics = [self sortedSelectedGraphics];
+    [graphics addObjectsFromArray:newGraphics];
+    NSMutableSet *strokeSet = [[NSMutableSet alloc]initWithSet:prevdict[pbStrokesKey]];
+    NSArray *newStrokes = [[self strokesUsedByElements:newGraphics]allObjects];
+    [strokeSet addObjectsFromArray:newStrokes];
+    NSMutableSet *fillSet = [[NSMutableSet alloc]initWithSet:prevdict[pbFillsKey]];
+    [fillSet addObjectsFromArray:[[self fillsUsedByElements:newGraphics]allObjects]];
+    NSMutableSet *lineendingsSet = [[NSMutableSet alloc]initWithSet:prevdict[pbLineEndingsKey]];
+    [lineendingsSet addObjectsFromArray:[[self lineEndingsUsedByElements:newStrokes]allObjects]];
+    NSMutableSet *shadowssSet = [[NSMutableSet alloc]initWithSet:prevdict[pbShadowsKey]];
+    [shadowssSet addObjectsFromArray:[[self shadowsUsedByElements:newGraphics]allObjects]];
+    
+    NSDictionary *dict = @{pbElementsKey:graphics,
+                           pbStrokesKey:strokeSet,
+                           pbFillsKey:fillSet,
+                           pbLineEndingsKey:lineendingsSet,
+                           pbShadowsKey:shadowssSet
+    };
+
+    NSMutableData *mdat = [NSMutableData data];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
+    [archiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
+    [archiver encodeObject:dict forKey:@"root"];
+    [archiver encodeObject:[[self document]documentKey] forKey:@"docKey"];
+    [archiver finishEncoding];
+    [pb setData:mdat forType:ACSDrawGraphicPasteboardType];
+
+}
+
 -(void)copySelectedGraphicsToPasteBoard:(NSPasteboard*)pb draggedGraphic:(ACSDGraphic*)dg altDown:(BOOL)altDown
-   {
-	NSArray *graphics = [self sortedSelectedGraphics];
-	NSSet *strokeSet = [self strokesUsedByElements:graphics];
-	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:graphics,pbElementsKey,
-		strokeSet,pbStrokesKey,
-		[self fillsUsedByElements:graphics],pbFillsKey,
-		[self lineEndingsUsedByElements:[strokeSet allObjects]],pbLineEndingsKey,
-		[self shadowsUsedByElements:graphics],pbShadowsKey,
-		[ConditionalObject conditionalObject:dg],dragGraphicKey,
-		nil];
-	NSMutableData *mdat = [NSMutableData data];
-	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
-	[archiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
-	[archiver encodeObject:dict forKey:@"root"];
-	[archiver encodeObject:[[self document]documentKey] forKey:@"docKey"];
-	[archiver finishEncoding];
-	[pb setData:mdat forType:ACSDrawGraphicPasteboardType];
-	NSMutableString *ms = [NSMutableString stringWithCapacity:100];
-	for (unsigned i = 0;i < [graphics count];i++)
-		[ms appendString:[[graphics objectAtIndex:i]pathTextInvertY:altDown]];
-       [pb setString:ms forType:NSPasteboardTypeString];
-   }
+{
+    NSArray *graphics = [self sortedSelectedGraphics];
+    NSSet *strokeSet = [self strokesUsedByElements:graphics];
+    NSDictionary *dict = @{pbElementsKey:graphics,
+                           pbStrokesKey:strokeSet,
+                           pbFillsKey:[self fillsUsedByElements:graphics],
+                           pbLineEndingsKey:[self lineEndingsUsedByElements:[strokeSet allObjects]],
+                           pbShadowsKey:[self shadowsUsedByElements:graphics],
+                           dragGraphicKey:[ConditionalObject conditionalObject:dg],
+    };
+    NSMutableData *mdat = [NSMutableData data];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
+    [archiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
+    [archiver encodeObject:dict forKey:@"root"];
+    [archiver encodeObject:[[self document]documentKey] forKey:@"docKey"];
+    [archiver finishEncoding];
+    [pb setData:mdat forType:ACSDrawGraphicPasteboardType];
+    NSMutableString *ms = [NSMutableString stringWithCapacity:100];
+    for (unsigned i = 0;i < [graphics count];i++)
+        [ms appendString:[[graphics objectAtIndex:i]pathTextInvertY:altDown]];
+    [pb setString:ms forType:NSPasteboardTypeString];
+}
 
 -(NSString*)liveCodeRelativeLocationStringForArray:(NSArray*)array
 {
@@ -5010,14 +5061,24 @@ NSString *dragGraphicKey = @"dragGraphic";
 }
 
 - (IBAction)copy:(id)sender
-   {
-	if (![self currentEditableLayer])
-		return;
-	if ([[self selectedGraphics]count] == 0)
-		return;
+{
+    if (![self currentEditableLayer])
+        return;
+    if ([[self selectedGraphics]count] == 0)
+        return;
     [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObject:ACSDrawGraphicPasteboardType] owner:self];
-	[self copySelectedGraphicsToPasteBoard:[NSPasteboard generalPasteboard]draggedGraphic:nil altDown:[sender isAlternate]];
-   }
+    [self copySelectedGraphicsToPasteBoard:[NSPasteboard generalPasteboard]draggedGraphic:nil altDown:[sender isAlternate]];
+}
+
+- (IBAction)copyAppend:(id)sender
+{
+    if (![self currentEditableLayer])
+        return;
+    if ([[self selectedGraphics]count] == 0)
+        return;
+    //[[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObject:ACSDrawGraphicPasteboardType] owner:self];
+    [self copyAppendSelectedGraphicsToPasteBoard:[NSPasteboard generalPasteboard]draggedGraphic:nil altDown:[sender isAlternate]];
+}
 
 - (IBAction)selectAll:(id)sender
    {
