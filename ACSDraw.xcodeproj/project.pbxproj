@@ -328,6 +328,7 @@
 		E7BDF8B129F2EB3700BA0C64 /* ACSDSVGImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7BDF8AD29F2EB3700BA0C64 /* ACSDSVGImage.mm */; };
 		E7C963BF2B9CB0FE00879139 /* ApplyStyleDialogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7C963BE2B9CB0FE00879139 /* ApplyStyleDialogController.mm */; };
 		E7C963C22B9CCA0900879139 /* HTMLExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7C963C02B9CCA0900879139 /* HTMLExport.xib */; };
+		E7C963C52B9F1E4500879139 /* TextSizesDialogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7C963C42B9F1E4500879139 /* TextSizesDialogController.mm */; };
 		E7CFC26A1C92C68600114E18 /* ACSDReference.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7CFC2691C92C68600114E18 /* ACSDReference.mm */; };
 		E7D18F0F1988EA67000664F6 /* gElement.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D18F0E1988EA67000664F6 /* gElement.m */; };
 		E7D202D81889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7D202D61889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm */; };
@@ -863,6 +864,8 @@
 		E7C963BD2B9CB0FE00879139 /* ApplyStyleDialogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplyStyleDialogController.h; sourceTree = "<group>"; };
 		E7C963BE2B9CB0FE00879139 /* ApplyStyleDialogController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ApplyStyleDialogController.mm; sourceTree = "<group>"; };
 		E7C963C12B9CCA0900879139 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/HTMLExport.xib; sourceTree = "<group>"; };
+		E7C963C32B9F1E4500879139 /* TextSizesDialogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextSizesDialogController.h; sourceTree = "<group>"; };
+		E7C963C42B9F1E4500879139 /* TextSizesDialogController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TextSizesDialogController.mm; sourceTree = "<group>"; };
 		E7CF357627AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/DocPadding.nib; sourceTree = "<group>"; };
 		E7CF357827AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ImageController.xib; sourceTree = "<group>"; };
 		E7CF357B27AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -1099,6 +1102,8 @@
 				E740561F15B1EF2D0040F590 /* TOCController.mm */,
 				E7C963BD2B9CB0FE00879139 /* ApplyStyleDialogController.h */,
 				E7C963BE2B9CB0FE00879139 /* ApplyStyleDialogController.mm */,
+				E7C963C32B9F1E4500879139 /* TextSizesDialogController.h */,
+				E7C963C42B9F1E4500879139 /* TextSizesDialogController.mm */,
 				E740562015B1EF2D0040F590 /* TOCTableSource.h */,
 				E740562115B1EF2D0040F590 /* TOCTableSource.mm */,
 				E740562215B1EF2D0040F590 /* ToolWindow.h */,
@@ -1861,6 +1866,7 @@
 				E740569F15B1EF2E0040F590 /* LineEndingWindowController.mm in Sources */,
 				E74056A015B1EF2E0040F590 /* LineEndPreview.mm in Sources */,
 				E74056A115B1EF2E0040F590 /* LineView.mm in Sources */,
+				E7C963C52B9F1E4500879139 /* TextSizesDialogController.mm in Sources */,
 				E74056A215B1EF2E0040F590 /* MainWindowController.mm in Sources */,
 				E74056A315B1EF2E0040F590 /* MarkerView.mm in Sources */,
 				E74056A415B1EF2E0040F590 /* MasterListTableSource.mm in Sources */,

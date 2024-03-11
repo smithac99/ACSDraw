@@ -15,6 +15,7 @@
 #import "ArrayAdditions.h"
 #import "SelectionSet.h"
 #import "ApplyStyleDialogController.h"
+#import "TextSizesDialogController.h"
 
 NSRect ConstrainRectToRect(NSRect littleRect,NSRect bigRect);
 NSRect CentreRectInRect(NSRect movableRect,NSRect fixedRect);
@@ -1391,5 +1392,11 @@ static NSMutableArray *parseRenameString(NSString* str)
     if (!_abslinkSheet)
         [self loadSheetNib];
     [self.applyStyleDialogController showDialog];
+}
+-(IBAction)textSizesDialog:(id)sender
+{
+    if (!_abslinkSheet)
+        [self loadSheetNib];
+    [self.textSizesDialogController showDialog];
 }
 @end

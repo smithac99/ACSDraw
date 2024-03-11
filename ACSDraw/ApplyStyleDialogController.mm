@@ -82,6 +82,9 @@
 {
     int scopeIdx = (int)[_regexpScope indexOfSelectedItem];
     NSArray *graphics = [windowController graphicsForScope:scopeIdx];
+    NSIndexSet *ixs = [graphics indexesOfObjectsPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return [obj isKindOfClass:[ACSDText class]];
+    }];
     NSString *regexpString = [self.regexpPattern stringValue];
     if ([regexpString length] == 0)
         return graphics;
@@ -94,7 +97,7 @@
         [self.message setAttributedStringValue:as];
         return @[];
     }
-    NSIndexSet *ixs = [graphics indexesOfObjectsPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    ixs = [graphics indexesOfObjectsPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *nm = [obj name];
         return [regexp numberOfMatchesInString:nm options:0 range:NSMakeRange(0, [nm length])] > 0;
     }];

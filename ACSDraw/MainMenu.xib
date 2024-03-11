@@ -632,10 +632,16 @@ CA
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <menu key="submenu" title="Size" id="UAw-kD-q3e">
                                                 <items>
-                                                    <menuItem title="+" keyEquivalent="=" id="bfH-zP-uoE">
+                                                    <menuItem title="Sizes Dialog" id="bfH-zP-uoE">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="textSizesDialog:" target="-1" id="rcG-ph-G3U"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="+" keyEquivalent="=" id="ncT-rF-9HQ">
                                                         <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                                         <connections>
-                                                            <action selector="incrementTextSize:" target="-1" id="Qwl-nR-Aly"/>
+                                                            <action selector="incrementTextSize:" target="-1" id="oes-Bd-XJz"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="-" keyEquivalent="-" id="qFW-m4-s2a">

@@ -10,6 +10,7 @@ NSImage *ImageFromFileCG(NSString* str);
 @class ACSDPathElement;
 @class GroupViewController;
 @class ApplyStyleDialogController;
+@class TextSizesDialogController;
 
 CGColorSpaceRef getRGBColorSpace();
 
@@ -55,6 +56,7 @@ CGColorSpaceRef getRGBColorSpace();
 @property (assign) IBOutlet NSPanel *errorPanel;
 @property (assign) IBOutlet NSTextView *errorTextView;
 @property (strong) IBOutlet ApplyStyleDialogController *applyStyleDialogController;
+@property (strong) IBOutlet TextSizesDialogController *textSizesDialogController;
 
 - (id)initWithPages:(NSMutableArray*)list;
 - (GraphicView*)graphicView;
