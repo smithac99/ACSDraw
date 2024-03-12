@@ -269,6 +269,11 @@
                                                 <action selector="importXliff:" target="-1" id="6wv-Vb-MSB"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="SVGs As Components…" id="kAu-te-6da">
+                                            <connections>
+                                                <action selector="importSVGsAsGraphics:" target="-1" id="482-EW-XHb"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

@@ -329,6 +329,7 @@
 		E7C963BF2B9CB0FE00879139 /* ApplyStyleDialogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7C963BE2B9CB0FE00879139 /* ApplyStyleDialogController.mm */; };
 		E7C963C22B9CCA0900879139 /* HTMLExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7C963C02B9CCA0900879139 /* HTMLExport.xib */; };
 		E7C963C52B9F1E4500879139 /* TextSizesDialogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7C963C42B9F1E4500879139 /* TextSizesDialogController.mm */; };
+		E7C963C82BA06EDF00879139 /* NSMutableArray+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E7C963C72BA06EDF00879139 /* NSMutableArray+additions.m */; };
 		E7CFC26A1C92C68600114E18 /* ACSDReference.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7CFC2691C92C68600114E18 /* ACSDReference.mm */; };
 		E7D18F0F1988EA67000664F6 /* gElement.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D18F0E1988EA67000664F6 /* gElement.m */; };
 		E7D202D81889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7D202D61889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm */; };
@@ -866,6 +867,8 @@
 		E7C963C12B9CCA0900879139 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/HTMLExport.xib; sourceTree = "<group>"; };
 		E7C963C32B9F1E4500879139 /* TextSizesDialogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextSizesDialogController.h; sourceTree = "<group>"; };
 		E7C963C42B9F1E4500879139 /* TextSizesDialogController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TextSizesDialogController.mm; sourceTree = "<group>"; };
+		E7C963C62BA06EDF00879139 /* NSMutableArray+additions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+additions.h"; sourceTree = "<group>"; };
+		E7C963C72BA06EDF00879139 /* NSMutableArray+additions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+additions.m"; sourceTree = "<group>"; };
 		E7CF357627AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/DocPadding.nib; sourceTree = "<group>"; };
 		E7CF357827AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ImageController.xib; sourceTree = "<group>"; };
 		E7CF357B27AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -1481,6 +1484,8 @@
 				E740552A15B1EF2D0040F590 /* AffineTransformAdditions.h */,
 				E740552B15B1EF2D0040F590 /* AffineTransformAdditions.mm */,
 				E740553215B1EF2D0040F590 /* ArrayAdditions.h */,
+				E7C963C62BA06EDF00879139 /* NSMutableArray+additions.h */,
+				E7C963C72BA06EDF00879139 /* NSMutableArray+additions.m */,
 				E740553315B1EF2D0040F590 /* ArrayAdditions.mm */,
 				E740553C15B1EF2D0040F590 /* CoderAdditions.h */,
 				E740553D15B1EF2D0040F590 /* CoderAdditions.mm */,
@@ -1881,6 +1886,7 @@
 				E74056AC15B1EF2E0040F590 /* PalletteViewController.mm in Sources */,
 				E74056AD15B1EF2E0040F590 /* Panel.mm in Sources */,
 				E74056B015B1EF2E0040F590 /* ParaStyleHolder.mm in Sources */,
+				E7C963C82BA06EDF00879139 /* NSMutableArray+additions.m in Sources */,
 				E76AC06129B50EFE005DE06A /* SVGPaintServer.m in Sources */,
 				E74056B115B1EF2E0040F590 /* PatternDisplay.mm in Sources */,
 				E7BDF8B129F2EB3700BA0C64 /* ACSDSVGImage.mm in Sources */,

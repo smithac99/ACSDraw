@@ -117,5 +117,6 @@ enum
 -(NSRect)unionStrictGraphicBounds;
 -(NSArray*)graphicsWithName:(NSString*)nm;
 -(NSArray*)layersWithName:(NSString*)nm;
+-(NSArray*)allGraphics;
 
 @end

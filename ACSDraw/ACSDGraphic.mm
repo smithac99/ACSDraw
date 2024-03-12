@@ -792,6 +792,21 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
     [self setFill:f];
 }
 
+-(void)setFillFromFills:(NSArray*)fills
+{
+    if (fill)
+    {
+        for (ACSDFill *otherFill in fills)
+        {
+            if ([fill isSameAs:otherFill])
+            {
+                [self setFill:otherFill];
+                break;
+            }
+        }
+    }
+}
+
 -(void)setStroke:(ACSDStroke*)s
 {
     if (s == stroke)
@@ -806,6 +821,22 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
         [stroke addGraphic:self];
     }
 }
+
+-(void)setStrokeFromStrokes:(NSArray*)strokes
+{
+    if (stroke)
+    {
+        for (ACSDStroke *otherStroke in strokes)
+        {
+            if ([stroke isSameAs:otherStroke])
+            {
+                [self setStroke:otherStroke];
+                break;
+            }
+        }
+    }
+}
+
 
 -(ShadowType*)shadowType
 {
@@ -3841,4 +3872,10 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 {
 	return [self indexPathFromAncestor:anc array:@[]];
 }
+
+-(void)setLayer:(ACSDLayer *)l
+{
+    _layer = l;
+}
+
 @end

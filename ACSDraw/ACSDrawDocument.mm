@@ -2208,4 +2208,14 @@ static NSString *LastX(NSString* path,int ct)
 {
     [self bookUpdateParentage];
 }
+
+-(NSArray*)allGraphics
+{
+    NSMutableArray *objs = [NSMutableArray array];
+    for (ACSDPage *p in self.pages)
+        [objs addObjectsFromArray:[p allGraphics]];
+    return objs;
+}
+
+
 @end

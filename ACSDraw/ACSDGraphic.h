@@ -465,6 +465,8 @@ selectedGraphics:(NSSet*)selectedGraphics;
 - (void)drawHandleAtPoint:(NSPoint)point magnification:(float)mag;
 - (BOOL)usesSimplePath;
 - (void)clearReferences;
+-(void)setFillFromFills:(NSArray*)fills;
+-(void)setStrokeFromStrokes:(NSArray*)strokes;
 
 @end
 

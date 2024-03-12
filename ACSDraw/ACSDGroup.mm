@@ -158,6 +158,24 @@
 	[graphics makeObjectsPerformSelector:@selector(setAllFills:) withObject:f];
    }
 
+-(void)setFillFromFills:(NSArray*)fills
+{
+    [super setFillFromFills:fills];
+    for (ACSDGraphic *g in graphics)
+    {
+        [g setFillFromFills:fills];
+    }
+}
+
+-(void)setStrokeFromStrokes:(NSArray*)strokes
+{
+    [super setStrokeFromStrokes:strokes];
+    for (ACSDGraphic *g in graphics)
+    {
+        [g setFillFromFills:strokes];
+    }
+}
+
 -(void)drawHighlightRect:(NSRect)r colour:(NSColor*)col hotPoint:(NSPoint)hotPoint modifiers:(NSUInteger)modifiers
    {
 	NSEnumerator *objEnum = [graphics objectEnumerator];

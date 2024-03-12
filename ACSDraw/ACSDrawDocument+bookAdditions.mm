@@ -17,6 +17,8 @@
 #import "ACSDLink.h"
 #import "NSString+StringAdditions.h"
 #import <Vision/Vision.h>
+#import "ObjectAdditions.h"
+#import "NSMutableArray+additions.h"
 
 NSFont* FontToFitSize(NSFont *fnt, NSString *txt,CGSize sz, BOOL width, BOOL height,BOOL wrapped);
 CGRect boundingBoxForString(NSString* str,NSFont* font,CGSize sz);
@@ -895,4 +897,44 @@ void FitImageToBox(ACSDImage *im,NSRect box)
     }];
     
 }
+
+- (IBAction)importSVGsAsGraphics:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowsMultipleSelection:YES];
+    [panel setAllowedFileTypes:@[@"svg"]];
+    [panel beginSheetModalForWindow:[[self frontmostMainWindowController] window]
+                  completionHandler:^(NSInteger result)
+     {
+        if (result == NSModalResponseOK)
+        {
+            for (NSURL *url in [panel URLs])
+            {
+                NSData *d = [NSData dataWithContentsOfURL:url];
+                ACSDrawDocument *adoc = [[ACSDrawDocument alloc]init];
+                [adoc readFromData:d ofType:@"svg" error:nil];
+                NSArray *graphics = [adoc allGraphics];
+                NSMutableSet *strokeSet = [NSMutableSet setWithCapacity:10];
+                NSMutableSet *fillSet = [NSMutableSet setWithCapacity:10];
+                GraphicView *gv = [[self frontmostMainWindowController]graphicView];
+                ACSDLayer *l = [gv currentEditableLayer];
+                for (ACSDGraphic *g in graphics)
+                {
+                    [g setFillFromFills:self.fills];
+                    [g setStrokeFromStrokes:self.strokes];
+                    [strokeSet unionSet:[g usedStrokes]];
+                    [fillSet unionSet:[g usedFills]];
+                    [g.layer.graphics removeObject:g];
+                    [g setLayer:l];
+                    [gv addElement:g];
+                }
+                [[self strokes] addNewObjectsFromArray:[strokeSet allObjects]];
+                [[self fills] addNewObjectsFromArray:[fillSet allObjects]];
+            }
+        }
+    }];
+    
+    
+}
+
 @end

@@ -1034,6 +1034,14 @@ static int MasterLayerCount(ACSDPage *p)
     return objs;;
 }
 
+-(NSArray*)allGraphics
+{
+    NSMutableArray *objs = [NSMutableArray array];
+    for (ACSDLayer *l in self.layers)
+        [objs addObjectsFromArray:l.graphics];
+    return objs;
+}
+
 -(NSArray*)layersWithName:(NSString*)nm
 {
     if (nm == nil)
