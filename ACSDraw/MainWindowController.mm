@@ -535,70 +535,76 @@ NSImage *ImageFromFileCG(NSString* str)
     CFRelease(source);
     return im;
 }
+
+
+NSImage *ImageFromData(NSData* data)
+{
+    CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)data,NULL);
+    if (!source)
+        return nil;
+    CGImageRef originalImage = CGImageSourceCreateImageAtIndex(source,0,NULL);
+    if (!originalImage)
+    {
+        CFRelease(source);
+        return nil;
+    }
+    CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(source,0,nil);
+    NSDictionary *dict = (__bridge NSDictionary*)properties;
+    //    resolution = [[dict objectForKey:(NSString*)kCGImagePropertyDPIWidth]intValue];
+    //    if (resolution < 10)
+    //        resolution = 72;
+    int orientation = orientationOfSource(dict);
+    size_t originalWidth,originalHeight,newWidth,newHeight;
+    newWidth = originalWidth = CGImageGetWidth(originalImage);
+    newHeight = originalHeight = CGImageGetHeight(originalImage);
+    NSBitmapImageRep *bm;
+    if (orientation == 1)
+        bm = [[NSBitmapImageRep alloc]initWithCGImage:originalImage];
+    else
+    {
+        if (orientation == 6 || orientation == 8 || orientation == 7 || orientation == 5)
+        {
+            newWidth = originalHeight;
+            newHeight = originalWidth;
+        }
+        CGAffineTransform transform = transformForOrientation(orientation,1.0,originalWidth,originalHeight);
+        CGColorSpaceRef space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+        NSInteger bytesPerRow = (newWidth * 4 + 15) & ~15;
+        CGContextRef context = CGBitmapContextCreate(NULL,newWidth,newHeight,8,bytesPerRow,space,kCGImageAlphaPremultipliedLast);
+        CFRelease(space);
+        CGContextSaveGState(context);
+        CGContextConcatCTM(context,transform);
+        CGRect destR = CGRectMake(0,0,originalWidth,originalHeight);
+        CGContextDrawImage(context,destR,originalImage);
+        CGContextRestoreGState(context);
+        CGImageRef newImage = CGBitmapContextCreateImage(context);
+        bm = [[NSBitmapImageRep alloc]initWithCGImage:newImage];
+        CGImageRelease(newImage);
+        CGContextRelease(context);
+    }
+    NSImage *im = [[NSImage alloc]initWithSize:NSMakeSize(newWidth,newHeight)];
+    [im lockFocus];
+    [bm draw];
+    [im unlockFocus];
+//    [im addRepresentation:bm];
+    CGImageRelease(originalImage);
+    CFRelease(source);
+    CFRelease(properties);
+    return im;
+}
+
 NSImage *ImageFromFile(NSString* str)
 {
-	CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)[NSURL fileURLWithPath:str],NULL);
-	if (!source)
-		return nil;
-	CGImageRef originalImage = CGImageSourceCreateImageAtIndex(source,0,NULL);
-	if (!originalImage)
-	{
-		CFRelease(source);
-		return nil;
-	}
-	CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(source,0,nil);
-    NSDictionary *dict = (__bridge NSDictionary*)properties;
-	//	resolution = [[dict objectForKey:(NSString*)kCGImagePropertyDPIWidth]intValue];
-	//	if (resolution < 10)
-	//		resolution = 72;
-	int orientation = orientationOfSource(dict);
-	size_t originalWidth,originalHeight,newWidth,newHeight;
-	newWidth = originalWidth = CGImageGetWidth(originalImage);
-	newHeight = originalHeight = CGImageGetHeight(originalImage);
-	NSBitmapImageRep *bm;
-	if (orientation == 1)
-		bm = [[NSBitmapImageRep alloc]initWithCGImage:originalImage];
-	else
-	{
-		if (orientation == 6 || orientation == 8 || orientation == 7 || orientation == 5)
-		{
-			newWidth = originalHeight;
-			newHeight = originalWidth;
-		}
-		CGAffineTransform transform = transformForOrientation(orientation,1.0,originalWidth,originalHeight);
-		CGColorSpaceRef space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-		NSInteger bytesPerRow = (newWidth * 4 + 15) & ~15;
-		CGContextRef context = CGBitmapContextCreate(NULL,newWidth,newHeight,8,bytesPerRow,space,kCGImageAlphaPremultipliedLast);
-		CFRelease(space);
-		CGContextSaveGState(context);
-		CGContextConcatCTM(context,transform);
-		CGRect destR = CGRectMake(0,0,originalWidth,originalHeight);
-		CGContextDrawImage(context,destR,originalImage);
-		CGContextRestoreGState(context);		
-		CGImageRef newImage = CGBitmapContextCreateImage(context);
-		bm = [[NSBitmapImageRep alloc]initWithCGImage:newImage];
-		CGImageRelease(newImage);
-		CGContextRelease(context);
-	}
-	NSImage *im = [[NSImage alloc]initWithSize:NSMakeSize(newWidth,newHeight)];
-	[im lockFocus];
-	[bm draw];
-	[im unlockFocus];
-//	[im addRepresentation:bm];
-	CGImageRelease(originalImage);
-	CFRelease(source);
-	CFRelease(properties);
-	return im;
+    NSData *data = [NSData dataWithContentsOfFile:str];
+    return ImageFromData(data);
 }
 
 -(int)importImage:(NSString*)str
 {
-	NSImage *im = ImageFromFile(str);
-	if (!im)
-		im = [[NSImage alloc]initWithContentsOfFile:str];
-	if (im)
+    NSData *data = [NSData dataWithContentsOfFile:str];
+	if (data)
 	{
-		[graphicView createImage:im name:str location:NULL fileName:nil];
+		[graphicView createImageFromData:data name:str location:NULL fileName:nil];
 		return 1;
 	}
 	return 0;

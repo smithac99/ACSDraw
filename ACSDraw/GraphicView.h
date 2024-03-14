@@ -161,6 +161,7 @@ enum GV_Cursor_Mode
 - (void)changeDocumentWidth:(float)f;
 - (void)changeDocumentHeight:(float)f;
 - (ACSDImage*)createImage:(NSImage*)im name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName;
+- (ACSDImage*)createImageFromData:(NSData*)data name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName;
 - (float)adjustHSmartGuide:(float)x tool:(int)selectedTool;
 - (float)adjustVSmartGuide:(float)y tool:(int)selectedTool;
 -(int)snapSize;

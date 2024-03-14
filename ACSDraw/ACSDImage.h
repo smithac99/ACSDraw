@@ -26,9 +26,11 @@ CGContextRef CreateArgbContext(int width,int height);
 
 @property (retain)	NSImage *image;
 @property NSRect frame;
+@property NSData *sourceImageData;
 
 
 -(id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l image:(NSImage*)im;
+-(id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l image:(NSImage*)im data:(NSData*)sourceData;
 - (ACSDImage*)rotatedACSDImage ;
 - (ACSDImage*)wideCylinderHalfWrapACSDImage;
 - (ACSDImage*)wideCylinderHalfUnwrapACSDImage;

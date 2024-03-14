@@ -2159,6 +2159,18 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[[self currentEditableLayer] graphics] addObject:g];
     [[NSNotificationCenter defaultCenter]postNotificationName:ACSDGraphicListChanged object:self];
 }
+
+- (ACSDImage*)createImageFromData:(NSData*)data name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
+{
+    NSImage *image = ImageFromData(data);
+    if (image == nil)
+        image = [[NSImage alloc]initWithData:data];
+
+    ACSDImage *im = [self createImage:image name:name location:loc fileName:fileName];
+    im.sourceImageData = data;
+    return im;
+}
+
 - (ACSDImage*)createImage:(NSImage*)im name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
 {
 	NSSize iSize = [im size];
@@ -5209,10 +5221,9 @@ NSInteger findSame(id obj,NSArray *arr)
                 }
 				else
 				{
-					if (!(im = ImageFromFile(fileStr)))
-						im = [[NSImage alloc]initWithContentsOfFile:fileStr];
-					if (im)
-						[self createImage:im name:[[fileStr lastPathComponent]stringByDeletingPathExtension] location:loc fileName:fileStr];
+                    NSData *d = [NSData dataWithContentsOfFile:fileStr];
+					if (d)
+						[self createImageFromData:d name:[[fileStr lastPathComponent]stringByDeletingPathExtension] location:loc fileName:fileStr];
 				}
 			}
 			return;

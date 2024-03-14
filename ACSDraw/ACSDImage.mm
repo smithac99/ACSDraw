@@ -52,6 +52,25 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 	return self;
 }
 
+-(id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l image:(NSImage*)im data:(NSData*)sourceData
+{
+    if ((self = [super initWithName:n fill:f stroke:str rect:r layer:l]))
+    {
+        if (im)
+        {
+            image = im;
+            frame.origin = NSMakePoint(0.0,0.0);
+            frame.size = [im size];
+        }
+        self.sourceImageData = sourceData;
+        self.exposure = 0.0;
+        self.saturation = 1.0;
+        self.brightness = 0.0;
+        self.contrast = 1.0;
+    }
+    return self;
+}
+
 -(id)initWithName:(NSString*)n fill:(ACSDFill*)f stroke:(ACSDStroke*)str rect:(NSRect)r layer:(ACSDLayer*)l
 		   xScale:(float)xs yScale:(float)ys rotation:(float)rot shadowType:(ShadowType*)st label:(ACSDLabel*)lab  alpha:(float)a 
 			image:(NSImage*)im exposure:(float)e saturation:(float)sat brightness:(float)bri contrast:(float)con 
@@ -76,7 +95,10 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 - (void) encodeWithCoder:(NSCoder*)coder
 {
 	[super encodeWithCoder:coder];
-	[coder encodeObject:image forKey:@"ACSDImage_image"];
+    if (_sourceImageData)
+        [coder encodeObject:_sourceImageData forKey:@"ACSDImage_sourceImageData"];
+    else
+        [coder encodeObject:image forKey:@"ACSDImage_image"];
 	[coder encodeFloat:self.exposure forKey:@"ACSDImage_exposure"];
 	[coder encodeFloat:self.saturation forKey:@"ACSDImage_saturation"];
 	[coder encodeFloat:self.brightness forKey:@"ACSDImage_brightness"];
@@ -87,7 +109,10 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super initWithCoder:coder];
-	image = [coder decodeObjectForKey:@"ACSDImage_image"];
+    _sourceImageData = [coder decodeObjectForKey:@"ACSDImage_sourceImageData"];
+    image = [coder decodeObjectForKey:@"ACSDImage_image"];
+    if (image == nil)
+        image = ImageFromData(_sourceImageData);
 	if ([coder containsValueForKey:@"ACSDImage_framex"])
 		frame = [ACSDGraphic decodeRectForKey:@"ACSDImage_frame" coder:coder];
 	else
@@ -111,11 +136,8 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
     obj.saturation = self.saturation;
     obj.brightness = self.brightness;
     obj.contrast = self.contrast;
+    obj.sourceImageData = self.sourceImageData;
     [obj invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
-/*
-    id obj = [[ACSDImage alloc]initWithName:[self name] fill:[self fill] stroke:[self stroke] rect:[self bounds]
-									  layer:[self layer] xScale:xScale yScale:yScale rotation:rotation shadowType:[self shadowType] label:textLabel alpha:alpha 
-									  image:[image copyWithZone:zone] exposure:exposure saturation:saturation brightness:brightness contrast:contrast];*/
 	return obj;
 }
 

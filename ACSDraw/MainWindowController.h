@@ -86,3 +86,5 @@ NSBitmapImageRep *newBitmap(int width,int height);
 -(NSArray<ACSDGraphic*>*)graphicsForScope:(int)scope;
 
 @end
+
+NSImage *ImageFromData(NSData* data);

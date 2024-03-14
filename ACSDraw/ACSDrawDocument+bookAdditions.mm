@@ -767,7 +767,8 @@ void FitImageToBox(ACSDImage *im,NSRect box)
     }];
     if ([pageNames count] == 0)
         return;
-    NSImage *firstImage = imageDict[pageNames[0]][0];
+    NSData *data = imageDict[pageNames[0]][0];
+    NSImage *firstImage = [[NSImage alloc]initWithData:data];
     CGSize sz = [firstImage size];
     NSPoint loc = NSMakePoint(sz.width/2.0, sz.height/2.0);
     [[[self frontmostMainWindowController] graphicView]changeDocumentSize:sz];
@@ -782,7 +783,7 @@ void FitImageToBox(ACSDImage *im,NSRect box)
         l.exportable = NO;
         l = [[[self frontmostMainWindowController] graphicView]addNewLayerAtIndex:[page.layers count]];
         NSArray *arr = imageDict[pageName];
-        [[[self frontmostMainWindowController] graphicView]createImage:arr[0] name:pageName location:&loc fileName:arr[1]];
+        [[[self frontmostMainWindowController] graphicView]createImageFromData:arr[0] name:pageName location:&loc fileName:arr[1]];
         l.editable = NO;
         l.exportable = NO;
         l.name = @"image";
@@ -825,7 +826,7 @@ void FitImageToBox(ACSDImage *im,NSRect box)
                     NSInteger idx = [pages indexOfObject:page];
                     [gview setCurrentPageIndex:idx force:NO withUndo:YES];
                     [gview setCurrentEditableLayerIndex:[page.layers indexOfObject:layer] force:NO select:NO withUndo:YES];
-                    ACSDImage *im = [gview createImage:imageDict[name][0] name:name location:&loc fileName:imageDict[name][1]];
+                    ACSDImage *im = [gview createImageFromData:imageDict[name][0] name:name location:&loc fileName:imageDict[name][1]];
                     
 /*                    NSError *err;
                     VNImageRequestHandler *reqHandler = [[VNImageRequestHandler alloc]initWithCGImage:[oldim CGImageForProposedRect:NULL context:nil hints:nil] options:@{}];
@@ -866,8 +867,8 @@ void FitImageToBox(ACSDImage *im,NSRect box)
             {
                 NSString *path = [url path];
                 NSString *fn = [[url lastPathComponent]stringByDeletingPathExtension];
-                NSImage *im = [[NSImage alloc]initWithContentsOfURL:url];
-                imageDict[fn] = @[im,path];
+                NSData *d = [NSData dataWithContentsOfURL:url];
+                imageDict[fn] = @[d,path];
             }
             [self insertImagesAsBook:imageDict];
         }
@@ -889,8 +890,8 @@ void FitImageToBox(ACSDImage *im,NSRect box)
             {
                 NSString *path = [url path];
                 NSString *fn = [[url lastPathComponent]stringByDeletingPathExtension];
-                NSImage *im = [[NSImage alloc]initWithContentsOfURL:url];
-                imageDict[fn] = @[im,path];
+                NSData *d = [NSData dataWithContentsOfURL:url];
+                imageDict[fn] = @[d,path];
             }
             [self insertPreviewImagesForBook:imageDict];
         }
