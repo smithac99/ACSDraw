@@ -171,7 +171,6 @@
 		E74056FF15B1EF950040F590 /* PallettePanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74056E815B1EF950040F590 /* PallettePanel.xib */; };
 		E740570015B1EF950040F590 /* Pallettes.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74056EA15B1EF950040F590 /* Pallettes.xib */; };
 		E740570115B1EF950040F590 /* PatternWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056EC15B1EF950040F590 /* PatternWindow.nib */; };
-		E740570315B1EF950040F590 /* RotationSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056F015B1EF950040F590 /* RotationSheet.nib */; };
 		E740570615B1EF950040F590 /* ToolPalette.nib in Resources */ = {isa = PBXBuildFile; fileRef = E74056F615B1EF950040F590 /* ToolPalette.nib */; };
 		E740570915B2ACB00040F590 /* SnapLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740570815B2ACAF0040F590 /* SnapLine.mm */; };
 		E740573315B2B18C0040F590 /* XXAffineTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = E740572415B2B18C0040F590 /* XXAffineTransform.mm */; };
@@ -330,6 +329,7 @@
 		E7C963C22B9CCA0900879139 /* HTMLExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7C963C02B9CCA0900879139 /* HTMLExport.xib */; };
 		E7C963C52B9F1E4500879139 /* TextSizesDialogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7C963C42B9F1E4500879139 /* TextSizesDialogController.mm */; };
 		E7C963C82BA06EDF00879139 /* NSMutableArray+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E7C963C72BA06EDF00879139 /* NSMutableArray+additions.m */; };
+		E7C963CB2BA2E6C200879139 /* RotationSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7C963C92BA2E6C200879139 /* RotationSheet.xib */; };
 		E7CFC26A1C92C68600114E18 /* ACSDReference.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7CFC2691C92C68600114E18 /* ACSDReference.mm */; };
 		E7D18F0F1988EA67000664F6 /* gElement.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D18F0E1988EA67000664F6 /* gElement.m */; };
 		E7D202D81889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7D202D61889DA0200AFFFC9 /* GraphicView+GraphicViewAdditions.mm */; };
@@ -869,13 +869,13 @@
 		E7C963C42B9F1E4500879139 /* TextSizesDialogController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TextSizesDialogController.mm; sourceTree = "<group>"; };
 		E7C963C62BA06EDF00879139 /* NSMutableArray+additions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+additions.h"; sourceTree = "<group>"; };
 		E7C963C72BA06EDF00879139 /* NSMutableArray+additions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+additions.m"; sourceTree = "<group>"; };
+		E7C963CA2BA2E6C200879139 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RotationSheet.xib; sourceTree = "<group>"; };
 		E7CF357627AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/DocPadding.nib; sourceTree = "<group>"; };
 		E7CF357827AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ImageController.xib; sourceTree = "<group>"; };
 		E7CF357B27AE6D1A00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/MainWindow.nib; sourceTree = "<group>"; };
 		E7CF357C27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PallettePanel.xib; sourceTree = "<group>"; };
 		E7CF357D27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Pallettes.xib; sourceTree = "<group>"; };
 		E7CF357E27AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/PatternWindow.nib; sourceTree = "<group>"; };
-		E7CF358027AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/RotationSheet.nib; sourceTree = "<group>"; };
 		E7CF358327AE6D1B00DABEF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Base; path = Base.lproj/ToolPalette.nib; sourceTree = "<group>"; };
 		E7CFC2681C92C68600114E18 /* ACSDReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACSDReference.h; sourceTree = "<group>"; };
 		E7CFC2691C92C68600114E18 /* ACSDReference.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ACSDReference.mm; sourceTree = "<group>"; };
@@ -1124,13 +1124,13 @@
 				E76AC07829B53CFF005DE06A /* LineEndingWindow.xib */,
 				E76AC07029B514F5005DE06A /* MainMenu.xib */,
 				E7C963C02B9CCA0900879139 /* HTMLExport.xib */,
+				E7C963C92BA2E6C200879139 /* RotationSheet.xib */,
 				E74056E615B1EF950040F590 /* MainWindow.nib */,
 				E74056E815B1EF950040F590 /* PallettePanel.xib */,
 				E74056EA15B1EF950040F590 /* Pallettes.xib */,
 				E7D218B42895974500B0ABEC /* TextAccessory.xib */,
 				E74056EC15B1EF950040F590 /* PatternWindow.nib */,
 				E76AC07529B53C25005DE06A /* PolySides.xib */,
-				E74056F015B1EF950040F590 /* RotationSheet.nib */,
 				E78463A029B8AE6E00227A21 /* StylePanel.xib */,
 				E76AC07229B53BC0005DE06A /* TocPanel.xib */,
 				E74056F615B1EF950040F590 /* ToolPalette.nib */,
@@ -1631,7 +1631,6 @@
 				E740570015B1EF950040F590 /* Pallettes.xib in Resources */,
 				E740570115B1EF950040F590 /* PatternWindow.nib in Resources */,
 				E77102E5279E77B4000FF4FB /* expandalt.tiff in Resources */,
-				E740570315B1EF950040F590 /* RotationSheet.nib in Resources */,
 				E76AC07E29B73F67005DE06A /* arrowrf.tif in Resources */,
 				E740570615B1EF950040F590 /* ToolPalette.nib in Resources */,
 				E740578915B2D3060040F590 /* arrow2.tif in Resources */,
@@ -1689,6 +1688,7 @@
 				E74057B015B2D3060040F590 /* squigglealt.tif in Resources */,
 				E74057B115B2D3060040F590 /* tinyminus.tiff in Resources */,
 				E76AC00F29B34980005DE06A /* booktemplate.xml in Resources */,
+				E7C963CB2BA2E6C200879139 /* RotationSheet.xib in Resources */,
 				E74057B215B2D3060040F590 /* tinyplus.tiff in Resources */,
 				E74057B315B2D3060040F590 /* whitearrow1.tif in Resources */,
 				E74057B415B2D3060040F590 /* whitearrow1alt.tif in Resources */,
@@ -2015,14 +2015,6 @@
 			name = PatternWindow.nib;
 			sourceTree = "<group>";
 		};
-		E74056F015B1EF950040F590 /* RotationSheet.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E7CF358027AE6D1B00DABEF9 /* Base */,
-			);
-			name = RotationSheet.nib;
-			sourceTree = "<group>";
-		};
 		E74056F615B1EF950040F590 /* ToolPalette.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2069,6 +2061,14 @@
 				E7C963C12B9CCA0900879139 /* Base */,
 			);
 			name = HTMLExport.xib;
+			sourceTree = "<group>";
+		};
+		E7C963C92BA2E6C200879139 /* RotationSheet.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E7C963CA2BA2E6C200879139 /* Base */,
+			);
+			name = RotationSheet.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
