@@ -1575,7 +1575,7 @@ CA
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="-15" y="201"/>
+            <point key="canvasLocation" x="-251" y="167"/>
         </menu>
         <customObject id="200" userLabel="AppDelegate" customClass="AppDelegate">
             <connections>
@@ -2592,6 +2592,12 @@ CA
                 <menuItem title="Remove Link" id="704">
                     <connections>
                         <action selector="removeTextLink:" target="-1" id="706"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Paste and Match Style" tag="250" keyEquivalent="V" id="KR9-pe-Sh9">
+                    <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                    <connections>
+                        <action selector="pasteAsPlainText:" target="-1" id="qqF-8k-CBD"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Graduate Text Size" id="zhE-v8-f80">

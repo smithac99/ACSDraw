@@ -3540,6 +3540,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
              secondPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
              float dist = pointDistance(anchorPoint, secondPoint);
              float thisScale = 1.0;
+             if (dist > 10)
+                 NSLog(@"stop");
              if (dist > 0.0)
              {
                  if (secondPoint.y > anchorPoint.y)
@@ -7142,7 +7144,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         else
             [self interpretKeyEvents:[NSArray arrayWithObject:event]];
     }
-	else if (uc == 9)
+	else if (/*uc == 9*/ [str isEqualToString:@"\t"] && ([event modifierFlags] & NSEventModifierFlagOption))
     {
         if ([[self selectedGraphics]count] == 1)
         {

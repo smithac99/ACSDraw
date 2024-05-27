@@ -1716,7 +1716,7 @@ float normalisedAngle(float ang)
     ACSDFill *thisfill = [self chosenFillOptions:options];
     if (thisfill)
         [thisfill fillPath:path];
-    if ([stroke colour])
+    if ([stroke colour] && [stroke lineWidth] > 0.0)
 	   {
            [stroke strokePath:path];
            [[stroke colour]set];
