@@ -18,6 +18,7 @@
 #import "ACSDLineEnding.h"
 #import "ACSDStyle.h"
 #import "ACSDFill.h"
+#import "ACSDGroup.h"
 #import "ShadowType.h"
 #import "SVGWriter.h"
 #import "LineEndingWindowController.h"
@@ -1010,8 +1011,14 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
         g = [ACSDPath ellipseWithSVGNode:child settingsStack:settingsStack];
     else if ([nodeName isEqualToString:@"g"])
     {
+        NSMutableArray *members = [NSMutableArray array];
         for (XMLNode *ch in child.children)
-            [self processSVGNode:ch settingsStack:settingsStack];
+        {
+            ACSDGraphic *mem = [self processSVGNode:ch settingsStack:settingsStack];
+            [mem.layer removeGraphics:@[mem]];
+            [members addObject:mem];
+        }
+        g = [[ACSDGroup alloc]initWithName:@"" graphics:members layer:[[self pages][0] currentLayer]];
     }
     else if ([nodeName isEqualToString:@"style"])
     {
@@ -1083,7 +1090,7 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
     return g;
 }
 
--(void)processSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
+-(id)processSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
 {
     NSString *nodeName = [child.nodeName lowercaseString];
     if ([nodeName isEqualToString:@"switch"])
@@ -1092,7 +1099,7 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
         {
             [self processSVGNode:n settingsStack:settingsStack];
         }
-        return;
+        return nil;
     }
     ACSDGraphic *g = [self graphicFromSVGNode:child settingsStack:settingsStack];
     if (g)
@@ -1110,6 +1117,7 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
             }
         }
     }
+    return g;
 }
 
 -(BOOL)loadLayoutXMLData:(NSData*)data
