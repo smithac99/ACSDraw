@@ -306,6 +306,7 @@ NSBezierPath* BezierPathFromSVGPath(NSString *str)
                 [path closePath];
                 break;
             default:
+                NSLog(@"unknown path command %c",uc);
                 break;
         }
         idx = skipdelims(str,idx);

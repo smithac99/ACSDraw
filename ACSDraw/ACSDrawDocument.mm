@@ -1015,8 +1015,11 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
         for (XMLNode *ch in child.children)
         {
             ACSDGraphic *mem = [self processSVGNode:ch settingsStack:settingsStack];
-            [mem.layer removeGraphics:@[mem]];
-            [members addObject:mem];
+            if (mem)
+            {
+                [mem.layer removeGraphics:@[mem]];
+                [members addObject:mem];
+            }
         }
         g = [[ACSDGroup alloc]initWithName:@"" graphics:members layer:[[self pages][0] currentLayer]];
     }

@@ -12,6 +12,7 @@
 #import "ACSDPage.h"
 #import "ACSDImage.h"
 #import "ACSDPrefsController.h"
+#import <PDFKit/PDFKit.h>
 
 @implementation GraphicView (GraphicViewAdditions)
 
@@ -171,6 +172,48 @@ static NSPoint relativePositionInRect(CGPoint p,NSRect r)
                  [self processImagesToPages:url];
          }
      }];
+}
+
+-(void)importPDFAsPages:(NSURL*)pdfURL
+{
+    PDFDocument *pdfDoc = [[PDFDocument alloc]initWithURL:pdfURL];
+    PDFPage *pg = [pdfDoc pageAtIndex:0];
+    CGSize sz = [pg boundsForBox:kPDFDisplayBoxArtBox].size;
+    if (sz.width > 100 && sz.height > 100)
+    {
+        [self changeDocumentSize:sz];
+    }
+    NSPoint loc = NSMakePoint([self bounds].size.width/2.0, [self bounds].size.height/2.0);
+    NSInteger ct = [pdfDoc pageCount];
+    for (NSInteger i = 0;i < ct;i++)
+    {
+        PDFPage *pg = [pdfDoc pageAtIndex:i];
+        NSData *pdfData = [pg dataRepresentation];
+        NSString *nm = [NSString stringWithFormat:@"page %d",(int)i];
+        ACSDPage *page = [self addNewPageAtIndex:[pages count]];
+        page.pageTitle = nm;
+
+        ACSDImage *im = [self createImageFromData:pdfData name:nm location:&loc fileName:@""];
+        im.sourceImageData = nil; //if pdfData is saved, image does not get restored properly
+    }
+    
+}
+
+-(IBAction)importPDFAsSeparatePages:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowedFileTypes:@[@"com.adobe.pdf"]];
+    [panel setCanChooseFiles:YES];
+    [panel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result)
+     {
+        if (result == NSModalResponseOK)
+        {
+            for (NSURL *url in [panel URLs])
+            {
+                [self importPDFAsPages:url];
+            }
+        }
+    }];
 }
 
 -(NSString*)assetsDir
