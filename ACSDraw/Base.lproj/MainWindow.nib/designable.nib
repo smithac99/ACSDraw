@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -166,6 +166,12 @@
                         <action selector="sizeToWidth:" target="-1" id="JDU-8I-Ilj"/>
                     </connections>
                 </menuItem>
+                <menuItem title="Size to Width/Height" tag="409" alternate="YES" keyEquivalent="w" id="2EQ-fz-Qk3">
+                    <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                    <connections>
+                        <action selector="sizeToWidthHeight:" target="-1" id="iOQ-iD-BBi"/>
+                    </connections>
+                </menuItem>
                 <menuItem title="Create Bounding Box" keyEquivalent="b" id="kAA-fi-6eh">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
@@ -249,14 +255,14 @@
                     </scrollView>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Od5-Fu-x0k">
                         <rect key="frame" x="429" y="13" width="89" height="33"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="21" id="0aX-aN-ElV"/>
-                            <constraint firstAttribute="width" priority="250" constant="75" id="Q5i-Fl-tyT"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Dismiss" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nbU-Px-Ez6">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="0aX-aN-ElV"/>
+                            <constraint firstAttribute="width" priority="250" constant="75" id="Q5i-Fl-tyT"/>
+                        </constraints>
                     </button>
                 </subviews>
                 <constraints>
