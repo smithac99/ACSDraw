@@ -740,26 +740,33 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
 		[transform prependTransform:newTransform];
 		[settings setObject:transform forKey:@"transform"];
     }
+    BOOL shouldHide = NO;
+    BOOL settingsHide = [settings[@"hidden"] boolValue];
     NSString *v = [child.attributes objectForKey:@"visibility"];
     if (v != nil)
     {
         if ([v isEqual:@"hidden"])
-            settings[@"hidden"] = @YES;
-        else if (![v isEqual:@"inherit"])
-            [settings removeObjectForKey:@"hidden"];
+            shouldHide = YES;
+        else if ([v isEqual:@"inherit"])
+            shouldHide = settingsHide;
     }
     v = [child.attributes objectForKey:@"display"];
     if (v != nil)
     {
         if ([v isEqual:@"none"])
-            settings[@"hidden"] = @YES;
+            shouldHide = YES;
     }
     v = [child.attributes objectForKey:@"hidden"];
     if (v != nil)
     {
         if ([v isEqual:@"true"])
-            settings[@"hidden"] = @YES;
+            shouldHide = YES;
     }
+    if (shouldHide)
+        settings[@"hidden"] = @(shouldHide);
+    else
+        [settings removeObjectForKey:@"hidden"];
+
     NSString *o = [child.attributes objectForKey:@"opacity"];
     if (o != nil)
     {
@@ -1974,6 +1981,8 @@ NSString* Creator()
 	NSPoint antiVector = r.origin;
 	antiVector.x = -antiVector.x;
 	antiVector.y = -antiVector.y;
+    r.size.width = ceil(r.size.width);
+    r.size.height = ceil(r.size.height);
 	[[[self frontmostMainWindowController] graphicView]moveAllObjectsBy:antiVector];
 	[[[self frontmostMainWindowController] graphicView]changeDocumentSize:r.size];
 }

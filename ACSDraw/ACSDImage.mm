@@ -1091,6 +1091,8 @@ CGContextRef CreateArgbContext(int width,int height)
 -(void)writeSVGDataWithRef:(SVGWriter*)svgWriter
 {
     NSString *sourceName = [self.sourcePath lastPathComponent];
+    if (sourceName == nil)
+        sourceName = @"";
     if (svgWriter.sources[sourceName] == nil)
     {
         [[svgWriter defs]appendFormat:@"\t<image id=\"%@\" width=\"%g\" height=\"%g\" xlink:href=\"%@\"/>\n",sourceName,bounds.size.width,bounds.size.height,[self.sourcePath lastPathComponent]];
