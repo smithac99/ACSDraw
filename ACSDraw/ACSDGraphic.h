@@ -189,6 +189,7 @@ struct KnobDescriptor
 @property NSPoint originalPos,scaleAnchorPos;
 @property float originalScale;
 @property (strong) ACSDGraphic *clipGraphic;
+@property NSString *priorGroupName;
 
 + (NSString*)nextNameForDocument:(ACSDrawDocument*)doc;
 + (NSString*)graphicTypeName;

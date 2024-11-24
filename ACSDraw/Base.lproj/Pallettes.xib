@@ -1838,7 +1838,7 @@
                     </textFieldCell>
                 </textField>
                 <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="398">
-                    <rect key="frame" x="192" y="100" width="78" height="16"/>
+                    <rect key="frame" x="192" y="100" width="70" height="16"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="442">
                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="0.00" negativeFormat="-0.00" localizesFormat="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="2" maximumFractionDigits="3" groupingSeparator="," id="443"/>
@@ -1851,7 +1851,7 @@
                     </connections>
                 </textField>
                 <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="399">
-                    <rect key="frame" x="192" y="119" width="78" height="16"/>
+                    <rect key="frame" x="192" y="119" width="70" height="16"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="440">
                         <numberFormatter key="formatter" formatterBehavior="custom10_4" localizesFormat="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="2" maximumFractionDigits="3" id="441"/>
@@ -2139,8 +2139,20 @@
                         <action selector="alignMatrixHit:" target="468" id="mnY-Lc-BEJ"/>
                     </connections>
                 </matrix>
+                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CYe-rJ-v1b">
+                    <rect key="frame" x="266" y="101" width="14" height="32"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="square" title="o" bezelStyle="shadowlessSquare" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="yGG-My-LNK">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                        <font key="font" metaFont="miniSystem"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="linkScaleHit:" target="468" id="QJz-vA-a8X"/>
+                        <binding destination="1065" name="value" keyPath="values.ACSDLinkScale" id="Cad-ip-oJz"/>
+                    </connections>
+                </button>
             </subviews>
-            <point key="canvasLocation" x="881" y="269.5"/>
+            <point key="canvasLocation" x="1080" y="321.5"/>
         </customView>
         <customView id="384" userLabel="CornerRadius">
             <rect key="frame" x="0.0" y="0.0" width="282" height="45"/>
@@ -2365,6 +2377,7 @@
                 <outlet property="gridView" destination="949" id="994"/>
                 <outlet property="heightTop" destination="935" id="937"/>
                 <outlet property="leftX" destination="92p-kX-yBx" id="7oS-A0-RgH"/>
+                <outlet property="linkScaleButton" destination="CYe-rJ-v1b" id="Ddh-Pb-bYj"/>
                 <outlet property="positionView" destination="382" id="472"/>
                 <outlet property="positionX" destination="457" id="522"/>
                 <outlet property="positionY" destination="456" id="523"/>

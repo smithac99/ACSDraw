@@ -2123,6 +2123,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
     [[self undoManager] setActionName:@"Import document"];
     [[self window] invalidateCursorRectsForView:self];
+    return image;
 }
 
 - (void)createDocImage:(ACSDrawDocument*)adoc name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
@@ -4656,10 +4657,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 
 -(void)uGroupGraphicsFromIndexSet:(NSIndexSet*)ixs intoGroup:(ACSDGroup*)gp atIndex:(NSInteger)ind
 {
-    if (ind == NSNotFound)
-        [[[self currentEditableLayer] graphics] addObject:gp];
-    else
-        [[[self currentEditableLayer] graphics] insertObject:gp atIndex:ind];
 	[gp registerWithDocument:[self document]];
 	NSMutableArray *arr = [NSMutableArray arrayWithCapacity:[ixs count]];
 	NSUInteger i = [ixs firstIndex];
@@ -4676,6 +4673,10 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		i = [ixs indexLessThanIndex:i];
 	}
 	[gp setGraphics:arr];
+    if (ind == NSNotFound)
+        [[[self currentEditableLayer] graphics] addObject:gp];
+    else
+        [[[self currentEditableLayer] graphics] insertObject:gp atIndex:ind];
 	[[[self undoManager] prepareWithInvocationTarget:self] uUngroupGroupAtIndex:[[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:gp] toGraphicsWithIndexSet:ixs];
     [[self window] invalidateCursorRectsForView:self];
 	[self reCalcHandleBitsIgnoreSelected:NO];
@@ -4721,14 +4722,24 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[self undoManager] setActionName:@"Clip"];
 }
 
+static NSString *priorGroupNameFromGraphics(NSArray* glist)
+{
+    for (ACSDGraphic *g in glist)
+        if (g.priorGroupName)
+            return g.priorGroupName;
+    return nil;
+}
+
 - (void)group:(id)sender
-   {
-	NSIndexSet *ixs = [self indexesOfSelectedGraphics];
-	ACSDGroup *group = [[ACSDGroup alloc]initWithName:[ACSDGroup nextNameForDocument:[self document]] graphics:[NSArray array]
-		layer:[self currentEditableLayer]];
-	[self uGroupGraphicsFromIndexSet:ixs intoGroup:group atIndex:[[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:group]];
-	[[self undoManager] setActionName:@"Group"];
-   }
+{
+    NSString *groupName = priorGroupNameFromGraphics([[self selectedGraphics] allObjects]);
+    if (groupName == nil)
+        groupName = [ACSDGroup nextNameForDocument:[self document]];
+    NSIndexSet *ixs = [self indexesOfSelectedGraphics];
+    ACSDGroup *group = [[ACSDGroup alloc]initWithName:groupName graphics:[NSArray array] layer:[self currentEditableLayer]];
+    [self uGroupGraphicsFromIndexSet:ixs intoGroup:group atIndex:[[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:group]];
+    [[self undoManager] setActionName:@"Group"];
+}
 
 - (void)ungroup:(id)sender
    {
@@ -4741,6 +4752,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		if ([gr isMemberOfClass:[ACSDGroup class]])
 		{
 			ACSDGroup *gp = (ACSDGroup*)gr;
+            for (ACSDGraphic *g in gp.graphics)
+                g.priorGroupName = gp.name;
 			[self uUngroupGroupAtIndex:i toGraphicsWithIndexSet:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(i,[[gp graphics]count])]];
 		}
 		i = [ixs indexLessThanIndex:i];

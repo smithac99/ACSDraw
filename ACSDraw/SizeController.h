@@ -61,9 +61,11 @@ enum
     IBOutlet NSView *gridView;
     IBOutlet id leftX;
     IBOutlet id bottomY;
-    BOOL showsWidth,showsHeight,showsLeft,showsBottom;
+    
+    BOOL showsWidth,showsHeight,showsLeft,showsBottom,linkScale;
 
 }
+@property (weak) IBOutlet NSButton *linkScaleButton;
 
 @property (nonatomic)float rotation,opacity,xScale,yScale;
 @property (assign) IBOutlet NSButton *alignButton;
