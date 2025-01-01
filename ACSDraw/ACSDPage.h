@@ -54,7 +54,7 @@ enum
    }
 
 @property (copy) NSString *name,*pageTitle,*xmlEventName;
-@property (assign) ACSDrawDocument *document;
+@property (weak) ACSDrawDocument *document;
 @property BOOL inactive;
 @property NSInteger currentLayerInd,pageNo,guideLayerInd;
 @property (retain) NSArray *previouslyVisibleLayers;

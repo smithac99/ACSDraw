@@ -136,7 +136,6 @@
 		E74056B215B1EF2E0040F590 /* PatternPreview.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055E415B1EF2D0040F590 /* PatternPreview.mm */; };
 		E74056B315B1EF2E0040F590 /* PatternWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055E615B1EF2D0040F590 /* PatternWindowController.mm */; };
 		E74056B415B1EF2E0040F590 /* PositionalObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055E815B1EF2D0040F590 /* PositionalObject.mm */; };
-		E74056B515B1EF2E0040F590 /* QuartzImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055EA15B1EF2D0040F590 /* QuartzImage.mm */; };
 		E74056B615B1EF2E0040F590 /* RotateSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = E74055EC15B1EF2D0040F590 /* RotateSheetController.m */; };
 		E74056B715B1EF2E0040F590 /* SelCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055EE15B1EF2D0040F590 /* SelCell.mm */; };
 		E74056B815B1EF2E0040F590 /* SelectedElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = E74055F015B1EF2D0040F590 /* SelectedElement.mm */; };
@@ -1894,7 +1893,6 @@
 				E76AC05929B50EFE005DE06A /* SVG_stop.m in Sources */,
 				E74056B315B1EF2E0040F590 /* PatternWindowController.mm in Sources */,
 				E74056B415B1EF2E0040F590 /* PositionalObject.mm in Sources */,
-				E74056B515B1EF2E0040F590 /* QuartzImage.mm in Sources */,
 				E74056B615B1EF2E0040F590 /* RotateSheetController.m in Sources */,
 				E74056B715B1EF2E0040F590 /* SelCell.mm in Sources */,
 				E74056B815B1EF2E0040F590 /* SelectedElement.mm in Sources */,

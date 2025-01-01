@@ -35,7 +35,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
 @implementation ACSDPage
 
-@synthesize name,document,pageTitle,inactive,currentLayerInd,pageNo,guideLayerInd;
+@synthesize name,pageTitle,inactive,currentLayerInd,pageNo,guideLayerInd;
 
 -(id)init
 {
@@ -58,8 +58,8 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 {
 	if ((self = [self init]))
 	{
-		document = d;
-		[document performSelector:@selector(registerObject:)withObjectsFromArray:layers];
+		_document = d;
+		[_document performSelector:@selector(registerObject:)withObjectsFromArray:layers];
 	}
 	return self;
 }
@@ -319,13 +319,13 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 {
     //ACSDPage *p = [[ACSDPage alloc]initWithDocument:document];
     ACSDPage *p = [super copy];
-    p.document = document;
+    p.document = _document;
 	NSMutableArray *newLayers = [NSMutableArray arrayWithCapacity:[layers count]];
 	for (ACSDLayer *l in layers)
 		[newLayers addObject:[l copy]];
 	[p setLayers:newLayers];
 	[p setLayerPages];
-    [p registerWithDocument:document];
+    [p registerWithDocument:_document];
     p.xmlEventName = self.xmlEventName;
 	return p;
 }
@@ -508,9 +508,9 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 -(NSColor*)backgroundColour
 {
 	if (backgroundColour == nil)
-		return [document backgroundColour];
+		return [_document backgroundColour];
 	if ([backgroundColour alphaComponent] == 0.0)
-		return [document backgroundColour];
+		return [_document backgroundColour];
 	return backgroundColour;
 }
 
@@ -523,7 +523,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
 -(BOOL)uSetBackgroundColour:(NSColor*)c
 {
-	[[[document undoManager] prepareWithInvocationTarget:self] uSetBackgroundColour:[self backgroundColour]];
+	[[[_document undoManager] prepareWithInvocationTarget:self] uSetBackgroundColour:[self backgroundColour]];
 	[self setBackgroundColour:c];
 	[graphicViews makeObjectsPerformSelector:@selector(setNeedsDisplay)];
 	return YES;
@@ -532,7 +532,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 -(BOOL)uDeleteAttributeAtIndex:(NSInteger)idx notify:(BOOL)notify
 {
 	NSArray *arr = self.attributes[idx];
-	[[[document undoManager] prepareWithInvocationTarget:self] uInsertAttributeName:arr[0]value:arr[1] atIndex:idx notify:YES];
+	[[[_document undoManager] prepareWithInvocationTarget:self] uInsertAttributeName:arr[0]value:arr[1] atIndex:idx notify:YES];
 	[self.attributes removeObjectAtIndex:idx];
 	if (notify)
 		[[NSNotificationCenter defaultCenter]postNotificationName:ACSDPageAttributeChanged object:self];
@@ -541,7 +541,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
 -(BOOL)uInsertAttributeName:(NSString*)nm value:(NSString*)val atIndex:(NSInteger)idx notify:(BOOL)notify
 {
-	[[[document undoManager] prepareWithInvocationTarget:self] uDeleteAttributeAtIndex:idx notify:YES];
+	[[[_document undoManager] prepareWithInvocationTarget:self] uDeleteAttributeAtIndex:idx notify:YES];
 	if (self.attributes == nil)
 		self.attributes = [NSMutableArray arrayWithCapacity:6];
 	if (notify)
@@ -553,7 +553,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 -(BOOL)uSetAttributeName:(NSString*)nm atIndex:(NSInteger)idx notify:(BOOL)notify
 {
 	NSArray *arr = self.attributes[idx];
-	[[[document undoManager] prepareWithInvocationTarget:self] uSetAttributeName:arr[0] atIndex:idx notify:YES];
+	[[[_document undoManager] prepareWithInvocationTarget:self] uSetAttributeName:arr[0] atIndex:idx notify:YES];
 	[self.attributes replaceObjectAtIndex:idx withObject:@[nm,arr[1]]];
 	if (notify)
 		[[NSNotificationCenter defaultCenter]postNotificationName:ACSDPageAttributeChanged object:self];
@@ -580,7 +580,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 -(BOOL)uSetAttributeValue:(NSString*)val atIndex:(NSInteger)idx notify:(BOOL)notify
 {
 	NSArray *arr = self.attributes[idx];
-	[[[document undoManager] prepareWithInvocationTarget:self] uSetAttributeValue:arr[1] atIndex:idx notify:YES];
+	[[[_document undoManager] prepareWithInvocationTarget:self] uSetAttributeValue:arr[1] atIndex:idx notify:YES];
 	[self.attributes replaceObjectAtIndex:idx withObject:@[arr[0],val]];
 	if (notify)
 		[[NSNotificationCenter defaultCenter]postNotificationName:ACSDPageAttributeChanged object:self];
@@ -672,7 +672,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 {
 	if (masters == nil)
 		[self allocMasters];
-	[[[document undoManager] prepareWithInvocationTarget:self] uRemoveMaster:masterPage];
+	[[[_document undoManager] prepareWithInvocationTarget:self] uRemoveMaster:masterPage];
 	[masters insertObject:masterPage atIndex:ind];
 }
 
@@ -683,7 +683,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 	NSUInteger ind = [masters indexOfObjectIdenticalTo:masterPage];
 	if (ind != NSNotFound)
 	{
-		[[[document undoManager] prepareWithInvocationTarget:self] uAddMaster:masterPage atIndex:(int)ind];
+		[[[_document undoManager] prepareWithInvocationTarget:self] uAddMaster:masterPage atIndex:(int)ind];
 		[masters removeObjectAtIndex:ind];
 	}
 }
@@ -703,7 +703,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 	NSUInteger ind = [slaves indexOfObjectIdenticalTo:slavePage];
 	if (ind != NSNotFound)
 	{
-		[[[document undoManager] prepareWithInvocationTarget:self] uAddSlave:slavePage];
+		[[[_document undoManager] prepareWithInvocationTarget:self] uAddSlave:slavePage];
 		[slaves removeObjectAtIndex:ind];
 	}
 }
@@ -712,7 +712,7 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 {
 	if (slaves == nil)
 		[self allocSlaves];
-	[[[document undoManager] prepareWithInvocationTarget:self] uRemoveSlave:slavePage];
+	[[[_document undoManager] prepareWithInvocationTarget:self] uRemoveSlave:slavePage];
 	[slaves addObject:slavePage];
 }
 
@@ -787,9 +787,9 @@ NSString* stringForAlignment(int ali)
 	NSString *temp;
 	if (pageTitle == nil)
 	{
-		temp = [document docTitle];
+		temp = [_document docTitle];
 		if (temp == nil)
-			temp = [document displayName];
+			temp = [_document displayName];
 	}
 	else
 		temp = pageTitle;
@@ -800,7 +800,7 @@ NSString* stringForAlignment(int ali)
 {
 	if (!linkedObjects)
 		return;
-	[[[document undoManager] prepareWithInvocationTarget:self] uAddLinkedObject:obj];
+	[[[_document undoManager] prepareWithInvocationTarget:self] uAddLinkedObject:obj];
 	[linkedObjects removeObject:obj];
 }
 
@@ -808,7 +808,7 @@ NSString* stringForAlignment(int ali)
 {
 	if (!linkedObjects)
 		linkedObjects = [[NSMutableSet alloc]initWithCapacity:3];
-	[[[document undoManager] prepareWithInvocationTarget:self] uRemoveLinkedObject:obj];
+	[[[_document undoManager] prepareWithInvocationTarget:self] uRemoveLinkedObject:obj];
 	[linkedObjects addObject:obj];
 }
 
@@ -825,7 +825,7 @@ NSString* stringForAlignment(int ali)
 {
 	if (masters)
 		[masters makeObjectsPerformSelector:@selector(processHtmlObjectsOptions:)withObject:options];
-	NSSize sz = [document documentSize];
+	NSSize sz = [_document documentSize];
 	NSImage *im = [[NSImage alloc]initWithSize:sz];
 	GraphicView *graphicView = [[GraphicView alloc]initWithFrame:NSMakeRect(0,0,sz.width,sz.height)];
 	NSMutableDictionary *substitutions = [NSMutableDictionary dictionaryWithCapacity:5];
@@ -864,8 +864,8 @@ NSString* stringForAlignment(int ali)
 	[pageString appendString:@"\t\t<meta name=\"generator\" content=\"ACSDraw\">\n\t\t<style type=\"text/css\"/>\n"];
 	[pageString appendString:[options objectForKey:@"cssString"]];
 	[pageString appendString:@"\t\tp { white-space: pre-wrap }\n"];
-	if ([ document additionalCSS])
-		[pageString appendString:[document additionalCSS]];
+	if ([ _document additionalCSS])
+		[pageString appendString:[_document additionalCSS]];
 	[pageString appendString:@"\t\t</style>\n"];
 	NSString *scriptURL = [options objectForKey:@"scriptURL"];
 	if (scriptURL)
