@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -247,6 +247,11 @@
                                         <menuItem title="Image…" id="696">
                                             <connections>
                                                 <action selector="importPicture:" target="-1" id="697"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="PDF as Separate Pages…" id="tYQ-Wh-JHM">
+                                            <connections>
+                                                <action selector="importPDFAsSeparatePages:" target="-1" id="2nk-Zv-soV"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="IdT-sg-cf0"/>
@@ -1576,7 +1581,7 @@ CA
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="-15" y="201"/>
+            <point key="canvasLocation" x="-251" y="167"/>
         </menu>
         <customObject id="200" userLabel="AppDelegate" customClass="AppDelegate">
             <connections>
@@ -2151,28 +2156,28 @@ CA
                                             <subviews>
                                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="FkR-8d-NOp">
                                                     <rect key="frame" x="0.0" y="17" width="18" height="18"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="18" id="Y6U-pH-BJN"/>
-                                                        <constraint firstAttribute="width" constant="18" id="py1-Qu-9Hp"/>
-                                                    </constraints>
                                                     <buttonCell key="cell" type="square" title="+" bezelStyle="shadowlessSquare" imagePosition="above" alignment="center" borderStyle="border" id="X5i-4T-FpZ">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="menu" size="10"/>
                                                     </buttonCell>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="18" id="Y6U-pH-BJN"/>
+                                                        <constraint firstAttribute="width" constant="18" id="py1-Qu-9Hp"/>
+                                                    </constraints>
                                                     <connections>
                                                         <action selector="imagePlusHit:" target="363" id="ho5-oG-7zA"/>
                                                     </connections>
                                                 </button>
                                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="hfs-w5-Lrh">
                                                     <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="18" id="4BY-nY-qAp"/>
-                                                        <constraint firstAttribute="height" constant="18" id="hK6-Io-JYr"/>
-                                                    </constraints>
                                                     <buttonCell key="cell" type="square" title="-" bezelStyle="shadowlessSquare" imagePosition="above" alignment="center" borderStyle="border" id="eOc-9E-gMJ">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="menu" size="10"/>
                                                     </buttonCell>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="18" id="4BY-nY-qAp"/>
+                                                        <constraint firstAttribute="height" constant="18" id="hK6-Io-JYr"/>
+                                                    </constraints>
                                                     <connections>
                                                         <action selector="imageMinusHit:" target="363" id="X0n-Wd-Qwa"/>
                                                     </connections>
@@ -2211,14 +2216,14 @@ CA
                                     <subviews>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bce-V2-Ylw">
                                             <rect key="frame" x="38" y="297" width="164" height="16"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="14" id="Mi8-oe-kRS"/>
-                                                <constraint firstAttribute="width" priority="250" constant="156" id="RS6-sy-Gvc"/>
-                                            </constraints>
                                             <buttonCell key="cell" type="check" title="Inline embedded SVGs" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="jtx-Ng-UHJ">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="14" id="Mi8-oe-kRS"/>
+                                                <constraint firstAttribute="width" priority="250" constant="156" id="RS6-sy-Gvc"/>
+                                            </constraints>
                                             <connections>
                                                 <binding destination="1098" name="value" keyPath="values.prefsSVGInlineEmbedded" id="Nwo-uv-MKK"/>
                                             </connections>
@@ -2335,14 +2340,14 @@ CA
                                         </customView>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9SU-au-3cv">
                                             <rect key="frame" x="32" y="212" width="99" height="18"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="16" id="8o1-df-j9T"/>
-                                                <constraint firstAttribute="width" priority="750" constant="97" id="pwZ-DA-QiZ"/>
-                                            </constraints>
                                             <buttonCell key="cell" type="check" title="Show boxes" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="p4B-D2-BFS">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="16" id="8o1-df-j9T"/>
+                                                <constraint firstAttribute="width" priority="750" constant="97" id="pwZ-DA-QiZ"/>
+                                            </constraints>
                                             <connections>
                                                 <binding destination="1098" name="value" keyPath="values.prefBooksShowBoxes" id="gB6-Wk-irt"/>
                                             </connections>
@@ -2391,14 +2396,14 @@ CA
                                         </customView>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JlD-xe-nye">
                                             <rect key="frame" x="32" y="169" width="110" height="18"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" priority="750" constant="108" id="PPb-cy-eOX"/>
-                                                <constraint firstAttribute="height" constant="16" id="w28-be-9B5"/>
-                                            </constraints>
                                             <buttonCell key="cell" type="check" title="Show buttons" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="6Po-9W-0Uv">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <constraints>
+                                                <constraint firstAttribute="width" priority="750" constant="108" id="PPb-cy-eOX"/>
+                                                <constraint firstAttribute="height" constant="16" id="w28-be-9B5"/>
+                                            </constraints>
                                             <connections>
                                                 <binding destination="1098" name="value" keyPath="values.prefBooksShowButtons" id="BVy-rP-Z3B"/>
                                             </connections>
@@ -2595,6 +2600,12 @@ CA
                         <action selector="removeTextLink:" target="-1" id="706"/>
                     </connections>
                 </menuItem>
+                <menuItem title="Paste and Match Style" tag="250" keyEquivalent="V" id="KR9-pe-Sh9">
+                    <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                    <connections>
+                        <action selector="pasteAsPlainText:" target="-1" id="qqF-8k-CBD"/>
+                    </connections>
+                </menuItem>
                 <menuItem title="Graduate Text Size" id="zhE-v8-f80">
                     <connections>
                         <action selector="graduateTextSize:" target="-1" id="71O-FX-ZXU"/>
@@ -2614,14 +2625,14 @@ CA
             <subviews>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="857">
                     <rect key="frame" x="91" y="19" width="139" height="16"/>
-                    <constraints>
-                        <constraint firstAttribute="width" priority="250" constant="137" id="fKl-t0-8oE"/>
-                        <constraint firstAttribute="height" constant="14" id="jIP-qp-tRy"/>
-                    </constraints>
                     <buttonCell key="cell" type="check" title="Open After Export" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="987">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
+                    <constraints>
+                        <constraint firstAttribute="width" priority="250" constant="137" id="fKl-t0-8oE"/>
+                        <constraint firstAttribute="height" constant="14" id="jIP-qp-tRy"/>
+                    </constraints>
                     <connections>
                         <action selector="openAfterExportCBHit:" target="363" id="861"/>
                     </connections>

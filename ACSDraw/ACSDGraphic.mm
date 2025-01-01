@@ -498,6 +498,11 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
     self.layer = [coder decodeObjectForKey:@"ACSDGraphic_layer"];
 	[self setFill:[coder decodeObjectForKey:@"ACSDGraphic_fill"]];
 	[self setStroke:[coder decodeObjectForKey:@"ACSDGraphic_stroke"]];
+    if (self.stroke != nil && ![self.stroke isKindOfClass:[ACSDStroke class]])
+    {
+        NSLog(@"uh");
+        self.stroke = nil;
+    }
 	[self setShadowType:[coder decodeObjectForKey:@"ACSDGraphic_shadowtype"]];
 	bounds = [ACSDGraphic decodeRectForKey:@"ACSDGraphic_bounds" coder:coder];
 	_rotation = [coder decodeFloatForKey:@"ACSDGraphic_rotation"];
@@ -1716,7 +1721,7 @@ float normalisedAngle(float ang)
     ACSDFill *thisfill = [self chosenFillOptions:options];
     if (thisfill)
         [thisfill fillPath:path];
-    if ([stroke colour])
+    if ([stroke colour] && [stroke lineWidth] > 0.0)
 	   {
            [stroke strokePath:path];
            [[stroke colour]set];

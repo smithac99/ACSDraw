@@ -18,6 +18,7 @@
 #import "ACSDLineEnding.h"
 #import "ACSDStyle.h"
 #import "ACSDFill.h"
+#import "ACSDGroup.h"
 #import "ShadowType.h"
 #import "SVGWriter.h"
 #import "LineEndingWindowController.h"
@@ -602,12 +603,16 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     {
         if (cssclass != nil && [cssclass length] > 0)
         {
-            NSString *css = definedStyles[cssclass];
-            if (css)
+            NSString *dottedClass = [@"." stringByAppendingString:cssclass];
+            NSDictionary *sdict = definedStyles[dottedClass];
+            if (sdict)
             {
-                if ([styles length]>0)
+                NSMutableString *cssstr = [NSMutableString string];
+                for (NSString *k in [sdict allKeys])
+                    [cssstr appendFormat:@"%@ : %@ ;",k,sdict[k]];
+                if ([styles length] > 0)
                     [styles appendString:@";"];
-                [styles appendString:css];
+                [styles appendString:cssstr];
                 changed = YES;
             }
         }
@@ -735,26 +740,33 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
 		[transform prependTransform:newTransform];
 		[settings setObject:transform forKey:@"transform"];
     }
+    BOOL shouldHide = NO;
+    BOOL settingsHide = [settings[@"hidden"] boolValue];
     NSString *v = [child.attributes objectForKey:@"visibility"];
     if (v != nil)
     {
         if ([v isEqual:@"hidden"])
-            settings[@"hidden"] = @YES;
-        else if (![v isEqual:@"inherit"])
-            [settings removeObjectForKey:@"hidden"];
+            shouldHide = YES;
+        else if ([v isEqual:@"inherit"])
+            shouldHide = settingsHide;
     }
     v = [child.attributes objectForKey:@"display"];
     if (v != nil)
     {
         if ([v isEqual:@"none"])
-            settings[@"hidden"] = @YES;
+            shouldHide = YES;
     }
     v = [child.attributes objectForKey:@"hidden"];
     if (v != nil)
     {
         if ([v isEqual:@"true"])
-            settings[@"hidden"] = @YES;
+            shouldHide = YES;
     }
+    if (shouldHide)
+        settings[@"hidden"] = @(shouldHide);
+    else
+        [settings removeObjectForKey:@"hidden"];
+
     NSString *o = [child.attributes objectForKey:@"opacity"];
     if (o != nil)
     {
@@ -887,9 +899,62 @@ static BOOL isCSSIdent(unichar ch)
     return ch != '{' && ! isWhiteSp(ch);
 }
 
+void AddToDict(NSMutableDictionary *dict,NSString *key,NSMutableDictionary *attributes)
+{
+    NSMutableDictionary *entry = dict[key];
+    if (entry)
+        [entry addEntriesFromDictionary:attributes];
+    else
+        dict[key] = attributes;
+}
 
+NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    NSScanner *scanner = [NSScanner scannerWithString:cssstr];
+    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+    BOOL ok = YES;
+    while (![scanner isAtEnd] && ok)
+    {
+        NSString *ident = nil;
+        ok = [scanner scanUpToString:@"{" intoString:&ident];
+        if (ok)
+        {
+            [scanner scanString:@"{" intoString:NULL];
+            NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
+            NSString *body = nil;
+            [scanner scanUpToString:@"}" intoString:&body];
+            [scanner scanString:@"}" intoString:NULL];
+            body = [body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if (ok)
+            {
+                for (NSString *component in [body componentsSeparatedByString:@";"])
+                {
+                    if ([component length] > 2)
+                    {
+                        NSArray *attr = [component componentsSeparatedByString:@":"];
+                        if ([attr count] > 1)
+                        {
+                            NSString *key = [attr[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                            NSString *val = [attr[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                            attrs[key] = val;
+                        }
+                    }
+                }
+            }
+            for (NSString *cls in [ident componentsSeparatedByString:@","])
+            {
+                NSString *k = [cls stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                AddToDict(dict, k, [attrs mutableCopy]);
+            }
+        }
+    }
+    return dict;
+}
 -(NSDictionary*)cssClassesFromString:(NSString*)contents
 {
+    return attributesFromCSSStyleString(contents);
+    /*
     NSMutableDictionary *d = [NSMutableDictionary dictionary];
     NSInteger idx = 0;
     NSInteger len = [contents length];
@@ -927,7 +992,7 @@ static BOOL isCSSIdent(unichar ch)
             }
         }
     }
-    return d;
+    return d;*/
 }
 
 -(id)graphicFromSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
@@ -953,13 +1018,25 @@ static BOOL isCSSIdent(unichar ch)
         g = [ACSDPath ellipseWithSVGNode:child settingsStack:settingsStack];
     else if ([nodeName isEqualToString:@"g"])
     {
+        NSMutableArray *members = [NSMutableArray array];
         for (XMLNode *ch in child.children)
-            [self processSVGNode:ch settingsStack:settingsStack];
+        {
+            ACSDGraphic *mem = [self processSVGNode:ch settingsStack:settingsStack];
+            if (mem)
+            {
+                [mem.layer removeGraphics:@[mem]];
+                [members addObject:mem];
+            }
+        }
+        g = [[ACSDGroup alloc]initWithName:@"" graphics:members layer:[[self pages][0] currentLayer]];
     }
     else if ([nodeName isEqualToString:@"style"])
     {
-        [settingsStack removeLastObject];
-        NSMutableDictionary *settings = [settingsStack lastObject];
+        //[settingsStack removeLastObject];
+        NSInteger idx = [settingsStack count] - 2;
+        if (idx < 0)
+            idx = 0;
+        NSMutableDictionary *settings = [settingsStack objectAtIndex:idx];
         settings[@"css"] = [self cssClassesFromString:[child contents]];
         return nil;
     }
@@ -1023,7 +1100,7 @@ static BOOL isCSSIdent(unichar ch)
     return g;
 }
 
--(void)processSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
+-(id)processSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
 {
     NSString *nodeName = [child.nodeName lowercaseString];
     if ([nodeName isEqualToString:@"switch"])
@@ -1032,7 +1109,7 @@ static BOOL isCSSIdent(unichar ch)
         {
             [self processSVGNode:n settingsStack:settingsStack];
         }
-        return;
+        return nil;
     }
     ACSDGraphic *g = [self graphicFromSVGNode:child settingsStack:settingsStack];
     if (g)
@@ -1050,6 +1127,7 @@ static BOOL isCSSIdent(unichar ch)
             }
         }
     }
+    return g;
 }
 
 -(BOOL)loadLayoutXMLData:(NSData*)data
@@ -1903,6 +1981,8 @@ NSString* Creator()
 	NSPoint antiVector = r.origin;
 	antiVector.x = -antiVector.x;
 	antiVector.y = -antiVector.y;
+    r.size.width = ceil(r.size.width);
+    r.size.height = ceil(r.size.height);
 	[[[self frontmostMainWindowController] graphicView]moveAllObjectsBy:antiVector];
 	[[[self frontmostMainWindowController] graphicView]changeDocumentSize:r.size];
 }

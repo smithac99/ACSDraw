@@ -160,7 +160,8 @@
             [(id)del keyHit:uc];
     }
     else
-        [self interpretKeyEvents:[NSArray arrayWithObject:event]];
+        [super keyDown:event];
+        //[self interpretKeyEvents:[NSArray arrayWithObject:event]];
 }
 
 @end

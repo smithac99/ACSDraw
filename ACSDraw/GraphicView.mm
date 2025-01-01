@@ -2097,7 +2097,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	[[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
    }
 
-- (void)createSVGImage:(SVGDocument*)svgdoc name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
+- (ACSDSVGImage*)createSVGImage:(SVGDocument*)svgdoc name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
 {
     NSSize iSize = [svgdoc size];
     NSSize vSize = [self bounds].size;
@@ -2123,6 +2123,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[[self undoManager] prepareWithInvocationTarget:self] deleteSelectedGraphics];
     [[self undoManager] setActionName:@"Import document"];
     [[self window] invalidateCursorRectsForView:self];
+    return image;
 }
 
 - (void)createDocImage:(ACSDrawDocument*)adoc name:(NSString*)name location:(NSPoint*)loc fileName:(NSString*)fileName
@@ -3540,6 +3541,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
              secondPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
              float dist = pointDistance(anchorPoint, secondPoint);
              float thisScale = 1.0;
+             if (dist > 10)
+                 NSLog(@"stop");
              if (dist > 0.0)
              {
                  if (secondPoint.y > anchorPoint.y)
@@ -3865,6 +3868,24 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
         [[self undoManager]setActionName:@"Scale to Width"];
 }
 
+-(IBAction)sizeToWidthHeight:(id)sender
+{
+    float viewwidth = [self bounds].size.width;
+    float viewheight = [self bounds].size.height;
+    BOOL changed = NO;
+    for (ACSDGraphic *g in [self selectedGraphics])
+    {
+        float w = [g bounds].size.width;
+        float h = [g bounds].size.height;
+        float scx = viewwidth / w;
+        float scy = viewheight / h;
+        changed = [g setGraphicXScale:scx notify:YES] || changed;
+        changed = [g setGraphicYScale:scy notify:YES] || changed;
+    }
+    if (changed)
+        [[self undoManager]setActionName:@"Scale to Width/Height"];
+}
+
 - (IBAction)closePolygonSheet: (id)sender
    {
     int reply = (int)[sender tag];
@@ -4153,8 +4174,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 	int noHorizontalBytes = ((int)sz.width + 31) / 32;
 	verticalHandleBits = new long[noVerticalBytes];
 	horizontalHandleBits = new long[noHorizontalBytes];
-	snapVOffsets = new char[(int)(sz.height)];
-	snapHOffsets = new char[(int)(sz.width)];
+	snapVOffsets = new char[(int)(ceil(sz.height))];
+	snapHOffsets = new char[(int)(ceil(sz.width))];
 	[self reCalcHandleBitsIgnoreSelected:NO];
    }
 
@@ -4636,10 +4657,6 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 
 -(void)uGroupGraphicsFromIndexSet:(NSIndexSet*)ixs intoGroup:(ACSDGroup*)gp atIndex:(NSInteger)ind
 {
-    if (ind == NSNotFound)
-        [[[self currentEditableLayer] graphics] addObject:gp];
-    else
-        [[[self currentEditableLayer] graphics] insertObject:gp atIndex:ind];
 	[gp registerWithDocument:[self document]];
 	NSMutableArray *arr = [NSMutableArray arrayWithCapacity:[ixs count]];
 	NSUInteger i = [ixs firstIndex];
@@ -4656,6 +4673,10 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		i = [ixs indexLessThanIndex:i];
 	}
 	[gp setGraphics:arr];
+    if (ind == NSNotFound)
+        [[[self currentEditableLayer] graphics] addObject:gp];
+    else
+        [[[self currentEditableLayer] graphics] insertObject:gp atIndex:ind];
 	[[[self undoManager] prepareWithInvocationTarget:self] uUngroupGroupAtIndex:[[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:gp] toGraphicsWithIndexSet:ixs];
     [[self window] invalidateCursorRectsForView:self];
 	[self reCalcHandleBitsIgnoreSelected:NO];
@@ -4701,14 +4722,24 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [[self undoManager] setActionName:@"Clip"];
 }
 
+static NSString *priorGroupNameFromGraphics(NSArray* glist)
+{
+    for (ACSDGraphic *g in glist)
+        if (g.priorGroupName)
+            return g.priorGroupName;
+    return nil;
+}
+
 - (void)group:(id)sender
-   {
-	NSIndexSet *ixs = [self indexesOfSelectedGraphics];
-	ACSDGroup *group = [[ACSDGroup alloc]initWithName:[ACSDGroup nextNameForDocument:[self document]] graphics:[NSArray array]
-		layer:[self currentEditableLayer]];
-	[self uGroupGraphicsFromIndexSet:ixs intoGroup:group atIndex:[[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:group]];
-	[[self undoManager] setActionName:@"Group"];
-   }
+{
+    NSString *groupName = priorGroupNameFromGraphics([[self selectedGraphics] allObjects]);
+    if (groupName == nil)
+        groupName = [ACSDGroup nextNameForDocument:[self document]];
+    NSIndexSet *ixs = [self indexesOfSelectedGraphics];
+    ACSDGroup *group = [[ACSDGroup alloc]initWithName:groupName graphics:[NSArray array] layer:[self currentEditableLayer]];
+    [self uGroupGraphicsFromIndexSet:ixs intoGroup:group atIndex:[[[self currentEditableLayer] graphics]indexOfObjectIdenticalTo:group]];
+    [[self undoManager] setActionName:@"Group"];
+}
 
 - (void)ungroup:(id)sender
    {
@@ -4721,6 +4752,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 		if ([gr isMemberOfClass:[ACSDGroup class]])
 		{
 			ACSDGroup *gp = (ACSDGroup*)gr;
+            for (ACSDGraphic *g in gp.graphics)
+                g.priorGroupName = gp.name;
 			[self uUngroupGroupAtIndex:i toGraphicsWithIndexSet:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(i,[[gp graphics]count])]];
 		}
 		i = [ixs indexLessThanIndex:i];
@@ -5128,7 +5161,7 @@ NSInteger findSame(id obj,NSArray *arr)
                NSString *extension = [[fileStr pathExtension]lowercaseString];
                NSRect r = [obj bounds];
                NSPoint pos = NSMakePoint(r.origin.x + r.size.width / 2,r.origin.y + r.size.height / 2);
-               if ([extension isEqualTo:@"acsd"] || [extension isEqualTo:@"svg"])
+               if ([extension isEqualTo:@"acsd"])
                {
                    NSData *d = [NSData dataWithContentsOfFile:fileStr];
                    ACSDrawDocument *adoc = [[ACSDrawDocument alloc]init];
@@ -5138,6 +5171,16 @@ NSInteger findSame(id obj,NSArray *arr)
                    r.origin.x = pos.x - r.size.width / 2;
                    r.origin.y = pos.y - r.size.height / 2;
                    newobj = [[ACSDDocImage alloc]initWithName:obj.name fill:obj.fill stroke:obj.stroke rect:r layer:[self currentEditableLayer] drawDoc:adoc];
+               }
+               else if ([extension isEqualTo:@"svg"])
+               {
+                   NSData *d = [NSData dataWithContentsOfFile:fileStr];
+                   SVGDocument *adoc = [[SVGDocument alloc]initWithData:d];
+                   [adoc setFileURL:[NSURL fileURLWithPath:fileStr]];
+                   r.size = [adoc size];
+                   r.origin.x = pos.x - r.size.width / 2;
+                   r.origin.y = pos.y - r.size.height / 2;
+                   newobj = [[ACSDSVGImage alloc]initWithName:obj.name fill:obj.fill stroke:obj.stroke rect:r layer:[self currentEditableLayer] document:adoc];
                }
                else
                {
@@ -7058,7 +7101,11 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	for (ACSDGraphic *g in [self selectedGraphics])
 		r = NSUnionRect(r,[g transformedBounds]);
 	if (r.size.width > 0 && r.size.height > 0)
-		[[self document]sizeToRect:r];
+    {
+        r.size.width = ceil(r.size.width);
+        r.size.height = ceil(r.size.height);
+        [[self document]sizeToRect:r];
+    }
 	[[self undoManager] setActionName:@"Crop To Rectangle"];
 }
 
@@ -7142,7 +7189,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         else
             [self interpretKeyEvents:[NSArray arrayWithObject:event]];
     }
-	else if (uc == 9)
+	else if (/*uc == 9*/ [str isEqualToString:@"\t"] && ([event modifierFlags] & NSEventModifierFlagOption))
     {
         if ([[self selectedGraphics]count] == 1)
         {
