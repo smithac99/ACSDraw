@@ -726,7 +726,14 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
 {
     [self setAttributesFromCSSForNode:child settings:settings];
     [self setAttributesFromStylesForNode:child settings:settings];
-    ACSDStroke *stroke = strokeFromNodeAttributes(child.attributes);
+    for (NSString *attr in @[@"stroke-linecap",@"stroke-linejoin",@"stroke-miterlimit"])
+    {
+        if (child.attributes[attr])
+        {
+            settings[attr] = child.attributes[attr];
+        }
+    }
+    ACSDStroke *stroke = strokeFromNodeAttributes(child.attributes,settings);
     if (stroke)
         [settings setObject:[self strokeLikeStroke:stroke] forKey:@"stroke"];
     id fill = fillFromNodeAttributes(child.attributes);
@@ -1203,7 +1210,7 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
     NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
     NSMutableDictionary *svgSettings = [NSMutableDictionary dictionaryWithCapacity:10];
     
-    //[self getAttributesFromSVGNode:root settings:svgSettings];
+    [self getAttributesFromSVGNode:root settings:svgSettings];
     
 	ACSDFill *blackFill = [[ACSDFill alloc]initWithColour:[NSColor blackColor]];
     [svgSettings setObject:[self fillLikeFill:blackFill] forKey:@"fill"];

@@ -1006,6 +1006,12 @@ CA
                                     <action selector="selectInvisible:" target="-1" id="h4X-hP-Tc6"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Select Zero Opacity" id="cwM-qZ-fmb">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="selectZeroOpacity:" target="-1" id="aEH-2E-9P9"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Rename…" keyEquivalent="r" id="9Hl-3w-y1m">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>

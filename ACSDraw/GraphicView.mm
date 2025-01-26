@@ -3300,6 +3300,17 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
         [[self undoManager] setActionName:[NSString stringWithFormat:@"Select %@",vis?@"visible":@"hidden"]];
 }
 
+-(void)selectGraphicsZeroOpacity:(BOOL)zopac
+{
+    [self clearSelection];
+    BOOL selectionChanged=NO;
+    for (ACSDGraphic *g in [[self currentEditableLayer]graphics])
+        if ((zopac && [g alpha] == 0) || (!zopac && [g alpha] > 0))
+            selectionChanged = [self selectGraphic:g]|| selectionChanged;
+    if (selectionChanged)
+        [[self undoManager] setActionName:[NSString stringWithFormat:@"Select %@",zopac?@"zero opacity":@"non-zero opacity"]];
+}
+
 - (IBAction)selectVisible:(id)sender
 {
     [self selectGraphicsVisible:YES];
@@ -3310,6 +3321,10 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     [self selectGraphicsVisible:NO];
 }
 
+- (IBAction)selectZeroOpacity:(id)sender 
+{
+    [self selectGraphicsZeroOpacity:YES];
+}
 
 -(NSArray*)graphicsMatchingName:(NSString*)nm
 {
@@ -5272,7 +5287,52 @@ NSInteger findSame(id obj,NSArray *arr)
 			return;
 		}
 		if ((im = [[NSImage alloc]initWithPasteboard:pBoard]))
-			[self createImage:im name:[ACSDImage nextNameForDocument:[self document]] location:loc fileName:nil];
+        {
+            [self createImage:im name:[ACSDImage nextNameForDocument:[self document]] location:loc fileName:nil];
+            return;
+        }
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
+        NSArray *objs = [pBoard readObjectsForClasses:@[[NSAttributedString class]] options:options];
+        if ([objs count] > 0)
+        {
+            NSAttributedString *astr = objs[0];
+            id attr = [astr attribute:NSAttachmentAttributeName atIndex:0 effectiveRange:NULL];
+            NSImage *im = [attr image];
+            if (im)
+            {
+                [self createImage:im name:[ACSDImage nextNameForDocument:[self document]] location:loc fileName:nil];
+                return;
+            }
+            NSFileWrapper* attachmentWrapper = [attr fileWrapper];
+            if (attachmentWrapper)
+            {
+                NSData *d = [attachmentWrapper  regularFileContents];
+                if (d)
+                {
+                    im = [[NSImage alloc]initWithData:d];
+                    if (im)
+                    {
+                        [self createImage:im name:[ACSDImage nextNameForDocument:[self document]] location:loc fileName:nil];
+                        return;
+                    }
+                }
+            }
+        }
+/*        objs = [pBoard readObjectsForClasses:@[[NSString class]] options:options];
+        if ([objs count] > 0)
+        {
+            NSString *str = objs[0];
+            NSURL *url = [NSURL URLWithString:str];
+            if (url)
+            {
+                NSImage *im = [[NSImage alloc]initWithContentsOfURL:url];
+                if (im)
+                {
+                    [self createImage:im name:[ACSDImage nextNameForDocument:[self document]] location:loc fileName:nil];
+                    return;
+                }
+            }
+        }*/
 		return;
 	}
 	NSDictionary *dict;
@@ -6903,7 +6963,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
             return NO;
         return YES;
     }
-	if (action == @selector(cropToRectangle:) || action == @selector(createBoundingBox:) || action == @selector(sizeToWidth:))
+	if (action == @selector(cropToRectangle:) || action == @selector(sizeToWidth:))
 	{
 		return [[self selectedGraphics]count] > 0;
 	}
@@ -7202,8 +7262,22 @@ static ACSDGraphic *parg(ACSDGraphic *g)
             
         }
     }
+    else if ([str isEqualToString:@"h"])
+    {
+        [self toggleGraphicsHidden];
+    }
     else
 		[self interpretKeyEvents:[NSArray arrayWithObject:event]];
+}
+
+-(void)toggleGraphicsHidden
+{
+    int noChanged = 0;
+    for (ACSDGraphic *g in [self selectedGraphics])
+        if ([g setGraphicHidden:!g.hidden])
+            noChanged++;
+    if (noChanged > 0)
+        [[self undoManager]setActionName:@"Toggle Hidden"];
 }
 
 - (void)pageUp:(id)sender
@@ -7614,11 +7688,14 @@ NSString *IncrementString(NSString *str)
 -(IBAction)createBoundingBox:(id)sender
 {
     NSArray *elementArray = [[self selectedGraphics] allObjects];
-    if ([elementArray count] == 0)
-        return;
     CGRect r = CGRectNull;
-    for (ACSDGraphic *g in elementArray)
-        r = CGRectUnion(r, [g transformedStrictBounds]);
+    if ([elementArray count] == 0)
+        r = [self bounds];
+    else
+    {
+        for (ACSDGraphic *g in elementArray)
+            r = CGRectUnion(r, [g transformedStrictBounds]);
+    }
     creatingGraphic = [[ACSDRect alloc] initWithName:[ACSDRect nextNameForDocument:[self document]]
                                                 fill:[self defaultFill] stroke:[self defaultStroke] rect:r layer:[self currentEditableLayer]];
     [creatingGraphic setShadowType:[self defaultShadow]];
