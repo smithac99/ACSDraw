@@ -5561,8 +5561,8 @@ NSInteger findSame(id obj,NSArray *arr)
     {
         NSBezierPath *p = [g bezierPath];
         [p setLineWidth:[[g stroke]lineWidth]];
-        [p setLineCapStyle:[[g stroke]lineCap]];
-        [p setLineJoinStyle:[[g stroke]lineJoin]];
+        [p setLineCapStyle:(NSLineCapStyle)[[g stroke]lineCap]];
+        [p setLineJoinStyle:(NSLineJoinStyle)[[g stroke]lineJoin]];
         NSBezierPath *outp = outlinedStrokePath(p);
         ACSDPath *newPath = [[ACSDPath alloc]initWithName:[g name] fill:nil stroke:nil rect:[g bounds] layer:nil bezierPath:outp];
         [self uInsertGraphic:newPath intoLayer:[self currentEditableLayer] atIndex:[[[self currentEditableLayer]graphics]count]];
@@ -5582,8 +5582,8 @@ NSInteger findSame(id obj,NSArray *arr)
     {
         NSBezierPath *p = [g bezierPath];
         [p setLineWidth:[[g stroke]lineWidth]];
-        [p setLineCapStyle:[[g stroke]lineCap]];
-        [p setLineJoinStyle:[[g stroke]lineJoin]];
+        [p setLineCapStyle:(NSLineCapStyle)[[g stroke]lineCap]];
+        [p setLineJoinStyle:(NSLineJoinStyle)[[g stroke]lineJoin]];
         NSBezierPath *outp = outlinedStrokePath(p);
         ACSDPath *newPath = [[ACSDPath alloc]initWithName:[g name] fill:nil stroke:nil rect:[g bounds] layer:nil bezierPath:outp];
         NSInteger idx = [[[self currentEditableLayer]graphics]indexOfObject:g];
