@@ -3259,7 +3259,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 
 -(BOOL)writeSVGImageOptions:(NSMutableDictionary*)options
    {
-	SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:[self displayBounds].size document:nil page:nil];
+	SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:[self displayBounds].size document:nil page:0];
 	[svgWriter createDataForGraphic:self];
 	NSString *fileName = [imageNameForOptions(options) stringByAppendingPathExtension:@"svg"];
 	NSString *pathName = htmlDirectoryNameForOptions(options,@"smallimages");
