@@ -1,4 +1,4 @@
-#import <Quartz/Quartz.h>
+//#import <Quartz/Quartz.h>
 #import "ACSDPrefsController.h"
 
 NSString *ACSDGuideColourDidChangeNotification = @"ACSDGuideColourDidChange";
@@ -90,7 +90,7 @@ NSColor *colourFromArray(NSArray* arr);
 + (void)initialize
 {
     [[NSUserDefaults standardUserDefaults] registerDefaults:[ACSDPrefsController sharedDefaults]];
-    [CIPlugIn loadAllPlugIns];
+    //[CIPlugIn loadAllPlugIns];
 }
 
 -(NSButton*)openAfterExportCB

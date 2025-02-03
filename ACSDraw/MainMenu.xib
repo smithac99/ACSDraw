@@ -168,7 +168,8 @@
                                                 <action selector="exportEPS:" target="-1" id="433"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="PDF…" id="434">
+                                        <menuItem title="PDF…" keyEquivalent="p" id="434">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
                                                 <action selector="exportPDF:" target="-1" id="436"/>
                                             </connections>
@@ -1598,7 +1599,7 @@ CA
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="106" y="485" width="383" height="371"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="1595"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="357">
                 <rect key="frame" x="0.0" y="0.0" width="383" height="371"/>
@@ -2472,7 +2473,7 @@ CA
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="24" y="509" width="64" height="353"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="1595"/>
             <value key="minSize" type="size" width="64" height="10"/>
             <value key="maxSize" type="size" width="65" height="353"/>
             <view key="contentView" id="390">

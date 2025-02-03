@@ -7,7 +7,7 @@
 //
 
 #import "ACSDGraphic.h"
-#import "QuartzImage.h"
+//#import "QuartzImage.h"
 
 extern NSString *ACSDHistogramDidChangeNotification;
 

@@ -12,8 +12,8 @@
 #import "AppDelegate.h"
 #import "CoderAdditions.h"
 #import "ShadowType.h"
-#import <QuartzCore/QuartzCore.h>
-#import <Quartz/Quartz.h>
+//#import <QuartzCore/QuartzCore.h>
+//#import <Quartz/Quartz.h>
 #import "geometry.h"
 #import "GraphicView.h"
 #import <Accelerate/Accelerate.h>

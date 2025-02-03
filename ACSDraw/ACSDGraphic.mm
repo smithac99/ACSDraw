@@ -3878,9 +3878,4 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 	return [self indexPathFromAncestor:anc array:@[]];
 }
 
--(void)setLayer:(ACSDLayer *)l
-{
-    _layer = l;
-}
-
 @end
