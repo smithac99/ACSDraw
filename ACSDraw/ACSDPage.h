@@ -40,21 +40,19 @@ enum
 @interface ACSDPage : KeyedObject<NSCoding>
    {
 	NSMutableArray *layers;
-	NSString *name;
 	NSMutableSet *graphicViews;
 	NSInteger currentLayerInd,guideLayerInd,pageNo,nextLayer;
 	int pageType;
 	int masterType;
 	int useMasterType;
 	NSMutableArray *masters,*slaves;
-	NSString *pageTitle;
 	NSColor *backgroundColour;
 	NSMutableSet *linkedObjects;
 	BOOL inactive;
    }
 
 @property (copy) NSString *name,*pageTitle,*xmlEventName;
-@property (assign) ACSDrawDocument *document;
+@property (weak) ACSDrawDocument *document;
 @property BOOL inactive;
 @property NSInteger currentLayerInd,pageNo,guideLayerInd;
 @property (retain) NSArray *previouslyVisibleLayers;
