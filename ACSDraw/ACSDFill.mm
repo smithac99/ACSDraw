@@ -82,15 +82,17 @@
 - (void) encodeWithCoder:(NSCoder*)coder
 {
 	[super encodeWithCoder:coder];
-	[coder encodeObject:[self colour]forKey:@"ACSDFill_colour"];
+    NSColor *col = [self colour];
+    if (col)
+        [coder encodeObject:col forKey:@"ACSDFill_colour"];
 	[coder encodeObject:[NSNumber numberWithBool:self.useCurrent]forKey:@"ACSDFill_useCurrent"];
 }
 
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super initWithCoder:coder];
-	self.colour = [coder decodeObjectForKey:@"ACSDFill_colour"];
-	self.useCurrent = [[coder decodeObjectForKey:@"ACSDFill_useCurrent"]boolValue];
+    self.colour = [coder decodeObjectOfClass:[NSColor class] forKey:@"ACSDFill_colour"];
+	self.useCurrent = [[coder decodeObjectOfClass:[NSNumber class]forKey:@"ACSDFill_useCurrent"]boolValue];
 	return self;
 }
 
@@ -169,4 +171,8 @@
 {
 }
 
++(BOOL)supportsSecureCoding
+{
+    return YES;
+}
 @end

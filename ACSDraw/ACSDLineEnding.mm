@@ -89,19 +89,19 @@
    }
 
 - (id) initWithCoder:(NSCoder*)coder
-   {
-	self = [super initWithCoder:coder];
-	graphic = [coder decodeObjectForKey:@"ACSDLineEnding_graphic"];
-	scale = [coder decodeFloatForKey:@"ACSDLineEnding_scale"];
-	aspect = [coder decodeFloatForKey:@"ACSDLineEnding_aspect"];
-	if (aspect == 0.0)
-		aspect = 1.0;
-	offset = [coder decodeFloatForKey:@"ACSDLineEnding_offset"];
-	if ([graphic fill] == nil)
-		[graphic setFill:[ACSDFill parentFill]];
-	[graphic setUsesCache:NO];
-	return self;
-   }
+{
+    self = [super initWithCoder:coder];
+    graphic = [coder decodeObjectOfClass:[ACSDGraphic class] forKey:@"ACSDLineEnding_graphic"];
+    scale = [coder decodeFloatForKey:@"ACSDLineEnding_scale"];
+    aspect = [coder decodeFloatForKey:@"ACSDLineEnding_aspect"];
+    if (aspect == 0.0)
+        aspect = 1.0;
+    offset = [coder decodeFloatForKey:@"ACSDLineEnding_offset"];
+    if ([graphic fill] == nil)
+        [graphic setFill:[ACSDFill parentFill]];
+    [graphic setUsesCache:NO];
+    return self;
+}
 
 -(ACSDGraphic*)graphic
    {

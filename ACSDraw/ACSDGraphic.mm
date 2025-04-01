@@ -219,7 +219,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 + (NSPoint) decodePointForKey:(NSString*)key coder:(NSCoder*)coder
 {
 	NSPoint pt;
-	id o = [coder decodeObjectForKey:key];
+    id o = [coder decodeObjectOfClass:[NSArray class] forKey:key];
 	if (o)
 	{
 		pt.x = [[o objectAtIndex:0]doubleValue];
@@ -496,8 +496,8 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 	self = [super initWithCoder:coder];
 	self.name = [coder decodeObjectForKey:@"ACSDGraphic_name"];
     self.layer = [coder decodeObjectForKey:@"ACSDGraphic_layer"];
-	[self setFill:[coder decodeObjectForKey:@"ACSDGraphic_fill"]];
-	[self setStroke:[coder decodeObjectForKey:@"ACSDGraphic_stroke"]];
+    [self setFill:[coder decodeObjectOfClass:[ACSDFill class] forKey:@"ACSDGraphic_fill"]];
+    [self setStroke:[coder decodeObjectOfClass:[ACSDStroke class] forKey:@"ACSDGraphic_stroke"]];
     if (self.stroke != nil && ![self.stroke isKindOfClass:[ACSDStroke class]])
     {
         NSLog(@"uh");

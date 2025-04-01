@@ -238,10 +238,10 @@ NSString *StyleGenAppleHelpKey = @"Style_genapplehelp";
     self = [super initWithCoder:coder];
     self.name = [coder decodeObjectOfClass:[NSString class] forKey:StyleNameKey];
     nullStyle = [coder decodeBoolForKey:StyleNullKey];
-    id b = [coder decodeObjectForKey:StyleBasedOnKey];
+    id b = [coder decodeObjectOfClass:[ACSDStyle class] forKey:StyleBasedOnKey];
     if (b)
         [self setBasedOn:b];
-    attributes = [coder decodeObjectForKey:StyleAttributesKey];
+    attributes = [coder decodeObjectOfClass:[NSDictionary class] forKey:StyleAttributesKey];
     generateAppleHelp = [coder decodeBoolForKey:StyleGenAppleHelpKey];
     return self;
 }

@@ -10,7 +10,7 @@
 #import "ACSDGraphic.h"
 
 
-@interface ACSDPolygon : ACSDGraphic
+@interface ACSDPolygon : ACSDGraphic<NSSecureCoding>
    {
 	int noSides;
 	NSPoint pt0,pt1;

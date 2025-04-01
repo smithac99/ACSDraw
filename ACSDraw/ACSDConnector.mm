@@ -103,19 +103,19 @@
    }
 
 - (id) initWithCoder:(NSCoder*)coder
-   {
-	self = [super initWithCoder:coder];
-	elbow = [coder decodeIntForKey:@"ACSDConnector_elbow"];
-	self.fromGraphics = [coder decodeObjectForKey:@"ACSDConnector_fromGraphics"];
-	self.toGraphics = [coder decodeObjectForKey:@"ACSDConnector_toGraphics"];
-	[self.fromGraphics makeObjectsPerformSelector:@selector(addConnector:) withObject:self];
-	[self.toGraphics makeObjectsPerformSelector:@selector(addConnector:) withObject:self];
-	handlePoints = new NSPoint[2];
-	noHandlePoints = 2;
-	bezierPath = [NSBezierPath bezierPath];
-	[self generateBezierPath];
-	return self;
-   }
+{
+    self = [super initWithCoder:coder];
+    elbow = [coder decodeIntForKey:@"ACSDConnector_elbow"];
+    self.fromGraphics = [coder decodeObjectOfClass:[NSArray class] forKey:@"ACSDConnector_fromGraphics"];
+    self.toGraphics = [coder decodeObjectOfClass:[NSArray class] forKey:@"ACSDConnector_toGraphics"];
+    [self.fromGraphics makeObjectsPerformSelector:@selector(addConnector:) withObject:self];
+    [self.toGraphics makeObjectsPerformSelector:@selector(addConnector:) withObject:self];
+    handlePoints = new NSPoint[2];
+    noHandlePoints = 2;
+    bezierPath = [NSBezierPath bezierPath];
+    [self generateBezierPath];
+    return self;
+}
 
 -(int)elbow
    {

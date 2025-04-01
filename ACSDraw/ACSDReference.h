@@ -8,7 +8,7 @@
 
 #import "ACSDGraphic.h"
 
-@interface ACSDReference : ACSDGraphic
+@interface ACSDReference : ACSDGraphic<NSSecureCoding>
 
 @property (strong) ACSDGraphic *referenceGraphic;
 @end

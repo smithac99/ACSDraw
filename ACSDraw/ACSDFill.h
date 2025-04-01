@@ -10,7 +10,7 @@
 #import "ACSDAttribute.h"
 
 
-@interface ACSDFill : ACSDAttribute
+@interface ACSDFill : ACSDAttribute<NSSecureCoding>
 
 @property BOOL useCurrent;
 @property (strong) NSColor *colour;

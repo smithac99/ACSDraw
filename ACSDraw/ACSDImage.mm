@@ -109,8 +109,8 @@ NSString *ACSDHistogramDidChangeNotification = @"ACSDHistogramDidChange";
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super initWithCoder:coder];
-    _sourceImageData = [coder decodeObjectForKey:@"ACSDImage_sourceImageData"];
-    image = [coder decodeObjectForKey:@"ACSDImage_image"];
+    _sourceImageData = [coder decodeObjectOfClass:[NSData class] forKey:@"ACSDImage_sourceImageData"];
+    image = [coder decodeObjectOfClass:[NSImage class] forKey:@"ACSDImage_image"];
     if (image == nil)
         image = ImageFromData(_sourceImageData);
 	if ([coder containsValueForKey:@"ACSDImage_framex"])

@@ -96,5 +96,8 @@ BOOL show_error_alert(NSString *msg1)
 
 }
 
-
+-(BOOL)applicationSupportsSecureRestorableState:(NSApplication *) app
+{
+    return NO;
+}
 @end
