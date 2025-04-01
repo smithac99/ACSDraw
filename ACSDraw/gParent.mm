@@ -223,7 +223,7 @@ NSMutableArray *reverseLines(NSMutableArray* lines)
 			[path moveToPoint:[obj firstPoint]];
 		else
 		   {
-			if (startLineCap == NSRoundLineCapStyle)
+               if (startLineCap == NSLineCapStyleRound)
 			   {
 			    float angle = getAngleForPoints(lastPoint,[obj firstPoint]);
 				float xx = (lastPoint.x-[obj firstPoint].x);
@@ -250,7 +250,7 @@ NSMutableArray *reverseLines(NSMutableArray* lines)
 		   }
 		obj = [objEnum nextObject];
 	   }
-	if (endLineCap == NSRoundLineCapStyle)
+       if (endLineCap == NSLineCapStyleRound)
 	   {
 		float angle = getAngleForPoints(lastPoint,firstPoint);
 		float xx = (lastPoint.x-firstPoint.x);

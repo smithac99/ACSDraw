@@ -23,6 +23,7 @@
 NSFont* FontToFitSize(NSFont *fnt, NSString *txt,CGSize sz, BOOL width, BOOL height,BOOL wrapped);
 CGRect boundingBoxForString(NSString* str,NSFont* font,CGSize sz);
 CGRect boundingBoxForWrappedString(NSString* str,NSFont* font,CGSize sz);
+void FitImageToBox(ACSDImage *im,NSRect box);
 
 CGRect boundingBoxForString(NSString* str,NSFont* font,CGSize sz)
 {

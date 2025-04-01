@@ -8,7 +8,7 @@
 
 #import "SVG_path.h"
 
-static NSCharacterSet *svgPathDelimCharacterSet()
+static NSCharacterSet *svgPathDelimCharacterSet(void)
 {
     static NSMutableCharacterSet *charset = nil;
     if (charset == nil)
@@ -19,7 +19,7 @@ static NSCharacterSet *svgPathDelimCharacterSet()
     return charset;
 }
 
-static NSCharacterSet *svgFloatCharacterSet()
+static NSCharacterSet *svgFloatCharacterSet(void)
 {
     static NSMutableCharacterSet *charset = nil;
     if (charset == nil)

@@ -128,42 +128,42 @@ float getAngleForPoints(NSPoint pt1,NSPoint pt2)
    }
 
 BOOL getFirstTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
-   {
-	int elCount = (int)[path elementCount];
-	if (elCount < 2)
-		return NO;
-	NSPoint pt[3],returnPoints[3];
-	int ptInd = 0;	
-	for (int i = 0;i < elCount;i++)
-	   {
-		NSBezierPathElement elType = [path elementAtIndex:i associatedPoints:pt];
-		switch(elType)
-		   {
-			case NSMoveToBezierPathElement:
-			case NSLineToBezierPathElement:
-				if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[0]))
-					returnPoints[ptInd++] = pt[0];
-				break;
-			case NSCurveToBezierPathElement:
-				if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[0]))
-					returnPoints[ptInd++] = pt[0];
-				if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[1]))
-					returnPoints[ptInd++] = pt[1];
-				if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[2]))
-					returnPoints[ptInd++] = pt[2];
-				break;
-			case NSClosePathBezierPathElement:
-				break;
-		   }
-		if (ptInd > 1)
-		   {
-		    *pt1 = returnPoints[0];
-		    *pt2 = returnPoints[1];
-			return YES;
-		   }
-	   }
-	return NO;
-   }
+{
+    int elCount = (int)[path elementCount];
+    if (elCount < 2)
+        return NO;
+    NSPoint pt[3],returnPoints[3];
+    int ptInd = 0;	
+    for (int i = 0;i < elCount;i++)
+    {
+        NSBezierPathElement elType = [path elementAtIndex:i associatedPoints:pt];
+        switch(elType)
+        {
+            case NSBezierPathElementMoveTo:
+            case NSBezierPathElementLineTo:
+                if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[0]))
+                    returnPoints[ptInd++] = pt[0];
+                break;
+            case NSBezierPathElementCurveTo:
+                if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[0]))
+                    returnPoints[ptInd++] = pt[0];
+                if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[1]))
+                    returnPoints[ptInd++] = pt[1];
+                if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[2]))
+                    returnPoints[ptInd++] = pt[2];
+                break;
+            case NSBezierPathElementClosePath:
+                break;
+        }
+        if (ptInd > 1)
+        {
+            *pt1 = returnPoints[0];
+            *pt2 = returnPoints[1];
+            return YES;
+        }
+    }
+    return NO;
+}
 
 BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
    {

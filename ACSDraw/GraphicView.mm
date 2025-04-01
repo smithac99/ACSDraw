@@ -1543,36 +1543,57 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 }
 
 - (ACSDGraphic*)graphicUnderPoint:(NSPoint)point extending:(BOOL)extending nonEditableLayers:(BOOL)nonEditableLayers
-   {
-	if (extending)
-	   {
-		ACSDLayer *layer = [self currentEditableLayer];
-		if ([layer visible] && [layer editable])
-		   {
-			NSMutableArray *graphics = [layer graphics];
-			NSInteger ct = [graphics count];
-			for (NSInteger j = ct - 1;j >= 0; j--)
-			   {
-				ACSDGraphic *curGraphic = [graphics objectAtIndex:j];
-				if ([self mouse:point inRect:[curGraphic displayBounds]] && [curGraphic hitTest:point isSelected:[self graphicIsSelected:curGraphic]view:self])
-					return curGraphic;
-			   }
-		   }
-	   }
-	else
-	   {
-		for (ACSDLayer *layer in [[self currentPage] layers])
-		   {
-			if ([layer visible] && (nonEditableLayers ||[layer editable]) && (layer == [self currentEditableLayer] || ![layer isGuideLayer]))
-			   {
-				for (ACSDGraphic *curGraphic in [[layer graphics]reverseObjectEnumerator])
-					if ([self mouse:point inRect:[curGraphic displayBounds]] && [curGraphic hitTest:point isSelected:[self graphicIsSelected:curGraphic]view:self])
-						return curGraphic;
-			   }
-		   }
-	   }
-	return nil;
-   }
+{
+    if (extending)
+    {
+        ACSDLayer *layer = [self currentEditableLayer];
+        if ([layer visible] && [layer editable])
+        {
+            NSMutableArray *graphics = [layer graphics];
+            NSInteger ct = [graphics count];
+            for (NSInteger j = ct - 1;j >= 0; j--)
+            {
+                ACSDGraphic *curGraphic = [graphics objectAtIndex:j];
+                if ([self mouse:point inRect:[curGraphic displayBounds]] && [curGraphic hitTest:point isSelected:[self graphicIsSelected:curGraphic]view:self])
+                    return curGraphic;
+            }
+        }
+    }
+    else
+    {
+        for (ACSDLayer *layer in [[self currentPage] layers])
+        {
+            if ([layer visible] && (nonEditableLayers ||[layer editable]) && (layer == [self currentEditableLayer] || ![layer isGuideLayer]))
+            {
+                for (ACSDGraphic *curGraphic in [[layer graphics]reverseObjectEnumerator])
+                    if ([self mouse:point inRect:[curGraphic displayBounds]] && [curGraphic hitTest:point isSelected:[self graphicIsSelected:curGraphic]view:self])
+                        return curGraphic;
+            }
+        }
+    }
+    return nil;
+}
+
+- (ACSDGraphic*)graphicUnderPoint:(NSPoint)point excluding:(NSSet*)excludeSet nonEditableLayers:(BOOL)nonEditableLayers
+{
+    for (ACSDLayer *layer in [[self currentPage] layers])
+    {
+        if ([layer visible] && (nonEditableLayers ||[layer editable]) && (layer == [self currentEditableLayer] || ![layer isGuideLayer]))
+        {
+            for (ACSDGraphic *curGraphic in [[layer graphics]reverseObjectEnumerator])
+            {
+                if (![excludeSet containsObject:curGraphic])
+                {
+                    if ([self mouse:point inRect:[curGraphic displayBounds]] && [curGraphic hitTest:point isSelected:[self graphicIsSelected:curGraphic]view:self])
+                        return curGraphic;
+
+                }
+            }
+        }
+    }
+    
+    return nil;
+}
 
 - (ACSDGraphic*)masterGraphicUnderPoint:(NSPoint)point
 {
@@ -2273,51 +2294,51 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
-   {
-	NSPoint coord = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:[NSValue valueWithPoint:coord] forKey:@"xy"];
+{
+    NSPoint coord = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:[NSValue valueWithPoint:coord] forKey:@"xy"];
     int selectedTool = [[ToolWindowController sharedToolWindowController:nil] currentTool];
-	coord.y = [self adjustHSmartGuide:coord.y tool:selectedTool];
-	coord.x = [self adjustVSmartGuide:coord.x tool:selectedTool];
-	if ((selectedTool == ACSD_PEN_TOOL) && creatingPath)
-	   {
-		NSPoint lastPt;
-		BOOL hasLastPoint = [((ACSDPath*)creatingPath) lastPoint:&lastPt];
-		[creatingPath invalidateInView];
-		[creatingPath setActualAddingPoint:coord];
-           if ([theEvent modifierFlags] & NSEventModifierFlagShift)
-		   {
-			if (hasLastPoint)
-				restrictTo45(lastPt,&coord);
-		   }
-		[creatingPath setAddingPoint:coord];
-		[((ACSDPath*)creatingPath) constructAddingPointPath];
-		[creatingPath invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
-		if (hasLastPoint)
-		   {
-			NSSize sz = NSMakeSize(coord.x - lastPt.x,coord.y - lastPt.y);
-			[dict setObject:[NSValue valueWithSize:sz] forKey:@"dxdy"];
-			   [dict setObject: [NSNumber numberWithFloat:angleForPoints(lastPt,coord)] forKey:@"theta"];
-			[dict setObject:[NSNumber numberWithFloat:pointDistance(coord,lastPt)] forKey:@"dist"];
-		   }
-	   }
-	else if (cursorMode == GV_MODE_DOING_LINK)
-	   {
-		if (NSPointInRect(coord,[self visibleRect]))
-		   {
-			ACSDGraphic *g = [self graphicUnderPoint:coord extending:NO nonEditableLayers:YES];
-			   if (g == nil)
-				   g = [self masterGraphicUnderPoint:coord];
-			if (g &&  ([g isKindOfClass:[ACSDText class]] || (![[[self document]linkGraphics] containsObject:g])))
-				[highLightLayer highLightObject:g modifiers:[theEvent modifierFlags]];
-			else
-				[highLightLayer highLightObject:self modifiers:[theEvent modifierFlags]];
-		   }
-		else
-			[highLightLayer highLightObject:nil modifiers:[theEvent modifierFlags]];
-	   }
-	[[NSNotificationCenter defaultCenter] postNotificationName:ACSDMouseDidMoveNotification object:self userInfo:dict];
-   }
+    coord.y = [self adjustHSmartGuide:coord.y tool:selectedTool];
+    coord.x = [self adjustVSmartGuide:coord.x tool:selectedTool];
+    if ((selectedTool == ACSD_PEN_TOOL) && creatingPath)
+    {
+        NSPoint lastPt;
+        BOOL hasLastPoint = [((ACSDPath*)creatingPath) lastPoint:&lastPt];
+        [creatingPath invalidateInView];
+        [creatingPath setActualAddingPoint:coord];
+        if ([theEvent modifierFlags] & NSEventModifierFlagShift)
+        {
+            if (hasLastPoint)
+                restrictTo45(lastPt,&coord);
+        }
+        [creatingPath setAddingPoint:coord];
+        [((ACSDPath*)creatingPath) constructAddingPointPath];
+        [creatingPath invalidateGraphicSizeChanged:YES shapeChanged:YES redraw:YES notify:NO];
+        if (hasLastPoint)
+        {
+            NSSize sz = NSMakeSize(coord.x - lastPt.x,coord.y - lastPt.y);
+            [dict setObject:[NSValue valueWithSize:sz] forKey:@"dxdy"];
+            [dict setObject: [NSNumber numberWithFloat:angleForPoints(lastPt,coord)] forKey:@"theta"];
+            [dict setObject:[NSNumber numberWithFloat:pointDistance(coord,lastPt)] forKey:@"dist"];
+        }
+    }
+    else if (cursorMode == GV_MODE_DOING_LINK)
+    {
+        if (NSPointInRect(coord,[self visibleRect]))
+        {
+            ACSDGraphic *g = [self graphicUnderPoint:coord excluding:[[self document]linkGraphics] nonEditableLayers:YES];
+            if (g == nil)
+                g = [self masterGraphicUnderPoint:coord];
+            if (g &&  ([g isKindOfClass:[ACSDText class]] || (![[[self document]linkGraphics] containsObject:g])))
+                [highLightLayer highLightObject:g modifiers:[theEvent modifierFlags]];
+            else
+                [highLightLayer highLightObject:self modifiers:[theEvent modifierFlags]];
+        }
+        else
+            [highLightLayer highLightObject:nil modifiers:[theEvent modifierFlags]];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:ACSDMouseDidMoveNotification object:self userInfo:dict];
+}
 
 - (BOOL)trackGraphic:(ACSDGraphic*)g knob:(KnobDescriptor&)kd withEvent:(NSEvent *)theEvent selectedGraphics:(NSSet*)selectedGraphics
 {
@@ -3948,85 +3969,85 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
-   {
-       if ((([theEvent modifierFlags] & NSEventModifierFlagOption)!=0) && spaceDown)
-	   {
-		[self magnifyWithEvent:theEvent];
-		return;
-	   }
-	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    int selectedTool = [[ToolWindowController sharedToolWindowController:nil] currentTool];
-	if (selectedTool || cursorMode)
-		[self emptyRepeatQueue];
-	if (cursorMode == GV_MODE_LINKING_TEXT_BLOCKS)
-	   {
-		ACSDGraphic *graphic = [self graphicUnderPoint:curPoint extending:NO];
-		if (graphic && [graphic isKindOfClass:[ACSDText class]])
-		{
-			[self linkText:(ACSDText*)graphic toText:linkingTextBlock];
-			[highLightLayer highLightObject:graphic times:3 interval:0.25];
-		}
-		return;
-	   }
-	else if (cursorMode == GV_MODE_DOING_LINK)
-	   {
-	    id obj = [highLightLayer targetObject];
-		if (obj == self)
-			obj = [self currentPage];
-		   [self processLinkToObj:obj modifierFlags:[theEvent modifierFlags]];
-		return;
-	   }
-	if (cursorMode == GV_ROTATION_AWAITING_CLICK)
+{
+    if ((([theEvent modifierFlags] & NSEventModifierFlagOption)!=0) && spaceDown)
     {
-        if (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0)
-		{
-			[self selectAndTrackMouseWithEvent:theEvent commandDown:NO];
-			return;
-		}
-		rotationPoint = curPoint;
-        if (([theEvent modifierFlags] & NSEventModifierFlagOption)==0)
-			cursorMode = GV_ROTATION_AWAITING_ROTATE;
-		else
-        {
-			cursorMode = GV_ROTATION_SHOWING_DIALOG;
-			[[[self window]windowController] showRotateDialog];
-        }
-		[[self window] invalidateCursorRectsForView:self];
-		return;
+        [self magnifyWithEvent:theEvent];
+        return;
     }
-	if (cursorMode == GV_ROTATION_AWAITING_ROTATE)
+    NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    int selectedTool = [[ToolWindowController sharedToolWindowController:nil] currentTool];
+    if (selectedTool || cursorMode)
+        [self emptyRepeatQueue];
+    if (cursorMode == GV_MODE_LINKING_TEXT_BLOCKS)
+    {
+        ACSDGraphic *graphic = [self graphicUnderPoint:curPoint extending:NO];
+        if (graphic && [graphic isKindOfClass:[ACSDText class]])
+        {
+            [self linkText:(ACSDText*)graphic toText:linkingTextBlock];
+            [highLightLayer highLightObject:graphic times:3 interval:0.25];
+        }
+        return;
+    }
+    else if (cursorMode == GV_MODE_DOING_LINK)
+    {
+        id obj = [highLightLayer targetObject];
+        if (obj == self)
+            obj = [self currentPage];
+        [self processLinkToObj:obj modifierFlags:[theEvent modifierFlags]];
+        return;
+    }
+    if (cursorMode == GV_ROTATION_AWAITING_CLICK)
     {
         if (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0)
-		{
-			[self selectAndTrackMouseWithEvent:theEvent commandDown:NO];
-			cursorMode = GV_ROTATION_AWAITING_CLICK;
-		}
-		else
-			[self trackRotationWithEvent:theEvent];
-		return;
+        {
+            [self selectAndTrackMouseWithEvent:theEvent commandDown:NO];
+            return;
+        }
+        rotationPoint = curPoint;
+        if (([theEvent modifierFlags] & NSEventModifierFlagOption)==0)
+            cursorMode = GV_ROTATION_AWAITING_ROTATE;
+        else
+        {
+            cursorMode = GV_ROTATION_SHOWING_DIALOG;
+            [[[self window]windowController] showRotateDialog];
+        }
+        [[self window] invalidateCursorRectsForView:self];
+        return;
+    }
+    if (cursorMode == GV_ROTATION_AWAITING_ROTATE)
+    {
+        if (([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0)
+        {
+            [self selectAndTrackMouseWithEvent:theEvent commandDown:NO];
+            cursorMode = GV_ROTATION_AWAITING_CLICK;
+        }
+        else
+            [self trackRotationWithEvent:theEvent];
+        return;
     }
     if ([self editingGraphic])
         [self endEditing];
     if ((selectedTool == ACSD_POLYGON_TOOL) && (([theEvent modifierFlags] & NSEventModifierFlagOption)!=0))
     {
-		[self showPolygonDialog];
-		return;
+        [self showPolygonDialog];
+        return;
     }
-
-	if ((selectedTool == ACSD_PEN_TOOL) && creatingPath)
+    
+    if ((selectedTool == ACSD_PEN_TOOL) && creatingPath)
     {
-		[(ACSDPath*)creatingPath trackAndAddPointWithEvent:theEvent inView:self];
-		return;
+        [(ACSDPath*)creatingPath trackAndAddPointWithEvent:theEvent inView:self];
+        return;
     }
     if (selectedTool == ACSD_SCALE_TOOL)
     {
         [self trackScaleWithEvent:theEvent];
         return;
     }
-	if (selectedTool == ACSD_WHITE_ARROW_TOOL)
+    if (selectedTool == ACSD_WHITE_ARROW_TOOL)
     {
-		[self selectPathElementAndTrackMouseWithEvent:theEvent];
-		return;
+        [self selectPathElementAndTrackMouseWithEvent:theEvent];
+        return;
     }
     if (selectedTool == ACSD_SPLIT_POINT_TOOL)
     {
@@ -4040,7 +4061,7 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     }
     if ([theEvent clickCount] > 1)
     {
-		[self emptyRepeatQueue];
+        [self emptyRepeatQueue];
         ACSDGraphic *graphic = [self graphicUnderPoint:curPoint extending:NO];
         if (graphic && [graphic isEditable])
         {
@@ -4050,13 +4071,13 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
     }
     if (selectedTool)
     {
-		showSelection = YES;
+        showSelection = YES;
         [self clearSelection];
         [self createGraphic:selectedTool withEvent:theEvent];
     }
-	else
+    else
         [self selectAndTrackMouseWithEvent:theEvent commandDown:([theEvent modifierFlags] & NSEventModifierFlagCommand)!=0];
-   }
+}
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
 {
@@ -7504,6 +7525,23 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	return im;
 }
 
+-(NSImage*)imageFromCurrentPageRect:(CGRect)rect
+{
+    NSBitmapImageRep *bm = newBitmap(rect.size.width,rect.size.height);
+    NSImage *im = [[NSImage alloc]initWithSize:rect.size];
+    [im addRepresentation:bm];
+    [im lockFocusFlipped:YES];
+    NSRect b = [self bounds];
+    [[NSAffineTransform transformWithTranslateXBy:-rect.origin.x yBy:rect.origin.y]concat];
+    [[NSAffineTransform transformWithTranslateXBy:0 yBy:rect.size.height]concat];
+    [[NSAffineTransform transformWithScaleXBy:1.0 yBy:-1.0]concat];
+    [self drawPage:[self currentPage] rect:b drawingToScreen:NO drawMarkers:NO
+             drawingToPDF:nil substitutions:[NSMutableDictionary dictionaryWithCapacity:5]
+           options:@{}];
+    [im unlockFocus];
+    return im;
+}
+
 -(NSImage*)imageFromPage:(int)pidx ofSize:(NSSize)sz
 {
     NSBitmapImageRep *bm = newBitmap(sz.width,sz.height);
@@ -7558,7 +7596,25 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 {
     NSImage *im = [self imageFromCurrentPageOfSize:[self bounds].size];
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
-	[pb clearContents];
+    [pb clearContents];
+    [pb writeObjects:@[im]];
+    AppDelegate *appdel = [NSApp delegate];
+    [appdel.copiedScreens removeAllObjects];
+    [appdel.copiedScreens addObject:im];
+}
+
+-(IBAction)copyScreenSelectionArea:(id)sender
+{
+    NSArray *elementArray = [[self selectedGraphics] allObjects];
+    if ([elementArray count] == 0)
+        return;
+    CGRect r = CGRectNull;
+    for (ACSDGraphic *g in elementArray)
+        r = CGRectUnion(r, [g transformedStrictBounds]);
+
+    NSImage *im = [self imageFromCurrentPageRect:r];
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+    [pb clearContents];
     [pb writeObjects:@[im]];
     AppDelegate *appdel = [NSApp delegate];
     [appdel.copiedScreens removeAllObjects];

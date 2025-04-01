@@ -49,6 +49,9 @@ NSString *xmlDocHeight = @"xmlDocHeight";
 NSString *xmlIndent = @"xmlIndent";
 NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
 
+void AddToDict(NSMutableDictionary *dict,NSString *key,NSMutableDictionary *attributes);
+NSDictionary* attributesFromCSSStyleString(NSString *cssstr);
+
 @interface ACSDrawDocument ()
 {
     IBOutlet NSTextField *textAccessoryLabel;
@@ -1298,7 +1301,7 @@ NSString *xHTMLString2 = @"<html>\n";
 			}
 		}
 		if ([[self.htmlSettings objectForKey:@"openAfterExport"]boolValue])
-			[[NSWorkspace sharedWorkspace] openFile:firstPageFileName];
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL fileURLWithPath:firstPageFileName]];
 	}
 }
 
