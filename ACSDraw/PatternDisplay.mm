@@ -12,16 +12,20 @@
    }
 
 - (void)drawRect:(NSRect)rect
-   {
-	[[NSColor whiteColor]set];
-	NSRectFill(rect);
-	if (pattern)
-	   {
-		FlippableView *tempV = [pattern setCurrentDrawingDestination:self];
-		[pattern fillPath:[NSBezierPath bezierPathWithRect:rect]];
-		[pattern setCurrentDrawingDestination:tempV];
-	   }
-   }
+{
+    [NSGraphicsContext saveGraphicsState];
+    [[NSBezierPath bezierPathWithRect:[self bounds]]addClip];
+    [[NSColor whiteColor]set];
+    NSRectFill(rect);
+    if (pattern)
+    {
+        FlippableView *tempV = [pattern setCurrentDrawingDestination:self];
+        [pattern fillPath:[NSBezierPath bezierPathWithRect:rect]];
+        [pattern setCurrentDrawingDestination:tempV];
+    }
+    [NSGraphicsContext restoreGraphicsState];
+
+}
 
 - (void)setPattern:(ACSDPattern*)patt
    {
