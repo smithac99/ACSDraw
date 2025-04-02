@@ -23,7 +23,7 @@
 @interface MarkerView ()
 
 @property float directionOffset;
-@property (weak) CALayer *mainLayer;
+@property CALayer *mainLayer;
 
 @end
 
@@ -98,6 +98,7 @@
 
 - (void)drawRect:(NSRect)aRect
 {
+    NSLog(@"MarkerView drawrect 1");
 	if (![NSGraphicsContext currentContextDrawingToScreen])
 		return;
     BOOL showPathDirection = [[ACSDPrefsController sharedACSDPrefsController:nil]showPathDirection];
