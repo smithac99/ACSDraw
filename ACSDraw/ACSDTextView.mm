@@ -80,7 +80,8 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
 
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:mas,@"text",stylesUsedByAttributedString(mas),@"styles",nil];
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:NO];
-    [archiver setDelegate:[ArchiveTextDelegate archiveTextDelegateWithType:ARCHIVE_PASTEBOARD styleMatching:0 styles:0 document:[(ACSDText*)[self delegate]document]enclosingGraphic:(ACSDText*)[self delegate]]];
+    ArchiveTextDelegate *archdel = [ArchiveTextDelegate archiveTextDelegateWithType:ARCHIVE_PASTEBOARD styleMatching:0 styles:0 document:[(ACSDText*)[self delegate]document]enclosingGraphic:(ACSDText*)[self delegate]];
+    [archiver setDelegate:archdel];
     [archiver encodeObject:dict forKey:@"root"];
     [archiver encodeObject:[[(ACSDText*)[self delegate]document]documentKey] forKey:@"docKey"];
     [archiver finishEncoding];
@@ -150,8 +151,8 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
             styleMatching = MATCH_SIMILAR;
             styleCollection = [ACSDStyle stylesByName:[[(ACSDText*)[self delegate]document]styles]];
         }
-        [unarch setDelegate:[ArchiveTextDelegate archiveTextDelegateWithType:ARCHIVE_PASTEBOARD styleMatching:styleMatching
-                                                                      styles:styleCollection document:[(ACSDText*)[self delegate]document]enclosingGraphic:(ACSDText*)[self delegate]]];
+        ArchiveTextDelegate *archdel = [ArchiveTextDelegate archiveTextDelegateWithType:ARCHIVE_PASTEBOARD styleMatching:styleMatching                                                                               styles:styleCollection document:[(ACSDText*)[self delegate]document]enclosingGraphic:(ACSDText*)[self delegate]];
+        [unarch setDelegate:archdel];
         NSLog(@"Before Decode");
         id a = [unarch decodeObjectForKey:@"root"];
         if ([a isKindOfClass:[NSDictionary class]])

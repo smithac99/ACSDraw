@@ -228,33 +228,34 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr);
    }
 
 - (NSMutableArray*)systemLineEndings
-   {
-	NSMutableArray 	*mArr = [NSMutableArray arrayWithCapacity:30];
-	NSString *dPath = [[NSBundle mainBundle]pathForResource:@"systemLineEndings" ofType:@"acsdl"];
-	if (dPath)
-	   {
-		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:[NSData dataWithContentsOfFile:dPath]error:NULL];
-		[unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
-		id d = [unarchiver decodeObjectForKey:@"root"];
-//		id d = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:dPath]];
-		if (d && [d isKindOfClass:[NSDictionary class]])
-		   {
-			NSDictionary *dict = d;
-			if (dict)
-			   {
-				NSArray *arr = [dict objectForKey:lineEndingsKey];
-				if (arr)
-				   {
-					[mArr addObjectsFromArray:arr];
-					return mArr;
-				   }
-			   }
-		   }
-	   }
-	[mArr addObjectsFromArray:[ACSDLineEnding initialLineEndings]];
-	[self performSelector:@selector(registerObject:)withObjectsFromArray:mArr];
-	return mArr;
-   }
+{
+    NSMutableArray 	*mArr = [NSMutableArray arrayWithCapacity:30];
+    NSString *dPath = [[NSBundle mainBundle]pathForResource:@"systemLineEndings" ofType:@"acsdl"];
+    if (dPath)
+    {
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:[NSData dataWithContentsOfFile:dPath]error:NULL];
+        ArchiveDelegate * archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self];
+        [unarchiver setDelegate:archdel];
+        id d = [unarchiver decodeObjectForKey:@"root"];
+        //		id d = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:dPath]];
+        if (d && [d isKindOfClass:[NSDictionary class]])
+        {
+            NSDictionary *dict = d;
+            if (dict)
+            {
+                NSArray *arr = [dict objectForKey:lineEndingsKey];
+                if (arr)
+                {
+                    [mArr addObjectsFromArray:arr];
+                    return mArr;
+                }
+            }
+        }
+    }
+    [mArr addObjectsFromArray:[ACSDLineEnding initialLineEndings]];
+    [self performSelector:@selector(registerObject:)withObjectsFromArray:mArr];
+    return mArr;
+}
 
 - (void)makeWindowControllers
 {
@@ -480,7 +481,8 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     unarchiver.requiresSecureCoding = NO;
     if (err)
         NSLog(@"File read error %@",[err localizedDescription]);
-    [unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
+    ArchiveDelegate *archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self];
+    [unarchiver setDelegate:archdel];
     id d = [unarchiver decodeObjectForKey:@"root"];
     [unarchiver finishDecoding];
     if ([d isKindOfClass:[NSDictionary class]])
