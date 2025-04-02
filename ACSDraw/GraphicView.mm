@@ -4960,10 +4960,10 @@ NSString *dragGraphicKey = @"dragGraphic";
                            pbShadowsKey:[self shadowsUsedByElements:graphics],
                            dragGraphicKey:[ConditionalObject conditionalObject:dg],
     };
-    //NSMutableData *mdat = [NSMutableData data];
-    //NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:NO];
-    [archiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
+    NSMutableData *mdat = [NSMutableData data];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
+    ArchiveDelegate *archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]];
+    [archiver setDelegate:archdel];
     [archiver encodeObject:dict forKey:@"root"];
     [archiver encodeObject:[[self document]documentKey] forKey:@"docKey"];
     [archiver finishEncoding];
