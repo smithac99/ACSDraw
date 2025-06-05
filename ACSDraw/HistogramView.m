@@ -24,7 +24,7 @@
 - (void)drawRect:(NSRect)dirtyRect
 {
     [[NSColor whiteColor]set];
-	NSRectFill(dirtyRect);
+	NSRectFill([self bounds]);
 	if (histogramData)
 	{
 		[[NSColor blackColor]set];

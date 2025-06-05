@@ -10,6 +10,12 @@
 
 @implementation SVGGradient
 
+
+//temp
+-(instancetype)initWithCoder:(NSCoder*)code
+{
+    return nil;
+}
 -(void) processAttributes:(NSMutableDictionary *)context
 {
     [self calculateTransforms];

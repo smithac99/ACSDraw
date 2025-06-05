@@ -455,6 +455,8 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 	[super encodeWithCoder:coder];
 	[coder encodeObject:[self name] forKey:@"ACSDGraphic_name"];
 	[coder encodeConditionalObject:self.layer forKey:@"ACSDGraphic_layer"];
+    if (fill != nil && ![fill isKindOfClass:[ACSDFill class]])
+        NSLog(@"fill encode error - %@",NSStringFromClass([fill class]));
 	[coder encodeConditionalObject:fill forKey:@"ACSDGraphic_fill"];
 	[coder encodeConditionalObject:stroke forKey:@"ACSDGraphic_stroke"];
 	[coder encodeConditionalObject:shadowType forKey:@"ACSDGraphic_shadowtype"];
@@ -496,7 +498,14 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 	self = [super initWithCoder:coder];
 	self.name = [coder decodeObjectForKey:@"ACSDGraphic_name"];
     self.layer = [coder decodeObjectForKey:@"ACSDGraphic_layer"];
-	[self setFill:[coder decodeObjectForKey:@"ACSDGraphic_fill"]];
+    @try
+    {
+        [self setFill:[coder decodeObjectForKey:@"ACSDGraphic_fill"]];
+    } @catch (NSException *exception)
+    {
+        NSLog(@"failed decoding gradient");
+    }
+	//[self setFill:[coder decodeObjectForKey:@"ACSDGraphic_fill"]];
 	[self setStroke:[coder decodeObjectForKey:@"ACSDGraphic_stroke"]];
     if (self.stroke != nil && ![self.stroke isKindOfClass:[ACSDStroke class]])
     {

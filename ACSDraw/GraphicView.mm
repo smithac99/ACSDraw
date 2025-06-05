@@ -4907,7 +4907,8 @@ NSString *dragGraphicKey = @"dragGraphic";
         return;
     }
     NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingWithData:prevdata];
-    [unarch setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
+    ArchiveDelegate *archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]];
+    [unarch setDelegate:archdel];
     id docKey = [unarch decodeObjectForKey:@"docKey"];
     [(ArchiveDelegate*)[unarch delegate]setSameDocument:[docKey isEqual:[[self document]documentKey]]];
     id a = [unarch decodeObjectForKey:@"root"];
@@ -4941,7 +4942,8 @@ NSString *dragGraphicKey = @"dragGraphic";
 
     NSMutableData *mdat = [NSMutableData data];
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:mdat];
-    [archiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
+    archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]];
+    [archiver setDelegate:archdel];
     [archiver encodeObject:dict forKey:@"root"];
     [archiver encodeObject:[[self document]documentKey] forKey:@"docKey"];
     [archiver finishEncoding];
@@ -5359,7 +5361,8 @@ NSInteger findSame(id obj,NSArray *arr)
 	}
 	NSDictionary *dict;
 	NSKeyedUnarchiver *unarch = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
-	[unarch setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]]];
+    ArchiveDelegate *archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_PASTEBOARD document:[self document]];
+	[unarch setDelegate:archdel];
 	id docKey = [unarch decodeObjectForKey:@"docKey"];
 	[(ArchiveDelegate*)[unarch delegate]setSameDocument:[docKey isEqual:[[self document]documentKey]]];
 	id a = [unarch decodeObjectForKey:@"root"];

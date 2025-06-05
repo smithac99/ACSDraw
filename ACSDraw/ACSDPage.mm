@@ -219,10 +219,10 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
                 [[g attributes]addObject:@[k,[objNode attributeStringValue:k]]];
         }
         
-        [kids addObject:g];
-        [g setName:[objNode attributeStringValue:@"id"]];
         if (g)
         {
+            [kids addObject:g];
+            [g setName:[objNode attributeStringValue:@"id"]];
             [g setStroke:[settings objectForKey:@"stroke"]];
             id f = [settings objectForKey:@"fill"];
             if ([f isKindOfClass:[NSString class]] && [f hasPrefix:@"url("])
@@ -453,6 +453,8 @@ NSString *ACSDPageAttributeChanged = @"ACSDPageAttributeChanged";
 
 - (ACSDLayer*)guideLayer
 {
+    if (guideLayerInd < 0 || guideLayerInd >= [layers count])
+        return nil;
 	return [layers objectAtIndex:guideLayerInd];
 }
 

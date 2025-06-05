@@ -3879,7 +3879,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="yoff" width="86.5" minWidth="10" maxWidth="1000" id="873">
+                                    <tableColumn identifier="yoff" width="87" minWidth="10" maxWidth="1000" id="873">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="yoff">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -3898,7 +3898,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="sel" editable="NO" width="15" minWidth="10" maxWidth="1000" id="874">
+                                    <tableColumn identifier="sel" editable="NO" width="14.5" minWidth="10" maxWidth="1000" id="874">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -3977,7 +3977,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <clipView key="contentView" id="NvS-cw-17t">
                         <rect key="frame" x="1" y="1" width="238" height="133"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" id="a8W-Rz-tOh" customClass="ACSDTableView">
                                 <rect key="frame" x="0.0" y="0.0" width="238" height="133"/>
@@ -4021,7 +4021,7 @@
                     <autoresizingMask key="autoresizingMask"/>
                     <clipView key="contentView" drawsBackground="NO" id="8Ss-aj-jnP">
                         <rect key="frame" x="1" y="1" width="223" height="133"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="UcZ-8X-sIM">
                                 <rect key="frame" x="0.0" y="0.0" width="223" height="133"/>
@@ -4092,6 +4092,7 @@
                     </connections>
                 </textField>
             </subviews>
+            <point key="canvasLocation" x="-552" y="84"/>
         </customView>
         <menu id="MKB-9u-iGJ">
             <items>

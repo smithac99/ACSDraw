@@ -228,33 +228,34 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr);
    }
 
 - (NSMutableArray*)systemLineEndings
-   {
-	NSMutableArray 	*mArr = [NSMutableArray arrayWithCapacity:30];
-	NSString *dPath = [[NSBundle mainBundle]pathForResource:@"systemLineEndings" ofType:@"acsdl"];
-	if (dPath)
-	   {
-		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:[NSData dataWithContentsOfFile:dPath]error:NULL];
-		[unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
-		id d = [unarchiver decodeObjectForKey:@"root"];
-//		id d = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:dPath]];
-		if (d && [d isKindOfClass:[NSDictionary class]])
-		   {
-			NSDictionary *dict = d;
-			if (dict)
-			   {
-				NSArray *arr = [dict objectForKey:lineEndingsKey];
-				if (arr)
-				   {
-					[mArr addObjectsFromArray:arr];
-					return mArr;
-				   }
-			   }
-		   }
-	   }
-	[mArr addObjectsFromArray:[ACSDLineEnding initialLineEndings]];
-	[self performSelector:@selector(registerObject:)withObjectsFromArray:mArr];
-	return mArr;
-   }
+{
+    NSMutableArray 	*mArr = [NSMutableArray arrayWithCapacity:30];
+    NSString *dPath = [[NSBundle mainBundle]pathForResource:@"systemLineEndings" ofType:@"acsdl"];
+    if (dPath)
+    {
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:[NSData dataWithContentsOfFile:dPath]error:NULL];
+        ArchiveDelegate *archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self];
+        [unarchiver setDelegate:archdel];
+        id d = [unarchiver decodeObjectForKey:@"root"];
+        //		id d = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:dPath]];
+        if (d && [d isKindOfClass:[NSDictionary class]])
+        {
+            NSDictionary *dict = d;
+            if (dict)
+            {
+                NSArray *arr = [dict objectForKey:lineEndingsKey];
+                if (arr)
+                {
+                    [mArr addObjectsFromArray:arr];
+                    return mArr;
+                }
+            }
+        }
+    }
+    [mArr addObjectsFromArray:[ACSDLineEnding initialLineEndings]];
+    [self performSelector:@selector(registerObject:)withObjectsFromArray:mArr];
+    return mArr;
+}
 
 - (void)makeWindowControllers
 {
@@ -480,7 +481,8 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     unarchiver.requiresSecureCoding = NO;
     if (err)
         NSLog(@"File read error %@",[err localizedDescription]);
-    [unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
+    ArchiveDelegate *archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self];
+    [unarchiver setDelegate:archdel];
     id d = [unarchiver decodeObjectForKey:@"root"];
     [unarchiver finishDecoding];
     if ([d isKindOfClass:[NSDictionary class]])
@@ -1222,7 +1224,18 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
     [t scaleXBy:1.0 yBy:-1.0];
     [svgSettings setObject:t forKey:@"transform"];
     [settingsStack addObject:svgSettings];
+    NSMutableArray *defs = [NSMutableArray array];
+    NSMutableArray *nodes = [NSMutableArray array];
     for (XMLNode *child in root.children)
+    {
+        if ([[child.nodeName lowercaseString]isEqualToString:@"defs"])
+            [defs addObject:child];
+        else
+            [nodes addObject:child];
+    }
+    for (XMLNode *child in defs)
+        [self processSVGNode:child settingsStack:settingsStack];
+    for (XMLNode *child in nodes)
         [self processSVGNode:child settingsStack:settingsStack];
 	[self setFileType:@"acsd"];
 	if ([self fileURL] != nil)
@@ -1319,7 +1332,7 @@ NSString *xHTMLString2 = @"<html>\n";
 
 NSString* Creator()
 {
-    NSString *version = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleVersion"];
+    NSString *version = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleShortVersionString"];
     NSString *creator;
     if (version)
         creator = [NSString stringWithFormat:@"ACSDraw %@",version];

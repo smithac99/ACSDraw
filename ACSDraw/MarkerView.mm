@@ -23,7 +23,7 @@
 @interface MarkerView ()
 
 @property float directionOffset;
-@property (weak) CALayer *mainLayer;
+@property CALayer *mainLayer;
 
 @end
 
