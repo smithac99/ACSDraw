@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -320,6 +320,7 @@
 		E78463B229B92BEA00227A21 /* justifycentrealt.tif in Resources */ = {isa = PBXBuildFile; fileRef = E78463AA29B92BEA00227A21 /* justifycentrealt.tif */; };
 		E79139421A607B7C00A9B1C4 /* ACSDDocImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = E79139411A607B7C00A9B1C4 /* ACSDDocImage.mm */; };
 		E79458B51C66085F00FA88A8 /* SceneView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E79458B41C66085F00FA88A8 /* SceneView.mm */; };
+		E796ED352E312CC200DDC1C1 /* ACSDTypeSetter.m in Sources */ = {isa = PBXBuildFile; fileRef = E796ED342E312CC200DDC1C1 /* ACSDTypeSetter.m */; };
 		E798F30315C3F0C70079B4D9 /* ACSDraw.icns in Resources */ = {isa = PBXBuildFile; fileRef = E798F30215C3F0C60079B4D9 /* ACSDraw.icns */; };
 		E7A2E0E41A6A4C85009DD659 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7A2E0E31A6A4C85009DD659 /* CoreGraphics.framework */; };
 		E7BB1B451BD8361C0053B9DE /* NSView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E7BB1B441BD8361C0053B9DE /* NSView+Additions.m */; };
@@ -856,6 +857,8 @@
 		E79139411A607B7C00A9B1C4 /* ACSDDocImage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ACSDDocImage.mm; sourceTree = "<group>"; };
 		E79458B31C66085F00FA88A8 /* SceneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneView.h; sourceTree = "<group>"; };
 		E79458B41C66085F00FA88A8 /* SceneView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SceneView.mm; sourceTree = "<group>"; };
+		E796ED332E312CC200DDC1C1 /* ACSDTypeSetter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACSDTypeSetter.h; sourceTree = "<group>"; };
+		E796ED342E312CC200DDC1C1 /* ACSDTypeSetter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACSDTypeSetter.m; sourceTree = "<group>"; };
 		E798F30215C3F0C60079B4D9 /* ACSDraw.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ACSDraw.icns; sourceTree = SOURCE_ROOT; };
 		E7A2E0E31A6A4C85009DD659 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		E7BB1B431BD8361C0053B9DE /* NSView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+Additions.h"; sourceTree = "<group>"; };
@@ -1370,6 +1373,8 @@
 				E740552515B1EF2D0040F590 /* ACSDTextContainer.mm */,
 				E740552615B1EF2D0040F590 /* ACSDTextStorage.h */,
 				E740552715B1EF2D0040F590 /* ACSDTextStorage.mm */,
+				E796ED332E312CC200DDC1C1 /* ACSDTypeSetter.h */,
+				E796ED342E312CC200DDC1C1 /* ACSDTypeSetter.m */,
 				E740552C15B1EF2D0040F590 /* AppDelegate.h */,
 				E740552D15B1EF2D0040F590 /* AppDelegate.mm */,
 				E740552E15B1EF2D0040F590 /* ArchiveDelegate.h */,
@@ -1590,7 +1595,7 @@
 				LastUpgradeCheck = 0920;
 			};
 			buildConfigurationList = E74054B715B1ED040040F590 /* Build configuration list for PBXProject "ACSDraw" */;
-			compatibilityVersion = "Xcode 10.0";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1762,6 +1767,7 @@
 				E740564415B1EF2D0040F590 /* ACSDPage.mm in Sources */,
 				E76AC06529B50EFE005DE06A /* SVG_radialGradient.m in Sources */,
 				E740564515B1EF2D0040F590 /* ACSDPath.mm in Sources */,
+				E796ED352E312CC200DDC1C1 /* ACSDTypeSetter.m in Sources */,
 				E740564615B1EF2D0040F590 /* ACSDPathElement.mm in Sources */,
 				E740564715B1EF2D0040F590 /* ACSDPattern.mm in Sources */,
 				E7CFC26A1C92C68600114E18 /* ACSDReference.mm in Sources */,
@@ -2180,7 +2186,7 @@
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.047;
+				MARKETING_VERSION = 1.049;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -2204,7 +2210,7 @@
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.047;
+				MARKETING_VERSION = 1.049;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

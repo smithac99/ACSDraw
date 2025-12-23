@@ -1034,7 +1034,7 @@ NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
         for (XMLNode *ch in child.children)
         {
             ACSDGraphic *mem = [self processSVGNode:ch settingsStack:settingsStack];
-            if (mem)
+            if (mem && [mem isKindOfClass:[ACSDGraphic class]])
             {
                 [mem.layer removeGraphics:@[mem]];
                 [members addObject:mem];

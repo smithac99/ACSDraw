@@ -628,6 +628,14 @@ void MoveRowsFromIndexSetToPosition(NSMutableArray* arr,NSIndexSet *ixs,NSIntege
 -(void)keyHit:(unichar)uc
 {
     if (uc == 9)
+    {
         [[self.inspectingGraphicView window]makeKeyAndOrderFront:self];
+        return;
+    }
+    
+    NSString *str = [NSString stringWithCharacters:&uc length:1];
+    NSString *validCharacters = @"rsnb";
+    if ([validCharacters rangeOfString:str].location != NSNotFound)
+        [self.inspectingGraphicView processKey:str modifierFlags:0];
 }
 @end

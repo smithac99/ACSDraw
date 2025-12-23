@@ -7241,12 +7241,85 @@ static ACSDGraphic *parg(ACSDGraphic *g)
     }
 }
 
+-(BOOL)processKey:(NSString*)str modifierFlags:(NSUInteger)modifierFlags
+{
+    if ([str isEqualToString:@" "])
+    {
+        spaceDown = YES;
+        if (modifierFlags & NSEventModifierFlagOption)
+            [[self window] invalidateCursorRectsForView:self];
+        return YES;
+    }
+    else if ([str isEqualToString:@"s"])
+    {
+        [self toggleShowSelection:self];
+        return YES;
+    }
+    else if ([str isEqualToString:@"n"])
+    {
+        [self nextPage:self];
+        return YES;
+    }
+    else if ([str isEqualToString:@"b"])
+    {
+        [self prevPage:self];
+        return YES;
+    }
+    else if ([str isEqualToString:@"d"])
+    {
+        [self toggleShowPathDirection:self];
+        return YES;
+    }
+    else if ([str isEqualToString:@"r"])
+    {
+        [(MainWindowController*)[[self window]windowController]showRenameDialog:self];
+        return YES;
+    }
+    else if ([str isEqualToString:@"§"])
+    {
+        [[ToolWindowController sharedToolWindowController:nil] selectLastTool];
+        return YES;
+    }
+    else if ([str isEqualToString:@"c"])
+    {
+        if (creatingPath)
+        {
+            ACSDPath *p = (ACSDPath*)creatingPath;
+            [self cancelOp:self];
+            [self closeCreatingPath:p];
+            return YES;
+        }
+    }
+    else if ([str isEqualToString:@"\t"] && (modifierFlags & NSEventModifierFlagOption))
+    {
+        if ([[self selectedGraphics]count] == 1)
+        {
+            PalletteViewController *pvc = [PalletteViewController sharedPalletteViewController];
+            [pvc activatePanel:GRAPHIC_OTHER_CONTROLLER];
+            GraphicOtherController *goc = pvc.graphicOtherController;
+            NSInteger idx = [goc.graphicsTableView selectedRow];
+            [[goc.graphicsTableView window]makeKeyAndOrderFront:self];
+            [goc.graphicsTableView editColumn:1 row:idx withEvent:nil select:YES];
+            return YES;
+        }
+    }
+    else if ([str isEqualToString:@"h"])
+    {
+        [self toggleGraphicsHidden];
+        return YES;
+    }
+    return NO;
+}
+
 - (void)keyDown:(NSEvent *)event
 {
 	NSString *str = [event charactersIgnoringModifiers];
     unichar uc = 0;
     if ([str length] > 0)
         uc = [str characterAtIndex:0];
+    if (![self processKey:str modifierFlags:[event modifierFlags]])
+        [self interpretKeyEvents:[NSArray arrayWithObject:event]];
+/*
 	if ([str isEqualToString:@" "])
 	{
 	    spaceDown = YES;
@@ -7261,6 +7334,8 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		[self prevPage:self];
     else if ([str isEqualToString:@"d"])
         [self toggleShowPathDirection:self];
+    else if ([str isEqualToString:@"r"])
+        [(MainWindowController*)[[self window]windowController]showRenameDialog:self];
     else if ([str isEqualToString:@"§"])
         [[ToolWindowController sharedToolWindowController:nil] selectLastTool];
     else if ([str isEqualToString:@"c"])
@@ -7274,7 +7349,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         else
             [self interpretKeyEvents:[NSArray arrayWithObject:event]];
     }
-	else if (/*uc == 9*/ [str isEqualToString:@"\t"] && ([event modifierFlags] & NSEventModifierFlagOption))
+	else if ([str isEqualToString:@"\t"] && ([event modifierFlags] & NSEventModifierFlagOption))
     {
         if ([[self selectedGraphics]count] == 1)
         {
@@ -7292,7 +7367,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
         [self toggleGraphicsHidden];
     }
     else
-		[self interpretKeyEvents:[NSArray arrayWithObject:event]];
+		[self interpretKeyEvents:[NSArray arrayWithObject:event]];*/
 }
 
 -(void)toggleGraphicsHidden

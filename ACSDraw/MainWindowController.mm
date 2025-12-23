@@ -53,10 +53,10 @@ int orientationOfSource(NSDictionary *properties);
 
 NSRect ConstrainRectToRect(NSRect littleRect,NSRect bigRect)
 {
-	if (littleRect.origin.x < 0)
+	/*if (littleRect.origin.x < 0)
 		littleRect.origin.x = 0;
 	if (littleRect.origin.y < 0)
-		littleRect.origin.y = 0;
+		littleRect.origin.y = 0;*/
 	if (NSMaxX(littleRect) > NSMaxX(bigRect))
 	{
 		float diff = NSMaxX(littleRect) - NSMaxX(bigRect);

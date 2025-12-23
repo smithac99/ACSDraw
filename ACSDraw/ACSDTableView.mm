@@ -152,7 +152,7 @@
     if ([str length] > 0)
         uc = [str characterAtIndex:0];
 
-    if (uc == 9)
+    if (uc == 9 || uc == 'r')
     {
         NSLog(@"got there");
         id del = self.delegate;

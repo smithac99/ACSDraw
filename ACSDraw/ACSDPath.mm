@@ -525,7 +525,14 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
     float y = [xmlnode attributeFloatValue:@"y"];
     float width = [xmlnode attributeFloatValue:@"width"];
     float height = [xmlnode attributeFloatValue:@"height"];
-    NSBezierPath *p = [NSBezierPath bezierPathWithRect:NSMakeRect(x, y, width, height)];
+    float rx = [xmlnode attributeFloatValue:@"rx"];
+    float ry = [xmlnode attributeFloatValue:@"ry"];
+    NSRect rect = NSMakeRect(x, y, width, height);
+    NSBezierPath *p;
+    if (rx == 0 && ry == 0)
+        p = [NSBezierPath bezierPathWithRect:rect];
+    else
+        p = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:rx yRadius:ry];
 	return [ACSDPath pathWithSVGPath:p settings:[settingsStack lastObject]];
 }
 

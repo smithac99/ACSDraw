@@ -44,8 +44,8 @@ static NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
                         NSArray *attr = [component componentsSeparatedByString:@":"];
                         if ([attr count] > 1)
                         {
-                            NSString *key = [attr[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-                            NSString *val = [attr[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                            NSString *key = [attr[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                            NSString *val = [attr[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                             attrs[key] = val;
                         }
                     }

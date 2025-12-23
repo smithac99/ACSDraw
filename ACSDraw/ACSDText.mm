@@ -28,6 +28,7 @@
 #import "ACSDLineEnding.h"
 #import "geometry.h"
 #import "XMLNode.h"
+#import "ACSDTypeSetter.h"
 
 NSString *ACSDAnchorAttributeName = @"ACSDAnchor";
 NSString *ACSDrawTextPBoardType = @"ACSDrawTextPBoardType";
@@ -142,7 +143,7 @@ NSString *substitute_characters(NSString* string)
         previousText = nextText = nil;
 		overflow = NO;
 		contents = [[NSTextStorage alloc] init];
-		cornerRadius = 0.0;
+		self.cornerRadius = 0.0;
 //		contents = [[ACSDTextStorage allocWithZone:[self zone]] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentsChanged:) 
 			name:NSTextStorageDidProcessEditingNotification object:contents];
@@ -188,7 +189,7 @@ NSString *substitute_characters(NSString* string)
 	id obj = [[ACSDText alloc]initWithName:self.name fill:fill stroke:stroke rect:bounds layer:self.layer
 									xScale:self.xScale yScale:self.yScale rotation:self.rotation shadowType:shadowType label:textLabel alpha:self.alpha contents:c
 								 topMargin:topMargin leftMargin:leftMargin bottomMargin:bottomMargin rightMargin:rightMargin verticalAlignment:verticalAlignment];
-	[(ACSDText*)obj setCornerRadius:cornerRadius];
+	[(ACSDText*)obj setCornerRadius:self.cornerRadius];
     [obj setAttributes:[self.attributes mutableCopy]];
 	return obj;
 }
@@ -206,7 +207,7 @@ NSString *substitute_characters(NSString* string)
 	[coder encodeConditionalObject:previousText forKey:@"ACSDText_previousText"];
 	[coder encodeConditionalObject:nextText forKey:@"ACSDText_nextText"];
 	[coder encodeInt:maxAnchorID forKey:@"ACSDText_maxAnchorID"];
-	[coder encodeFloat:cornerRadius forKey:@"ACSDText_cornerRadius"];
+	[coder encodeFloat:self.cornerRadius forKey:@"ACSDText_cornerRadius"];
 	[coder encodeFloat:flowPad forKey:@"ACSDText_flowPad"];
    }
 
@@ -236,7 +237,7 @@ NSString *substitute_characters(NSString* string)
     else
         contents = nil;
     nextText = [coder decodeObjectForKey:@"ACSDText_nextText"];
-    cornerRadius = [coder decodeFloatForKey:@"ACSDText_cornerRadius"];
+    self.cornerRadius = [coder decodeFloatForKey:@"ACSDText_cornerRadius"];
     overflow = NO;
     topMargin = [coder decodeFloatForKey:@"ACSDText_topMargin"];
     leftMargin = [coder decodeFloatForKey:@"ACSDText_leftMargin"];
@@ -256,14 +257,17 @@ NSString *substitute_characters(NSString* string)
 }
 
 -(void)allocateTextSystemStuff
-   {
+{
     layoutManager = [[NSLayoutManager allocWithZone:NULL] init];
-//    textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
+    layoutManager.typesetter = [[ACSDTypeSetter alloc]init];
+    //    textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
     [layoutManager addTextContainer:[self textContainer]];
     [contents addLayoutManager:layoutManager];
-	[layoutManager setDelegate:self];
-	overflow = NO;
-   }
+    [layoutManager setDelegate:self];
+    overflow = NO;
+}
+
+#pragma mark -
 
 -(NSRange)characterRange
    {
@@ -306,13 +310,13 @@ NSString *substitute_characters(NSString* string)
 - (void)startBoundsManipulation
 {
     [super startBoundsManipulation];
-    originalCornerRadius = cornerRadius;
+    originalCornerRadius = self.cornerRadius;
 	originalCornerRatio = 0.0;
-	if (cornerRadius != 0.0)
+	if (self.cornerRadius != 0.0)
 	{
 		float smallSide = fmin(bounds.size.width,bounds.size.height);
 		if (smallSide != 0.0)
-			originalCornerRatio = cornerRadius/smallSide;
+			originalCornerRatio = self.cornerRadius/smallSide;
 	}
 }
 
@@ -334,7 +338,7 @@ NSString *substitute_characters(NSString* string)
         if (!NSEqualRects(originalBounds,bounds))
 		{
             manipulatingBounds = NO;
-			cornerRadius = originalCornerRadius;
+			self.cornerRadius = originalCornerRadius;
             [self setGraphicBoundsTo:bounds from:originalBounds];
 			//            [self setGraphicCornerRadius:cornerRadius from:originalCornerRadius notify:YES];
 		}
@@ -345,10 +349,10 @@ NSString *substitute_characters(NSString* string)
 
 -(BOOL)setGraphicCornerRadius:(float)r notify:(BOOL)notify
 {
-	if (r == cornerRadius)
+	if (r == self.cornerRadius)
 		return NO;
 	if (!manipulatingBounds)
-		[[[self undoManager] prepareWithInvocationTarget:self] setGraphicCornerRadius:cornerRadius notify:YES];
+		[[[self undoManager] prepareWithInvocationTarget:self] setGraphicCornerRadius:self.cornerRadius notify:YES];
 	[self invalidateGraphicSizeChanged:NO shapeChanged:NO redraw:NO notify:NO];
 	[self setCornerRadius:r];
 	[self invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:notify];
@@ -437,7 +441,7 @@ NSString *substitute_characters(NSString* string)
 	flowMethod = al;
    }
 
--(float)cornerRadius
+/*-(float)cornerRadius
 {
 	return cornerRadius;
 }
@@ -445,7 +449,7 @@ NSString *substitute_characters(NSString* string)
 -(void)setCornerRadius:(float)r
 {
 	cornerRadius = r;
-}
+}*/
 
 - (VerticalAlignment)verticalAlignment
    {
@@ -708,8 +712,8 @@ NSString *substitute_characters(NSString* string)
     /*for (NSArray *arr in self.attributes)
         if ([arr[0]isEqualToString:@"widthtracksheight"] || [arr[0]isEqualToString:@"heighttrackswidth"])
             [attrString appendFormat:@" pxwidth=\"%g\" pxheight=\"%g\"",b.size.width,b.size.height];*/
-    if (cornerRadius != 0.0)
-        [attrString appendFormat:@" cornerradius=\"%g\"",cornerRadius / b.size.height];
+    if (self.cornerRadius != 0.0)
+        [attrString appendFormat:@" cornerradius=\"%g\"",self.cornerRadius / b.size.height];
     return attrString;
 }
 
@@ -1405,7 +1409,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 
 - (NSBezierPath *)bezierPath
 {
-	if (cornerRadius == 0.0)
+	if (self.cornerRadius == 0.0)
 		return [NSBezierPath bezierPathWithRect:bounds];
 	/*NSBezierPath *path = [NSBezierPath bezierPath];
 	NSRect iBounds = NSInsetRect(bounds,cornerRadius,cornerRadius);
@@ -1419,12 +1423,12 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	[path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(iBounds),NSMaxY(iBounds)) radius:cornerRadius startAngle:90.0 endAngle:180.0 clockwise:NO];
 	[path closePath];
     return path;*/
-    return [NSBezierPath bezierPathWithRoundedRect:bounds xRadius:cornerRadius yRadius:cornerRadius];
+    return [NSBezierPath bezierPathWithRoundedRect:bounds xRadius:self.cornerRadius yRadius:self.cornerRadius];
 }
 
 -(NSArray<NSBezierPath*>*)exclusionPathsForCornerRadius
 {
-    if (cornerRadius == 0.0)
+    if (self.cornerRadius == 0.0)
         return @[];
     CGRect r = [self bounds];
     r.origin = CGPointZero;
@@ -1432,7 +1436,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
     NSBezierPath *p = [[NSBezierPath bezierPathWithRect:r]bezierPathByReversingPath];
     [p appendBezierPath:[NSBezierPath bezierPathWithRoundedRect:r xRadius:cornerRadius yRadius:cornerRadius]];*/
     NSMutableArray *paths = [NSMutableArray array];
-    NSRect iBounds = NSInsetRect(r,cornerRadius,cornerRadius);
+    NSRect iBounds = NSInsetRect(r,self.cornerRadius,self.cornerRadius);
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:CGPointMake(CGRectGetMinX(r),CGRectGetMaxY(iBounds))];
     //[path appendBezierPathWithArcWithCenter:CGPointMake(CGRectGetMinX(iBounds),CGRectGetMaxY(iBounds)) radius:cornerRadius startAngle:180 endAngle:90 clockwise:YES];
@@ -1471,7 +1475,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	else
 	{
 		[super setGraphicBoundsTo:newBounds from:oldBounds];
-		if (cornerRadius != 0.0 || (manipulatingBounds && originalCornerRadius != 0.0))
+		if (self.cornerRadius != 0.0 || (manipulatingBounds && originalCornerRadius != 0.0))
 		{
 			float ratio=0.0,smallSide;
 			if (manipulatingBounds)
@@ -1483,7 +1487,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 				smallSide = fmin(oldBounds.size.width,oldBounds.size.height);
 				if (smallSide != 0.0)
 				{
-					ratio = cornerRadius/smallSide;
+					ratio = self.cornerRadius/smallSide;
 				}
 			}
 			smallSide = fmin(newBounds.size.width,newBounds.size.height);
@@ -1735,6 +1739,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
     layoutManager = [[NSLayoutManager allocWithZone:NULL] init];
 //    textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
     [layoutManager addTextContainer:[self textContainer]];
+       layoutManager.typesetter = [[ACSDTypeSetter alloc]init];
 	[layoutManager setDelegate:self];
 	overflow = NO;
 	return layoutManager;
@@ -1796,6 +1801,8 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 		return;
     [self scaleFontsBy:sc];
 }
+
+#pragma mark -
 
 -(void)processAttributesInRange:(NSRange)totalRange forStyle:(ACSDStyle*)style oldAttributes:(NSDictionary*)oldAttrs
    {
@@ -2152,6 +2159,8 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 	return YES;
    }
 
+#pragma mark -
+
 -(NSArray*)parasFromTextOptions:(NSMutableDictionary*)options fontDict:(NSMutableDictionary*)fontDict
 {
 	NSMutableArray *paras = [NSMutableArray arrayWithCapacity:20];
@@ -2348,7 +2357,7 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 
 -(BOOL)htmlMustBeDoneAsImage
 {
-	return (self.transform != nil || self.alpha < 1.0 || (shadowType != nil && [shadowType colour]) || cornerRadius != 0.0);
+	return (self.transform != nil || self.alpha < 1.0 || (shadowType != nil && [shadowType colour]) || self.cornerRadius != 0.0);
 }
 
 -(void)processHTMLOptions:(NSMutableDictionary*)options

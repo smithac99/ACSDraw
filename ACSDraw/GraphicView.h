@@ -268,5 +268,6 @@ NSString *IncrementString(NSString *s);
 - (IBAction)selectVisible:(id)sender;
 - (IBAction)selectInvisible:(id)sender;
 -(void)indentHBy:(float)h vBy:(float)v;
+-(BOOL)processKey:(NSString*)str modifierFlags:(NSUInteger)modifierFlags;
 
 @end

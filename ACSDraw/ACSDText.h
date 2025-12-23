@@ -31,7 +31,7 @@ enum
 	int flowMethod;
 	float flowPad;
 	NSMutableSet *objectsInTheWay,*objectsInFront;
-	float cornerRadius,originalCornerRadius,originalCornerRatio;
+	float originalCornerRadius,originalCornerRatio;
 	ACSDPath *pathInTheWay;
 	BOOL objectsInFrontValid,objectsInTheWayValid,pathInTheWayValid,mayContainSubstitutions;
 @private
@@ -40,6 +40,8 @@ enum
 	BOOL possibleDeletedLinks,
 		possibleMovedLinks;
    }
+
+@property float cornerRadius;
 
 + (ACSDText*)dupAndFlowText:(ACSDText*)graphic;
 +(void)sortOutLinkedTextGraphics:(ACSDText*)startText;

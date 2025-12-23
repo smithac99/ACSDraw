@@ -84,6 +84,7 @@ NSBitmapImageRep *newBitmap(int width,int height);
 -(void)showEditPointDialogForPathElement:(ACSDPathElement*)pe;
 -(IBAction)applyStyleDialog:(id)sender;
 -(NSArray<ACSDGraphic*>*)graphicsForScope:(int)scope;
+- (IBAction)showRenameDialog: (id)sender;
 
 @end
 
