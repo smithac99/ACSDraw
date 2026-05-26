@@ -127,6 +127,28 @@ BOOL testLineSegmentHit(NSPoint linePt0,NSPoint linePt1,NSPoint testPoint,
    }
 
 #define FLAT_THRESHOLD 0.01
+static const CGFloat kFlatnessTolerance = 0.5; // pixels
+static const CGFloat kFlatnessThreshold = (4.0 * kFlatnessTolerance) * (4.0 * kFlatnessTolerance);
+
+static CGFloat cubicFlatness(CGPoint p0, CGPoint p1, CGPoint cp0, CGPoint cp1)
+{
+    // Vector of the chord
+    CGFloat dx = p1.x - p0.x;
+    CGFloat dy = p1.y - p0.y;
+    CGFloat lenSq = dx*dx + dy*dy;
+
+    // For each control point, measure squared perpendicular distance from chord
+    CGFloat ux = 3.0*cp0.x - 2.0*p0.x - p1.x;
+    CGFloat uy = 3.0*cp0.y - 2.0*p0.y - p1.y;
+    CGFloat vx = 3.0*cp1.x - 2.0*p1.x - p0.x;
+    CGFloat vy = 3.0*cp1.y - 2.0*p1.y - p0.y;
+
+    // Avoid division — work in squared units, compare against tolerance²
+    CGFloat u = ux*ux + uy*uy;
+    CGFloat v = vx*vx + vy*vy;
+
+    return MAX(u, v);  // compare against (4 * tolerance)²
+}
 
 CGFloat flatness(NSPoint centrepoint,NSPoint pt0,NSPoint pt1)
 {
@@ -292,7 +314,7 @@ BOOL nearestPointOnCurve(NSPoint startPt,NSPoint endPt,NSPoint controlPt1,NSPoin
 	r = NSInsetRect(r,-threshold,-threshold);
 	if (!NSPointInRect(testPoint,r))
 		return NO;
-	if (flatness(startPt,endPt,controlPt1,controlPt2) < FLAT_THRESHOLD)
+	if (cubicFlatness(startPt,endPt,controlPt1,controlPt2) < kFlatnessThreshold)
 	   {
 		CGFloat localt;
 		NSPoint localpt;
@@ -677,7 +699,7 @@ void getOutlineCurve(gCurve *inCurve,NSMutableArray *curveList,CGFloat offset)
 	NSPoint pt2 = [inCurve pt2];
 	NSPoint cp1 = [inCurve cp1];
 	NSPoint cp2 = [inCurve cp2];
-	if (flatness(pt1,pt2,cp1,cp2) < FLAT_THRESHOLD)
+	if (cubicFlatness(pt1,pt2,cp1,cp2) < kFlatnessThreshold)
 	{
 		gLine *gl = [gLine gLineFrom:pt1 to:pt2 direction:[inCurve direction]];
 		[gl calculateDirectionVectors];
@@ -1046,7 +1068,7 @@ int lineCurveIntersection(NSPoint lpt1,NSPoint lpt2,NSPoint pt0,NSPoint pt3,NSPo
 //	double areaHull = areaConvexQuadrilateral(pt0,pt3,cp1,cp2);
 //	double areaHull = fabs(Area2(pt0,cp1,pt3)) + fabs(Area2(pt0,cp2,pt3));
 //	if (areaHull < AREA_THRESH)
-	if (flatness(pt0,pt3,cp1,cp2) < FLAT_THRESHOLD)
+	if (cubicFlatness(pt0,pt3,cp1,cp2) < kFlatnessThreshold)
 	   {
 		NSPoint ip[5];
 		double is[5],it[5];
@@ -1091,8 +1113,8 @@ int curveCurveIntersection(NSPoint c1pt0,NSPoint c1pt3,NSPoint c1cp1,NSPoint c1c
 		return 0;
 	if (point_curve(c1pt0,c1pt3,c1cp1,c1cp2) || point_curve(c2pt0,c2pt3,c2cp1,c2cp2))
 		return 0;
-	bool smallC1 = flatness(c1pt0,c1pt3,c1cp1,c1cp2) < FLAT_THRESHOLD;
-	bool smallC2 = flatness(c2pt0,c2pt3,c2cp1,c2cp2) < FLAT_THRESHOLD;
+	bool smallC1 = cubicFlatness(c1pt0,c1pt3,c1cp1,c1cp2) < kFlatnessThreshold;
+	bool smallC2 = cubicFlatness(c2pt0,c2pt3,c2cp1,c2cp2) < kFlatnessThreshold;
 	if (smallC1 && smallC2)
 	   {
 		if (NSEqualPoints(c1pt0,c2pt0))

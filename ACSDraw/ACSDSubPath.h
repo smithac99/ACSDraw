@@ -53,6 +53,8 @@
 -(void)deleteElement:(const KnobDescriptor&)kd;
 -(KnobDescriptor)duplicateElement:(const KnobDescriptor&)kd;
 -(void)insertElement:(ACSDPathElement*)el atIndex:(NSInteger)i;
+-(void)addPathElementsFromArray:(NSArray*)l;
+
 -(BOOL)isClosedEqualTo:(NSNumber*)val;
 -(void)offsetPointValue:(NSValue*)vp;
 -(int)nearestKnobForPoint:(NSPoint)pt squaredDist:(float&)squaredDist;

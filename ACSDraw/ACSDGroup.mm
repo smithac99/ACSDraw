@@ -690,6 +690,8 @@
 	[[svgWriter contents]appendFormat:@"%@<g id=\"%@\" %@",[svgWriter indentString],self.name,[self svgTransform:svgWriter]];
     if (self.hidden)
         [[svgWriter contents] appendString:@"visibility=\"hidden\" "];
+    if (self.alpha != 1.0)
+        [[svgWriter contents] appendFormat:@"opacity=\"%g\" ",self.alpha];
 	if (shadowType)
 		[shadowType writeSVGData:svgWriter];
 	[svgWriter indentDef];

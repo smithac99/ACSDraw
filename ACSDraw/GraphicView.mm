@@ -4155,6 +4155,8 @@ static NSComparisonResult orderstuff(int i1,int i2,BOOL asci,int j1,int j2,BOOL 
 
 - (void)reCalcHandleBitsIgnoreSelected:(BOOL)ignoreSelected
 {
+    if (verticalHandleBits == NULL)
+        [self resizeHandleBits];        //needed?
 	NSSize sz = [self bounds].size;
 	int height = (int)sz.height;
 	int width = (int)sz.width;
@@ -6641,6 +6643,42 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 	[[self undoManager] setActionName:[sender title]];
    }
 
+- (void)combineWithSegments:(id)sender
+{
+    if  ([[self selectedGraphics]count] < 2)
+        return;
+    NSArray *graphics = [self selectedGraphicsSortedByTimestamp];
+    NSMutableArray<ACSDSubPath*>*subPaths = [NSMutableArray arrayWithCapacity:10];
+    for (unsigned i = 0;i < [graphics count];i++)
+    {
+        ACSDPath *path = [[graphics objectAtIndex:i]copy];
+        if (i == 0)
+            [subPaths addObjectsFromArray:[[path subPaths]copiedObjects]];
+        else
+        {
+            if ([[path subPaths]count] > 0)
+            {
+                ACSDSubPath *sp = [path subPaths][0];
+                if ([[sp pathElements]count] > 0)
+                {
+                    ACSDPathElement *pe = [sp pathElements][0];
+                    pe.isLineToPoint = YES;
+                    ACSDSubPath *destSp = [subPaths lastObject];
+                    [[destSp pathElements]addObjectsFromArray:[sp pathElements]];
+                }
+                if ([[path subPaths]count] > 1)
+                    [subPaths addObjectsFromArray:[[path subPaths]subarrayWithRange:NSMakeRange(1, [subPaths count] - 1)]];
+
+            }
+        }
+    }
+    ACSDGraphic *modelObject = [graphics objectAtIndex:0];
+    if (!([sender keyEquivalentModifierMask] & NSEventModifierFlagOption))
+        [self deleteSelectedGraphics];
+    [self insertNewGraphicFromSubPaths:subPaths modelObject:modelObject];
+    [[self undoManager] setActionName:[sender title]];
+}
+
 + (NSMutableArray*)intersectedSubPathsFromVertexList:(NSArray*)vertexList
    {
 	NSMutableArray *resultArray = [NSMutableArray arrayWithCapacity:5];
@@ -7029,7 +7067,7 @@ static ACSDGraphic *parg(ACSDGraphic *g)
 		[menuItem setTitle:[self repeatString]];
 		return [repeatQueue count] > 0;
 	}
-	if (action == @selector(combinePaths:))
+	if (action == @selector(combinePaths:) || action == @selector(combinePathsCopy:) || action == @selector(combineWithSegments:))
 	{
 		NSArray *arr = [[self selectedGraphics]allObjects];
 		NSInteger ct = [arr count];

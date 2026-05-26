@@ -140,7 +140,7 @@ NSString *substitute_characters(NSString* string)
    {
     if ((self = [super initWithName:n fill:f stroke:str rect:r layer:l]))
        {
-        previousText = nextText = nil;
+        previousText = _nextText = nil;
 		overflow = NO;
 		contents = [[NSTextStorage alloc] init];
 		self.cornerRadius = 0.0;
@@ -164,7 +164,7 @@ NSString *substitute_characters(NSString* string)
        {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentsChanged:) 
 													 name:NSTextStorageDidProcessEditingNotification object:contents];
-        previousText = nextText = nil;
+        previousText = _nextText = nil;
 		overflow = NO;
 		contents = cont;
 		leftMargin = lm;
@@ -205,7 +205,7 @@ NSString *substitute_characters(NSString* string)
 	[coder encodeInt:verticalAlignment forKey:@"ACSDText_verticalAlignment"];
 	[coder encodeInt:flowMethod forKey:@"ACSDText_flowMethod"];
 	[coder encodeConditionalObject:previousText forKey:@"ACSDText_previousText"];
-	[coder encodeConditionalObject:nextText forKey:@"ACSDText_nextText"];
+	[coder encodeConditionalObject:_nextText forKey:@"ACSDText_nextText"];
 	[coder encodeInt:maxAnchorID forKey:@"ACSDText_maxAnchorID"];
 	[coder encodeFloat:self.cornerRadius forKey:@"ACSDText_cornerRadius"];
 	[coder encodeFloat:flowPad forKey:@"ACSDText_flowPad"];
@@ -236,7 +236,7 @@ NSString *substitute_characters(NSString* string)
     }
     else
         contents = nil;
-    nextText = [coder decodeObjectForKey:@"ACSDText_nextText"];
+    _nextText = [coder decodeObjectForKey:@"ACSDText_nextText"];
     self.cornerRadius = [coder decodeFloatForKey:@"ACSDText_cornerRadius"];
     overflow = NO;
     topMargin = [coder decodeFloatForKey:@"ACSDText_topMargin"];
@@ -258,46 +258,46 @@ NSString *substitute_characters(NSString* string)
 
 -(void)allocateTextSystemStuff
 {
-    layoutManager = [[NSLayoutManager allocWithZone:NULL] init];
-    layoutManager.typesetter = [[ACSDTypeSetter alloc]init];
+    self.layoutManager = [[NSLayoutManager allocWithZone:NULL] init];
+    self.layoutManager.typesetter = [[ACSDTypeSetter alloc]init];
     //    textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
-    [layoutManager addTextContainer:[self textContainer]];
-    [contents addLayoutManager:layoutManager];
-    [layoutManager setDelegate:self];
+    [self.layoutManager addTextContainer:[self textContainer]];
+    [contents addLayoutManager:self.layoutManager];
+    [self.layoutManager setDelegate:self];
     overflow = NO;
 }
 
 #pragma mark -
 
 -(NSRange)characterRange
-   {
-	NSRange glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
-	return [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
-   }
+{
+    NSRange glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
+    return [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
+}
 
 -(BOOL)canBeMask
-   {
-	return YES;
-   }
+{
+    return YES;
+}
 
 -(BOOL)isEditable
-   {
+{
     return YES;
-   }
+}
 
 - (NSTextStorage*)contents
-   {
-	return contents;
-   }
+{
+    return contents;
+}
 
 - (void)setContents:(id)cont
-   {
+{
     if (cont == contents)
-		return;
-	contents = cont;
-	if (contents)
-		[self allocateTextSystemStuff];
-   }
+        return;
+    contents = cont;
+    if (contents)
+        [self allocateTextSystemStuff];
+}
 
 -(float)paddingRequired
    {
@@ -1082,7 +1082,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 		for (ACSDLink *l in lo)
 			[ACSDLink uDeleteFromFromObjectLink:l undoManager:[self undoManager]];
 	   }
-	if (!previousText && !nextText)
+	if (!previousText && !_nextText)
 		[self deleteLinksInRange:[self characterRange]];
 	[self uUnlinkText];
 	[self setDeleted:YES];
@@ -1168,138 +1168,138 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
    }
 
 - (void)drawObject:(NSRect)aRect view:(GraphicView*)gView options:(NSMutableDictionary*)options
-   {
-	[NSGraphicsContext saveGraphicsState];
-	NSBezierPath *path = [self bezierPath];
-	if (self.isMask)
-	   {
-		NSBezierPath *clipPath = [self bezierPath];
-		[clipPath appendBezierPath:[self pathFromText]];
-		[clipPath addClip];
-	   }
-	if (fill)
-		[fill fillPath:path];
-	if ([gView drawingToPDF])
-	   {
-		if ([[ACSDPrefsController sharedACSDPrefsController:nil]pdfLinkMode] == PDF_LINK_COLOUR)
-			[self addTextLinksForPDFContext:[gView drawingToPDF]];
-	   }
-	if (stroke)
-		[stroke strokePath:path];
-	[NSGraphicsContext saveGraphicsState];
+{
+    [NSGraphicsContext saveGraphicsState];
+    NSBezierPath *path = [self bezierPath];
+    if (self.isMask)
+    {
+        NSBezierPath *clipPath = [self bezierPath];
+        [clipPath appendBezierPath:[self pathFromText]];
+        [clipPath addClip];
+    }
+    if (fill)
+        [fill fillPath:path];
+    if ([gView drawingToPDF])
+    {
+        if ([[ACSDPrefsController sharedACSDPrefsController:nil]pdfLinkMode] == PDF_LINK_COLOUR)
+            [self addTextLinksForPDFContext:[gView drawingToPDF]];
+    }
+    if (stroke)
+        [stroke strokePath:path];
+    [NSGraphicsContext saveGraphicsState];
     if (!(([gView editingGraphic] == self) || ([gView creatingGraphic] == self) || self.isMask))
-	   {
-//		if (![self visible])
-//			return;
-		if ([[[self layoutManager] textStorage] length] > 0)
-		   {
-			NSRect b = [self rectForText];
-			if (b.size.width > 0.0 && b.size.height > 0.0)
-			   {
-				NSRange glyphRange, charRange;
-				if (drawingToCache || (currentDrawingDestination && [currentDrawingDestination isMemberOfClass:[NSImage class]]))
-				   {
-					NSImage *im = [[NSImage alloc]initWithSize:NSMakeSize(b.size.width*[self magnification],
-																		  b.size.height*[self magnification])];
-					//[im setFlipped:YES];
-					[im lockFocusFlipped:YES];
-					if ([self magnification] != 1.0)
-					   {
-						NSAffineTransform *tf = [NSAffineTransform transform];
-						[tf scaleBy:[graphicCache magnification]];
-						[tf concat];
-					   }
-					glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
-					charRange = [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
-					if ([self fixTextSubstitutionsFromDictionary:[options objectForKey:@"substitutions"] range:charRange])
-					   {
-						glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
-						charRange = [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
-						[self setMayContainSubstitutions:YES];
-					   }
-					overflow = [[[self layoutManager] textStorage] length] > charRange.location + charRange.length;
-					if (glyphRange.length > 0)
-					   {
-						[[self layoutManager] drawBackgroundForGlyphRange:glyphRange atPoint:NSMakePoint(0,0)];
-						[[self layoutManager] drawGlyphsForGlyphRange:glyphRange atPoint:NSMakePoint(0,0)];
-					   }
-					[im unlockFocus];
-                       [im drawInRect:b fromRect:NSMakeRect(0,0,[im size].width,[im size].height) operation:NSCompositingOperationSourceOver fraction:1.0];
-				   }
-				else
-				   {
-					glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
-					charRange = [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
-					//NSLog(@"glyphRange before  fix %d %d %d",glyphRange.location,glyphRange.length,[[[[self layoutManager] textStorage]string]length]);
-					if ([self fixTextSubstitutionsFromDictionary:[options objectForKey:@"substitutions"] range:charRange])
-					   {
-						glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
-						charRange = [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
-						[self setMayContainSubstitutions:YES];
-					   }
-					overflow = [[[self layoutManager] textStorage] length] > charRange.location + charRange.length;
-//					BOOL flipped = [[self currentDrawingDestination]isFlipped];
-					BOOL flipped = [[NSView focusView]isFlipped];
-					int linkMode = 0;
-					if ([gView drawingToPDF])
-						linkMode =  [[ACSDPrefsController sharedACSDPrefsController:nil]pdfLinkMode];
-					[NSGraphicsContext saveGraphicsState];
-//					[[self currentDrawingDestination]setFlipped:YES];
-					if ([[NSView focusView] respondsToSelector:@selector(setFlipped:)])
-						[(id)[NSView focusView]setFlipped:YES];
-					NSAffineTransform *tr = [NSAffineTransform transform];
-					[tr translateXBy:b.origin.x yBy:b.origin.y + b.size.height];
-					[tr scaleXBy:1.0 yBy:-1.0];
-					[tr concat];
-					NSAttributedString *strCopy = nil;
-					BOOL textChanged = NO;
-					if (linkMode & PDF_LINK_TEXT_COLOUR)
-					   {
-						NSDictionary *aDict = [NSDictionary dictionaryWithObject:[[ACSDPrefsController sharedACSDPrefsController:nil]pdfLinkHighlightColour] forKey:NSForegroundColorAttributeName];
-						strCopy = [[[self layoutManager] textStorage]attributedSubstringFromRange:charRange];
-						NSUInteger index = charRange.location;
-						while (index < charRange.location + charRange.length)
-						   {
-							NSRange resultRange;
-							id lnk = [[[self layoutManager] textStorage] attribute:NSLinkAttributeName atIndex:index longestEffectiveRange:&resultRange inRange:charRange];
-							if (lnk && [lnk changeAttributes])
-							   {
-								[[[self layoutManager] textStorage]addAttributes:aDict range:resultRange];
-								textChanged = YES;
-							   }
-							index = NSMaxRange(resultRange);
-						   }
-						[[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
-						//NSLog(@"glyphRange before %d %d %d",rr.location,rr.length,[[[[self layoutManager] textStorage]string]length]);
-					   }
-					if (glyphRange.length > 0)
-					   {
-						[[self layoutManager] drawBackgroundForGlyphRange:glyphRange atPoint:NSMakePoint(0,0)];
-						[[self layoutManager] drawGlyphsForGlyphRange:glyphRange atPoint:NSMakePoint(0,0)];
-					   }
-					if ((linkMode & PDF_LINK_TEXT_COLOUR) && textChanged)
-					   {
-						[[[self layoutManager]textStorage]beginEditing];
-						[[[self layoutManager]textStorage]replaceCharactersInRange:charRange withAttributedString:strCopy];
-						[[[self layoutManager]textStorage]endEditing];
-					   }
-//					[[self currentDrawingDestination] setFlipped:flipped];
-					if ([[NSView focusView] respondsToSelector:@selector(setFlipped:)])
-						[(id)[NSView focusView]setFlipped:flipped];
-					[NSGraphicsContext restoreGraphicsState];
-				   }
-			   }
-           }
+    {
+        //		if (![self visible])
+        //			return;
+        if ([[[self layoutManager] textStorage] length] > 0)
+        {
+            NSRect b = [self rectForText];
+            if (b.size.width > 0.0 && b.size.height > 0.0)
+            {
+                NSRange glyphRange, charRange;
+                if (drawingToCache || (currentDrawingDestination && [currentDrawingDestination isMemberOfClass:[NSImage class]]))
+                {
+                    NSImage *im = [[NSImage alloc]initWithSize:NSMakeSize(b.size.width*[self magnification],
+                                                                          b.size.height*[self magnification])];
+                    //[im setFlipped:YES];
+                    [im lockFocusFlipped:YES];
+                    if ([self magnification] != 1.0)
+                    {
+                        NSAffineTransform *tf = [NSAffineTransform transform];
+                        [tf scaleBy:[graphicCache magnification]];
+                        [tf concat];
+                    }
+                    glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
+                    charRange = [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
+                    if ([self fixTextSubstitutionsFromDictionary:[options objectForKey:@"substitutions"] range:charRange])
+                    {
+                        glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
+                        charRange = [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
+                        [self setMayContainSubstitutions:YES];
+                    }
+                    overflow = [[[self layoutManager] textStorage] length] > charRange.location + charRange.length;
+                    if (glyphRange.length > 0)
+                    {
+                        [[self layoutManager] drawBackgroundForGlyphRange:glyphRange atPoint:NSMakePoint(0,0)];
+                        [[self layoutManager] drawGlyphsForGlyphRange:glyphRange atPoint:NSMakePoint(0,0)];
+                    }
+                    [im unlockFocus];
+                    [im drawInRect:b fromRect:NSMakeRect(0,0,[im size].width,[im size].height) operation:NSCompositingOperationSourceOver fraction:1.0];
+                }
+                else
+                {
+                    glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
+                    charRange = [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
+                    //NSLog(@"glyphRange before  fix %d %d %d",glyphRange.location,glyphRange.length,[[[[self layoutManager] textStorage]string]length]);
+                    if ([self fixTextSubstitutionsFromDictionary:[options objectForKey:@"substitutions"] range:charRange])
+                    {
+                        glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
+                        charRange = [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
+                        [self setMayContainSubstitutions:YES];
+                    }
+                    overflow = [[[self layoutManager] textStorage] length] > charRange.location + charRange.length;
+                    //					BOOL flipped = [[self currentDrawingDestination]isFlipped];
+                    BOOL flipped = [[NSView focusView]isFlipped];
+                    int linkMode = 0;
+                    if ([gView drawingToPDF])
+                        linkMode =  [[ACSDPrefsController sharedACSDPrefsController:nil]pdfLinkMode];
+                    [NSGraphicsContext saveGraphicsState];
+                    //					[[self currentDrawingDestination]setFlipped:YES];
+                    if ([[NSView focusView] respondsToSelector:@selector(setFlipped:)])
+                        [(id)[NSView focusView]setFlipped:YES];
+                    NSAffineTransform *tr = [NSAffineTransform transform];
+                    [tr translateXBy:b.origin.x yBy:b.origin.y + b.size.height];
+                    [tr scaleXBy:1.0 yBy:-1.0];
+                    [tr concat];
+                    NSAttributedString *strCopy = nil;
+                    BOOL textChanged = NO;
+                    if (linkMode & PDF_LINK_TEXT_COLOUR)
+                    {
+                        NSDictionary *aDict = [NSDictionary dictionaryWithObject:[[ACSDPrefsController sharedACSDPrefsController:nil]pdfLinkHighlightColour] forKey:NSForegroundColorAttributeName];
+                        strCopy = [[[self layoutManager] textStorage]attributedSubstringFromRange:charRange];
+                        NSUInteger index = charRange.location;
+                        while (index < charRange.location + charRange.length)
+                        {
+                            NSRange resultRange;
+                            id lnk = [[[self layoutManager] textStorage] attribute:NSLinkAttributeName atIndex:index longestEffectiveRange:&resultRange inRange:charRange];
+                            if (lnk && [lnk changeAttributes])
+                            {
+                                [[[self layoutManager] textStorage]addAttributes:aDict range:resultRange];
+                                textChanged = YES;
+                            }
+                            index = NSMaxRange(resultRange);
+                        }
+                        [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
+                        //NSLog(@"glyphRange before %d %d %d",rr.location,rr.length,[[[[self layoutManager] textStorage]string]length]);
+                    }
+                    if (glyphRange.length > 0)
+                    {
+                        [[self layoutManager] drawBackgroundForGlyphRange:glyphRange atPoint:NSMakePoint(0,0)];
+                        [[self layoutManager] drawGlyphsForGlyphRange:glyphRange atPoint:NSMakePoint(0,0)];
+                    }
+                    if ((linkMode & PDF_LINK_TEXT_COLOUR) && textChanged)
+                    {
+                        [[[self layoutManager]textStorage]beginEditing];
+                        [[[self layoutManager]textStorage]replaceCharactersInRange:charRange withAttributedString:strCopy];
+                        [[[self layoutManager]textStorage]endEditing];
+                    }
+                    //					[[self currentDrawingDestination] setFlipped:flipped];
+                    if ([[NSView focusView] respondsToSelector:@selector(setFlipped:)])
+                        [(id)[NSView focusView]setFlipped:flipped];
+                    [NSGraphicsContext restoreGraphicsState];
+                }
+            }
         }
-	[NSGraphicsContext restoreGraphicsState];
-	if ([gView drawingToPDF])
-	   {
-		if ([[ACSDPrefsController sharedACSDPrefsController:nil]pdfLinkMode] == PDF_LINK_STROKE)
-			[self addTextLinksForPDFContext:[gView drawingToPDF]];
-	   }
-	[NSGraphicsContext restoreGraphicsState];
-   }
-	
+    }
+    [NSGraphicsContext restoreGraphicsState];
+    if ([gView drawingToPDF])
+    {
+        if ([[ACSDPrefsController sharedACSDPrefsController:nil]pdfLinkMode] == PDF_LINK_STROKE)
+            [self addTextLinksForPDFContext:[gView drawingToPDF]];
+    }
+    [NSGraphicsContext restoreGraphicsState];
+}
+
 - (void)startEditingWithEvent:(NSEvent *)event inView:(GraphicView *)view
    {
     NSTextView *editor = [view editor];
@@ -1562,7 +1562,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 	NSRectFill(r);
 	[[NSColor cyanColor] set];
 	[NSBezierPath strokeRect:r];
-	if (nextText)
+	if (_nextText)
 	   {
 		[[NSColor cyanColor] set];
 		[[self crossInRect:r]stroke];
@@ -1587,19 +1587,9 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
     return KnobDescriptor(NoKnob);
    }
 
--(ACSDText*)nextText
-   {
-	return nextText;
-   }
-
 -(ACSDText*)previousText
    {
 	return previousText;
-   }
-
--(void)setNextText:(ACSDText*)nt
-   {
-	nextText = nt;
    }
 
 -(void)setPreviousText:(ACSDText*)pt
@@ -1613,10 +1603,10 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 		return;
 	NSUInteger i = [[[self layoutManager] textContainers]indexOfObjectIdenticalTo:[self textContainer]];
 	[[self layoutManager] removeTextContainerAtIndex:i];
-	[previousText setNextText:nextText];
-	[nextText setPreviousText:previousText];
-	ACSDText *nt = nextText;
-	nextText = nil;
+	[previousText setNextText:_nextText];
+	[_nextText setPreviousText:previousText];
+	ACSDText *nt = _nextText;
+	_nextText = nil;
 	previousText = nil;
 //	contents = [[ACSDTextStorage allocWithZone:[self zone]] init];
 	contents = [[NSTextStorage alloc] init];
@@ -1628,10 +1618,10 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 - (void)linkToText:(ACSDText*)pt
    {
 	[self setContents:nil];
-	nextText = [pt nextText];
+	_nextText = [pt nextText];
 	[pt setNextText:self];
 	previousText = pt;
-    layoutManager = [previousText layoutManager];
+    self.layoutManager = [previousText layoutManager];
     textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
 	NSUInteger i = [[[self layoutManager] textContainers]indexOfObjectIdenticalTo:[previousText textContainer]];
     [[self layoutManager] insertTextContainer:textContainer atIndex:i + 1];
@@ -1728,51 +1718,51 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
    }
 
 -(NSLayoutManager*)layoutManager
-   {
-	if (layoutManager)
-		return layoutManager;
-	if (previousText)
-	   {
-		layoutManager = [previousText layoutManager];
-		return layoutManager;
-	   }
-    layoutManager = [[NSLayoutManager allocWithZone:NULL] init];
-//    textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
-    [layoutManager addTextContainer:[self textContainer]];
-       layoutManager.typesetter = [[ACSDTypeSetter alloc]init];
-	[layoutManager setDelegate:self];
-	overflow = NO;
-	return layoutManager;
-   }
+{
+    if (_layoutManager)
+        return _layoutManager;
+    if (previousText)
+    {
+        _layoutManager = [previousText layoutManager];
+        return _layoutManager;
+    }
+    _layoutManager = [[NSLayoutManager allocWithZone:NULL] init];
+    //    textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
+    [_layoutManager addTextContainer:[self textContainer]];
+    _layoutManager.typesetter = [[ACSDTypeSetter alloc]init];
+    [_layoutManager setDelegate:self];
+    overflow = NO;
+    return _layoutManager;
+}
 
 -(NSTextContainer*)textContainer
-   {
+{
     if (textContainer == nil)
-		textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
-	return textContainer;
-   }
+        textContainer = [[ACSDTextContainer allocWithZone:NULL] initWithContainerSize:bounds.size graphic:self];
+    return textContainer;
+}
 
 -(BOOL)isTextObject
-   {
-	return YES;
-   }
+{
+    return YES;
+}
 
 -(void)uSetFont:(NSFont*)font forRange:(NSRange)r oldFont:(NSFont*)oldfont
 {
 	[[[self undoManager] prepareWithInvocationTarget:self] uSetFont:oldfont forRange:r oldFont:font];
-	[[layoutManager textStorage]addAttribute:NSFontAttributeName value:font range:r];
+	[[_layoutManager textStorage]addAttribute:NSFontAttributeName value:font range:r];
 }
 
 -(void)uScale:(float)sc pointSizeInRange:(NSRange)r
 {
-	NSFont *f = [[layoutManager textStorage] attribute:NSFontAttributeName atIndex:r.location effectiveRange:NULL];
+	NSFont *f = [[_layoutManager textStorage] attribute:NSFontAttributeName atIndex:r.location effectiveRange:NULL];
 	NSFont *fnew = [[NSFontManager sharedFontManager]convertFont:f toSize:[f pointSize] * sc];
 	[self uSetFont:fnew forRange:r oldFont:f];
 }
 
 -(void)scaleFontsBy:(CGFloat)sc
 {
-    NSTextStorage *textStorage = [layoutManager textStorage];
+    NSTextStorage *textStorage = [_layoutManager textStorage];
     if ([[self textContainer] textView])
     {
         NSArray<NSValue*>*ranges= [[[self textContainer] textView]selectedRanges];
@@ -1797,7 +1787,7 @@ static NSPoint TranslatePointFromRectToRect(NSPoint pt,NSRect r1,NSRect r2)
 -(void)permanentScale:(float)sc transform:(NSAffineTransform*)t
 {
 	[super permanentScale:sc transform:t];
-	if (!layoutManager)
+	if (!_layoutManager)
 		return;
     [self scaleFontsBy:sc];
 }
@@ -2008,8 +1998,8 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 -(void)invalidateGraphicSizeChanged:(BOOL)sizeChanged shapeChanged:(BOOL)shapeChanged redraw:(BOOL)redraw notify:(BOOL)notify
    {
 	[super invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
-	if (nextText)
-		[nextText invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
+	if (_nextText)
+		[_nextText invalidateGraphicSizeChanged:sizeChanged shapeChanged:shapeChanged redraw:redraw notify:notify];
    }
 
 -(NSString*)anchorStringForIndex:(unsigned)i
@@ -2083,7 +2073,7 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 
 -(ACSDText*)acsdTextForRange:(NSRange)charRange overflow:(BOOL*)ov
    {
-	if (!previousText && !nextText)
+	if (!previousText && !_nextText)
 		return self;
 	NSRange characterRange = [self characterRange];
 	NSInteger i = (int)charRange.location - characterRange.location;
@@ -2091,15 +2081,15 @@ NSAttributedString* stripWhiteSpaceFromAttributedString(NSAttributedString* mas)
 		return self;
 	if (i < 0)
 		return nil;
-	if (nextText)
-		return [(ACSDText*)nextText acsdTextForRange:charRange overflow:ov];
+	if (_nextText)
+		return [(ACSDText*)_nextText acsdTextForRange:charRange overflow:ov];
 	*ov = YES;
 	return self;
    }
 
 -(id)checkLink:(ACSDLink*)l overflow:(BOOL*)ov
    {
-	if (!previousText && !nextText)
+	if (!previousText && !_nextText)
 		return self;
 	int anchorID;
 	if ((anchorID = [l anchorID]) < 0)
@@ -2539,6 +2529,57 @@ extern	NSMutableSet *checkSet;
 	return NSOrderedSame;
    }
 
+- (NSArray<NSString*>*)textHasWordSplitAcrossLines
+{
+    NSMutableArray<NSString*>* splitStrings = [NSMutableArray array];
+    // Force layout
+    [_layoutManager glyphRangeForTextContainer:textContainer];
+    NSString *text = [[_layoutManager textStorage]string];
+    __block BOOL foundSplitWord = NO;
 
+    [text enumerateSubstringsInRange:NSMakeRange(0, text.length)
+                             options:NSStringEnumerationByWords
+                          usingBlock:^(NSString *substring,
+                                       NSRange substringRange,
+                                       NSRange enclosingRange,
+                                       BOOL *stop)
+    {
+        NSRange glyphRange = [self.layoutManager glyphRangeForCharacterRange:substringRange
+                                                    actualCharacterRange:nil];
 
+        __block NSUInteger lineCount = 0;
+
+        [self.layoutManager enumerateLineFragmentsForGlyphRange:glyphRange
+                                                usingBlock:^(CGRect rect,
+                                                             CGRect usedRect,
+                                                             NSTextContainer *container,
+                                                             NSRange lineGlyphRange,
+                                                             BOOL *stopLines)
+        {
+            NSRange intersection = NSIntersectionRange(glyphRange, lineGlyphRange);
+
+            if (intersection.length > 0)
+            {
+                lineCount++;
+
+                if (lineCount > 1)
+                {
+                    foundSplitWord = YES;
+                    *stopLines = YES;
+                    //*stop = YES;
+                    [splitStrings addObject:substring];
+                }
+            }
+        }];
+    }];
+
+    return splitStrings;
+}
+
+-(BOOL)textOverflows
+{
+    NSRange glyphRange = [[self layoutManager] glyphRangeForTextContainer:[self textContainer]];
+    NSRange charRange = [[self layoutManager] characterRangeForGlyphRange:glyphRange actualGlyphRange:nil];
+    return [[[self layoutManager] textStorage] length] > charRange.location + charRange.length;
+}
 @end

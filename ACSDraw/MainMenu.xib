@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23504" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -1134,6 +1134,12 @@ CA
                                                 <action selector="combinePathsCopy:" target="-1" id="448"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Combine with Segments" id="uTY-LB-p4r">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="combineWithSegments:" target="-1" id="ZWM-Hu-hlI"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Decompose" alternate="YES" keyEquivalent="E" id="477">
                                             <connections>
                                                 <action selector="decompose:" target="-1" id="481"/>
@@ -1421,6 +1427,18 @@ CA
                                                 <action selector="bookUpdateParentage:" target="-1" id="kTa-05-JVj"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Book – Check Split Words" id="moe-aV-Yfg">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="checkBookWordsSplitOverLine:" target="-1" id="9w7-uK-TEL"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Create Label From Objects" id="zAE-5X-ZkQ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="createLabelsFromObjectIDs:" target="-1" id="gnG-GU-Tvf"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -1605,7 +1623,7 @@ CA
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="106" y="485" width="383" height="371"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1410"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="357">
                 <rect key="frame" x="0.0" y="0.0" width="383" height="371"/>
@@ -2479,7 +2497,7 @@ CA
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="24" y="509" width="64" height="353"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1410"/>
             <value key="minSize" type="size" width="64" height="10"/>
             <value key="maxSize" type="size" width="65" height="353"/>
             <view key="contentView" id="390">
@@ -2651,7 +2669,7 @@ CA
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="857">
-                    <rect key="frame" x="91" y="19" width="139" height="16"/>
+                    <rect key="frame" x="93" y="20" width="137" height="14"/>
                     <buttonCell key="cell" type="check" title="Open After Export" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="987">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>

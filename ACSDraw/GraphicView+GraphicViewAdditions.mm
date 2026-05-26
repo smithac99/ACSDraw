@@ -11,6 +11,7 @@
 #import "ACSDGraphic.h"
 #import "ACSDPage.h"
 #import "ACSDImage.h"
+#import "ACSDText.h"
 #import "ACSDPrefsController.h"
 #import <PDFKit/PDFKit.h>
 
@@ -300,5 +301,40 @@ static NSPoint relativePositionInRect(CGPoint p,NSRect r)
         [[self document]createPagesFromStrings:splitStrings];
 }
 
+-(BOOL)createLabelsFromObjects:(NSArray<ACSDGraphic*>*)objs
+{
+    [self clearSelection];
+    for (ACSDGraphic *g in objs)
+    {
+        NSString *newName = [NSString stringWithFormat:@"t_%@",[g name]];
+        ACSDLayer *l = [g layer];
+        NSRect b = [g bounds];
+        float fontSize = 12;
+        float margin = 8;
+        b.size.height = fontSize * 2;
+        b.origin.y = NSMinY(b) - b.size.height - margin;
+        NSFont *fnt = [NSFont systemFontOfSize:fontSize];
+        NSMutableParagraphStyle *mps = [[NSMutableParagraphStyle defaultParagraphStyle]mutableCopy];
+        mps.alignment = NSTextAlignmentCenter;
+        NSDictionary *attrs = @{NSFontAttributeName:fnt,NSParagraphStyleAttributeName:mps};
+        ACSDText *atext = [[ACSDText alloc]initWithName:newName fill:nil stroke:nil rect:b layer:l];
+        NSAttributedString *as = [[NSAttributedString alloc]initWithString:[g name] attributes:attrs];
+        atext.contents = [[NSTextStorage alloc]initWithAttributedString:as];
+        atext.verticalAlignment = VERTICAL_ALIGNMENT_CENTRE;
+        [[self document]registerObject:atext];
+        [l addGraphic:atext];
+        [[[self undoManager] prepareWithInvocationTarget:self] deleteGraphic:atext];
+        [self selectGraphic:atext];
+    }
+    return YES;
+}
 
+-(IBAction)createLabelsFromObjectIDs:(id)sender
+{
+    NSArray<ACSDGraphic*>*selectedObjects = [[self selectedGraphics]allObjects];
+    if ([selectedObjects count] == 0)
+        return;
+    if ([self createLabelsFromObjects:selectedObjects])
+        [[self undoManager]setActionName:@"Create Labels from Object IDs"];
+}
 @end
