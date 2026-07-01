@@ -40,7 +40,8 @@ NSString* string_from_nscolor(NSColor *col)
     if (!col)
 		col = [NSColor blackColor];
 	CGFloat r,g,b,a;
-	[[col colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
+    [[col colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
+    [[col colorUsingColorSpace:[NSColorSpace genericRGBColorSpace]]getRed:&r green:&g blue:&b alpha:&a];
 	r *= 100;
 	g *= 100;
 	b *= 100;
@@ -68,9 +69,9 @@ id fillFromNodeAttributes(NSDictionary* attrs)
     return [[ACSDFill alloc]initWithColour:[col colorWithAlphaComponent:opacity]];
 }
 
-ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs)
+ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs,NSDictionary*settings)
 {
-    if (([attrs objectForKey:@"stroke"]==nil) && ([attrs objectForKey:@"stroke-opacity"]==nil) && ([attrs objectForKey:@"stroke-linecap"]==nil) && ([attrs objectForKey:@"stroke-linejoin"]==nil) && ([attrs objectForKey:@"stroke-width"]==nil) && ([attrs objectForKey:@"stroke-miterlimit"]==nil) && ([attrs objectForKey:@"stroke-dasharray"]==nil) && ([attrs objectForKey:@"stroke-dashoffset"]==nil))
+    if ((attrs[@"stroke"]==nil) && (attrs[@"stroke-opacity"]==nil) && ([attrs objectForKey:@"stroke-width"]==nil))
         return nil;
     NSColor *col = nil;
     NSString *str = [attrs objectForKey:@"stroke"];
@@ -94,9 +95,15 @@ ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs)
     n = [attrs objectForKey:@"mitre-limit"];
     if (n)
         mitrelimit = [n floatValue];
+    else if (n = settings[@"mitre-limit"])
+        mitrelimit = [n floatValue];
     NSString *lc = [attrs objectForKey:@"stroke-linecap"];
     if (lc == nil)
         lc = [attrs objectForKey:@"linecap"];
+    if (lc == nil)
+        lc = settings[@"linecap"];
+    if (lc == nil)
+        lc = settings[@"stroke-linecap"];
     if (lc)
     {
         if ([lc isEqualToString:@"butt"])

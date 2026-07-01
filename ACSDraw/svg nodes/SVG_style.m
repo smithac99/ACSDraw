@@ -8,6 +8,15 @@
 
 #import "SVG_style.h"
 
+static void AddToDict(NSMutableDictionary *dict,NSString *key,NSMutableDictionary *attributes)
+{
+    NSMutableDictionary *entry = dict[key];
+    if (entry)
+        [entry addEntriesFromDictionary:attributes];
+    else
+        dict[key] = attributes;
+}
+
 static NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -35,14 +44,18 @@ static NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
                         NSArray *attr = [component componentsSeparatedByString:@":"];
                         if ([attr count] > 1)
                         {
-                            NSString *key = attr[0];
-                            NSString *val = attr[1];
+                            NSString *key = [attr[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                            NSString *val = [attr[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                             attrs[key] = val;
                         }
                     }
                 }
             }
-            dict[ident] = attrs;
+            for (NSString *cls in [ident componentsSeparatedByString:@","])
+            {
+                NSString *k = [cls stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                AddToDict(dict, k, [attrs mutableCopy]);
+            }
         }
     }
     return dict;

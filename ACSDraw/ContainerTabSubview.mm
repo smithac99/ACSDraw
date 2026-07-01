@@ -43,8 +43,8 @@
 	r.size.width = r.size.height;
 	r = NSInsetRect(r,3,3);
 	NSButton *b = [[NSButton alloc]initWithFrame:r];
-	[b setButtonType:NSMomentaryPushInButton];
-	[b setBezelStyle:NSShadowlessSquareBezelStyle];
+    [b setButtonType:NSButtonTypeMomentaryPushIn];
+    [b setBezelStyle:NSBezelStyleShadowlessSquare];
 	[b setImagePosition:NSImageOnly];
 	NSImage *im = [NSImage imageNamed:@"close"];
 	[b setImage:im];

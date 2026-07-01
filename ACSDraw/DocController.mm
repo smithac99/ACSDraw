@@ -43,7 +43,7 @@
 	NSString *ac = [[[self inspectingGraphicView] document]additionalCSS];
 	if (ac == nil)
 		ac = @"";
-	[[additionalCSS textStorage]setAttributedString:[[NSAttributedString alloc]initWithString:ac]];
+	//[[additionalCSS textStorage]setAttributedString:[[NSAttributedString alloc]initWithString:ac]];
 	NSSize sz = [[self inspectingGraphicView] bounds].size;
 	[documentWidth setFloatValue:sz.width];
 	[documentHeight setFloatValue:sz.height];

@@ -74,7 +74,9 @@
 -(void)setLayer:(ACSDLayer *)l
 {
     [super setLayer:l];
-    [graphics makeObjectsPerformSelector:@selector(setLayer:) withObject:l];
+    for (ACSDGraphic *g in graphics)
+        [g setLayer:l];
+    //[graphics makeObjectsPerformSelector:@selector(setLayer:) withObject:l];
 }
 
 - (void) encodeWithCoder:(NSCoder*)coder
@@ -553,8 +555,8 @@
                           8,
                           aRect.size.width,
                           colorspace,
-                          0);
-    CGColorSpaceRelease(colorspace);
+                          kCGImageAlphaOnly);
+    //CGColorSpaceRelease(colorspace);
     
     // Switch to the context for drawing
     NSGraphicsContext *maskGraphicsContext = [NSGraphicsContext graphicsContextWithCGContext:maskContext flipped:NO];
@@ -568,7 +570,24 @@
     [[NSGraphicsContext currentContext]restoreGraphicsState];
     // Switch back to the window's context
     [NSGraphicsContext restoreGraphicsState];
-    CGImageRef alphaMask = CGBitmapContextCreateImage(maskContext);
+    
+    CGContextRef maskContext2 =
+    CGBitmapContextCreate(
+                          CGBitmapContextGetData(maskContext),
+                          aRect.size.width,
+                          aRect.size.height,
+                          8,
+                          aRect.size.width,
+                          colorspace,
+                          kCGImageAlphaNone);
+    
+    
+    CGColorSpaceRelease(colorspace);
+
+
+    CGImageRef alphaMask = CGBitmapContextCreateImage(maskContext2);
+    CGContextRelease(maskContext);
+    CGContextRelease(maskContext2);
     return alphaMask;
 }
 
@@ -671,6 +690,8 @@
 	[[svgWriter contents]appendFormat:@"%@<g id=\"%@\" %@",[svgWriter indentString],self.name,[self svgTransform:svgWriter]];
     if (self.hidden)
         [[svgWriter contents] appendString:@"visibility=\"hidden\" "];
+    if (self.alpha != 1.0)
+        [[svgWriter contents] appendFormat:@"opacity=\"%g\" ",self.alpha];
 	if (shadowType)
 		[shadowType writeSVGData:svgWriter];
 	[svgWriter indentDef];

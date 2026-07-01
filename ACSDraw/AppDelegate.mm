@@ -36,7 +36,7 @@ BOOL show_error_alert(NSString *msg1)
 {
     [[NSColorPanel sharedColorPanel]setShowsAlpha:YES];
     inspectorVisible = NO;
-    NSMenu *m = [NSTextView defaultMenu];
+    /*NSMenu *m = [NSTextView defaultMenu];
     if (m)
     {
         while ([textMenu numberOfItems] > 0)
@@ -45,7 +45,7 @@ BOOL show_error_alert(NSString *msg1)
             [textMenu removeItem:mi];
             [m addItem:mi];
         }
-    }
+    }*/
     [[PalletteViewController sharedPalletteViewController]createPanels];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self afterLaunch];

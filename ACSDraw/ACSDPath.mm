@@ -89,11 +89,18 @@ static float getFloat(NSString* str,int *i)
             [rstr appendString:@"-"];
         }
     }
+    BOOL pointMet = NO;
     while (idx < [str length])
     {
         unichar uc = [str characterAtIndex:idx];
         if (!([svgFloatCharacterSet() characterIsMember:uc] || (uc == '-' && lastChar == 'e')))
             break;
+        if (uc == '.')
+        {
+            if (pointMet)
+                break;
+            pointMet = YES;
+        }
         lastChar = uc;
         [rstr appendString:[str substringWithRange:NSMakeRange(idx, 1)]];
         idx++;
@@ -198,7 +205,7 @@ NSBezierPath* bezierPathFromSVGPath(NSString *str)
                 break;
             case 'S':
                 if (! [@"CcSs" containsChar:lastCommand])
-                    lastcurvepoint = NSZeroPoint;
+                    lastcurvepoint = NSMakePoint(currx, curry);
                 dx = currx - lastcurvepoint.x;
                 dy = curry - lastcurvepoint.y;
                 cx1 = currx + dx;
@@ -213,7 +220,7 @@ NSBezierPath* bezierPathFromSVGPath(NSString *str)
                 break;
             case 's':
                 if (! [@"CcSs" containsChar:lastCommand])
-                    lastcurvepoint = NSZeroPoint;
+                    lastcurvepoint = NSMakePoint(currx, curry);
                 dx = currx - lastcurvepoint.x;
                 dy = curry - lastcurvepoint.y;
                 cx1 = currx + dx;
@@ -254,7 +261,7 @@ NSBezierPath* bezierPathFromSVGPath(NSString *str)
                 break;
             case 'T':
                 if (! [@"QqTt" containsChar:lastCommand])
-                    lastcurvepoint = NSZeroPoint;
+                    lastcurvepoint = NSMakePoint(currx, curry);
                 dx = currx - lastcurvepoint.x;
                 dy = curry - lastcurvepoint.y;
                 qx = currx + dx;
@@ -271,7 +278,7 @@ NSBezierPath* bezierPathFromSVGPath(NSString *str)
                 break;
             case 't':
                 if (! [@"QqTt" containsChar:lastCommand])
-                    lastcurvepoint = NSZeroPoint;
+                    lastcurvepoint = NSMakePoint(currx, curry);
                 dx = currx - lastcurvepoint.x;
                 dy = curry - lastcurvepoint.y;
                 qx = currx + dx;
@@ -518,7 +525,14 @@ NSBezierPath *outlinedStrokePath(NSBezierPath *inPath)
     float y = [xmlnode attributeFloatValue:@"y"];
     float width = [xmlnode attributeFloatValue:@"width"];
     float height = [xmlnode attributeFloatValue:@"height"];
-    NSBezierPath *p = [NSBezierPath bezierPathWithRect:NSMakeRect(x, y, width, height)];
+    float rx = [xmlnode attributeFloatValue:@"rx"];
+    float ry = [xmlnode attributeFloatValue:@"ry"];
+    NSRect rect = NSMakeRect(x, y, width, height);
+    NSBezierPath *p;
+    if (rx == 0 && ry == 0)
+        p = [NSBezierPath bezierPathWithRect:rect];
+    else
+        p = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:rx yRadius:ry];
 	return [ACSDPath pathWithSVGPath:p settings:[settingsStack lastObject]];
 }
 

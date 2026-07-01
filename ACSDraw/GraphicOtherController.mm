@@ -150,6 +150,21 @@ NSString *ACSDrawGraphicAttribIdxPasteboardType = @"ACSDrawGraphicAttribidx";
     [self addChange:GOC_SELECTION_CHANGE];
 }
 
+-(void)updateColumnHeader
+{
+    NSString *columnHeader = @"Graphics";
+    NSArray *gs = [[[self inspectingGraphicView]selectedGraphics]allObjects];
+    if ([gs count] == 1)
+    {
+        ACSDGraphic *g = gs[0];
+        columnHeader = [[g class]graphicTypeName];
+    }
+    NSTableColumn *col = [self.graphicsTableView tableColumns][1];
+    NSLog(@"Update Column Header %@",columnHeader);
+    col.title = columnHeader;
+    //[[col headerCell] setTitle:columnHeader];
+}
+
 -(void)effectSelectionChange
 {
     ACSDLayer *l = [[self inspectingGraphicView]currentEditableLayer];
@@ -161,7 +176,9 @@ NSString *ACSDrawGraphicAttribIdxPasteboardType = @"ACSDrawGraphicAttribidx";
 		NSIndexSet *rixs = ReversedIndexSet(ixs,[[l graphics]count]);
         [self.graphicsTableView selectRowIndexes:rixs byExtendingSelection:NO];
 		if ([rixs count] == 1)
-			[self.graphicsTableView scrollRowToVisible:[rixs firstIndex]];
+        {
+            [self.graphicsTableView scrollRowToVisible:[rixs firstIndex]];
+        }
 
     }
 	[self.tempAttributes removeAllObjects];
@@ -179,7 +196,11 @@ NSString *ACSDrawGraphicAttribIdxPasteboardType = @"ACSDrawGraphicAttribidx";
     if (self.changed & GOC_SOURCE_CHANGE)
         [self effectSourceChange];
 	if (self.changed & GOC_SELECTION_CHANGE)
-		[self effectSelectionChange];
+    {
+        [self effectSelectionChange];
+        [self updateColumnHeader];
+        [self.graphicsTableView reloadData];//why do I need this to update column header?
+    }
 	if (self.changed & GOC_ATTRIBUTE_CHANGE)
 		[self effectAttributeChange];
     actionsDisabled = NO;
@@ -607,6 +628,14 @@ void MoveRowsFromIndexSetToPosition(NSMutableArray* arr,NSIndexSet *ixs,NSIntege
 -(void)keyHit:(unichar)uc
 {
     if (uc == 9)
+    {
         [[self.inspectingGraphicView window]makeKeyAndOrderFront:self];
+        return;
+    }
+    
+    NSString *str = [NSString stringWithCharacters:&uc length:1];
+    NSString *validCharacters = @"rsnb";
+    if ([validCharacters rangeOfString:str].location != NSNotFound)
+        [self.inspectingGraphicView processKey:str modifierFlags:0];
 }
 @end

@@ -40,14 +40,12 @@ enum
 @interface ACSDPage : KeyedObject<NSCoding>
    {
 	NSMutableArray *layers;
-	NSString *name;
 	NSMutableSet *graphicViews;
 	NSInteger currentLayerInd,guideLayerInd,pageNo,nextLayer;
 	int pageType;
 	int masterType;
 	int useMasterType;
 	NSMutableArray *masters,*slaves;
-	NSString *pageTitle;
 	NSColor *backgroundColour;
 	NSMutableSet *linkedObjects;
 	BOOL inactive;

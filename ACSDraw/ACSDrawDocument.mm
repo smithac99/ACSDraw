@@ -18,6 +18,7 @@
 #import "ACSDLineEnding.h"
 #import "ACSDStyle.h"
 #import "ACSDFill.h"
+#import "ACSDGroup.h"
 #import "ShadowType.h"
 #import "SVGWriter.h"
 #import "LineEndingWindowController.h"
@@ -47,6 +48,9 @@ NSString *xmlDocWidth = @"xmlDocWidth";
 NSString *xmlDocHeight = @"xmlDocHeight";
 NSString *xmlIndent = @"xmlIndent";
 NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
+
+void AddToDict(NSMutableDictionary *dict,NSString *key,NSMutableDictionary *attributes);
+NSDictionary* attributesFromCSSStyleString(NSString *cssstr);
 
 @interface ACSDrawDocument ()
 {
@@ -224,33 +228,34 @@ NSString *ACSDrawDocumentBackgroundDidChangeNotification = @"ACSDDocBGC";
    }
 
 - (NSMutableArray*)systemLineEndings
-   {
-	NSMutableArray 	*mArr = [NSMutableArray arrayWithCapacity:30];
-	NSString *dPath = [[NSBundle mainBundle]pathForResource:@"systemLineEndings" ofType:@"acsdl"];
-	if (dPath)
-	   {
-		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:[NSData dataWithContentsOfFile:dPath]error:NULL];
-		[unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
-		id d = [unarchiver decodeObjectForKey:@"root"];
-//		id d = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:dPath]];
-		if (d && [d isKindOfClass:[NSDictionary class]])
-		   {
-			NSDictionary *dict = d;
-			if (dict)
-			   {
-				NSArray *arr = [dict objectForKey:lineEndingsKey];
-				if (arr)
-				   {
-					[mArr addObjectsFromArray:arr];
-					return mArr;
-				   }
-			   }
-		   }
-	   }
-	[mArr addObjectsFromArray:[ACSDLineEnding initialLineEndings]];
-	[self performSelector:@selector(registerObject:)withObjectsFromArray:mArr];
-	return mArr;
-   }
+{
+    NSMutableArray 	*mArr = [NSMutableArray arrayWithCapacity:30];
+    NSString *dPath = [[NSBundle mainBundle]pathForResource:@"systemLineEndings" ofType:@"acsdl"];
+    if (dPath)
+    {
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:[NSData dataWithContentsOfFile:dPath]error:NULL];
+        ArchiveDelegate *archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self];
+        [unarchiver setDelegate:archdel];
+        id d = [unarchiver decodeObjectForKey:@"root"];
+        //		id d = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:dPath]];
+        if (d && [d isKindOfClass:[NSDictionary class]])
+        {
+            NSDictionary *dict = d;
+            if (dict)
+            {
+                NSArray *arr = [dict objectForKey:lineEndingsKey];
+                if (arr)
+                {
+                    [mArr addObjectsFromArray:arr];
+                    return mArr;
+                }
+            }
+        }
+    }
+    [mArr addObjectsFromArray:[ACSDLineEnding initialLineEndings]];
+    [self performSelector:@selector(registerObject:)withObjectsFromArray:mArr];
+    return mArr;
+}
 
 - (void)makeWindowControllers
 {
@@ -433,8 +438,9 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 		dictionary[scriptURLKey] = _scriptURL;
 	if (_additionalCSS)
 		dictionary[additionalCSSKey] = _additionalCSS;
-    if (miscValues[@"exporteventxml"])
-        dictionary[@"exporteventxml"] = miscValues[@"exporteventxml"];
+    dictionary[@"miscvalues"] = miscValues;
+    //if (miscValues[@"exporteventxml"])
+        //dictionary[@"exporteventxml"] = miscValues[@"exporteventxml"];
 	return dictionary;
    }
 
@@ -476,7 +482,8 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     unarchiver.requiresSecureCoding = NO;
     if (err)
         NSLog(@"File read error %@",[err localizedDescription]);
-    [unarchiver setDelegate:[ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self]];
+    ArchiveDelegate *archdel = [ArchiveDelegate archiveDelegateWithType:ARCHIVE_FILE document:self];
+    [unarchiver setDelegate:archdel];
     id d = [unarchiver decodeObjectForKey:@"root"];
     [unarchiver finishDecoding];
     if ([d isKindOfClass:[NSDictionary class]])
@@ -522,11 +529,19 @@ NSString *ACSDrawDocumentKey = @"documentKey";
             [self setBackgroundColour:obj];
         self.htmlSettings = [d objectForKey:htmlSettingsKey];
         [pages makeObjectsPerformSelector:@selector(fixTextBoxLinks)];
-        if (d[@"exporteventxml"])
+        if (d[@"miscvalues"])
         {
-            NSURL *u = d[@"exporteventxml"];
-            if ([[NSFileManager defaultManager]fileExistsAtPath:[u path]])
-                miscValues[@"exporteventxml"] = u;
+            [miscValues addEntriesFromDictionary:d[@"miscvalues"]];
+        }
+        else
+        {
+            if (d[@"exporteventxml"])
+            {
+                NSURL *u = d[@"exporteventxml"];
+                if ([[NSFileManager defaultManager]fileExistsAtPath:[u path]])
+                    miscValues[@"exporteventxml"] = u;
+            }
+
         }
         return YES;
     }
@@ -602,12 +617,16 @@ NSString *ACSDrawDocumentKey = @"documentKey";
     {
         if (cssclass != nil && [cssclass length] > 0)
         {
-            NSString *css = definedStyles[cssclass];
-            if (css)
+            NSString *dottedClass = [@"." stringByAppendingString:cssclass];
+            NSDictionary *sdict = definedStyles[dottedClass];
+            if (sdict)
             {
-                if ([styles length]>0)
+                NSMutableString *cssstr = [NSMutableString string];
+                for (NSString *k in [sdict allKeys])
+                    [cssstr appendFormat:@"%@ : %@ ;",k,sdict[k]];
+                if ([styles length] > 0)
                     [styles appendString:@";"];
-                [styles appendString:css];
+                [styles appendString:cssstr];
                 changed = YES;
             }
         }
@@ -714,6 +733,20 @@ NSString *ACSDrawDocumentKey = @"documentKey";
 	return transform;
 }
 
+-(void)setXlinkAttributesFromSVGNode:(XMLNode*)child settings:(NSMutableDictionary*)settings
+{
+    if (child.attributes[@"xlink:href"] != nil)
+        NSLog(@"xlink %@",child.attributes[@"xlink:href"]);
+    NSString *ref = child.attributes[@"xlink:href"];
+    if (ref == nil || ![ref hasPrefix:@"#"])
+        return;
+    NSDictionary *defs = settings[@"defs"];
+    id target = defs[ref];
+    if ([child respondsToSelector:@selector(attrs)])
+    {
+    }
+}
+
 NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-opacity",@"fillopacity",@"height",@"hidden",@"id",@"inherit",@"linecap",@"miter",@"mitre-limit",@"none",@"opacity",@"pos",@"pxheight",@"pxwidth",@"rotation",@"round",@"scalex",@"scaley",@"square",@"src",@"stroke",@"stroke-dasharray",@"stroke-dashoffset",@"stroke-linecap",@"stroke-linejoin",@"stroke-opacity",@"stroke-width",@"strokewidth",@"transform",@"url",@"visibility",@"width",@"x",@"y",@"zpos"];
 
 
@@ -721,7 +754,15 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
 {
     [self setAttributesFromCSSForNode:child settings:settings];
     [self setAttributesFromStylesForNode:child settings:settings];
-    ACSDStroke *stroke = strokeFromNodeAttributes(child.attributes);
+    //[self setXlinkAttributesFromSVGNode:child settings:settings];
+    for (NSString *attr in @[@"stroke-linecap",@"stroke-linejoin",@"stroke-miterlimit"])
+    {
+        if (child.attributes[attr])
+        {
+            settings[attr] = child.attributes[attr];
+        }
+    }
+    ACSDStroke *stroke = strokeFromNodeAttributes(child.attributes,settings);
     if (stroke)
         [settings setObject:[self strokeLikeStroke:stroke] forKey:@"stroke"];
     id fill = fillFromNodeAttributes(child.attributes);
@@ -735,26 +776,33 @@ NSArray *usedAttrs=@[@"bevel",@"butt",@"cornerradius",@"display",@"fill",@"fill-
 		[transform prependTransform:newTransform];
 		[settings setObject:transform forKey:@"transform"];
     }
+    BOOL shouldHide = NO;
+    BOOL settingsHide = [settings[@"hidden"] boolValue];
     NSString *v = [child.attributes objectForKey:@"visibility"];
     if (v != nil)
     {
         if ([v isEqual:@"hidden"])
-            settings[@"hidden"] = @YES;
-        else if (![v isEqual:@"inherit"])
-            [settings removeObjectForKey:@"hidden"];
+            shouldHide = YES;
+        else if ([v isEqual:@"inherit"])
+            shouldHide = settingsHide;
     }
     v = [child.attributes objectForKey:@"display"];
     if (v != nil)
     {
         if ([v isEqual:@"none"])
-            settings[@"hidden"] = @YES;
+            shouldHide = YES;
     }
     v = [child.attributes objectForKey:@"hidden"];
     if (v != nil)
     {
         if ([v isEqual:@"true"])
-            settings[@"hidden"] = @YES;
+            shouldHide = YES;
     }
+    if (shouldHide)
+        settings[@"hidden"] = @(shouldHide);
+    else
+        [settings removeObjectForKey:@"hidden"];
+
     NSString *o = [child.attributes objectForKey:@"opacity"];
     if (o != nil)
     {
@@ -887,9 +935,62 @@ static BOOL isCSSIdent(unichar ch)
     return ch != '{' && ! isWhiteSp(ch);
 }
 
+void AddToDict(NSMutableDictionary *dict,NSString *key,NSMutableDictionary *attributes)
+{
+    NSMutableDictionary *entry = dict[key];
+    if (entry)
+        [entry addEntriesFromDictionary:attributes];
+    else
+        dict[key] = attributes;
+}
 
+NSDictionary* attributesFromCSSStyleString(NSString *cssstr)
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    NSScanner *scanner = [NSScanner scannerWithString:cssstr];
+    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+    BOOL ok = YES;
+    while (![scanner isAtEnd] && ok)
+    {
+        NSString *ident = nil;
+        ok = [scanner scanUpToString:@"{" intoString:&ident];
+        if (ok)
+        {
+            [scanner scanString:@"{" intoString:NULL];
+            NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
+            NSString *body = nil;
+            [scanner scanUpToString:@"}" intoString:&body];
+            [scanner scanString:@"}" intoString:NULL];
+            body = [body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if (ok)
+            {
+                for (NSString *component in [body componentsSeparatedByString:@";"])
+                {
+                    if ([component length] > 2)
+                    {
+                        NSArray *attr = [component componentsSeparatedByString:@":"];
+                        if ([attr count] > 1)
+                        {
+                            NSString *key = [attr[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                            NSString *val = [attr[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                            attrs[key] = val;
+                        }
+                    }
+                }
+            }
+            for (NSString *cls in [ident componentsSeparatedByString:@","])
+            {
+                NSString *k = [cls stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                AddToDict(dict, k, [attrs mutableCopy]);
+            }
+        }
+    }
+    return dict;
+}
 -(NSDictionary*)cssClassesFromString:(NSString*)contents
 {
+    return attributesFromCSSStyleString(contents);
+    /*
     NSMutableDictionary *d = [NSMutableDictionary dictionary];
     NSInteger idx = 0;
     NSInteger len = [contents length];
@@ -927,7 +1028,7 @@ static BOOL isCSSIdent(unichar ch)
             }
         }
     }
-    return d;
+    return d;*/
 }
 
 -(id)graphicFromSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
@@ -953,13 +1054,25 @@ static BOOL isCSSIdent(unichar ch)
         g = [ACSDPath ellipseWithSVGNode:child settingsStack:settingsStack];
     else if ([nodeName isEqualToString:@"g"])
     {
+        NSMutableArray *members = [NSMutableArray array];
         for (XMLNode *ch in child.children)
-            [self processSVGNode:ch settingsStack:settingsStack];
+        {
+            ACSDGraphic *mem = [self processSVGNode:ch settingsStack:settingsStack];
+            if (mem && [mem isKindOfClass:[ACSDGraphic class]])
+            {
+                [mem.layer removeGraphics:@[mem]];
+                [members addObject:mem];
+            }
+        }
+        g = [[ACSDGroup alloc]initWithName:@"" graphics:members layer:[[self pages][0] currentLayer]];
     }
     else if ([nodeName isEqualToString:@"style"])
     {
-        [settingsStack removeLastObject];
-        NSMutableDictionary *settings = [settingsStack lastObject];
+        //[settingsStack removeLastObject];
+        NSInteger idx = [settingsStack count] - 2;
+        if (idx < 0)
+            idx = 0;
+        NSMutableDictionary *settings = [settingsStack objectAtIndex:idx];
         settings[@"css"] = [self cssClassesFromString:[child contents]];
         return nil;
     }
@@ -1023,7 +1136,7 @@ static BOOL isCSSIdent(unichar ch)
     return g;
 }
 
--(void)processSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
+-(id)processSVGNode:(XMLNode*)child settingsStack:(NSMutableArray*)settingsStack
 {
     NSString *nodeName = [child.nodeName lowercaseString];
     if ([nodeName isEqualToString:@"switch"])
@@ -1032,7 +1145,7 @@ static BOOL isCSSIdent(unichar ch)
         {
             [self processSVGNode:n settingsStack:settingsStack];
         }
-        return;
+        return nil;
     }
     ACSDGraphic *g = [self graphicFromSVGNode:child settingsStack:settingsStack];
     if (g)
@@ -1050,6 +1163,7 @@ static BOOL isCSSIdent(unichar ch)
             }
         }
     }
+    return g;
 }
 
 -(BOOL)loadLayoutXMLData:(NSData*)data
@@ -1081,6 +1195,61 @@ static BOOL isCSSIdent(unichar ch)
     if ([self fileURL] != nil)
         [self setFileURL:[NSURL fileURLWithPath:[[[[self fileURL] path]stringByDeletingPathExtension]stringByAppendingPathExtension:@"acsd"]]];
     return YES;
+}
+
+-(void)storeSVGIDs:(XMLNode*)subRoot inDict:(NSMutableDictionary*)dict
+{
+    NSString *xid = subRoot.attributes[@"id"];
+    if (xid)
+        dict[xid] = subRoot;
+    for (XMLNode *ch in subRoot.children)
+    {
+        [self storeSVGIDs:ch inDict:dict];
+    }
+}
+
+-(void)substituteXrefs:(XMLNode*)subRoot fromDict:(NSMutableDictionary*)dict
+{
+    NSString *ref = subRoot.attributes[@"xlink:href"];
+    if (ref && [ref hasPrefix:@"#"])
+    {
+        NSString *targetid = [ref substringFromIndex:1];
+        XMLNode *target = dict[targetid];
+        NSMutableDictionary *newAttrs = [NSMutableDictionary dictionary];
+        if (target)
+        {
+            NSDictionary *targetAttrs = target.attributes;
+            NSArray *keys = [targetAttrs allKeys];
+            for (NSString *key in keys)
+            {
+                if (![subRoot.attributeKeys containsObject:key])
+                {
+                    newAttrs[key] = targetAttrs[key];
+                }
+            }
+            if ([newAttrs count] > 0)
+            {
+                [newAttrs addEntriesFromDictionary:subRoot.attributes];
+                subRoot.attributes = newAttrs;
+            }
+            if ([subRoot.children count] == 0 && [target.children count] > 0)
+            {
+                subRoot.children = [target.children copy];
+            }
+        }
+    }
+    for (XMLNode *ch in subRoot.children)
+    {
+        [self substituteXrefs:ch fromDict:dict];
+    }
+}
+
+-(void)substituteXrefs:(XMLNode*)svgRoot
+{
+    NSMutableDictionary<NSString*,XMLNode*>* xmlNodeDict = [NSMutableDictionary dictionary];
+    [self storeSVGIDs:svgRoot inDict:xmlNodeDict];
+    
+    [self substituteXrefs:svgRoot fromDict:xmlNodeDict];
 }
 
 -(BOOL)loadSVGData:(NSData*)data
@@ -1125,8 +1294,8 @@ static BOOL isCSSIdent(unichar ch)
     NSMutableArray *settingsStack = [NSMutableArray arrayWithCapacity:6];
     NSMutableDictionary *svgSettings = [NSMutableDictionary dictionaryWithCapacity:10];
     
-    //[self getAttributesFromSVGNode:root settings:svgSettings];
-    
+    [self getAttributesFromSVGNode:root settings:svgSettings];
+    [self substituteXrefs:root];
 	ACSDFill *blackFill = [[ACSDFill alloc]initWithColour:[NSColor blackColor]];
     [svgSettings setObject:[self fillLikeFill:blackFill] forKey:@"fill"];
     [svgSettings setObject:[NSMutableDictionary dictionaryWithCapacity:10] forKey:@"defs"];
@@ -1134,7 +1303,18 @@ static BOOL isCSSIdent(unichar ch)
     [t scaleXBy:1.0 yBy:-1.0];
     [svgSettings setObject:t forKey:@"transform"];
     [settingsStack addObject:svgSettings];
+    NSMutableArray *defs = [NSMutableArray array];
+    NSMutableArray *nodes = [NSMutableArray array];
     for (XMLNode *child in root.children)
+    {
+        if ([[child.nodeName lowercaseString]isEqualToString:@"defs"])
+            [defs addObject:child];
+        else
+            [nodes addObject:child];
+    }
+    for (XMLNode *child in defs)
+        [self processSVGNode:child settingsStack:settingsStack];
+    for (XMLNode *child in nodes)
         [self processSVGNode:child settingsStack:settingsStack];
 	[self setFileType:@"acsd"];
 	if ([self fileURL] != nil)
@@ -1213,7 +1393,7 @@ NSString *xHTMLString2 = @"<html>\n";
 			}
 		}
 		if ([[self.htmlSettings objectForKey:@"openAfterExport"]boolValue])
-			[[NSWorkspace sharedWorkspace] openFile:firstPageFileName];
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL fileURLWithPath:firstPageFileName]];
 	}
 }
 
@@ -1231,7 +1411,7 @@ NSString *xHTMLString2 = @"<html>\n";
 
 NSString* Creator()
 {
-    NSString *version = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleVersion"];
+    NSString *version = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleShortVersionString"];
     NSString *creator;
     if (version)
         creator = [NSString stringWithFormat:@"ACSDraw %@",version];
@@ -1578,6 +1758,12 @@ NSString* Creator()
 }
 - (void)exportEventXML:(id)menuItem
 {
+    if ([miscValues[@"isbook"]boolValue])
+    {
+        BOOL errorsFound = [self checkBookWordsSplitOverLine];
+        if (errorsFound)
+            return;
+    }
 	NSSavePanel *sp;
 	NSString *fName = [[[self displayName]stringByDeletingPathExtension]stringByAppendingPathExtension:@"xml"];
 	sp = [NSSavePanel savePanel];
@@ -1604,6 +1790,13 @@ NSString* Creator()
 	NSURL *url = miscValues[@"exporteventxml"];
 	if (url == nil)
 		return;
+    if ([miscValues[@"isbook"]boolValue])
+    {
+        BOOL errorsFound = [self checkBookWordsSplitOverLine];
+        if (errorsFound)
+            return;
+    }
+
 	NSError *err = nil;
     if (!([[self eventsXMLString:self.pages] writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:&err]))
 	{
@@ -1903,6 +2096,8 @@ NSString* Creator()
 	NSPoint antiVector = r.origin;
 	antiVector.x = -antiVector.x;
 	antiVector.y = -antiVector.y;
+    r.size.width = ceil(r.size.width);
+    r.size.height = ceil(r.size.height);
 	[[[self frontmostMainWindowController] graphicView]moveAllObjectsBy:antiVector];
 	[[[self frontmostMainWindowController] graphicView]changeDocumentSize:r.size];
 }
@@ -2207,6 +2402,113 @@ static NSString *LastX(NSString* path,int ct)
 -(IBAction)bookUpdateParentage:(id)sender
 {
     [self bookUpdateParentage];
+}
+
+- (BOOL)isGlueSpace:(unichar)c
+{
+    switch (c)
+    {
+        case 0x00A0: // NO-BREAK SPACE
+        case 0x202F: // NARROW NO-BREAK SPACE (common in French)
+        case 0x2007: // FIGURE SPACE
+        case 0x2060: // WORD JOINER
+            return YES;
+
+        default:
+            return NO;
+    }
+}
+
+- (NSRange)wordRangeIncludingTrailingTypographyInString:(NSString *)string wordRange:(NSRange)wordRange
+{
+    NSUInteger end = NSMaxRange(wordRange);
+
+    // Consume glue spaces
+    while (end < string.length)
+    {
+        unichar c = [string characterAtIndex:end];
+
+        if ([self isGlueSpace:c])
+        {
+            end++;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    // Consume punctuation following those spaces
+    while (end < string.length)
+    {
+        unichar c = [string characterAtIndex:end];
+
+        if ([[NSCharacterSet punctuationCharacterSet] characterIsMember:c])
+        {
+            end++;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return NSMakeRange(wordRange.location, end - wordRange.location);
+}
+
+-(NSAttributedString*)checkBookWordsSplitOverLines
+{
+    NSDictionary *boldAttributes = @{NSFontAttributeName:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]]};
+    NSDictionary *plainAttributes = @{NSFontAttributeName:[NSFont systemFontOfSize:[NSFont systemFontSize]]};
+    NSMutableAttributedString *mas = [[NSMutableAttributedString alloc]init];
+    for (ACSDPage *page in self.pages)
+    {
+        for (ACSDLayer *layer in page.layers)
+        {
+            for (ACSDGraphic *g in layer.graphics)
+            {
+                if ([g isKindOfClass:[ACSDText class]])
+                {
+                    NSString *objName = [NSString stringWithFormat:@"%@.%@.%@\n",page.pageTitle,layer.name,g.name];
+                    ACSDText *atx = (ACSDText*)g;
+                    if (atx.nextText == nil && [atx textOverflows] )
+                    {
+                        [mas appendAttributedString:[[NSMutableAttributedString alloc]initWithString:objName attributes:boldAttributes]];
+                        [mas appendAttributedString:[[NSAttributedString alloc]initWithString:@"\tText overflows box\n" attributes:plainAttributes]];
+                        objName = nil;
+                    }
+                    NSArray *splitStrings = [atx textHasWordSplitAcrossLines];
+                    if ([splitStrings count] > 0)
+                    {
+                        if (objName)
+                            [mas appendAttributedString:[[NSMutableAttributedString alloc]initWithString:objName attributes:boldAttributes]];
+                        for (NSString *splitString in splitStrings)
+                        {
+                            NSString *str = [NSString stringWithFormat:@"\tWord split over line: %@\n",splitString];
+                            [mas appendAttributedString:[[NSAttributedString alloc]initWithString:str attributes:plainAttributes]];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return mas;
+}
+
+-(BOOL)checkBookWordsSplitOverLine
+{
+    NSAttributedString *mas = [self checkBookWordsSplitOverLines];
+    BOOL found = [mas length] > 0;
+    if (found)
+    {
+        [[self frontmostMainWindowController]showErrorDialog:@"Text errors" errorString:mas];
+    }
+    return found;
+}
+
+-(IBAction)checkBookWordsSplitOverLine:(id)sender
+{
+    [self checkBookWordsSplitOverLine];
 }
 
 -(NSArray*)allGraphics

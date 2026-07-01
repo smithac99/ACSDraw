@@ -76,20 +76,24 @@
 	[[c window] orderFront:self];
     nextTopRight.y = [self checkY:nextTopRight.y -[[c window]frame].size.height];
 	c = [self createPanel];
+    
+    /*
 	[c registerViewController:self.triggerController];
 	[controllerDict setObject:c forKey:[self.triggerController title]];
 	[c registerViewController:self.colourController];
-	[controllerDict setObject:c forKey:[self.colourController title]];
+	[controllerDict setObject:c forKey:[self.colourController title]];*/
 	[c registerViewController:self.textController];
 	[controllerDict setObject:c forKey:[self.textController title]];
 	[[c window]setFrameTopRightPoint:nextTopRight];
 	[[c window] orderFront:self];
-    nextTopRight.y = [self checkY:nextTopRight.y -[[c window]frame].size.height];
+    /*nextTopRight.y = [self checkY:nextTopRight.y -[[c window]frame].size.height];
 	c = [self createPanel];
+    
 	[c registerViewController:self.animationsController];
 	[controllerDict setObject:c forKey:[self.animationsController title]];
 	[[c window]setFrameTopRightPoint:nextTopRight];
-	[[c window] orderFront:self];
+	[[c window] orderFront:self];*/
+    
     [c registerViewController:self.graphicOtherController];
     [controllerDict setObject:c forKey:[self.graphicOtherController title]];
     [[c window]setFrameTopRightPoint:nextTopRight];

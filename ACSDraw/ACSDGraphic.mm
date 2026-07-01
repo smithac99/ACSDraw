@@ -128,42 +128,42 @@ float getAngleForPoints(NSPoint pt1,NSPoint pt2)
    }
 
 BOOL getFirstTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
-   {
-	int elCount = (int)[path elementCount];
-	if (elCount < 2)
-		return NO;
-	NSPoint pt[3],returnPoints[3];
-	int ptInd = 0;	
-	for (int i = 0;i < elCount;i++)
-	   {
-		NSBezierPathElement elType = [path elementAtIndex:i associatedPoints:pt];
-		switch(elType)
-		   {
-			case NSMoveToBezierPathElement:
-			case NSLineToBezierPathElement:
-				if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[0]))
-					returnPoints[ptInd++] = pt[0];
-				break;
-			case NSCurveToBezierPathElement:
-				if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[0]))
-					returnPoints[ptInd++] = pt[0];
-				if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[1]))
-					returnPoints[ptInd++] = pt[1];
-				if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[2]))
-					returnPoints[ptInd++] = pt[2];
-				break;
-			case NSClosePathBezierPathElement:
-				break;
-		   }
-		if (ptInd > 1)
-		   {
-		    *pt1 = returnPoints[0];
-		    *pt2 = returnPoints[1];
-			return YES;
-		   }
-	   }
-	return NO;
-   }
+{
+    int elCount = (int)[path elementCount];
+    if (elCount < 2)
+        return NO;
+    NSPoint pt[3],returnPoints[3];
+    int ptInd = 0;	
+    for (int i = 0;i < elCount;i++)
+    {
+        NSBezierPathElement elType = [path elementAtIndex:i associatedPoints:pt];
+        switch(elType)
+        {
+            case NSBezierPathElementMoveTo:
+            case NSBezierPathElementLineTo:
+                if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[0]))
+                    returnPoints[ptInd++] = pt[0];
+                break;
+            case NSBezierPathElementCurveTo:
+                if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[0]))
+                    returnPoints[ptInd++] = pt[0];
+                if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[1]))
+                    returnPoints[ptInd++] = pt[1];
+                if (ptInd == 0 || !NSEqualPoints(returnPoints[ptInd-1],pt[2]))
+                    returnPoints[ptInd++] = pt[2];
+                break;
+            case NSBezierPathElementClosePath:
+                break;
+        }
+        if (ptInd > 1)
+        {
+            *pt1 = returnPoints[0];
+            *pt2 = returnPoints[1];
+            return YES;
+        }
+    }
+    return NO;
+}
 
 BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
    {
@@ -455,6 +455,8 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 	[super encodeWithCoder:coder];
 	[coder encodeObject:[self name] forKey:@"ACSDGraphic_name"];
 	[coder encodeConditionalObject:self.layer forKey:@"ACSDGraphic_layer"];
+    if (fill != nil && ![fill isKindOfClass:[ACSDFill class]])
+        NSLog(@"fill encode error - %@",NSStringFromClass([fill class]));
 	[coder encodeConditionalObject:fill forKey:@"ACSDGraphic_fill"];
 	[coder encodeConditionalObject:stroke forKey:@"ACSDGraphic_stroke"];
 	[coder encodeConditionalObject:shadowType forKey:@"ACSDGraphic_shadowtype"];
@@ -496,8 +498,20 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 	self = [super initWithCoder:coder];
 	self.name = [coder decodeObjectForKey:@"ACSDGraphic_name"];
     self.layer = [coder decodeObjectForKey:@"ACSDGraphic_layer"];
-	[self setFill:[coder decodeObjectForKey:@"ACSDGraphic_fill"]];
+    @try
+    {
+        [self setFill:[coder decodeObjectForKey:@"ACSDGraphic_fill"]];
+    } @catch (NSException *exception)
+    {
+        NSLog(@"failed decoding gradient");
+    }
+	//[self setFill:[coder decodeObjectForKey:@"ACSDGraphic_fill"]];
 	[self setStroke:[coder decodeObjectForKey:@"ACSDGraphic_stroke"]];
+    if (self.stroke != nil && ![self.stroke isKindOfClass:[ACSDStroke class]])
+    {
+        NSLog(@"uh");
+        self.stroke = nil;
+    }
 	[self setShadowType:[coder decodeObjectForKey:@"ACSDGraphic_shadowtype"]];
 	bounds = [ACSDGraphic decodeRectForKey:@"ACSDGraphic_bounds" coder:coder];
 	_rotation = [coder decodeFloatForKey:@"ACSDGraphic_rotation"];
@@ -1716,7 +1730,7 @@ float normalisedAngle(float ang)
     ACSDFill *thisfill = [self chosenFillOptions:options];
     if (thisfill)
         [thisfill fillPath:path];
-    if ([stroke colour])
+    if ([stroke colour] && [stroke lineWidth] > 0.0)
 	   {
            [stroke strokePath:path];
            [[stroke colour]set];
@@ -3254,7 +3268,7 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 
 -(BOOL)writeSVGImageOptions:(NSMutableDictionary*)options
    {
-	SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:[self displayBounds].size document:nil page:nil];
+	SVGWriter *svgWriter = [[SVGWriter alloc]initWithSize:[self displayBounds].size document:nil page:0];
 	[svgWriter createDataForGraphic:self];
 	NSString *fileName = [imageNameForOptions(options) stringByAppendingPathExtension:@"svg"];
 	NSString *pathName = htmlDirectoryNameForOptions(options,@"smallimages");
@@ -3871,11 +3885,6 @@ NSString *htmlDirectoryNameForOptions(NSMutableDictionary *options,NSString *dir
 -(NSArray*)indexPathFromAncestor:(ACSDGroup*)anc
 {
 	return [self indexPathFromAncestor:anc array:@[]];
-}
-
--(void)setLayer:(ACSDLayer *)l
-{
-    _layer = l;
 }
 
 @end

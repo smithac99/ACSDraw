@@ -131,7 +131,7 @@
 - (void)adjustWindowSize
 {
 	NSScrollView *scrollView = [graphicView enclosingScrollView];
-	NSSize frameS = [NSScrollView frameSizeForContentSize:[graphicView frame].size horizontalScrollerClass:[NSScroller class] verticalScrollerClass:[NSScroller class] borderType:[scrollView borderType] controlSize:NSRegularControlSize scrollerStyle:[[scrollView horizontalScroller]scrollerStyle]];
+    NSSize frameS = [NSScrollView frameSizeForContentSize:[graphicView frame].size horizontalScrollerClass:[NSScroller class] verticalScrollerClass:[NSScroller class] borderType:[scrollView borderType] controlSize:NSControlSizeRegular scrollerStyle:[[scrollView horizontalScroller]scrollerStyle]];
 /*	NSSize frameS = [NSScrollView frameSizeForContentSize:([graphicView frame].size)
 									hasHorizontalScroller:[scrollView hasHorizontalScroller]
 									  hasVerticalScroller: [scrollView hasVerticalScroller]

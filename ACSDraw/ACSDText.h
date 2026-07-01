@@ -24,14 +24,13 @@ enum
    {
 	float topMargin,leftMargin,bottomMargin,rightMargin;
 	VerticalAlignment verticalAlignment;
-	ACSDText *previousText,*nextText;
-	NSLayoutManager *layoutManager;
+	ACSDText *previousText;
 	NSTextContainer *textContainer;
 	int maxAnchorID;
 	int flowMethod;
 	float flowPad;
 	NSMutableSet *objectsInTheWay,*objectsInFront;
-	float cornerRadius,originalCornerRadius,originalCornerRatio;
+	float originalCornerRadius,originalCornerRatio;
 	ACSDPath *pathInTheWay;
 	BOOL objectsInFrontValid,objectsInTheWayValid,pathInTheWayValid,mayContainSubstitutions;
 @private
@@ -40,6 +39,11 @@ enum
 	BOOL possibleDeletedLinks,
 		possibleMovedLinks;
    }
+
+@property float cornerRadius;
+@property (nonatomic) NSLayoutManager *layoutManager;
+@property ACSDText *nextText;
+
 
 + (ACSDText*)dupAndFlowText:(ACSDText*)graphic;
 +(void)sortOutLinkedTextGraphics:(ACSDText*)startText;
@@ -113,6 +117,8 @@ enum
 +(NSAttributedString*)applyStyle:(ACSDStyle*)newStyle toAttributedString:(NSAttributedString*)atstr;
 -(NSAttributedString*)attributedString;
 - (void)setGraphicContents:(id)cont;
+- (NSArray<NSString*>*)textHasWordSplitAcrossLines;
+-(BOOL)textOverflows;
 
 @end
 

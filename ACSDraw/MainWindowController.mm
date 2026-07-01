@@ -53,10 +53,10 @@ int orientationOfSource(NSDictionary *properties);
 
 NSRect ConstrainRectToRect(NSRect littleRect,NSRect bigRect)
 {
-	if (littleRect.origin.x < 0)
+	/*if (littleRect.origin.x < 0)
 		littleRect.origin.x = 0;
 	if (littleRect.origin.y < 0)
-		littleRect.origin.y = 0;
+		littleRect.origin.y = 0;*/
 	if (NSMaxX(littleRect) > NSMaxX(bigRect))
 	{
 		float diff = NSMaxX(littleRect) - NSMaxX(bigRect);
@@ -694,7 +694,7 @@ NSImage *ImageFromFile(NSString* str)
     }];
 }
 
-#pragma mark
+#pragma mark - rotate sheet
 
 - (IBAction)closeRotateSheet: (id)sender
 {
@@ -716,6 +716,21 @@ NSImage *ImageFromFile(NSString* str)
 		[self loadSheetNib];
     [[self window]beginSheet:_rotateSheet completionHandler:^(NSModalResponse returnCode) {
         [self->graphicView setCursorMode:GV_MODE_NONE];
+        [self.rotateSheet orderOut:self];
+    }];
+}
+
+#pragma mark - error panel
+
+- (IBAction)closeErrorPanel: (id)sender
+{
+    [NSApp endSheet:_errorPanel];
+}
+
+- (void)showErrorDialog:(NSString*)msg errorString:(NSAttributedString*)errorString
+{
+    [[_errorTextView textStorage]setAttributedString:errorString];
+    [[self window]beginSheet:_errorPanel completionHandler:^(NSModalResponse returnCode) {
         [self.rotateSheet orderOut:self];
     }];
 }

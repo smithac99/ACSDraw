@@ -363,6 +363,8 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 	if ([[sender stringValue]isEqual:@""] || [self actionsDisabled])
 		return;
 	self.xScale = [sender floatValue];
+    if ([self shouldLinkScale])
+        self.yScale = [sender floatValue];
 }
 
 -(IBAction)yScaleHit:(id)sender
@@ -370,6 +372,8 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
 	if ([[sender stringValue]isEqual:@""] || [self actionsDisabled])
 		return;
 	self.yScale = [sender floatValue];
+    if ([self shouldLinkScale])
+        self.xScale = [sender floatValue];
 }
 
 -(void)adjustKeyLoop
@@ -746,6 +750,15 @@ NSString *ACSDShowCoordinatesNotification = @"ACSDShowCoordinates";
     [self setGraphicControls];
 }
 
+-(BOOL)shouldLinkScale
+{
+    return [[NSUserDefaults standardUserDefaults]boolForKey:@"ACSDLinkScale"];
+
+}
+- (IBAction)linkScaleHit:(id)sender
+{
+    
+}
 
 -(IBAction)showHideAlignMatrix:(id)sender
 {

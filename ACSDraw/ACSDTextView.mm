@@ -17,6 +17,7 @@
 #import "StyleWindowController.h"
 #import "TextSubstitution.h"
 #import "geometry.h"
+#import "AppDelegate.h"
 
 NSSet* stylesUsedByAttributedString(NSAttributedString* as);
 
@@ -314,5 +315,10 @@ NSSet* stylesUsedByAttributedString(NSAttributedString* as)
 {
     NSMutableDictionary *mdict = [[self typingAttributes]mutableCopy];
     return mdict;
+}
+
+- (NSMenu *) menuForEvent:(NSEvent *) event
+{
+    return [((AppDelegate*)[NSApp delegate])textMenu];
 }
 @end

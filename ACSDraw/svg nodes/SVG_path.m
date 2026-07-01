@@ -8,7 +8,7 @@
 
 #import "SVG_path.h"
 
-static NSCharacterSet *svgPathDelimCharacterSet()
+static NSCharacterSet *svgPathDelimCharacterSet(void)
 {
     static NSMutableCharacterSet *charset = nil;
     if (charset == nil)
@@ -19,7 +19,7 @@ static NSCharacterSet *svgPathDelimCharacterSet()
     return charset;
 }
 
-static NSCharacterSet *svgFloatCharacterSet()
+static NSCharacterSet *svgFloatCharacterSet(void)
 {
     static NSMutableCharacterSet *charset = nil;
     if (charset == nil)
@@ -30,7 +30,7 @@ static NSCharacterSet *svgFloatCharacterSet()
     return charset;
 }
 
-static NSCharacterSet *svgCommandCharacterSet()
+static NSCharacterSet *svgCommandCharacterSet(void)
 {
     static NSCharacterSet *charset = nil;
     if (charset == nil)
@@ -67,11 +67,18 @@ static float getFloat(NSString* str,int *i)
             [rstr appendString:@"-"];
         }
     }
+    BOOL pointMet = NO;
     while (idx < [str length])
     {
         unichar uc = [str characterAtIndex:idx];
         if (!([svgFloatCharacterSet() characterIsMember:uc] || (uc == '-' && lastChar == 'e')))
             break;
+        if (uc == '.')
+        {
+            if (pointMet)
+                break;
+            pointMet = YES;
+        }
         lastChar = uc;
         [rstr appendString:[str substringWithRange:NSMakeRange(idx, 1)]];
         idx++;
@@ -183,7 +190,7 @@ NSBezierPath* BezierPathFromSVGPath(NSString *str)
                 break;
             case 'S':
                 if (! stringContainsChar(@"CcSs",lastCommand))
-                    lastcurvepoint = NSZeroPoint;
+                    lastcurvepoint = NSMakePoint(currx, curry);
                 dx = currx - lastcurvepoint.x;
                 dy = curry - lastcurvepoint.y;
                 cx1 = currx + dx;
@@ -198,7 +205,7 @@ NSBezierPath* BezierPathFromSVGPath(NSString *str)
                 break;
             case 's':
                 if (! stringContainsChar(@"CcSs",lastCommand))
-                    lastcurvepoint = NSZeroPoint;
+                    lastcurvepoint = NSMakePoint(currx, curry);
                 dx = currx - lastcurvepoint.x;
                 dy = curry - lastcurvepoint.y;
                 cx1 = currx + dx;
@@ -239,7 +246,7 @@ NSBezierPath* BezierPathFromSVGPath(NSString *str)
                 break;
             case 'T':
                 if (! stringContainsChar(@"QqTt",lastCommand))
-                    lastcurvepoint = NSZeroPoint;
+                    lastcurvepoint = NSMakePoint(currx, curry);
                 dx = currx - lastcurvepoint.x;
                 dy = curry - lastcurvepoint.y;
                 qx = currx + dx;
@@ -256,7 +263,7 @@ NSBezierPath* BezierPathFromSVGPath(NSString *str)
                 break;
             case 't':
                 if (! stringContainsChar(@"QqTt",lastCommand))
-                    lastcurvepoint = NSZeroPoint;
+                    lastcurvepoint = NSMakePoint(currx, curry);
                 dx = currx - lastcurvepoint.x;
                 dy = curry - lastcurvepoint.y;
                 qx = currx + dx;
@@ -299,6 +306,7 @@ NSBezierPath* BezierPathFromSVGPath(NSString *str)
                 [path closePath];
                 break;
             default:
+                NSLog(@"unknown path command %c",uc);
                 break;
         }
         idx = skipdelims(str,idx);

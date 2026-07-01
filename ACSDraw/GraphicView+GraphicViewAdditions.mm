@@ -11,7 +11,9 @@
 #import "ACSDGraphic.h"
 #import "ACSDPage.h"
 #import "ACSDImage.h"
+#import "ACSDText.h"
 #import "ACSDPrefsController.h"
+#import <PDFKit/PDFKit.h>
 
 @implementation GraphicView (GraphicViewAdditions)
 
@@ -173,6 +175,48 @@ static NSPoint relativePositionInRect(CGPoint p,NSRect r)
      }];
 }
 
+-(void)importPDFAsPages:(NSURL*)pdfURL
+{
+    PDFDocument *pdfDoc = [[PDFDocument alloc]initWithURL:pdfURL];
+    PDFPage *pg = [pdfDoc pageAtIndex:0];
+    CGSize sz = [pg boundsForBox:kPDFDisplayBoxArtBox].size;
+    if (sz.width > 100 && sz.height > 100)
+    {
+        [self changeDocumentSize:sz];
+    }
+    NSPoint loc = NSMakePoint([self bounds].size.width/2.0, [self bounds].size.height/2.0);
+    NSInteger ct = [pdfDoc pageCount];
+    for (NSInteger i = 0;i < ct;i++)
+    {
+        PDFPage *pg = [pdfDoc pageAtIndex:i];
+        NSData *pdfData = [pg dataRepresentation];
+        NSString *nm = [NSString stringWithFormat:@"page %d",(int)i];
+        ACSDPage *page = [self addNewPageAtIndex:[pages count]];
+        page.pageTitle = nm;
+
+        ACSDImage *im = [self createImageFromData:pdfData name:nm location:&loc fileName:@""];
+        im.sourceImageData = nil; //if pdfData is saved, image does not get restored properly
+    }
+    
+}
+
+-(IBAction)importPDFAsSeparatePages:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowedFileTypes:@[@"com.adobe.pdf"]];
+    [panel setCanChooseFiles:YES];
+    [panel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result)
+     {
+        if (result == NSModalResponseOK)
+        {
+            for (NSURL *url in [panel URLs])
+            {
+                [self importPDFAsPages:url];
+            }
+        }
+    }];
+}
+
 -(NSString*)assetsDir
 {
     NSArray *libs = [[NSUserDefaults standardUserDefaults] objectForKey:prefsImageLibs];
@@ -257,5 +301,40 @@ static NSPoint relativePositionInRect(CGPoint p,NSRect r)
         [[self document]createPagesFromStrings:splitStrings];
 }
 
+-(BOOL)createLabelsFromObjects:(NSArray<ACSDGraphic*>*)objs
+{
+    [self clearSelection];
+    for (ACSDGraphic *g in objs)
+    {
+        NSString *newName = [NSString stringWithFormat:@"t_%@",[g name]];
+        ACSDLayer *l = [g layer];
+        NSRect b = [g bounds];
+        float fontSize = 12;
+        float margin = 8;
+        b.size.height = fontSize * 2;
+        b.origin.y = NSMinY(b) - b.size.height - margin;
+        NSFont *fnt = [NSFont systemFontOfSize:fontSize];
+        NSMutableParagraphStyle *mps = [[NSMutableParagraphStyle defaultParagraphStyle]mutableCopy];
+        mps.alignment = NSTextAlignmentCenter;
+        NSDictionary *attrs = @{NSFontAttributeName:fnt,NSParagraphStyleAttributeName:mps};
+        ACSDText *atext = [[ACSDText alloc]initWithName:newName fill:nil stroke:nil rect:b layer:l];
+        NSAttributedString *as = [[NSAttributedString alloc]initWithString:[g name] attributes:attrs];
+        atext.contents = [[NSTextStorage alloc]initWithAttributedString:as];
+        atext.verticalAlignment = VERTICAL_ALIGNMENT_CENTRE;
+        [[self document]registerObject:atext];
+        [l addGraphic:atext];
+        [[[self undoManager] prepareWithInvocationTarget:self] deleteGraphic:atext];
+        [self selectGraphic:atext];
+    }
+    return YES;
+}
 
+-(IBAction)createLabelsFromObjectIDs:(id)sender
+{
+    NSArray<ACSDGraphic*>*selectedObjects = [[self selectedGraphics]allObjects];
+    if ([selectedObjects count] == 0)
+        return;
+    if ([self createLabelsFromObjects:selectedObjects])
+        [[self undoManager]setActionName:@"Create Labels from Object IDs"];
+}
 @end

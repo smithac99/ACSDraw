@@ -22,7 +22,7 @@ NSString* canvas_string_from_path(NSBezierPath* path);
 NSString* rgba_from_nscolor(NSColor *col);
 NSColor *colorFromRGBString(NSString* str);
 id fillFromNodeAttributes(NSDictionary* attrs);
-ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs);
+ACSDStroke* strokeFromNodeAttributes(NSDictionary* attrs,NSDictionary*settings);
 
 
 @interface SVGWriter : NSObject

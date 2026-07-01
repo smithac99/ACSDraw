@@ -5,11 +5,11 @@
 @interface AppDelegate : NSObject
    {
 	NSDate *appKey;
-    IBOutlet id textMenu;
 	BOOL toolsVisible,inspectorVisible;
    }
 
 @property (retain) NSMutableArray *copiedScreens;
+@property IBOutlet NSMenu *textMenu;
 
 - (IBAction)showToolPaletteAction:(id)sender;
 - (IBAction)showStylesPanelAction:(id)sender;
