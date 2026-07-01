@@ -265,9 +265,16 @@
                                                 <action selector="importPreviewImagesForBook:" target="-1" id="lMH-p1-dKe"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Book XML…" id="qv4-x5-CxR">
+                                        <menuItem title="Book XML…" keyEquivalent="]" id="qv4-x5-CxR">
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
                                                 <action selector="importBookXML:" target="-1" id="bJi-Wy-yNH"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Book XML for Current Page…" alternate="YES" keyEquivalent="]" id="Ypm-rC-2X7">
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="importBookXMLForCurrentPage:" target="-1" id="cHV-eY-m7S"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Xliff…" id="1hY-Eh-z0c">

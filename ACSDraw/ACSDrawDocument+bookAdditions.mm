@@ -626,6 +626,108 @@ void FitImageToBox(ACSDImage *im,NSRect box)
     [marr addObjectsFromArray:[textRects subarrayWithRange:NSMakeRange(2, [textRects count] - 2)]];
     return marr;
 }
+
+-(void)updateWithPageNode:(XMLNode*)pageNode page:(ACSDPage*)page pno:(NSString*)pno runParasTogether:(BOOL)runParas
+{
+    ACSDGraphic *pageGraphic = nil;
+    NSArray *ls = [page layersWithName:@"image"];
+    if ([ls count] > 0)
+    {
+        ACSDLayer *imageLayer = ls[0];
+        NSArray *gs = [imageLayer graphicsWithName:pno];
+        if ([gs count] > 0)
+            pageGraphic = gs[0];
+    }
+    NSArray<XMLNode*>*paraNodes = [pageNode childrenOfType:@"para"];
+    if ([paraNodes count] > 0)
+    {
+        NSArray *textRects = [self textRectsForBookPage:pno];
+        CGFloat y = self.documentSize.height - 300,x = 100;
+        if ([paraNodes count] > 1 && runParas)
+        {
+            XMLNode *pNode = [[XMLNode alloc]initWithName:@"para"];
+            NSMutableString *mstr = [@"" mutableCopy];
+            for (XMLNode *para in paraNodes)
+            {
+                if ([mstr length] > 0)
+                    [mstr appendString:@"\n"];
+                [mstr appendString:para.contents];
+            }
+            pNode.contents = mstr;
+            paraNodes = @[pNode];
+        }
+        while ([textRects count] > [paraNodes count])
+            textRects = [self consolidateTextRects:textRects];
+        int idx = 1;
+        for (XMLNode *para in paraNodes)
+        {
+            NSString *text = [[para.contents componentsSeparatedByString:@"/"]componentsJoinedByString:@""];
+            NSString *textBoxName = [NSString stringWithFormat:@"t%d_1",idx];
+            NSArray<ACSDGraphic*>*graphics = [page graphicsWithName:textBoxName];
+            if ([graphics count] > 0)
+            {
+                if ([graphics[0] isKindOfClass:[ACSDText class]])
+                {
+                    ACSDText *t = (ACSDText*)graphics[0];
+                    if (t)
+                    {
+                        NSTextStorage *ts = [t contents];
+                        [ts beginEditing];
+                        [ts replaceCharactersInRange:NSMakeRange(0, [ts length]) withString:text];
+                        [ts endEditing];
+                        NSRect destBounds = [t bounds];
+                        NSSize sz = NSInsetRect(destBounds, 5, 5).size;
+                        sz.height = 10000;
+                        sz = [ts boundingRectWithSize:sz options:NSStringDrawingUsesLineFragmentOrigin].size;
+                        float height = sz.height + 10;
+                        if (height > destBounds.size.height)
+                        {
+                            if ([pno isEqualToString:@"0"])
+                            {
+                            }
+                            else
+                            {
+                                float diff = height - destBounds.size.height;
+                                destBounds.size.height += diff;
+                                destBounds.origin.y -= diff / 2;
+                            }
+                            [t setGraphicBoundsTo:destBounds from:[t bounds]];
+                        }
+                        [t invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
+                    }
+                }
+            }
+            else
+            {
+                ACSDLayer *layer = page.layers[1];
+                NSRect r = NSMakeRect(x,y,300,200);
+                if ([textRects count] > idx - 1)
+                    r = [textRects[idx - 1]rectValue];
+                ACSDText *t = [[ACSDText alloc]initWithName:textBoxName fill:nil stroke:nil rect:r layer:layer];
+                x += 100;
+                y -= 100;
+                NSColor *textFill = [NSColor blackColor];
+                NSFont *f = [NSFont fontWithName:@"onebillionreader-Regular" size:200];
+                if (f == nil)
+                    f = [NSFont systemFontOfSize:200];
+                f = FontToFitSize(f, text, r.size, YES, YES, YES);
+                NSAttributedString *mas = [[NSAttributedString alloc]initWithString:text attributes:@{NSFontAttributeName:f,NSForegroundColorAttributeName:textFill}];
+                NSTextStorage *contents = [[NSTextStorage alloc]initWithAttributedString:mas];
+                [contents addLayoutManager:[t layoutManager]];
+                [t setContents:contents];
+                [[layer graphics] addObject:[self registerObject:t]];
+                if (pageGraphic)
+                {
+                    [ACSDLink uLinkFromObject:t toObject:pageGraphic anchor:-1 substitutePageNo:NO changeAttributes:YES undoManager:[self undoManager]];
+                }
+                
+            }
+            idx++;
+        }
+    }
+
+}
+
 -(void)updateWithBookXML:(XMLNode*)xmlNode runParasTogether:(BOOL)runParas
 {
     NSDictionary *pagesDict = [self pagesDict];
@@ -639,110 +741,37 @@ void FitImageToBox(ACSDImage *im,NSRect box)
             ACSDPage *page = pagesDict[pno];
             if (page)
             {
-                ACSDGraphic *pageGraphic = nil;
-                NSArray *ls = [page layersWithName:@"image"];
-                if ([ls count] > 0)
-                {
-                    ACSDLayer *imageLayer = ls[0];
-                    NSArray *gs = [imageLayer graphicsWithName:pno];
-                    if ([gs count] > 0)
-                        pageGraphic = gs[0];
-                }
-                NSArray<XMLNode*>*paraNodes = [pageNode childrenOfType:@"para"];
-                if ([paraNodes count] > 0)
-                {
-                    NSArray *textRects = [self textRectsForBookPage:pno];
-                    CGFloat y = self.documentSize.height - 300,x = 100;
-                    if ([paraNodes count] > 1 && runParas)
-                    {
-                        XMLNode *pNode = [[XMLNode alloc]initWithName:@"para"];
-                        NSMutableString *mstr = [@"" mutableCopy];
-                        for (XMLNode *para in paraNodes)
-                        {
-                            if ([mstr length] > 0)
-                                [mstr appendString:@"\n"];
-                            [mstr appendString:para.contents];
-                        }
-                        pNode.contents = mstr;
-                        paraNodes = @[pNode];
-                    }
-                    while ([textRects count] > [paraNodes count])
-                        textRects = [self consolidateTextRects:textRects];
-                    int idx = 1;
-                    for (XMLNode *para in paraNodes)
-                    {
-                        NSString *text = [[para.contents componentsSeparatedByString:@"/"]componentsJoinedByString:@""];
-                        NSString *textBoxName = [NSString stringWithFormat:@"t%d_1",idx];
-                        NSArray<ACSDGraphic*>*graphics = [page graphicsWithName:textBoxName];
-                        if ([graphics count] > 0)
-                        {
-                            if ([graphics[0] isKindOfClass:[ACSDText class]])
-                            {
-                                ACSDText *t = (ACSDText*)graphics[0];
-                                if (t)
-                                {
-                                    NSTextStorage *ts = [t contents];
-                                    [ts beginEditing];
-                                    [ts replaceCharactersInRange:NSMakeRange(0, [ts length]) withString:text];
-                                    [ts endEditing];
-                                    NSRect destBounds = [t bounds];
-                                    NSSize sz = NSInsetRect(destBounds, 5, 5).size;
-                                    sz.height = 10000;
-                                    sz = [ts boundingRectWithSize:sz options:NSStringDrawingUsesLineFragmentOrigin].size;
-                                    float height = sz.height + 10;
-                                    if (height > destBounds.size.height)
-                                    {
-                                        if ([pno isEqualToString:@"0"])
-                                        {
-                                        }
-                                        else
-                                        {
-                                            float diff = height - destBounds.size.height;
-                                            destBounds.size.height += diff;
-                                            destBounds.origin.y -= diff / 2;
-                                        }
-                                        [t setGraphicBoundsTo:destBounds from:[t bounds]];
-                                    }
-                                    [t invalidateGraphicSizeChanged:YES shapeChanged:NO redraw:YES notify:NO];
-                                }
-                            }
-                        }
-                        else
-                        {
-                            ACSDLayer *layer = page.layers[1];
-                            NSRect r = NSMakeRect(x,y,300,200);
-                            if ([textRects count] > idx - 1)
-                                r = [textRects[idx - 1]rectValue];
-                            ACSDText *t = [[ACSDText alloc]initWithName:textBoxName fill:nil stroke:nil rect:r layer:layer];
-                            x += 100;
-                            y -= 100;
-                            NSColor *textFill = [NSColor blackColor];
-                            NSFont *f = [NSFont fontWithName:@"onebillionreader-Regular" size:200];
-                            if (f == nil)
-                                f = [NSFont systemFontOfSize:200];
-                            f = FontToFitSize(f, text, r.size, YES, YES, YES);
-                            NSAttributedString *mas = [[NSAttributedString alloc]initWithString:text attributes:@{NSFontAttributeName:f,NSForegroundColorAttributeName:textFill}];
-                            NSTextStorage *contents = [[NSTextStorage alloc]initWithAttributedString:mas];
-                            [contents addLayoutManager:[t layoutManager]];
-                            [t setContents:contents];
-                            [[layer graphics] addObject:[self registerObject:t]];
-                            if (pageGraphic)
-                            {
-                                [ACSDLink uLinkFromObject:t toObject:pageGraphic anchor:-1 substitutePageNo:NO changeAttributes:YES undoManager:[self undoManager]];
-                            }
-
-                        }
-                        idx++;
-                    }                }
-
+                [self updateWithPageNode:pageNode page:page pno:pno runParasTogether:runParas];
             }
         }
         miscValues[@"isbook"] = @YES;
         NSView *graphicView = [[self frontmostMainWindowController] graphicView];
         [graphicView setNeedsDisplay:YES];
+    }
 }
-    
-}- (IBAction)importBookXML:(id)sender
+
+-(void)updatePage:(NSString*)pageId withBookXML:(XMLNode*)xmlNode runParasTogether:(BOOL)runParas
+{
+    NSString *pno;
+    if ([pageId hasPrefix:@"p"] && [pageId length] > 1)
+        pno = [pageId substringFromIndex:1];
+    else
+        return;
+    NSDictionary *pagesDict = [self pagesDict];
+    XMLNode *pageNode = [xmlNode childOfType:@"page" key:@"pageno" value:pno];
+    if (pageNode)
+    {
+        ACSDPage *page = pagesDict[pageId];
+        if (page)
+        {
+            [self updateWithPageNode:pageNode page:page pno:pageId runParasTogether:runParas];
+        }
+    }
+    NSView *graphicView = [[self frontmostMainWindowController] graphicView];
+    [graphicView setNeedsDisplay:YES];
+}
+
+- (IBAction)importBookXML:(id)sender
 {
     NSOpenPanel *panel = [NSOpenPanel openPanel];
     [panel setAllowedFileTypes:@[@"public.xml"]];
@@ -757,6 +786,29 @@ void FitImageToBox(ACSDImage *im,NSRect box)
                 XMLNode *root = [[[XMLManager alloc]init]parseFile:path];
                 if (root)
                     [self updateWithBookXML:root runParasTogether:NO];
+             }
+        }
+    }];
+}
+
+- (IBAction)importBookXMLForCurrentPage:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowedFileTypes:@[@"public.xml"]];
+    [panel beginSheetModalForWindow:[[self frontmostMainWindowController] window]
+                  completionHandler:^(NSInteger result)
+     {
+        if (result == NSModalResponseOK)
+        {
+            for (NSURL *url in [panel URLs])
+            {
+                NSString *path = [url path];
+                XMLNode *root = [[[XMLManager alloc]init]parseFile:path];
+                if (root)
+                {
+                    ACSDPage *currentPage = [[[self frontmostMainWindowController] graphicView] currentPage];
+                    [self updatePage:[currentPage pageTitle] withBookXML:root runParasTogether:NO];
+                }
              }
         }
     }];

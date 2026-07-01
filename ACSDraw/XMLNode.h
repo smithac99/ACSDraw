@@ -18,6 +18,7 @@
 -(instancetype)initWithName:(NSString*)n;
 -(NSArray*)childrenOfType:(NSString*)typeName;
 -(XMLNode*)childOfType:(NSString*)typeName identifier:(NSString*)ident;
+-(XMLNode*)childOfType:(NSString*)typeName key:(NSString*)key value:(NSString*)value;
 -(NSString*)attributeStringValue:(NSString*)attrname;
 -(float)attributeFloatValue:(NSString*)attrname;
 -(NSInteger)attributeIntValue:(NSString*)attrname;

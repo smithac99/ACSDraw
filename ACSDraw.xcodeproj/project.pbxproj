@@ -2186,7 +2186,7 @@
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.049;
+				MARKETING_VERSION = 1.050;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -2210,7 +2210,7 @@
 				INFOPLIST_FILE = "ACSDraw/ACSDraw-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.049;
+				MARKETING_VERSION = 1.050;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.acsmith.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

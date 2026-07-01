@@ -49,6 +49,18 @@
     return nil;
 }
 
+-(XMLNode*)childOfType:(NSString*)typeName key:(NSString*)key value:(NSString*)value
+{
+    NSIndexSet *ixs = [_children indexesOfObjectsPassingTest:^BOOL(XMLNode *obj, NSUInteger idx, BOOL *stop)
+                       {
+                           return ([[obj nodeName]isEqualToString:typeName] && (key == nil || [[obj attributeStringValue:key]isEqualToString:value]));
+                       }];
+    NSArray *arr = [_children objectsAtIndexes:ixs];
+    if ([arr count] > 0)
+        return arr[0];
+    return nil;
+}
+
 -(NSString*)attributeStringValue:(NSString*)attrname
 {
 	return [_attributes objectForKey:attrname];
