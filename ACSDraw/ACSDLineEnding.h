@@ -12,7 +12,7 @@
 @class CanvasWriter;
 
 
-@interface ACSDLineEnding : ACSDAttribute
+@interface ACSDLineEnding : ACSDAttribute<NSSecureCoding>
    {
 	__strong ACSDGraphic *graphic;
 	float scale;

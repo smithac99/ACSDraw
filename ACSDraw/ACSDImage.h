@@ -14,7 +14,7 @@ extern NSString *ACSDHistogramDidChangeNotification;
 NSBitmapImageRep *createRGBBitmap(int width,int height);
 CGContextRef CreateArgbContext(int width,int height);
 
-@interface ACSDImage : ACSDGraphic
+@interface ACSDImage : ACSDGraphic<NSSecureCoding>
 {
 	NSImage *image;
 	NSRect frame,originalFrame;

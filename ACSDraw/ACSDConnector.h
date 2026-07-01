@@ -10,15 +10,15 @@
 #import "ACSDGraphic.h"
 
 enum
-   {
-	NO_ELBOW = 0,
-	SINGLE_ELBOW = 1
-   };
+{
+    NO_ELBOW = 0,
+    SINGLE_ELBOW = 1
+};
 
-@interface ACSDConnector : ACSDGraphic
-   {
-	int elbow;
-   }
+@interface ACSDConnector : ACSDGraphic<NSSecureCoding>
+{
+    int elbow;
+}
 
 @property (strong) NSMutableArray *fromGraphics,*toGraphics;
 

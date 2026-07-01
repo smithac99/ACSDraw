@@ -4971,7 +4971,7 @@ NSString *dragGraphicKey = @"dragGraphic";
     [archiver encodeObject:dict forKey:@"root"];
     [archiver encodeObject:[[self document]documentKey] forKey:@"docKey"];
     [archiver finishEncoding];
-    [pb setData:mdat forType:ACSDrawGraphicPasteboardType];
+    [pb setData:[archiver encodedData] forType:ACSDrawGraphicPasteboardType];
     NSMutableString *ms = [NSMutableString stringWithCapacity:100];
     for (unsigned i = 0;i < [graphics count];i++)
         [ms appendString:[[graphics objectAtIndex:i]pathTextInvertY:altDown]];

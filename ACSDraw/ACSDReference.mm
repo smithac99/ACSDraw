@@ -38,7 +38,7 @@
 - (id) initWithCoder:(NSCoder*)coder
 {
     self = [super initWithCoder:coder];
-    self.referenceGraphic = [coder decodeObjectForKey:@"referenceGraphic"];
+    self.referenceGraphic = [coder decodeObjectOfClass:[ACSDGraphic class] forKey:@"referenceGraphic"];
     return self;
 }
 

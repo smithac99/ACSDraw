@@ -140,15 +140,15 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super init];
-	self.graphic = [coder decodeObjectForKey:@"ACSDPattern_graphic"];
-	self.scale = [[coder decodeObjectForKey:@"ACSDPattern_scale"]floatValue];
-	self.spacing = [[coder decodeObjectForKey:@"ACSDPattern_spacing"]floatValue];
-	self.offset = [[coder decodeObjectForKey:@"ACSDPattern_offset"]floatValue];
-	self.offsetMode = [[coder decodeObjectForKey:@"ACSDPattern_offsetMode"]intValue];
-	self.alpha = [[coder decodeObjectForKey:@"ACSDPattern_alpha"]floatValue];
-	self.mode = [[coder decodeObjectForKey:@"ACSDPattern_mode"]intValue];
+    self.graphic = [coder decodeObjectOfClass:[ACSDGraphic class] forKey:@"ACSDPattern_graphic"];
+	self.scale = [coder decodeFloatForKey:@"ACSDPattern_scale"];
+	self.spacing = [coder decodeFloatForKey:@"ACSDPattern_spacing"];
+	self.offset = [coder decodeFloatForKey:@"ACSDPattern_offset"];
+	self.offsetMode = [coder decodeIntForKey:@"ACSDPattern_offsetMode"];
+	self.alpha = [coder decodeFloatForKey:@"ACSDPattern_alpha"];
+	self.mode = [coder decodeIntForKey:@"ACSDPattern_mode"];
 	self.patternBounds = [ACSDGraphic decodeRectForKey:@"ACSDPattern_patternBounds" coder:coder];
-	self.backgroundColour = [coder decodeObjectForKey:@"ACSDPattern_backgroundColour"];
+    self.backgroundColour = [coder decodeObjectOfClass:[NSColor class] forKey:@"ACSDPattern_backgroundColour"];
 	self.clip = [coder decodeBoolForKey:@"ACSDPattern_clip"];
     self.rotation = [coder decodeFloatForKey:@"ACSDPattern_rotation"];
     self.layoutMode = [coder decodeIntForKey:@"ACSDPattern_layoutMode"];
@@ -395,6 +395,11 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
 
 -(void)fillPath:(NSBezierPath*)path
 {
+    CGRect viewBox = [self patternBounds];
+    float patternWidth = viewBox.size.width;
+    float patternHeight = viewBox.size.height;
+    if (patternWidth == 0 || patternHeight == 0)
+        return;
     [NSGraphicsContext saveGraphicsState];
     [path addClip];
     NSRect pathBounds = [path bounds];
@@ -412,9 +417,6 @@ CGPoint cgPointFromNSPoint(NSPoint pt)
         [NSBezierPath fillRect:pathBounds];
     }
     
-    CGRect viewBox = [self patternBounds];
-    float patternWidth = viewBox.size.width;
-    float patternHeight = viewBox.size.height;
     float scaledPatternWidth = patternWidth * self.scale;
     float scaledPatternHeight = patternHeight * self.scale;
     float xIncrement;

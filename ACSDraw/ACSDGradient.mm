@@ -70,7 +70,7 @@
 - (id) initWithCoder:(NSCoder*)coder
 {
 	self = [super initWithCoder:coder];
-	self.gradientElements = [coder decodeObjectForKey:@"ACSDGradient_gradientElements"];
+    self.gradientElements = [coder decodeObjectOfClass:[NSArray class] forKey:@"ACSDGradient_gradientElements"];
     self.preOffset = [coder decodeFloatForKey:@"ACSDGradient_preOffset"];
     self.postOffset = [coder decodeFloatForKey:@"ACSDGradient_postOffset"];
     self.angle = [coder decodeFloatForKey:@"ACSDGradient_angle"];

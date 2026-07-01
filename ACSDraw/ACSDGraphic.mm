@@ -219,7 +219,7 @@ BOOL getLastTwoPoints(NSBezierPath *path,NSPoint *pt1,NSPoint *pt2)
 + (NSPoint) decodePointForKey:(NSString*)key coder:(NSCoder*)coder
 {
 	NSPoint pt;
-	id o = [coder decodeObjectForKey:key];
+    id o = [coder decodeObjectOfClass:[NSArray class] forKey:key];
 	if (o)
 	{
 		pt.x = [[o objectAtIndex:0]doubleValue];

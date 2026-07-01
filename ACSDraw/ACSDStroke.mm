@@ -86,31 +86,33 @@
    }
 
 - (void) encodeWithCoder:(NSCoder*)coder
-   {
-	[super encodeWithCoder:coder];
-	[coder encodeObject:[self colour] forKey:@"ACSDStroke_colour"];
-	[coder encodeFloat:self.lineWidth forKey:@"ACSDStroke_lineWidth"];
-	[coder encodeFloat:self.dashPhase forKey:@"ACSDStroke_dashPhase"];
-	[coder encodeObject:[self dashes] forKey:@"ACSDStroke_dashes"];
-	[coder encodeConditionalObject:self.lineStart forKey:@"ACSDStroke_lineStart"];
-	[coder encodeConditionalObject:self.lineEnd forKey:@"ACSDStroke_lineEnd"];
-	[coder encodeInt:self.lineCap forKey:@"ACSDStroke_lineCap"];
-	[coder encodeInt:self.lineJoin forKey:@"ACSDStroke_lineJoin"];
-   }
+{
+    [super encodeWithCoder:coder];
+    NSColor *col = [self colour];
+    if (col)
+        [coder encodeObject:[self colour] forKey:@"ACSDStroke_colour"];
+    [coder encodeFloat:self.lineWidth forKey:@"ACSDStroke_lineWidth"];
+    [coder encodeFloat:self.dashPhase forKey:@"ACSDStroke_dashPhase"];
+    [coder encodeObject:[self dashes] forKey:@"ACSDStroke_dashes"];
+    [coder encodeConditionalObject:self.lineStart forKey:@"ACSDStroke_lineStart"];
+    [coder encodeConditionalObject:self.lineEnd forKey:@"ACSDStroke_lineEnd"];
+    [coder encodeInt:self.lineCap forKey:@"ACSDStroke_lineCap"];
+    [coder encodeInt:self.lineJoin forKey:@"ACSDStroke_lineJoin"];
+}
 
 - (id) initWithCoder:(NSCoder*)coder
-   {
-	self = [super initWithCoder:coder];
-	self.colour = [coder decodeObjectForKey:@"ACSDStroke_colour"];
-	self.lineWidth = [coder decodeFloatForKey:@"ACSDStroke_lineWidth"];
-	self.dashPhase = [coder decodeFloatForKey:@"ACSDStroke_dashPhase"];
-	self.dashes = [coder decodeObjectForKey:@"ACSDStroke_dashes"];
-	[self setLineStart:[coder decodeObjectForKey:@"ACSDStroke_lineStart"]];
-	[self setLineEnd:[coder decodeObjectForKey:@"ACSDStroke_lineEnd"]];
-	[self setLineCap:[coder decodeIntForKey:@"ACSDStroke_lineCap"]];
-	[self setLineJoin:[coder decodeIntForKey:@"ACSDStroke_lineJoin"]];
-	return self;
-   }
+{
+    self = [super initWithCoder:coder];
+    self.colour = [coder decodeObjectOfClass:[NSColor class] forKey:@"ACSDStroke_colour"];
+    self.lineWidth = [coder decodeFloatForKey:@"ACSDStroke_lineWidth"];
+    self.dashPhase = [coder decodeFloatForKey:@"ACSDStroke_dashPhase"];
+    self.dashes = [coder decodeObjectOfClass:[NSArray class] forKey:@"ACSDStroke_dashes"];
+    [self setLineStart:[coder decodeObjectOfClass:[ACSDLineEnding class] forKey:@"ACSDStroke_lineStart"]];
+    [self setLineEnd:[coder decodeObjectOfClass:[ACSDLineEnding class] forKey:@"ACSDStroke_lineEnd"]];
+    [self setLineCap:[coder decodeIntForKey:@"ACSDStroke_lineCap"]];
+    [self setLineJoin:[coder decodeIntForKey:@"ACSDStroke_lineJoin"]];
+    return self;
+}
 
 -(BOOL)isSameAs:(id)obj
    {

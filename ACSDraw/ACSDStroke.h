@@ -14,7 +14,7 @@
 @class ACSDGraphic;
 @class ACSDLineEnding;
 
-@interface ACSDStroke : ACSDAttribute
+@interface ACSDStroke : ACSDAttribute<NSSecureCoding>
    {
    }
 

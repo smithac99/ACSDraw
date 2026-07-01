@@ -38,7 +38,7 @@ enum
     LAYOUT_MODE_C6
 };
 
-@interface ACSDPattern : ACSDFill
+@interface ACSDPattern : ACSDFill<NSSecureCoding>
 {
 	GraphicCache *graphicCache;
 	NSPDFImageRep *pdfImageRep;

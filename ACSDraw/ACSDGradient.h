@@ -25,7 +25,7 @@ enum
 	GRADIENT_RADIAL
 };
 
-@interface ACSDGradient : ACSDFill
+@interface ACSDGradient : ACSDFill<NSSecureCoding>
 {
 	CGFunctionRef gradientFunction;
 	ShadingInfo shadingInfo;
